@@ -2,51 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MarkdownContentService;
 use Illuminate\Http\Request;
 
 class PhpVersionController extends Controller
 {
     public function index()
     {
-        return view('php.index');
+        return redirect()->route('php.show', ['version' => '8.0']);
     }
 
-    public function show(string $version)
+    public function show(string $version, MarkdownContentService $markdownService)
     {
-        $viewName = 'php.' . str_replace('.', '_', $version);
+        $locale = app()->getLocale();
+        $data = $markdownService->getParsedContent($locale, 'php', $version);
 
-        if (!view()->exists($viewName)) {
-            abort(404);
+        if (!$data) {
+            abort(404, "Гайд для PHP {$version} не найден или еще не написан.");
         }
 
-        $examples = [];
-
-        if ($version === '8.0') {
-            $examples = $this->getPhp80Examples();
-        }
-
-        return view($viewName, compact('examples'));
-    }
-
-    /**
-     * Выполнение кода фич PHP 8.0
-     */
-    private function getPhp80Examples(): array
-    {
-        $statusCode = 200;
-
-        $statusMessage = match ($statusCode) {
-            200, 300 => 'Успех или Редирект',
-            400, 404 => 'Ошибка клиента',
-            500 => 'Ошибка сервера',
-            default => 'Неизвестный статус',
-        };
-
-        return [
-            'match_expression' => [
-                'input' => $statusCode,
-                'result' => $statusMessage,
-            ]
-        ];
+        return view('php.show', [
+            'content' => $data['html'],
+            'meta' => $data['meta'],
+            'version' => $version
+        ]);
     }
 }

@@ -36,7 +36,7 @@ const cycleTheme = (): void => {
     border: 1px solid var(--border-color);
     cursor: pointer;
     font-size: 1.2rem;
-    padding: 0.3rem 0.6rem;
+    padding: 0 0.6rem;
     border-radius: 6px;
     color: var(--text-color);
     transition: background-color 0.2s, border-color 0.2s;

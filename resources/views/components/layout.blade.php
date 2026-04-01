@@ -1,9 +1,16 @@
+@props(['title' => 'DevSense', 'description' => ''])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'DevSense' }}</title>
+    <title>{{ $title }}</title>
+
+    @if($description)
+        <meta name="description" content="{{ $description }}">
+    @endif
+
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
