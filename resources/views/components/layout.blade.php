@@ -19,25 +19,36 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.ts'])
 </head>
 <body class="page" id="app">
-<header class="header">
+<header class="header sticky">
     <div class="header__container">
-        <a href="{{ url('/') }}" class="header__logo">DevSense</a>
-        <nav class="header__nav nav">
-            <ul class="nav__list">
-                <li class="nav__item">
-                    <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
-                </li>
-                <li class="nav__item">
-                    <a href="{{ route('tools.sail') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
-                </li>
-            </ul>
-            <div class="nav__controls" style="display: flex; gap: 1rem; align-items: center;">
-                <language-switcher></language-switcher>
-                <theme-switcher></theme-switcher>
-            </div>
-        </nav>
+        <a href="{{ route('home') }}" class="header__logo">DevSense</a>
+
+        <div class="header__controls">
+            <language-switcher></language-switcher>
+            <theme-switcher></theme-switcher>
+
+            <nav class="header__nav">
+                <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
+                <a href="{{ route('tools.sail') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
+            </nav>
+        </div>
     </div>
 </header>
+
+<nav class="mobile-nav">
+    <a href="{{ route('home') }}" class="mobile-nav__item {{ Route::is('home') ? 'active' : '' }}">
+        <span class="icon">🏠</span>
+        <span class="label">Home</span>
+    </a>
+    <a href="{{ route('php.index') }}" class="mobile-nav__item {{ Route::is('php.*') ? 'active' : '' }}">
+        <span class="icon">🐘</span>
+        <span class="label">PHP</span>
+    </a>
+    <a href="{{ route('tools.sail') }}" class="mobile-nav__item {{ Route::is('tools.*') ? 'active' : '' }}">
+        <span class="icon">🛠️</span>
+        <span class="label">Tools</span>
+    </a>
+</nav>
 
 <main class="main">
     <div class="main__container">
