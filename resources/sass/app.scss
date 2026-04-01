@@ -1,0 +1,18 @@
+@use 'base/variables';
+@use 'base/reset';
+@use 'layout/header';
+@use 'blocks/card';
+@use 'blocks/code-block';
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--page-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
