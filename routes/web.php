@@ -2,8 +2,13 @@
 
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
+use App\Http\Controllers\RobotsController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/robots.txt', RobotsController::class)->name('robots');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/', function () {
     $locale = config('app.default_site_locale', 'en');
