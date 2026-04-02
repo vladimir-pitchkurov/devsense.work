@@ -7,7 +7,7 @@ description: "Практичный гайд по Laravel Sail: смена вер
 
 **Laravel Sail** — это обёртка над **Docker Compose** для типичного приложения Laravel: PHP-FPM (сервис `laravel.test`), СУБД, Redis, Meilisearch, Selenium и опции по желанию. Цель — **локальная разработка** (и CI с Compose), а не готовая продакшен-платформа. Ниже — типовые доработки и граница, где Sail заканчивается и начинается настоящий деплой.
 
-**Серия:** [Базы данных и Docker-сервисы](sail-databases) · [Очереди и воркеры](sail-queues) · [Окружения и деплой](sail-env-deploy) · [Все инструменты](../)
+**Серия:** [Базы данных и Docker-сервисы](sail-databases) · [Очереди и воркеры](sail-queues) · [Окружения и деплой](sail-env-deploy) · [Диагностика](sail-troubleshooting) · [Все инструменты](../)
 
 ## Содержание
 

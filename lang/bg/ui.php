@@ -18,6 +18,19 @@ return [
         'php_guide_missing' => 'Ръководството за PHP :version все още не е публикувано или не е налично.',
         'tools_guide_missing' => 'Ръководството за инструмента „:slug“ все още не е публикувано или не е налично.',
     ],
+    'welcome' => [
+        'title' => 'DevSense — PHP ръководства и инструменти за Sail',
+        'description' => 'Материали по версии на PHP и практични ръководства за Laravel Sail: Docker, опашки, среди и типични проблеми.',
+        'hero_title' => 'DevSense',
+        'hero_lead' => 'Ръководства за миграция от PHP 5.3 до 8.x и задълбочени текстове за Laravel Sail в локален Docker стек.',
+        'section_aria' => 'Основни раздели',
+        'card_php_title' => 'Ръководства по версии на PHP',
+        'card_php_excerpt' => 'Синтаксис, deprecations и несъвместимости по релизи — с примери и чеклисти при надграждане.',
+        'card_php_cta' => 'Към PHP ръководствата',
+        'card_tools_title' => 'Инструменти — Laravel Sail',
+        'card_tools_excerpt' => 'Compose, бази, опашки, .env и CI, плюс какво да правите, когато контейнерите се държат странно.',
+        'card_tools_cta' => 'Към инструментите',
+    ],
     'php_show' => [
         'back_to_guides' => 'Всички ръководства по версии на PHP',
         'nav_aria' => 'Навигация в PHP ръководствата',
@@ -93,7 +106,7 @@ return [
     ],
     'tools_index' => [
         'title' => 'Инструменти и ръководства | DevSense',
-        'description' => 'Задълбочени материали за Laravel Sail: Docker услуги, бази данни, опашки и разлики между локален стек и production.',
+        'description' => 'Задълбочени материали за Laravel Sail: Docker услуги, бази данни, опашки, среди, диагностика и разлики между локален стек и production.',
         'hero_title' => 'Инструменти',
         'hero_lead' => 'Практични ръководства за Laravel Sail — compose, .env, опашки и бележки с мисъл за production.',
         'cta' => 'Отвори ръководството',
@@ -113,6 +126,10 @@ return [
             'sail_env_deploy' => [
                 'title' => 'Sail: среди и деплой',
                 'excerpt' => '.env и .env.example, тайни в CI, портове FORWARD_*, APP_URL в Docker, пример с GitHub Actions, чеклист: Sail ≠ production.',
+            ],
+            'sail_troubleshooting' => [
+                'title' => 'Sail: диагностика и производителност',
+                'excerpt' => 'WSL2 и синхронизация на файлове, права, конфликти на портове, пресборка, OPcache и Xdebug в контейнери, Vite/npm, кога да нулирате томове.',
             ],
         ],
     ],

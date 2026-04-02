@@ -4,10 +4,13 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Registers application-level bindings and bootstraps framework hooks.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register bindings in the service container.
      */
     public function register(): void
     {
@@ -15,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap services after all providers have been registered.
      */
     public function boot(): void
     {

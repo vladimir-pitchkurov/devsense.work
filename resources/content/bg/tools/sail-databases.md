@@ -1,37 +1,39 @@
 ---
 title: "Laravel Sail: БД, Redis, Postgres, MongoDB, RabbitMQ в Docker Compose | DevSense"
-description: "Compose рецепти за Sail: Redis, смяна към PostgreSQL, MongoDB и PHP разширение, RabbitMQ, Mailpit/Meilisearch, healthcheck и томове."
+description: "Compose рецепти за Sail: Redis, смяна към PostgreSQL, MongoDB и PHP разширение, RabbitMQ, Mailpit/Meilisearch, healthcheck и именовани томове."
 ---
 
 # Sail: бази данни и Docker услуги
 
-Допълва [пълния Sail гайд](sail). Воркери — [Опашки](sail-queues), `.env` — [Среди и деплой](sail-env-deploy).
+Този гайд е за **услуги до `laravel.test`**: SQL, Redis, по избор RabbitMQ, MongoDB и удобни за dev екстри. Допълва [пълния Sail гайд](sail). Команди за workers — в [Опашки](sail-queues); `.env` и сървъри — в [Среди и деплой](sail-env-deploy).
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail) · [Опашки](sail-queues) · [Env](sail-env-deploy)
+**Навигация:** [Всички инструменти](../) · [Sail](sail) · [Опашки](sail-queues) · [Env](sail-env-deploy) · [Диагностика](sail-troubleshooting)
 
 ## Съдържание
 
-* [Мрежа и хостове](#networking)
-* [Redis](#redis-service)
-* [MySQL → PostgreSQL](#postgres-swap)
-* [MongoDB](#mongodb)
-* [RabbitMQ](#rabbitmq-sidecar)
-* [Mailpit](#mailpit)
-* [Meilisearch / Typesense](#search-engines)
-* [Healthcheck](#healthchecks)
-* [Томове](#volumes)
+* [Мрежа и правила за имена на хостове](#networking)
+* [Redis услуга (пълен пример)](#redis-service)
+* [Замяна на MySQL с PostgreSQL](#postgres-swap)
+* [MongoDB и PHP разширение в Sail](#mongodb)
+* [RabbitMQ като контейнер](#rabbitmq-sidecar)
+* [Mailpit (SMTP за dev)](#mailpit)
+* [Meilisearch / Typesense (по избор търсене)](#search-engines)
+* [Healthcheck и ред на стартиране](#healthchecks)
+* [Именовани томове и нулиране на данни](#volumes)
 
 ---
 
 <a id="networking"></a>
-## Мрежа и хостове
+## Мрежа и правила за имена на хостове
 
-В **`.env`** от контейнера ползвайте **имена на услуги** (`pgsql`, `redis`), не `127.0.0.1`. От хоста — `127.0.0.1:${FORWARD_DB_PORT}`.
+Всички хостове от страна на приложението в **`.env`** трябва да са **имена на Compose услуги** (`pgsql`, `redis`, `mongo`), не `127.0.0.1`, защото PHP работи **вътре** в `laravel.test`. От **хост машината** достъпът до БД е **`127.0.0.1:${FORWARD_DB_PORT}`**, когато портовете са пробросени.
 
 ---
 
 <a id="redis-service"></a>
-## Redis
+## Redis услуга (пълен пример)
+
+Добавете в **`docker-compose.yml`** (нагласете имената към вашия Sail файл):
 
 ```yaml
 redis:
@@ -44,32 +46,94 @@ redis:
         - sail
     healthcheck:
         test: ["CMD", "redis-cli", "ping"]
+        retries: 3
+        timeout: 5s
 ```
 
-Том **`sail-redis`**. **`.env`:** `REDIS_HOST=redis`. Тест: `sail exec redis redis-cli ping`.
+Регистрирайте **`sail-redis`** под **`volumes:`**. В **`laravel.test`**:
+
+```yaml
+depends_on:
+    redis:
+        condition: service_healthy
+```
+
+(Ако Compose няма `condition`, ползвайте `depends_on: [redis]`.)
+
+**.env:**
+
+```dotenv
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+Проверка: `sail exec redis redis-cli ping`.
 
 ---
 
 <a id="postgres-swap"></a>
-## MySQL → PostgreSQL
+## Замяна на MySQL с PostgreSQL
 
-Заменете **`mysql`** с **`pgsql`** от stub на Sail. **`.env`:** `DB_CONNECTION=pgsql`, `DB_HOST=pgsql`, порт **5432**. `sail build --no-cache` при нужда.
+1. Премахнете (или коментирайте) услугата **`mysql`** и нейния том.
+2. Добавете **`pgsql`** от свеж Sail stub (`php artisan sail:install --with=pgsql`) или от [laravel/sail](https://github.com/laravel/sail) `stubs/pgsql.stub`.
+3. Насочете **`depends_on`** на **`laravel.test`** към **`pgsql`**.
+4. **`.env`:**
+
+```dotenv
+DB_CONNECTION=pgsql
+DB_HOST=pgsql
+DB_PORT=5432
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+5. Прекомпилирайте при смяна на PHP образ: `sail build --no-cache && sail up -d`.
+6. Чиста БД: `sail artisan migrate:fresh`.
 
 ---
 
 <a id="mongodb"></a>
-## MongoDB
+## MongoDB и PHP разширение в Sail
 
-Услуга **`mongo`**, том. Пакет **`mongodb/laravel-mongodb`**; в Dockerfile: `pecl install mongodb`, enable, rebuild. Хост **`mongo`**.
+**1. Услуга в Compose:**
+
+```yaml
+mongo:
+    image: 'mongo:7'
+    ports:
+        - '${FORWARD_MONGO_PORT:-27017}:27017'
+    volumes:
+        - 'sail-mongo:/data/db'
+    networks:
+        - sail
+```
+
+2. Добавете **`sail-mongo`** към **`volumes:`**.
+
+3. Обикновено **`mongodb/laravel-mongodb`**. Разширението **mongodb** трябва в **`laravel.test`**. След `sail:publish` редактирайте **Dockerfile** (напр. `docker/8.3/Dockerfile`):
+
+```dockerfile
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
+```
+
+4. `sail build --no-cache`.
+
+5. Хост **`mongo`**, порт **27017** от контейнера на приложението.
 
 ---
 
 <a id="rabbitmq-sidecar"></a>
-## RabbitMQ
+## RabbitMQ като контейнер
+
+При пакет с **AMQP** драйвер:
 
 ```yaml
 rabbitmq:
     image: 'rabbitmq:3-management-alpine'
+    hostname: rabbitmq
     ports:
         - '${FORWARD_RABBITMQ_PORT:-5672}:5672'
         - '${FORWARD_RABBITMQ_MANAGEMENT:-15672}:15672'
@@ -82,36 +146,45 @@ rabbitmq:
         RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASSWORD:-password}'
 ```
 
-Том **`sail-rabbitmq`**. UI **15672**.
+Том **`sail-rabbitmq`**. UI на **15672**.
 
 ---
 
 <a id="mailpit"></a>
-## Mailpit
+## Mailpit (SMTP за dev)
 
-SMTP към **`mailpit`**, портове от compose.
+Насочете Laravel към **`mailpit`** и SMTP порта от compose; писмата в браузър UI.
 
 ---
 
 <a id="search-engines"></a>
 ## Meilisearch / Typesense
 
-`sail:install --with=meilisearch` или блок от upstream stubs.
+`sail:install --with=meilisearch` или блок от upstream. Scout променливи към **име на услуга**.
 
 ---
 
 <a id="healthchecks"></a>
-## Healthcheck
+## Healthcheck и ред на стартиране
 
-`healthcheck` + `depends_on` с `service_healthy` където Compose го поддържа.
+**`depends_on`** само не чака готовност на БД. Предпочитайте **`healthcheck`** и `service_healthy`, където Compose го поддържа.
 
 ---
 
 <a id="volumes"></a>
-## Томове
+## Именовани томове и нулиране на данни
 
-`sail down -v` изтрива данни.
+- Томовете остават след `sail down`.
+- **`sail down -v`** ги изтрива — данните изчезват.
+- За един том: `docker volume rm` по име от `docker volume ls`.
 
 ---
 
-[Sail](sail) · [Опашки](sail-queues) · [Env](sail-env-deploy) · [← Всички инструменти](../)
+## Вижте също
+
+* [Sail — пълен гайд](sail)  
+* [Опашки](sail-queues)  
+* [Среди и деплой](sail-env-deploy)  
+* [Диагностика](sail-troubleshooting)  
+
+[← Всички инструменти](../)

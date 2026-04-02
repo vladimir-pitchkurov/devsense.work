@@ -18,6 +18,19 @@ return [
         'php_guide_missing' => 'No guide for PHP :version is available yet.',
         'tools_guide_missing' => 'No tool guide for “:slug” is available yet.',
     ],
+    'welcome' => [
+        'title' => 'DevSense — PHP guides & Sail tools',
+        'description' => 'Version-by-version PHP upgrade notes and practical Laravel Sail guides: Docker services, queues, environments, and troubleshooting.',
+        'hero_title' => 'DevSense',
+        'hero_lead' => 'PHP migration guides from 5.3 through 8.x, plus deep dives on Laravel Sail for local Docker stacks.',
+        'section_aria' => 'Main sections',
+        'card_php_title' => 'PHP version guides',
+        'card_php_excerpt' => 'Syntax, deprecations, and breaking changes per release—with examples and checklists when you upgrade.',
+        'card_php_cta' => 'Browse PHP guides',
+        'card_tools_title' => 'Tools — Laravel Sail',
+        'card_tools_excerpt' => 'Compose recipes, databases, queues, env/CI patterns, and common fixes when containers misbehave.',
+        'card_tools_cta' => 'Browse tools',
+    ],
     'php_show' => [
         'back_to_guides' => 'All PHP version guides',
         'nav_aria' => 'PHP guides navigation',
@@ -93,7 +106,7 @@ return [
     ],
     'tools_index' => [
         'title' => 'Tools & guides | DevSense',
-        'description' => 'Laravel Sail deep dives: Docker services, databases, queues, and how local stacks differ from real servers.',
+        'description' => 'Laravel Sail deep dives: Docker services, databases, queues, environments, troubleshooting, and how local stacks differ from real servers.',
         'hero_title' => 'Tools',
         'hero_lead' => 'Practical guides for Laravel Sail—compose snippets, env layout, queues, and production-minded notes.',
         'cta' => 'Open guide',
@@ -113,6 +126,10 @@ return [
             'sail_env_deploy' => [
                 'title' => 'Sail: environments & deployment',
                 'excerpt' => '.env vs .env.example vs CI secrets, FORWARD_* ports, APP_URL in Docker, GitHub Actions pattern, checklists when Sail is not production.',
+            ],
+            'sail_troubleshooting' => [
+                'title' => 'Sail: troubleshooting & performance',
+                'excerpt' => 'WSL2 and file sync, permissions, port conflicts, rebuilds, OPcache and Xdebug inside containers, Vite/npm, and when to reset volumes.',
             ],
         ],
     ],

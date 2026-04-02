@@ -5,11 +5,21 @@ namespace App\Http\Controllers;
 use App\Services\MarkdownContentService;
 use Illuminate\View\View;
 
+/**
+ * Serves localized Laravel Sail / tooling guides backed by Markdown content.
+ */
 class PhpToolsController extends Controller
 {
-    /** @var list<string> */
-    private const TOOL_SLUG_ORDER = ['sail', 'sail-databases', 'sail-queues', 'sail-env-deploy'];
+    /**
+     * Ordered list of tool slugs exposed under `/{locale}/tools/{slug}`.
+     *
+     * @var list<string>
+     */
+    private const TOOL_SLUG_ORDER = ['sail', 'sail-databases', 'sail-queues', 'sail-env-deploy', 'sail-troubleshooting'];
 
+    /**
+     * Display the tools index with cards for each documented tool.
+     */
     public function index(): View
     {
         $cards = [];
@@ -25,6 +35,11 @@ class PhpToolsController extends Controller
         return view('tools.index', ['cards' => $cards]);
     }
 
+    /**
+     * Render a single tool guide parsed from Markdown.
+     *
+     * @param  string  $slug  URL segment; must be one of {@see PhpToolsController::TOOL_SLUG_ORDER}.
+     */
     public function show(string $slug, MarkdownContentService $markdownService): View
     {
         if (! in_array($slug, self::TOOL_SLUG_ORDER, true)) {

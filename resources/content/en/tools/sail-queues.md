@@ -7,7 +7,7 @@ description: "Run Laravel queues inside Sail: sync vs redis vs database, queue:w
 
 How to run **Laravel queues** when the app lives in **Sail**. Pair this with [Databases & services](sail-databases) for Redis/RabbitMQ containers and [Environments & deployment](sail-env-deploy) for `.env` across machines.
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Env & deploy](sail-env-deploy)
+**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Env & deploy](sail-env-deploy) · [Troubleshooting](sail-troubleshooting)
 
 ## Table of contents
 

@@ -7,7 +7,7 @@ description: "Compose-рецепты для Sail: Redis, замена на Postg
 
 Сервисы рядом с **`laravel.test`**: SQL, Redis, RabbitMQ, MongoDB, почта и поиск. Дополняет [полный гайд по Sail](sail). Команды воркеров — в [Очереди и воркеры](sail-queues), `.env` и серверы — в [Окружения и деплой](sail-env-deploy).
 
-**Навигация:** [Все инструменты](../) · [Sail обзор](sail) · [Очереди](sail-queues) · [Env и деплой](sail-env-deploy)
+**Навигация:** [Все инструменты](../) · [Sail обзор](sail) · [Очереди](sail-queues) · [Env и деплой](sail-env-deploy) · [Диагностика](sail-troubleshooting)
 
 ## Содержание
 
@@ -119,4 +119,4 @@ rabbitmq:
 
 ## См. также
 
-[Sail — полный гайд](sail) · [Очереди](sail-queues) · [Окружения и деплой](sail-env-deploy) · [← Все инструменты](../)
+[Sail — полный гайд](sail) · [Очереди](sail-queues) · [Окружения и деплой](sail-env-deploy) · [Диагностика](sail-troubleshooting) · [← Все инструменты](../)

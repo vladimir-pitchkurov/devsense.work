@@ -7,7 +7,7 @@ description: "Разделение конфигурации Sail: .env.example, 
 
 Организация **переменных** и отличия **Sail** от реальных серверов. См. также [Sail](sail), [БД](sail-databases), [Очереди](sail-queues).
 
-**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Очереди](sail-queues)
+**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Очереди](sail-queues) · [Диагностика](sail-troubleshooting)
 
 ## Содержание
 

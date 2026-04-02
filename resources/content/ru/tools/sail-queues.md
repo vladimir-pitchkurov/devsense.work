@@ -7,7 +7,7 @@ description: "Запуск Laravel-очередей в Sail: sync/redis/database
 
 Работа с **очередями** внутри Sail. Контейнеры — в [Базы данных и сервисы](sail-databases), переменные окружения — в [Окружения и деплой](sail-env-deploy).
 
-**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy)
+**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy) · [Диагностика](sail-troubleshooting)
 
 ## Содержание
 

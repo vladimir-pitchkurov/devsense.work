@@ -1,71 +1,117 @@
 ---
-title: "Laravel Sail: .env, портове, CI, локално vs production | DevSense"
-description: ".env и .env.example, FORWARD_* портове, APP_URL, env_file в compose, пример GitHub Actions, чеклист: Sail не е production."
+title: "Laravel Sail: .env, проброс на портове, CI и локално срещу production | DevSense"
+description: "Разделяне на Laravel Sail и хоста: .env.example, FORWARD_* портове, APP_URL в Docker, опционален env_file, GitHub Actions с docker compose и чеклисти, когато Sail не е вашият сървър."
 ---
 
 # Sail: среди и деплой
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail) · [БД](sail-databases) · [Опашки](sail-queues)
+Как да **подредите променливите на средата** за Sail, екипа и CI — и как се различава от **staging/production**. Вижте също [Sail](sail), [БД](sail-databases) и [Опашки](sail-queues).
+
+**Навигация:** [Всички инструменти](../) · [Sail](sail) · [БД](sail-databases) · [Опашки](sail-queues) · [Диагностика](sail-troubleshooting)
 
 ## Съдържание
 
-* [Файлове](#env-files)
-* [FORWARD_*](#forward-ports)
-* [APP_URL](#app-url)
-* [env_file](#compose-env-file)
-* [CI](#ci-example)
-* [Не production](#not-production)
-* [Чеклист](#checklist)
+* [`.env`, `.env.example`, тайни](#env-files)
+* [**`FORWARD_*` портове и сблъсъци**](#forward-ports)
+* [**`APP_URL` и доверени проксита**](#app-url)
+* [**Опционален `env_file` в Compose**](#compose-env-file)
+* [**CI: GitHub Actions пример**](#ci-example)
+* [**Sail срещу dev/staging/prod**](#not-production)
+* [**Чеклист преди go-live**](#checklist)
 
 ---
 
 <a id="env-files"></a>
-## Файлове
+## `.env`, `.env.example`, тайни
 
-`.env` локално, не в git. `.env.example` — шаблон. Прод — Vault / CI тайни.
+- **`.env`**: локални тайни; **никога commit**. Копирайте от **`.env.example`** при първи clone.
+- **`.env.example`**: безопасни стойности, **документирайте всеки ключ** (`DB_*`, `REDIS_*`, `QUEUE_*`, `MAIL_*`, Scout и т.н.). Sail: **`WWWUSER`**, **`WWWGROUP`**, **`FORWARD_DB_PORT`**, …
+- **Екип:** дали host команди (напр. `npm` на Mac) се нуждаят от Laravel env; често важат само контейнерни команди.
+- **Production:** тайни през **хостинг**, **Vault** или **masked CI variables** — не копиран `.env` в образа.
 
 ---
 
 <a id="forward-ports"></a>
-## FORWARD_*
+## `FORWARD_*` портове и сблъсъци
 
-Различни портове за няколко проекта на една машина.
+Sail пробросва БД, Redis, Meilisearch към **localhost**. При няколко проекта в **`.env`**:
+
+```dotenv
+FORWARD_DB_PORT=3307
+FORWARD_REDIS_PORT=6380
+```
+
+Рестартирайте Compose. **Вътре** в контейнерите портовете остават по подразбиране (`3306`, `6379`).
 
 ---
 
 <a id="app-url"></a>
-## APP_URL
+## `APP_URL` и доверени проксита
 
-Реален URL и порт за браузър; зад прокси — TrustProxies.
+```dotenv
+APP_URL=http://localhost
+```
+
+Използвайте реалния **хост порт**. Зад **Traefik/nginx** настройте **`TrustProxies`** и **`APP_URL`** с `https`.
 
 ---
 
 <a id="compose-env-file"></a>
-## env_file
+## Опционален `env_file` в Compose
 
-Допълнителен `.env.docker.local` в `docker-compose.yml`.
+```yaml
+laravel.test:
+    env_file:
+        - .env
+        - .env.docker.local
+```
+
+За **лични** overrides без промяна на споделен `.env`.
 
 ---
 
 <a id="ci-example"></a>
-## CI
+## CI: GitHub Actions пример
 
-`docker compose up -d` и `exec laravel.test php artisan test` с `.env.ci`.
+```yaml
+- name: Run tests in Sail
+  run: |
+    cp .env.ci .env
+    docker compose up -d
+    docker compose exec -T laravel.test php artisan test
+```
+
+Нагласете имената на услугите. Кеширайте Composer/npm отделно от Docker layer cache.
 
 ---
 
 <a id="not-production"></a>
-## Не production
+## Sail срещу dev/staging/prod
 
-Sail е за разработка; продъкшън изисква TLS, backup, мониторинг, supervisor.
+- **Sail** — ergonomics за разработка (Mailpit, пробросени портове, един възел БД).
+- **Споделен dev/staging** — дългоживуща среда; пак не е production HA.
+- **Production** — TLS, backups, monitoring, log aggregation, queue supervision, DB replicas, secret rotation — Sail не го замества.
+
+Може да **реизползвате** образи от Sail Dockerfiles, но **оркестрацията** ще е различна.
 
 ---
 
 <a id="checklist"></a>
-## Чеклист
+## Чеклист преди go-live
 
-`APP_DEBUG=false`, реални DB/Redis, опашки, cron, секрети.
+- [ ] `APP_ENV=production`, `APP_DEBUG=false`, силен `APP_KEY`
+- [ ] Реални **`DB_*`** / **`REDIS_*`**
+- [ ] **`QUEUE_CONNECTION`** съвпада с **supervised** workers
+- [ ] **`schedule:run`** в cron
+- [ ] Live ключове за поща/плащания в secret store
+- [ ] **`LOG_CHANNEL`** и retention според изискванията
 
 ---
 
-[Sail](sail) · [БД](sail-databases) · [Опашки](sail-queues) · [← Всички инструменти](../)
+## Вижте също
+
+* [Sail — пълен гайд](sail)  
+* [Бази данни и услуги](sail-databases)  
+* [Опашки](sail-queues)  
+
+[← Всички инструменти](../)

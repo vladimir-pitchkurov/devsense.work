@@ -7,7 +7,7 @@ description: "Split Laravel Sail and host configuration: .env.example, FORWARD_*
 
 How to **organize environment variables** for Sail, teammates, and CI—and how that differs from **staging/production**. See also [Sail overview](sail), [Databases](sail-databases), and [Queues](sail-queues).
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Queues](sail-queues)
+**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Queues](sail-queues) · [Troubleshooting](sail-troubleshooting)
 
 ## Table of contents
 

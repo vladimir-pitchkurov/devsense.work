@@ -18,6 +18,19 @@ return [
         'php_guide_missing' => 'Гайд для PHP :version ще не опублікований або недоступний.',
         'tools_guide_missing' => 'Гайд для інструмента «:slug» ще не опублікований або недоступний.',
     ],
+    'welcome' => [
+        'title' => 'DevSense — PHP-гайди та інструменти Sail',
+        'description' => 'Матеріали з версій PHP і практичні гайди з Laravel Sail: Docker, черги, оточення та типові збої.',
+        'hero_title' => 'DevSense',
+        'hero_lead' => 'Гайди з міграції PHP від 5.3 до 8.x і глибокі матеріали з Laravel Sail для локального Docker-стеку.',
+        'section_aria' => 'Основні розділи',
+        'card_php_title' => 'Гайди з версій PHP',
+        'card_php_excerpt' => 'Синтаксис, deprecations і зворотна несумісність по релізах — із прикладами та чеклістами під час оновлення.',
+        'card_php_cta' => 'До PHP-гайдів',
+        'card_tools_title' => 'Інструменти — Laravel Sail',
+        'card_tools_excerpt' => 'Compose, БД, черги, .env і CI, а також що робити, коли контейнери поводяться дивно.',
+        'card_tools_cta' => 'До інструментів',
+    ],
     'php_show' => [
         'back_to_guides' => 'Усі гайди з версій PHP',
         'nav_aria' => 'Навігація гайдами PHP',
@@ -93,7 +106,7 @@ return [
     ],
     'tools_index' => [
         'title' => 'Інструменти та гайди | DevSense',
-        'description' => 'Глибокі матеріали з Laravel Sail: Docker-сервіси, БД, черги та відмінності локального стеку від продакшену.',
+        'description' => 'Глибокі матеріали з Laravel Sail: Docker-сервіси, БД, черги, оточення, діагностика та відмінності локального стеку від продакшену.',
         'hero_title' => 'Інструменти',
         'hero_lead' => 'Практичні гайди з Laravel Sail — compose, .env, черги та нотатки з огляду на production.',
         'cta' => 'Відкрити гайд',
@@ -113,6 +126,10 @@ return [
             'sail_env_deploy' => [
                 'title' => 'Sail: оточення та деплой',
                 'excerpt' => '.env і .env.example, секрети в CI, порти FORWARD_*, APP_URL у Docker, приклад GitHub Actions, чеклист: Sail ≠ production.',
+            ],
+            'sail_troubleshooting' => [
+                'title' => 'Sail: діагностика та продуктивність',
+                'excerpt' => 'WSL2 і синхронізація файлів, права, конфлікти портів, перезбірка, OPcache й Xdebug у контейнерах, Vite/npm, коли скидати томи.',
             ],
         ],
     ],

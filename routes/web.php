@@ -1,16 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PhpVersionController;
 use App\Http\Controllers\PhpToolsController;
+use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/ru');
+    $locale = config('app.default_site_locale', 'en');
+    if (! in_array($locale, SetLocale::SUPPORTED_LOCALES, true)) {
+        $locale = 'en';
+    }
+
+    return redirect('/'.$locale);
 });
 
 Route::prefix('{locale}')
-    ->whereIn('locale', ['ru', 'en', 'ua', 'bg'])
+    ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
     ->middleware(SetLocale::class)
     ->group(function () {
 
@@ -27,7 +32,7 @@ Route::prefix('{locale}')
             Route::get('/', [PhpToolsController::class, 'index'])->name('tools.index');
             Route::get('/{slug}', [PhpToolsController::class, 'show'])
                 ->name('tools.show')
-                ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy');
+                ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy|sail-troubleshooting');
         });
 
     });

@@ -7,7 +7,7 @@ description: "Compose-first recipes for Laravel Sail: add Redis, switch to Postg
 
 This guide focuses on **services next to `laravel.test`**: SQL engines, Redis, optional RabbitMQ, MongoDB, and dev-friendly extras. It complements the [full Sail guide](sail). For queue worker commands see [Queues & workers](sail-queues); for `.env` layout and servers see [Environments & deployment](sail-env-deploy).
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Queues](sail-queues) · [Env & deploy](sail-env-deploy)
+**Navigation:** [All tools](../) · [Sail overview](sail) · [Queues](sail-queues) · [Env & deploy](sail-env-deploy) · [Troubleshooting](sail-troubleshooting)
 
 ## Table of contents
 
@@ -191,5 +191,6 @@ Or paste the upstream **Meilisearch** / **Typesense** service block from Sail st
 * [Sail — full guide](sail) for the big picture  
 * [Queues & workers](sail-queues) for `queue:work`, Horizon, RabbitMQ drivers  
 * [Environments & deployment](sail-env-deploy) for `.env` split and production contrast  
+* [Troubleshooting](sail-troubleshooting) for WSL2, permissions, ports, rebuilds  
 
 [← All tools](../)
