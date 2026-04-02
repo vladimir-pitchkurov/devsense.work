@@ -95,6 +95,8 @@ return [
             'title' => 'Laravel Sail: evolving the local environment | DevSense',
             'heading' => 'Local development, evolved: why Laravel Sail',
             'lead' => 'From ad-hoc PHP setups to a Docker-based workflow—and why Laravel\'s wrapper became a practical default.',
+            'back' => 'Back to home',
+            'nav_aria' => 'Tools navigation',
         ],
     ],
 ];

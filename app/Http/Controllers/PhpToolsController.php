@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\MarkdownContentService;
+use Illuminate\View\View;
 
 class PhpToolsController extends Controller
 {
-    public function sail()
+    public function sail(MarkdownContentService $markdownService): View
     {
-        return view('tools.sail');
+        $locale = app()->getLocale();
+        $data = $markdownService->getParsedContent($locale, 'tools', 'sail');
+
+        if (!$data) {
+            abort(404);
+        }
+
+        return view('tools.sail', [
+            'content' => $data['html'],
+            'meta' => $data['meta'],
+        ]);
     }
 }
