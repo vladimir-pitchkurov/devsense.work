@@ -23,11 +23,23 @@ return [
     ],
     'php_index' => [
         'title' => 'PHP version guides | DevSense',
-        'description' => 'Upgrade guides for PHP 7.3 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
+        'description' => 'Upgrade guides for PHP 7.0 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
         'hero_title' => 'PHP version guides',
-        'hero_lead' => 'Trace the language from PHP 7.3 through current PHP 8.x releases, with practical examples and migration checklists.',
+        'hero_lead' => 'Trace the language from PHP 7.0 through current PHP 8.x releases, with practical examples and migration checklists.',
         'cta' => 'Open guide',
         'cards' => [
+            'v70' => [
+                'title' => 'PHP 7.0 — The PHP 5 break',
+                'excerpt' => 'Scalar & return types, `??` and `<=>`, anonymous classes, `Closure::call`, generators, `random_bytes`, filtered `unserialize`—and `Throwable`/BC from the 5.x era.',
+            ],
+            'v71' => [
+                'title' => 'PHP 7.1 — Nullable, void, iterable',
+                'excerpt' => '`?Type`, `void`, `iterable`, constant visibility, multi-catch, keyed `list()`—plus `ArgumentCountError`, session INI removals, and string offset BC.',
+            ],
+            'v72' => [
+                'title' => 'PHP 7.2 — object type & libsodium',
+                'excerpt' => '`object` hint, parameter type widening, Sodium in core, LDAP EXOP, addrinfo sockets—`count()`/`get_class(null)` warnings and mcrypt moved to PECL.',
+            ],
             'v73' => [
                 'title' => 'PHP 7.3 — Syntax polish before 7.4',
                 'excerpt' => 'Flexible heredoc/nowdoc, trailing commas in calls, `JsonException`, `is_countable`, `array_key_first`/`last`, PCRE2, Argon2id—and subtle BC (ArrayAccess keys, references, `continue` in `switch`).',

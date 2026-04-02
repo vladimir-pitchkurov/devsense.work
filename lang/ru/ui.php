@@ -23,11 +23,23 @@ return [
     ],
     'php_index' => [
         'title' => 'Гайды по версиям PHP | DevSense',
-        'description' => 'Материалы по обновлению с PHP 7.3 до 8.5: синтаксис, миграция, deprecations и обратная несовместимость — с примерами.',
+        'description' => 'Материалы по обновлению с PHP 7.0 до 8.5: синтаксис, миграция, deprecations и обратная несовместимость — с примерами.',
         'hero_title' => 'Гайды по версиям PHP',
-        'hero_lead' => 'Прослеживаем эволюцию языка от PHP 7.3 до актуальных релизов PHP 8.x — с рабочими примерами и чек-листами миграции.',
+        'hero_lead' => 'Прослеживаем эволюцию языка от PHP 7.0 до актуальных релизов PHP 8.x — с рабочими примерами и чек-листами миграции.',
         'cta' => 'Читать гайд',
         'cards' => [
+            'v70' => [
+                'title' => 'PHP 7.0 — Разрыв с PHP 5',
+                'excerpt' => 'Скалярные и возвращаемые типы, `??` и `<=>`, анонимные классы, `Closure::call`, генераторы, `random_bytes`, фильтруемый `unserialize` и `Throwable`/BC эпохи 5.x.',
+            ],
+            'v71' => [
+                'title' => 'PHP 7.1 — Nullable, void, iterable',
+                'excerpt' => '`?Type`, `void`, `iterable`, видимость констант, multi-catch, `list()` с ключами — плюс `ArgumentCountError`, удалённые session INI и BC строк.',
+            ],
+            'v72' => [
+                'title' => 'PHP 7.2 — Тип object и libsodium',
+                'excerpt' => 'Подсказка `object`, расширение типов параметров, Sodium в ядре, LDAP EXOP, addrinfo sockets — предупреждения `count()`/`get_class(null)` и mcrypt в PECL.',
+            ],
             'v73' => [
                 'title' => 'PHP 7.3 — Полировка синтаксиса перед 7.4',
                 'excerpt' => 'Гибкий heredoc/nowdoc, хвостовые запятые в вызовах, `JsonException`, `is_countable`, `array_key_first`/`last`, PCRE2, Argon2id и тонкие BC (`ArrayAccess`, ссылки, `continue` в `switch`).',
