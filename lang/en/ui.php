@@ -17,13 +17,21 @@ return [
     'errors' => [
         'php_guide_missing' => 'No guide for PHP :version is available yet.',
     ],
+    'php_show' => [
+        'back_to_guides' => 'All PHP version guides',
+        'nav_aria' => 'PHP guides navigation',
+    ],
     'php_index' => [
         'title' => 'PHP version guides | DevSense',
-        'description' => 'Upgrade guides for PHP 7.4 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
+        'description' => 'Upgrade guides for PHP 7.3 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
         'hero_title' => 'PHP version guides',
-        'hero_lead' => 'Trace the language from late PHP 7.x to current PHP 8.x releases, with practical examples and migration checklists.',
+        'hero_lead' => 'Trace the language from PHP 7.3 through current PHP 8.x releases, with practical examples and migration checklists.',
         'cta' => 'Open guide',
         'cards' => [
+            'v73' => [
+                'title' => 'PHP 7.3 — Syntax polish before 7.4',
+                'excerpt' => 'Flexible heredoc/nowdoc, trailing commas in calls, `JsonException`, `is_countable`, `array_key_first`/`last`, PCRE2, Argon2id—and subtle BC (ArrayAccess keys, references, `continue` in `switch`).',
+            ],
             'v74' => [
                 'title' => 'PHP 7.4 — The last 7.x feature release',
                 'excerpt' => 'Typed properties, arrow functions, FFI, OPcache preloading, `__serialize` / `__unserialize`, and BC traps (typed props, password constants, extensions).',

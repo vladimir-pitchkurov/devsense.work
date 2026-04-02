@@ -17,13 +17,21 @@ return [
     'errors' => [
         'php_guide_missing' => 'Ръководството за PHP :version все още не е публикувано или не е налично.',
     ],
+    'php_show' => [
+        'back_to_guides' => 'Всички ръководства по версии на PHP',
+        'nav_aria' => 'Навигация в PHP ръководствата',
+    ],
     'php_index' => [
         'title' => 'Ръководства по версии на PHP | DevSense',
-        'description' => 'Материали за надграждане от PHP 7.4 до 8.5: синтаксис, миграция, deprecations и несъвместимости — с примери.',
+        'description' => 'Материали за надграждане от PHP 7.3 до 8.5: синтаксис, миграция, deprecations и несъвместимости — с примери.',
         'hero_title' => 'Ръководства по версии на PHP',
-        'hero_lead' => 'Проследяваме еволюцията на езика от късния PHP 7.x до актуалните PHP 8.x — с практични примери и чеклисти за миграция.',
+        'hero_lead' => 'Проследяваме еволюцията на езика от PHP 7.3 до актуалните PHP 8.x — с практични примери и чеклисти за миграция.',
         'cta' => 'Отвори ръководството',
         'cards' => [
+            'v73' => [
+                'title' => 'PHP 7.3 — Синтактична полировка преди 7.4',
+                'excerpt' => 'Гъвкав heredoc/nowdoc, завършващи запетаи в извиквания, `JsonException`, `is_countable`, `array_key_first`/`last`, PCRE2, Argon2id и фини BC (`ArrayAccess`, референции, `continue` в `switch`).',
+            ],
             'v74' => [
                 'title' => 'PHP 7.4 — Последният минор в клона 7.x',
                 'excerpt' => 'Типизирани свойства, arrow functions, FFI, preload на OPcache, двойката `__serialize` / `__unserialize` и типични BC капани.',

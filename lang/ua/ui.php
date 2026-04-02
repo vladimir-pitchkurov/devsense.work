@@ -17,13 +17,21 @@ return [
     'errors' => [
         'php_guide_missing' => 'Гайд для PHP :version ще не опублікований або недоступний.',
     ],
+    'php_show' => [
+        'back_to_guides' => 'Усі гайди з версій PHP',
+        'nav_aria' => 'Навігація гайдами PHP',
+    ],
     'php_index' => [
         'title' => 'Гайди з версій PHP | DevSense',
-        'description' => 'Матеріали з оновлення з PHP 7.4 до 8.5: синтаксис, міграція, deprecations і зворотна несумісність — із прикладами.',
+        'description' => 'Матеріали з оновлення з PHP 7.3 до 8.5: синтаксис, міграція, deprecations і зворотна несумісність — із прикладами.',
         'hero_title' => 'Гайди з версій PHP',
-        'hero_lead' => 'Прослідковуємо еволюцію мови від пізнього PHP 7.x до актуальних релізів PHP 8.x — із практичними прикладами та чеклістами міграції.',
+        'hero_lead' => 'Прослідковуємо еволюцію мови від PHP 7.3 до актуальних релізів PHP 8.x — із практичними прикладами та чеклістами міграції.',
         'cta' => 'Відкрити гайд',
         'cards' => [
+            'v73' => [
+                'title' => 'PHP 7.3 — Шліфування синтаксису перед 7.4',
+                'excerpt' => 'Гнучкий heredoc/nowdoc, кінцеві коми у викликах, `JsonException`, `is_countable`, `array_key_first`/`last`, PCRE2, Argon2id і тонкі BC (`ArrayAccess`, посилання, `continue` у `switch`).',
+            ],
             'v74' => [
                 'title' => 'PHP 7.4 — Останній мінор у гілці 7.x',
                 'excerpt' => 'Типізовані властивості, arrow functions, FFI, preload OPcache, пара `__serialize` / `__unserialize` і типові пастки BC.',
