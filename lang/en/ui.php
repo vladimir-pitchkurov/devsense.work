@@ -23,11 +23,27 @@ return [
     ],
     'php_index' => [
         'title' => 'PHP version guides | DevSense',
-        'description' => 'Upgrade guides for PHP 7.0 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
+        'description' => 'Upgrade guides for PHP 5.3 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
         'hero_title' => 'PHP version guides',
-        'hero_lead' => 'Trace the language from PHP 7.0 through current PHP 8.x releases, with practical examples and migration checklists.',
+        'hero_lead' => 'Trace the language from PHP 5.3 through current PHP 8.x releases, with practical examples and migration checklists.',
         'cta' => 'Open guide',
         'cards' => [
+            'v53' => [
+                'title' => 'PHP 5.3 — Namespaces & closures',
+                'excerpt' => 'Namespaces, `use`, late static binding, closures, `goto`, NOWDOC, optional cycle GC, Phar—plus BC (new keywords, `ereg*` deprecated) on the road away from PHP 4 habits.',
+            ],
+            'v54' => [
+                'title' => 'PHP 5.4 — Traits & `[]`',
+                'excerpt' => 'Traits, short array syntax `[]`, callable type hint, `$this` in closures, built-in web server—magic quotes & `register_globals` removed, `mysql` deprecated.',
+            ],
+            'v55' => [
+                'title' => 'PHP 5.5 — Generators & `password_*`',
+                'excerpt' => '`yield` generators, `finally`, `password_hash` API, `array_column`, `ClassName::class`—and subtle `foreach`/`list()` BC worth regression-testing.',
+            ],
+            'v56' => [
+                'title' => 'PHP 5.6 — Variadic & `**`',
+                'excerpt' => 'Variadic `...`, argument unpacking, `**` exponentiation, `use function`/`const`, constant expressions—last stop before PHP 7’s engine leap.',
+            ],
             'v70' => [
                 'title' => 'PHP 7.0 — The PHP 5 break',
                 'excerpt' => 'Scalar & return types, `??` and `<=>`, anonymous classes, `Closure::call`, generators, `random_bytes`, filtered `unserialize`—and `Throwable`/BC from the 5.x era.',
