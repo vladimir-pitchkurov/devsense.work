@@ -15,10 +15,16 @@ const locales: Locale[] = [
 
 const currentLocale = ref<string>('ru');
 
+const selectTitle = ref<string>('Choose language');
+
 onMounted((): void => {
     const htmlLang = document.documentElement.getAttribute('lang');
     if (htmlLang) {
         currentLocale.value = htmlLang;
+    }
+    const fromBody = document.body?.dataset?.a11yLanguageSelect;
+    if (fromBody) {
+        selectTitle.value = fromBody;
     }
 });
 
@@ -46,7 +52,7 @@ const changeLanguage = (event: Event): void => {
             class="lang-switcher__select"
             :value="currentLocale"
             @change="changeLanguage"
-            title="Выберите язык"
+            :title="selectTitle"
         >
             <option v-for="locale in locales" :key="locale.code" :value="locale.code">
                 {{ locale.label }}

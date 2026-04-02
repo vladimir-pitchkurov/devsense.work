@@ -25,7 +25,12 @@
     </script>
     @vite(['resources/sass/app.scss', 'resources/js/app.ts'])
 </head>
-<body class="page" id="app">
+<body
+    class="page"
+    id="app"
+    data-a11y-theme-switcher="{{ __('ui.a11y.theme_switcher') }}"
+    data-a11y-language-select="{{ __('ui.a11y.language_select') }}"
+>
 <header class="header sticky">
     <div class="header__container">
         <a href="{{ route('home') }}" class="header__logo">DevSense</a>
@@ -45,15 +50,15 @@
 <nav class="mobile-nav">
     <a href="{{ route('home') }}" class="mobile-nav__item {{ Route::is('home') ? 'active' : '' }}">
         <span class="icon">🏠</span>
-        <span class="label">Home</span>
+        <span class="label">{{ __('ui.nav.home') }}</span>
     </a>
     <a href="{{ route('php.index') }}" class="mobile-nav__item {{ Route::is('php.*') ? 'active' : '' }}">
         <span class="icon">🐘</span>
-        <span class="label">PHP</span>
+        <span class="label">{{ __('ui.nav.php_short') }}</span>
     </a>
     <a href="{{ route('tools.sail') }}" class="mobile-nav__item {{ Route::is('tools.*') ? 'active' : '' }}">
         <span class="icon">🛠️</span>
-        <span class="label">Tools</span>
+        <span class="label">{{ __('ui.nav.tools') }}</span>
     </a>
 </nav>
 

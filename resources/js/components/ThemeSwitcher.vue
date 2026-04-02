@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const themes: string[] = ['light', 'dark', 'nord'];
 const currentTheme = ref<string>('light');
+
+const themeTitlePrefix = computed((): string => {
+    return document.body?.dataset?.a11yThemeSwitcher ?? 'Theme';
+});
+
+const buttonTitle = computed((): string => {
+    return `${themeTitlePrefix.value}: ${currentTheme.value}`;
+});
 
 onMounted((): void => {
     const savedTheme = document.documentElement.getAttribute('data-theme');
@@ -23,7 +31,7 @@ const cycleTheme = (): void => {
 </script>
 
 <template>
-    <button class="theme-switcher" @click="cycleTheme" :title="'Текущая тема: ' + currentTheme">
+    <button class="theme-switcher" @click="cycleTheme" :title="buttonTitle">
         <span v-if="currentTheme === 'light'">☀️</span>
         <span v-else-if="currentTheme === 'dark'">🌙</span>
         <span v-else>❄️</span>
