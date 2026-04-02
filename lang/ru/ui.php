@@ -137,6 +137,12 @@ return [
         'back' => 'Все инструменты',
         'nav_aria' => 'Навигация по гайдам инструментов',
     ],
+    'seo' => [
+        'breadcrumb_aria' => 'Навигационная цепочка',
+        'breadcrumb_home' => 'Главная',
+        'breadcrumb_php_guides' => 'PHP-гайды',
+        'breadcrumb_tools' => 'Инструменты',
+    ],
     'tools' => [
         'sail' => [
             'title' => 'Laravel Sail: эволюция среды разработки | DevSense',

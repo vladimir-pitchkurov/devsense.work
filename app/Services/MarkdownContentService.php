@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use League\CommonMark\Environment\Environment;
@@ -24,7 +25,7 @@ class MarkdownContentService
      * @param  string  $category  Content subdirectory (e.g. `php`, `tools`).
      * @param  string  $slug  File basename without `.md`.
      *
-     * @return array{html: string, meta: array<string, mixed>}|null  Null when neither locale nor English file exists.
+     * @return array{html: string, meta: array<string, mixed>, source_modified_at: Carbon}|null  Null when neither locale nor English file exists.
      */
     public function getParsedContent(string $locale, string $category, string $slug): ?array
     {
@@ -61,6 +62,7 @@ class MarkdownContentService
             return [
                 'html' => $result->getContent(),
                 'meta' => $frontMatter,
+                'source_modified_at' => Carbon::createFromTimestamp(File::lastModified($path)),
             ];
         });
     }

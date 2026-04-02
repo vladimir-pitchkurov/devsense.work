@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Services\MarkdownContentService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
@@ -39,6 +40,7 @@ class MarkdownContentServiceTest extends TestCase
         $this->assertNotNull($result);
         $this->assertStringContainsString('PHP 8.5', $result['html']);
         $this->assertArrayHasKey('title', $result['meta']);
+        $this->assertInstanceOf(Carbon::class, $result['source_modified_at']);
     }
 
     public function test_falls_back_to_english_when_locale_file_is_missing(): void
@@ -68,7 +70,7 @@ class MarkdownContentServiceTest extends TestCase
             ->with($path)
             ->andReturnTrue();
         File::shouldReceive('lastModified')
-            ->once()
+            ->twice()
             ->with($path)
             ->andReturn(42);
         File::shouldReceive('get')

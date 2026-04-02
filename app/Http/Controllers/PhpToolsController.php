@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\MarkdownContentService;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /**
@@ -59,6 +60,9 @@ class PhpToolsController extends Controller
         $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
         $canonicalUrl = route('tools.show', ['locale' => $locale, 'slug' => $slug], true);
         $hrefLangMap = config('seo.hreflang', []);
+        $modified = $data['source_modified_at'];
+        $published = $this->publishedCarbon($meta, $modified);
+        $breadcrumbCurrent = Str::headline(str_replace('-', ' ', $slug));
 
         return view('tools.show', [
             'content' => $data['html'],
@@ -66,30 +70,19 @@ class PhpToolsController extends Controller
             'pageTitle' => $pageTitle,
             'pageDescription' => $pageDescription,
             'canonicalUrl' => $canonicalUrl,
+            'breadcrumbCurrent' => $breadcrumbCurrent,
             'structuredData' => [
                 '@type' => 'TechArticle',
                 'headline' => $pageTitle,
                 'description' => $pageDescription,
                 'inLanguage' => $hrefLangMap[$locale] ?? $locale,
+                'datePublished' => $published->toIso8601String(),
+                'dateModified' => $modified->toIso8601String(),
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
                     '@id' => $canonicalUrl,
                 ],
             ],
         ]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $meta
-     */
-    private function scalarMetaString(array $meta, string $key): ?string
-    {
-        if (! isset($meta[$key])) {
-            return null;
-        }
-
-        $value = $meta[$key];
-
-        return is_scalar($value) ? (string) $value : null;
     }
 }

@@ -54,6 +54,8 @@ class PhpVersionController extends Controller
         $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
         $canonicalUrl = route('php.show', ['locale' => $locale, 'version' => $version], true);
         $hrefLangMap = config('seo.hreflang', []);
+        $modified = $data['source_modified_at'];
+        $published = $this->publishedCarbon($meta, $modified);
 
         return view('php.show', [
             'content' => $data['html'],
@@ -67,25 +69,13 @@ class PhpVersionController extends Controller
                 'headline' => $pageTitle,
                 'description' => $pageDescription,
                 'inLanguage' => $hrefLangMap[$locale] ?? $locale,
+                'datePublished' => $published->toIso8601String(),
+                'dateModified' => $modified->toIso8601String(),
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
                     '@id' => $canonicalUrl,
                 ],
             ],
         ]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $meta
-     */
-    private function scalarMetaString(array $meta, string $key): ?string
-    {
-        if (! isset($meta[$key])) {
-            return null;
-        }
-
-        $value = $meta[$key];
-
-        return is_scalar($value) ? (string) $value : null;
     }
 }

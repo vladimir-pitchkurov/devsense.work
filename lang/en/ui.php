@@ -137,6 +137,12 @@ return [
         'back' => 'All tools',
         'nav_aria' => 'Tools guides navigation',
     ],
+    'seo' => [
+        'breadcrumb_aria' => 'Breadcrumb',
+        'breadcrumb_home' => 'Home',
+        'breadcrumb_php_guides' => 'PHP guides',
+        'breadcrumb_tools' => 'Tools',
+    ],
     'tools' => [
         'sail' => [
             'title' => 'Laravel Sail: evolving the local environment | DevSense',

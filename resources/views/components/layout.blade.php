@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="{{ $themeColor }}">
     <meta name="robots" content="{{ $robotsContent }}">
 
     <title>{{ $title }}</title>
@@ -30,6 +31,8 @@
     @endforeach
     @if ($ogImage)
         <meta property="og:image" content="{{ $ogImage }}">
+        <meta property="og:image:width" content="{{ (int) $ogImageWidth }}">
+        <meta property="og:image:height" content="{{ (int) $ogImageHeight }}">
     @endif
 
     <meta name="twitter:card" content="{{ $ogImage ? 'summary_large_image' : 'summary' }}">
@@ -101,6 +104,21 @@
 
 <main class="main">
     <div class="main__container">
+        @if ($breadcrumbItems !== [])
+            <nav class="breadcrumb" aria-label="{{ __('ui.seo.breadcrumb_aria') }}">
+                <ol class="breadcrumb__list">
+                    @foreach ($breadcrumbItems as $crumb)
+                        <li class="breadcrumb__item">
+                            @if ($crumb['url'] !== null)
+                                <a href="{{ $crumb['url'] }}" class="breadcrumb__link">{{ $crumb['label'] }}</a>
+                            @else
+                                <span class="breadcrumb__current" aria-current="page">{{ $crumb['label'] }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
+            </nav>
+        @endif
         {{ $slot }}
     </div>
 </main>

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\View\Component;
 
 /**
- * Site layout with canonical URL, hreflang, Open Graph, Twitter cards, and JSON-LD.
+ * Site layout with canonical URL, hreflang, Open Graph, Twitter cards, JSON-LD graph, and breadcrumbs.
  */
 class Layout extends Component
 {
@@ -26,19 +26,25 @@ class Layout extends Component
         public string $ogType = 'website',
         ?string $ogImage = null,
         public ?array $structuredData = null,
+        public ?string $breadcrumbCurrent = null,
     ) {
         $this->canonical = $canonical ?? URL::current();
-        $this->ogImage = $ogImage ?? config('seo.default_og_image');
+        $this->ogImage = $this->normalizeAbsoluteUrl($ogImage ?? config('seo.default_og_image'));
     }
 
     public function render(): View
     {
+        $breadcrumbItems = $this->breadcrumbNavItems();
+
         return view('components.layout', [
             'title' => $this->title,
             'description' => $this->description,
             'canonical' => $this->canonical,
             'ogType' => $this->ogType,
             'ogImage' => $this->ogImage,
+            'ogImageWidth' => config('seo.og_image_width'),
+            'ogImageHeight' => config('seo.og_image_height'),
+            'themeColor' => (string) config('seo.theme_color'),
             'htmlLang' => $this->htmlLang(),
             'hreflangLinks' => $this->hreflangLinks(),
             'robotsContent' => config('seo.allow_indexing', true) ? 'index, follow' : 'noindex, nofollow',
@@ -47,7 +53,22 @@ class Layout extends Component
             'siteName' => (string) config('seo.site_name', config('app.name')),
             'twitterSite' => config('seo.twitter_site'),
             'jsonLd' => $this->mergedJsonLd(),
+            'breadcrumbItems' => $breadcrumbItems,
         ]);
+    }
+
+    private function normalizeAbsoluteUrl(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+
+        $value = trim($value);
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        return rtrim((string) config('app.url'), '/').'/'.ltrim($value, '/');
     }
 
     private function htmlLang(): string
@@ -149,28 +170,125 @@ class Layout extends Component
     }
 
     /**
+     * Visible breadcrumb trail (last item has null URL = current page).
+     *
+     * @return list<array{label: string, url: ?string}>
+     */
+    private function breadcrumbNavItems(): array
+    {
+        $route = request()->route();
+        if ($route === null) {
+            return [];
+        }
+
+        $name = $route->getName();
+        if (! is_string($name)) {
+            return [];
+        }
+
+        $locale = app()->getLocale();
+
+        return match ($name) {
+            'php.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_php_guides'), 'url' => null],
+            ],
+            'php.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_php_guides'), 'url' => route('php.index', ['locale' => $locale], true)],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'tools.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_tools'), 'url' => null],
+            ],
+            'tools.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_tools'), 'url' => route('tools.index', ['locale' => $locale], true)],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            default => [],
+        };
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function breadcrumbJsonLd(): ?array
+    {
+        $items = $this->breadcrumbNavItems();
+        if ($items === []) {
+            return null;
+        }
+
+        $elements = [];
+        $position = 1;
+        foreach ($items as $item) {
+            $url = $item['url'] ?? $this->canonical;
+            $elements[] = [
+                '@type' => 'ListItem',
+                'position' => $position,
+                'name' => $item['label'],
+                'item' => $url,
+            ];
+            $position++;
+        }
+
+        return [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $elements,
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function mergedJsonLd(): array
     {
         $root = rtrim((string) config('app.url'), '/');
         $name = (string) config('seo.site_name', config('app.name'));
+        $orgId = $root.'#organization';
+        $websiteId = $root.'#website';
+        $webPageId = $this->canonical.'#webpage';
 
         $graph = [
             [
                 '@type' => 'Organization',
+                '@id' => $orgId,
                 'name' => $name,
                 'url' => $root,
             ],
             [
                 '@type' => 'WebSite',
+                '@id' => $websiteId,
                 'name' => $name,
                 'url' => $root,
+                'publisher' => ['@id' => $orgId],
             ],
         ];
 
-        if ($this->structuredData !== null) {
-            $graph[] = $this->structuredData;
+        $breadcrumb = $this->breadcrumbJsonLd();
+        if ($breadcrumb !== null) {
+            $graph[] = $breadcrumb;
+        }
+
+        if ($this->structuredData === null) {
+            $graph[] = [
+                '@type' => 'WebPage',
+                '@id' => $webPageId,
+                'url' => $this->canonical,
+                'name' => $this->title,
+                'description' => $this->description,
+                'inLanguage' => $this->htmlLang(),
+                'isPartOf' => ['@id' => $websiteId],
+                'publisher' => ['@id' => $orgId],
+            ];
+        } else {
+            $article = $this->structuredData;
+            $article['@id'] = $this->canonical.'#article';
+            $article['publisher'] = ['@id' => $orgId];
+            $article['isPartOf'] = ['@id' => $websiteId];
+            $graph[] = $article;
         }
 
         return [

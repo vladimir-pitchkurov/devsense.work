@@ -28,6 +28,14 @@ return [
     /** Twitter @handle (with or without leading @). */
     'twitter_site' => env('SEO_TWITTER_SITE'),
 
+    /** Declared Open Graph image dimensions (match real asset when possible). */
+    'og_image_width' => (int) env('SEO_OG_IMAGE_WIDTH', 1200),
+
+    'og_image_height' => (int) env('SEO_OG_IMAGE_HEIGHT', 630),
+
+    /** Browser chrome color (hex). */
+    'theme_color' => env('SEO_THEME_COLOR', '#312e81'),
+
     /*
     |--------------------------------------------------------------------------
     | Sitemap HTTP cache (seconds)
