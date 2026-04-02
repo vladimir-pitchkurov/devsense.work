@@ -16,6 +16,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Brand / Open Graph
+    |--------------------------------------------------------------------------
+    */
+
+    'site_name' => env('SEO_SITE_NAME') ?: env('APP_NAME', 'DevSense'),
+
+    /** Absolute URL to a default share image (1200×630 recommended). */
+    'default_og_image' => env('SEO_DEFAULT_OG_IMAGE'),
+
+    /** Twitter @handle (with or without leading @). */
+    'twitter_site' => env('SEO_TWITTER_SITE'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Sitemap HTTP cache (seconds)
     |--------------------------------------------------------------------------
     */
@@ -38,6 +52,19 @@ return [
         'en' => 'en',
         'ua' => 'uk',
         'bg' => 'bg',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Open Graph locale tags (URL segment → og:locale)
+    |--------------------------------------------------------------------------
+    */
+
+    'og_locale' => [
+        'ru' => 'ru_RU',
+        'en' => 'en_US',
+        'ua' => 'uk_UA',
+        'bg' => 'bg_BG',
     ],
 
 ];

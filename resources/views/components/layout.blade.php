@@ -1,15 +1,52 @@
-@props(['title' => 'DevSense', 'description' => ''])
-
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ $htmlLang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="{{ $robotsContent }}">
+
     <title>{{ $title }}</title>
 
-    @if($description)
+    @if ($description !== '')
         <meta name="description" content="{{ $description }}">
     @endif
+
+    <link rel="canonical" href="{{ $canonical }}">
+
+    @foreach ($hreflangLinks as $link)
+        <link rel="alternate" hreflang="{{ $link['code'] }}" href="{{ $link['url'] }}">
+    @endforeach
+
+    <meta property="og:type" content="{{ $ogType }}">
+    <meta property="og:title" content="{{ $title }}">
+    @if ($description !== '')
+        <meta property="og:description" content="{{ $description }}">
+    @endif
+    <meta property="og:url" content="{{ $canonical }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:locale" content="{{ $ogLocale }}">
+    @foreach ($ogAlternateLocales as $altLocale)
+        <meta property="og:locale:alternate" content="{{ $altLocale }}">
+    @endforeach
+    @if ($ogImage)
+        <meta property="og:image" content="{{ $ogImage }}">
+    @endif
+
+    <meta name="twitter:card" content="{{ $ogImage ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:title" content="{{ $title }}">
+    @if ($description !== '')
+        <meta name="twitter:description" content="{{ $description }}">
+    @endif
+    @if ($twitterSite)
+        @php
+            $tw = ltrim((string) $twitterSite, '@');
+        @endphp
+        <meta name="twitter:site" content="{{ '@'.$tw }}">
+    @endif
+
+    <script type="application/ld+json">
+        {!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS) !!}
+    </script>
 
     <script>
         (function() {
@@ -33,7 +70,7 @@
 >
 <header class="header sticky">
     <div class="header__container">
-        <a href="{{ route('home') }}" class="header__logo">DevSense</a>
+        <a href="{{ route('home') }}" class="header__logo">{{ $siteName }}</a>
 
         <div class="header__controls">
             <language-switcher></language-switcher>
@@ -70,7 +107,7 @@
 
 <footer class="footer">
     <div class="footer__container">
-        <p class="footer__copyright">&copy; {{ date('Y') }} DevSense.work. {{ __('ui.footer.branch') }}: feature/php-guides-and-tools</p>
+        <p class="footer__copyright">&copy; {{ date('Y') }} {{ $siteName }}. {{ __('ui.footer.branch') }}: feature/php-guides-and-tools</p>
     </div>
 </footer>
 </body>

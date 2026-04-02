@@ -1,6 +1,9 @@
 <x-layout
-    :title="$meta['title'] ?? __('ui.tools.sail.title')"
-    :description="$meta['description'] ?? ''"
+    :title="$pageTitle"
+    :description="$pageDescription"
+    :canonical="$canonicalUrl"
+    og-type="article"
+    :structured-data="$structuredData"
 >
     <nav class="article__back" aria-label="{{ __('ui.tools_show.nav_aria') }}">
         <a href="{{ route('tools.index') }}" class="article__back-link">{{ __('ui.tools_show.back') }}</a>

@@ -53,9 +53,43 @@ class PhpToolsController extends Controller
             abort(404, __('ui.errors.tools_guide_missing', ['slug' => $slug]));
         }
 
+        $meta = $data['meta'];
+        $cardKey = str_replace('-', '_', $slug);
+        $pageTitle = $this->scalarMetaString($meta, 'title') ?? __('ui.tools_index.cards.'.$cardKey.'.title');
+        $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
+        $canonicalUrl = route('tools.show', ['locale' => $locale, 'slug' => $slug], true);
+        $hrefLangMap = config('seo.hreflang', []);
+
         return view('tools.show', [
             'content' => $data['html'],
-            'meta' => $data['meta'],
+            'meta' => $meta,
+            'pageTitle' => $pageTitle,
+            'pageDescription' => $pageDescription,
+            'canonicalUrl' => $canonicalUrl,
+            'structuredData' => [
+                '@type' => 'TechArticle',
+                'headline' => $pageTitle,
+                'description' => $pageDescription,
+                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => $canonicalUrl,
+                ],
+            ],
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function scalarMetaString(array $meta, string $key): ?string
+    {
+        if (! isset($meta[$key])) {
+            return null;
+        }
+
+        $value = $meta[$key];
+
+        return is_scalar($value) ? (string) $value : null;
     }
 }

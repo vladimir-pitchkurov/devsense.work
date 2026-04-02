@@ -49,10 +49,43 @@ class PhpVersionController extends Controller
             abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
         }
 
+        $meta = $data['meta'];
+        $pageTitle = $this->scalarMetaString($meta, 'title') ?? 'PHP '.$version.' - DevSense';
+        $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
+        $canonicalUrl = route('php.show', ['locale' => $locale, 'version' => $version], true);
+        $hrefLangMap = config('seo.hreflang', []);
+
         return view('php.show', [
             'content' => $data['html'],
-            'meta' => $data['meta'],
+            'meta' => $meta,
             'version' => $version,
+            'pageTitle' => $pageTitle,
+            'pageDescription' => $pageDescription,
+            'canonicalUrl' => $canonicalUrl,
+            'structuredData' => [
+                '@type' => 'TechArticle',
+                'headline' => $pageTitle,
+                'description' => $pageDescription,
+                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => $canonicalUrl,
+                ],
+            ],
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function scalarMetaString(array $meta, string $key): ?string
+    {
+        if (! isset($meta[$key])) {
+            return null;
+        }
+
+        $value = $meta[$key];
+
+        return is_scalar($value) ? (string) $value : null;
     }
 }
