@@ -7,6 +7,8 @@ description: "Практично ръководство за Laravel Sail: см�
 
 **Laravel Sail** е обвивка върху **Docker Compose** за типично Laravel приложение: PHP-FPM (`laravel.test`), СУБД, Redis, Meilisearch, Selenium и др. Целта е **локална разработка** (и CI с Compose), не готова продукционна платформа. По-долу са чести персонализации и границата, където Sail свършва и започва реалният деплой.
 
+**Серия:** [Бази данни и Docker услуги](sail-databases) · [Опашки и workers](sail-queues) · [Среди и деплой](sail-env-deploy) · [Всички инструменти](../)
+
 ## Съдържание
 
 * [Какво е Sail (и какво не е)](#what-sail-is)

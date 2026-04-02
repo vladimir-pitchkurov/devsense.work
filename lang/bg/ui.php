@@ -16,6 +16,7 @@ return [
     ],
     'errors' => [
         'php_guide_missing' => 'Ръководството за PHP :version все още не е публикувано или не е налично.',
+        'tools_guide_missing' => 'Ръководството за инструмента „:slug“ все още не е публикувано или не е налично.',
     ],
     'php_show' => [
         'back_to_guides' => 'Всички ръководства по версии на PHP',
@@ -89,6 +90,35 @@ return [
                 'excerpt' => 'Оператор `|>`, `#[\\NoDiscard]`, closures в константни изрази, ext/uri, по-строги filter/PDO/Opcache.',
             ],
         ],
+    ],
+    'tools_index' => [
+        'title' => 'Инструменти и ръководства | DevSense',
+        'description' => 'Задълбочени материали за Laravel Sail: Docker услуги, бази данни, опашки и разлики между локален стек и production.',
+        'hero_title' => 'Инструменти',
+        'hero_lead' => 'Практични ръководства за Laravel Sail — compose, .env, опашки и бележки с мисъл за production.',
+        'cta' => 'Отвори ръководството',
+        'cards' => [
+            'sail' => [
+                'title' => 'Laravel Sail — пълен гайд',
+                'excerpt' => 'Какво е Sail, команди, версии PHP, Redis/RabbitMQ/Postgres/Mongo, опашки, Mailpit, Xdebug, compose, env, локално vs деплой.',
+            ],
+            'sail_databases' => [
+                'title' => 'Sail: бази данни и Docker услуги',
+                'excerpt' => 'Compose за Redis, смяна MySQL → PostgreSQL, MongoDB и PHP разширение, RabbitMQ, Mailpit/Meilisearch, healthcheck и томове.',
+            ],
+            'sail_queues' => [
+                'title' => 'Sail: опашки и workers',
+                'excerpt' => 'sync/database/redis, queue:work в Sail, Horizon локално, RabbitMQ и пакети за Laravel, failed jobs, рестарт, контраст с прод.',
+            ],
+            'sail_env_deploy' => [
+                'title' => 'Sail: среди и деплой',
+                'excerpt' => '.env и .env.example, тайни в CI, портове FORWARD_*, APP_URL в Docker, пример с GitHub Actions, чеклист: Sail ≠ production.',
+            ],
+        ],
+    ],
+    'tools_show' => [
+        'back' => 'Всички инструменти',
+        'nav_aria' => 'Навигация в ръководствата за инструменти',
     ],
     'tools' => [
         'sail' => [

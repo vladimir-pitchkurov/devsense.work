@@ -24,7 +24,10 @@ Route::prefix('{locale}')
         });
 
         Route::prefix('tools')->group(function () {
-            Route::get('/sail', [PhpToolsController::class, 'sail'])->name('tools.sail');
+            Route::get('/', [PhpToolsController::class, 'index'])->name('tools.index');
+            Route::get('/{slug}', [PhpToolsController::class, 'show'])
+                ->name('tools.show')
+                ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy');
         });
 
     });

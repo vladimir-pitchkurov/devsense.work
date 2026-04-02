@@ -41,7 +41,7 @@
 
             <nav class="header__nav">
                 <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
-                <a href="{{ route('tools.sail') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
+                <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
             </nav>
         </div>
     </div>
@@ -56,7 +56,7 @@
         <span class="icon">🐘</span>
         <span class="label">{{ __('ui.nav.php_short') }}</span>
     </a>
-    <a href="{{ route('tools.sail') }}" class="mobile-nav__item {{ Route::is('tools.*') ? 'active' : '' }}">
+    <a href="{{ route('tools.index') }}" class="mobile-nav__item {{ Route::is('tools.*') ? 'active' : '' }}">
         <span class="icon">🛠️</span>
         <span class="label">{{ __('ui.nav.tools') }}</span>
     </a>

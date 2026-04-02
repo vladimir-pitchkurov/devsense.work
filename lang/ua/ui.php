@@ -16,6 +16,7 @@ return [
     ],
     'errors' => [
         'php_guide_missing' => 'Гайд для PHP :version ще не опублікований або недоступний.',
+        'tools_guide_missing' => 'Гайд для інструмента «:slug» ще не опублікований або недоступний.',
     ],
     'php_show' => [
         'back_to_guides' => 'Усі гайди з версій PHP',
@@ -89,6 +90,35 @@ return [
                 'excerpt' => 'Оператор `|>`, `#[\\NoDiscard]`, замикання в константних виразах, ext/uri, суворіші filter/PDO/Opcache.',
             ],
         ],
+    ],
+    'tools_index' => [
+        'title' => 'Інструменти та гайди | DevSense',
+        'description' => 'Глибокі матеріали з Laravel Sail: Docker-сервіси, БД, черги та відмінності локального стеку від продакшену.',
+        'hero_title' => 'Інструменти',
+        'hero_lead' => 'Практичні гайди з Laravel Sail — compose, .env, черги та нотатки з огляду на production.',
+        'cta' => 'Відкрити гайд',
+        'cards' => [
+            'sail' => [
+                'title' => 'Laravel Sail — повний гайд',
+                'excerpt' => 'Що таке Sail, команди, версії PHP, Redis/RabbitMQ/Postgres/Mongo, черги, Mailpit, Xdebug, compose, env, локально vs деплой.',
+            ],
+            'sail_databases' => [
+                'title' => 'Sail: БД і Docker-сервіси',
+                'excerpt' => 'Compose для Redis, заміна MySQL на PostgreSQL, MongoDB і розширення PHP, RabbitMQ, Mailpit/Meilisearch, healthcheck і томи.',
+            ],
+            'sail_queues' => [
+                'title' => 'Sail: черги та воркери',
+                'excerpt' => 'sync/database/redis, queue:work у Sail, Horizon локально, RabbitMQ і пакети Laravel, failed jobs, перезапуск, контраст із продом.',
+            ],
+            'sail_env_deploy' => [
+                'title' => 'Sail: оточення та деплой',
+                'excerpt' => '.env і .env.example, секрети в CI, порти FORWARD_*, APP_URL у Docker, приклад GitHub Actions, чеклист: Sail ≠ production.',
+            ],
+        ],
+    ],
+    'tools_show' => [
+        'back' => 'Усі інструменти',
+        'nav_aria' => 'Навігація гайдами інструментів',
     ],
     'tools' => [
         'sail' => [

@@ -16,6 +16,7 @@ return [
     ],
     'errors' => [
         'php_guide_missing' => 'No guide for PHP :version is available yet.',
+        'tools_guide_missing' => 'No tool guide for “:slug” is available yet.',
     ],
     'php_show' => [
         'back_to_guides' => 'All PHP version guides',
@@ -89,6 +90,35 @@ return [
                 'excerpt' => 'Pipe operator `|>`, `#[\\NoDiscard]`, closures in constant expressions, ext/uri, stricter filter/PDO/Opcache behavior.',
             ],
         ],
+    ],
+    'tools_index' => [
+        'title' => 'Tools & guides | DevSense',
+        'description' => 'Laravel Sail deep dives: Docker services, databases, queues, and how local stacks differ from real servers.',
+        'hero_title' => 'Tools',
+        'hero_lead' => 'Practical guides for Laravel Sail—compose snippets, env layout, queues, and production-minded notes.',
+        'cta' => 'Open guide',
+        'cards' => [
+            'sail' => [
+                'title' => 'Laravel Sail — full guide',
+                'excerpt' => 'What Sail is, daily commands, PHP versions, Redis/RabbitMQ/Postgres/Mongo overviews, queues, Mailpit, Xdebug, compose tweaks, env split, local vs deploy.',
+            ],
+            'sail_databases' => [
+                'title' => 'Sail: databases & Docker services',
+                'excerpt' => 'Ready-to-adapt compose for Redis, PostgreSQL swap, MongoDB + PHP extension, RabbitMQ sidecar, Mailpit/Meilisearch hooks, healthchecks and volumes.',
+            ],
+            'sail_queues' => [
+                'title' => 'Sail: queues & workers',
+                'excerpt' => 'sync vs database vs redis, `queue:work` inside Sail, Horizon locally, RabbitMQ + Laravel packages, failed jobs, restarts after code changes, prod contrast.',
+            ],
+            'sail_env_deploy' => [
+                'title' => 'Sail: environments & deployment',
+                'excerpt' => '.env vs .env.example vs CI secrets, FORWARD_* ports, APP_URL in Docker, GitHub Actions pattern, checklists when Sail is not production.',
+            ],
+        ],
+    ],
+    'tools_show' => [
+        'back' => 'All tools',
+        'nav_aria' => 'Tools guides navigation',
     ],
     'tools' => [
         'sail' => [

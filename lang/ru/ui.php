@@ -16,6 +16,7 @@ return [
     ],
     'errors' => [
         'php_guide_missing' => 'Гайд для PHP :version ещё не опубликован или недоступен.',
+        'tools_guide_missing' => 'Гайд для инструмента «:slug» ещё не опубликован или недоступен.',
     ],
     'php_show' => [
         'back_to_guides' => 'Все гайды по версиям PHP',
@@ -89,6 +90,35 @@ return [
                 'excerpt' => 'Оператор `|>`, `#[\\NoDiscard]`, замыкания в константных выражениях, ext/uri, более строгие filter/PDO/Opcache.',
             ],
         ],
+    ],
+    'tools_index' => [
+        'title' => 'Инструменты и гайды | DevSense',
+        'description' => 'Углублённые материалы по Laravel Sail: Docker-сервисы, БД, очереди и отличия локального стека от продакшена.',
+        'hero_title' => 'Инструменты',
+        'hero_lead' => 'Практические гайды по Laravel Sail — фрагменты compose, .env, очереди и заметки с прицелом на production.',
+        'cta' => 'Читать гайд',
+        'cards' => [
+            'sail' => [
+                'title' => 'Laravel Sail — полный гайд',
+                'excerpt' => 'Что такое Sail, команды, версии PHP, Redis/RabbitMQ/Postgres/Mongo, очереди, Mailpit, Xdebug, compose, разделение env, локально vs деплой.',
+            ],
+            'sail_databases' => [
+                'title' => 'Sail: БД и Docker-сервисы',
+                'excerpt' => 'Compose под Redis, замена MySQL на PostgreSQL, MongoDB и расширение PHP, RabbitMQ как сервис, Mailpit/Meilisearch, healthcheck и тома.',
+            ],
+            'sail_queues' => [
+                'title' => 'Sail: очереди и воркеры',
+                'excerpt' => 'sync/database/redis, queue:work в Sail, Horizon локально, RabbitMQ и пакеты Laravel, failed jobs, перезапуск, контраст с продом.',
+            ],
+            'sail_env_deploy' => [
+                'title' => 'Sail: окружения и деплой',
+                'excerpt' => '.env и .env.example, секреты в CI, FORWARD_* порты, APP_URL в Docker, пример GitHub Actions, чеклист: Sail не равно production.',
+            ],
+        ],
+    ],
+    'tools_show' => [
+        'back' => 'Все инструменты',
+        'nav_aria' => 'Навигация по гайдам инструментов',
     ],
     'tools' => [
         'sail' => [
