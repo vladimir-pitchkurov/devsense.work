@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\MarkdownContentService;
+use App\Support\SiteUrl;
+use Carbon\Carbon;
 use Illuminate\View\View;
 
 /**
@@ -15,7 +17,7 @@ class PhpVersionController extends Controller
      *
      * @var list<string>
      */
-    private const PHP_VERSION_ORDER = ['5.3', '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5'];
+    private const PHP_VERSION_ORDER = ['8.5', '8.4', '8.3', '8.2', '8.1', '8.0', '7.4', '7.3', '7.2', '7.1', '7.0', '5.6', '5.5', '5.4', '5.3'];
 
     /**
      * Display the PHP guides index (cards per version).
@@ -52,9 +54,9 @@ class PhpVersionController extends Controller
         $meta = $data['meta'];
         $pageTitle = $this->scalarMetaString($meta, 'title') ?? 'PHP '.$version.' - DevSense';
         $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
-        $canonicalUrl = route('php.show', ['locale' => $locale, 'version' => $version], true);
+        $canonicalUrl = SiteUrl::route('php.show', ['locale' => $locale, 'version' => $version]);
         $hrefLangMap = config('seo.hreflang', []);
-        $modified = $data['source_modified_at'];
+        $modified = Carbon::createFromTimestamp($data['source_modified_at']);
         $published = $this->publishedCarbon($meta, $modified);
 
         return view('php.show', [

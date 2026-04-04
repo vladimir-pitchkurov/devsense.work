@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use League\CommonMark\Environment\Environment;
@@ -25,7 +24,7 @@ class MarkdownContentService
      * @param  string  $category  Content subdirectory (e.g. `php`, `tools`).
      * @param  string  $slug  File basename without `.md`.
      *
-     * @return array{html: string, meta: array<string, mixed>, source_modified_at: Carbon}|null  Null when neither locale nor English file exists.
+     * @return array{html: string, meta: array<string, mixed>, source_modified_at: int}|null  Null when neither locale nor English file exists. `source_modified_at` is a Unix timestamp (seconds) so cached payloads deserialize reliably.
      */
     public function getParsedContent(string $locale, string $category, string $slug): ?array
     {
@@ -39,7 +38,7 @@ class MarkdownContentService
         }
 
         $modified = File::lastModified($path);
-        $cacheKey = "content_meta_{$locale}_{$category}_{$slug}_{$modified}";
+        $cacheKey = "content_meta_v2_{$locale}_{$category}_{$slug}_{$modified}";
 
         return Cache::rememberForever($cacheKey, function () use ($path) {
             $environment = new Environment([
@@ -62,7 +61,7 @@ class MarkdownContentService
             return [
                 'html' => $result->getContent(),
                 'meta' => $frontMatter,
-                'source_modified_at' => Carbon::createFromTimestamp(File::lastModified($path)),
+                'source_modified_at' => File::lastModified($path),
             ];
         });
     }

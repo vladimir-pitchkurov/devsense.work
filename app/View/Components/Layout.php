@@ -3,6 +3,7 @@
 namespace App\View\Components;
 
 use App\Http\Middleware\SetLocale;
+use App\Support\SiteUrl;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\URL;
 use Illuminate\View\Component;
@@ -36,7 +37,9 @@ class Layout extends Component
     {
         $breadcrumbItems = $this->breadcrumbNavItems();
 
-        return view('components.layout', [
+        // Use layouts.site (not components/layout) so data from render() is not shadowed by the
+        // class component's default view path (same name as resources/views/components/layout.blade.php).
+        return view('layouts.site', [
             'title' => $this->title,
             'description' => $this->description,
             'canonical' => $this->canonical,
@@ -117,14 +120,14 @@ class Layout extends Component
             $p = array_merge($params, ['locale' => $locale]);
             $links[] = [
                 'code' => $hreflang[$locale] ?? $locale,
-                'url' => URL::route($name, $p, true),
+                'url' => SiteUrl::route($name, $p),
             ];
         }
 
         $xDefault = $this->xDefaultLocale($locales);
         $links[] = [
             'code' => 'x-default',
-            'url' => URL::route($name, array_merge($params, ['locale' => $xDefault]), true),
+            'url' => SiteUrl::route($name, array_merge($params, ['locale' => $xDefault])),
         ];
 
         return $links;
@@ -190,21 +193,21 @@ class Layout extends Component
 
         return match ($name) {
             'php.index' => [
-                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
                 ['label' => __('ui.seo.breadcrumb_php_guides'), 'url' => null],
             ],
             'php.show' => $this->breadcrumbCurrent !== null ? [
-                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
-                ['label' => __('ui.seo.breadcrumb_php_guides'), 'url' => route('php.index', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_php_guides'), 'url' => SiteUrl::route('php.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
             'tools.index' => [
-                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
                 ['label' => __('ui.seo.breadcrumb_tools'), 'url' => null],
             ],
             'tools.show' => $this->breadcrumbCurrent !== null ? [
-                ['label' => __('ui.seo.breadcrumb_home'), 'url' => route('home', ['locale' => $locale], true)],
-                ['label' => __('ui.seo.breadcrumb_tools'), 'url' => route('tools.index', ['locale' => $locale], true)],
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_tools'), 'url' => SiteUrl::route('tools.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
             default => [],

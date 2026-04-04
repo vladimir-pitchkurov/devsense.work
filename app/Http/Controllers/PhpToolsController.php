@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\MarkdownContentService;
+use App\Support\SiteUrl;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -58,9 +60,9 @@ class PhpToolsController extends Controller
         $cardKey = str_replace('-', '_', $slug);
         $pageTitle = $this->scalarMetaString($meta, 'title') ?? __('ui.tools_index.cards.'.$cardKey.'.title');
         $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
-        $canonicalUrl = route('tools.show', ['locale' => $locale, 'slug' => $slug], true);
+        $canonicalUrl = SiteUrl::route('tools.show', ['locale' => $locale, 'slug' => $slug]);
         $hrefLangMap = config('seo.hreflang', []);
-        $modified = $data['source_modified_at'];
+        $modified = Carbon::createFromTimestamp($data['source_modified_at']);
         $published = $this->publishedCarbon($meta, $modified);
         $breadcrumbCurrent = Str::headline(str_replace('-', ' ', $slug));
 
