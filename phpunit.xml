@@ -15,8 +15,17 @@
     <source>
         <include>
             <directory>app</directory>
+            <directory>routes</directory>
+            <directory>database/seeders</directory>
+            <directory>database/factories</directory>
+            <file>bootstrap/app.php</file>
         </include>
     </source>
+    <coverage>
+        <report>
+            <text outputFile="storage/framework/coverage-summary.txt" showOnlySummary="true"/>
+        </report>
+    </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

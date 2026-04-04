@@ -86,6 +86,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public site locale prefix (URL)
+    |--------------------------------------------------------------------------
+    |
+    | Visiting "/" redirects to "/{locale}". This must be one of the locales
+    | registered in routes (ru, en, ua, bg). Override with APP_DEFAULT_SITE_LOCALE.
+    |
+    */
+
+    'default_site_locale' => env('APP_DEFAULT_SITE_LOCALE', 'ru'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

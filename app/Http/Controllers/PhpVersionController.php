@@ -2,51 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\MarkdownContentService;
+use App\Support\SiteUrl;
+use Carbon\Carbon;
+use Illuminate\View\View;
 
+/**
+ * Serves localized PHP version changelog / guide pages from Markdown.
+ */
 class PhpVersionController extends Controller
 {
-    public function index()
-    {
-        return view('php.index');
-    }
+    /**
+     * PHP versions with documentation, ordered for display on the index.
+     *
+     * @var list<string>
+     */
+    private const PHP_VERSION_ORDER = ['8.5', '8.4', '8.3', '8.2', '8.1', '8.0', '7.4', '7.3', '7.2', '7.1', '7.0', '5.6', '5.5', '5.4', '5.3'];
 
-    public function show(string $version)
+    /**
+     * Display the PHP guides index (cards per version).
+     */
+    public function index(): View
     {
-        $viewName = 'php.' . str_replace('.', '_', $version);
-
-        if (!view()->exists($viewName)) {
-            abort(404);
+        $cards = [];
+        foreach (self::PHP_VERSION_ORDER as $slug) {
+            $key = 'v'.str_replace('.', '', $slug);
+            $cards[] = [
+                'version' => $slug,
+                'title' => __("ui.php_index.cards.{$key}.title"),
+                'excerpt' => __("ui.php_index.cards.{$key}.excerpt"),
+            ];
         }
 
-        $examples = [];
-
-        if ($version === '8.0') {
-            $examples = $this->getPhp80Examples();
-        }
-
-        return view($viewName, compact('examples'));
+        return view('php.index', ['cards' => $cards]);
     }
 
     /**
-     * Выполнение кода фич PHP 8.0
+     * Render a single PHP version guide parsed from Markdown.
+     *
+     * @param  string  $version  Version segment (e.g. `8.5`).
      */
-    private function getPhp80Examples(): array
+    public function show(string $version, MarkdownContentService $markdownService): View
     {
-        $statusCode = 200;
+        $locale = app()->getLocale();
+        $data = $markdownService->getParsedContent($locale, 'php', $version);
 
-        $statusMessage = match ($statusCode) {
-            200, 300 => 'Успех или Редирект',
-            400, 404 => 'Ошибка клиента',
-            500 => 'Ошибка сервера',
-            default => 'Неизвестный статус',
-        };
+        if (! $data) {
+            abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
+        }
 
-        return [
-            'match_expression' => [
-                'input' => $statusCode,
-                'result' => $statusMessage,
-            ]
-        ];
+        $meta = $data['meta'];
+        $pageTitle = $this->scalarMetaString($meta, 'title') ?? 'PHP '.$version.' - DevSense';
+        $pageDescription = $this->scalarMetaString($meta, 'description') ?? '';
+        $canonicalUrl = SiteUrl::route('php.show', ['locale' => $locale, 'version' => $version]);
+        $hrefLangMap = config('seo.hreflang', []);
+        $modified = Carbon::createFromTimestamp($data['source_modified_at']);
+        $published = $this->publishedCarbon($meta, $modified);
+
+        return view('php.show', [
+            'content' => $data['html'],
+            'meta' => $meta,
+            'version' => $version,
+            'pageTitle' => $pageTitle,
+            'pageDescription' => $pageDescription,
+            'canonicalUrl' => $canonicalUrl,
+            'structuredData' => [
+                '@type' => 'TechArticle',
+                'headline' => $pageTitle,
+                'description' => $pageDescription,
+                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
+                'datePublished' => $published->toIso8601String(),
+                'dateModified' => $modified->toIso8601String(),
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => $canonicalUrl,
+                ],
+            ],
+        ]);
     }
 }
