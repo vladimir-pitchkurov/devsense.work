@@ -1,0 +1,38 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout code
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: 🛠️ Install dependencies and build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: 🔑 Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Sync built assets to DEV server
+        run: |
+          rsync -avz --delete public/build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/devsense/dev/public/build/
+
+      - name: 🔄 Run Dev Deploy Script
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /var/www/devsense/dev && bash deploy-dev.sh"
