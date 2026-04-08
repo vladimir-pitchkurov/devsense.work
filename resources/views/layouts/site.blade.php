@@ -3,13 +3,18 @@
 <head>
     @production
         @if (filled(config('services.gtm.container_id')))
-            <!-- Partytown + GTM (run 3rd-party in a worker) -->
+            @php
+                $partytownPublic = public_path('~partytown/partytown.js');
+                $partytownQuery = is_file($partytownPublic) ? '?v='.filemtime($partytownPublic) : '';
+            @endphp
+            <!-- Partytown + GTM (run 3rd-party in a worker); ?v=filemtime busts CDN/browser cache on lib update -->
+            <link rel="preload" href="/~partytown/partytown.js{{ $partytownQuery }}" as="script" fetchpriority="high">
             <script>
                 window.partytown = {
                     forward: ['dataLayer.push'],
                 };
             </script>
-            <script src="/~partytown/partytown.js"></script>
+            <script src="/~partytown/partytown.js{{ $partytownQuery }}"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
