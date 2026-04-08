@@ -3,13 +3,21 @@
 <head>
     @production
         @if (filled(config('services.gtm.container_id')))
-            <!-- Google Tag Manager -->
-            <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer',@json(config('services.gtm.container_id')));</script>
-            <!-- End Google Tag Manager -->
+            <!-- Partytown + GTM (run 3rd-party in a worker) -->
+            <script>
+                window.partytown = {
+                    forward: ['dataLayer.push'],
+                };
+            </script>
+            <script src="/~partytown/partytown.js"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            </script>
+            <script
+                type="text/partytown"
+                src="https://www.googletagmanager.com/gtm.js?id={{ rawurlencode(config('services.gtm.container_id')) }}"
+            ></script>
         @endif
     @endproduction
     <meta charset="UTF-8">
