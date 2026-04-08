@@ -1,4 +1,3 @@
-import './bootstrap';
 import { createApp } from 'vue';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import LanguageSwitcher from "./components/LanguageSwitcher.vue";
