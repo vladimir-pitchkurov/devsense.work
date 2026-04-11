@@ -36,6 +36,9 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+    /* Reserve space while theme/lang Vue chunks load (async components). */
+    min-width: 7rem;
+    min-height: 2.25rem;
 }
 
 .nav__link {
