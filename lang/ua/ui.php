@@ -35,6 +35,9 @@ return [
         'back_to_guides' => 'Усі гайди з версій PHP',
         'nav_aria' => 'Навігація гайдами PHP',
     ],
+    'php_runtime' => [
+        'breadcrumb' => 'PHP на сервері: FPM, Swoole, асинхронність',
+    ],
     'php_index' => [
         'title' => 'Гайди з версій PHP | DevSense',
         'description' => 'Матеріали з оновлення з PHP 5.3 до 8.5: синтаксис, міграція, deprecations і зворотна несумісність — із прикладами.',
@@ -101,6 +104,10 @@ return [
             'v85' => [
                 'title' => 'PHP 8.5 — Конвеєри та посилення платформи',
                 'excerpt' => 'Оператор `|>`, `#[\\NoDiscard]`, замикання в константних виразах, ext/uri, суворіші filter/PDO/Opcache.',
+            ],
+            'vruntimes' => [
+                'title' => 'PHP на сервері — FPM, Swoole, воркери, event loop',
+                'excerpt' => 'Як PHP працює за nginx: модель PHP-FPM, довгоживучі сервери (Swoole, RoadRunner, FrankenPHP), async I/O у стилі ReactPHP/AMPHP — плюси й мінуси, рецепти та витоки пам’яті.',
             ],
         ],
     ],

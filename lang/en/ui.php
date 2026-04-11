@@ -35,6 +35,9 @@ return [
         'back_to_guides' => 'All PHP version guides',
         'nav_aria' => 'PHP guides navigation',
     ],
+    'php_runtime' => [
+        'breadcrumb' => 'PHP on the server: FPM, Swoole, async',
+    ],
     'php_index' => [
         'title' => 'PHP version guides | DevSense',
         'description' => 'Upgrade guides for PHP 5.3 through 8.5: syntax, migration notes, deprecations, and breaking changes—with examples.',
@@ -101,6 +104,10 @@ return [
             'v85' => [
                 'title' => 'PHP 8.5 — Pipes & platform tightening',
                 'excerpt' => 'Pipe operator `|>`, `#[\\NoDiscard]`, closures in constant expressions, ext/uri, stricter filter/PDO/Opcache behavior.',
+            ],
+            'vruntimes' => [
+                'title' => 'PHP on the server — FPM, Swoole, workers, event loop',
+                'excerpt' => 'How PHP runs behind nginx: PHP-FPM process model, long-lived app servers (Swoole, RoadRunner, FrankenPHP), and ReactPHP/AMPHP-style async I/O—trade-offs, recipes, and memory pitfalls.',
             ],
         ],
     ],
