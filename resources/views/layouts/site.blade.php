@@ -7,16 +7,17 @@
                 $partytownPublic = public_path('~partytown/partytown.js');
                 $partytownQuery = is_file($partytownPublic) ? '?v='.filemtime($partytownPublic) : '';
             @endphp
-            <!-- Partytown + GTM (run 3rd-party in a worker); ?v=filemtime busts CDN/browser cache on lib update -->
+            <!-- Partytown + GTM: forward dataLayer.push + gtag so main-thread events reach the worker (GA4 / custom tags). -->
             <link rel="preload" href="/~partytown/partytown.js{{ $partytownQuery }}" as="script" fetchpriority="high">
             <script>
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function gtag() { window.dataLayer.push(arguments); };
                 window.partytown = {
-                    forward: ['dataLayer.push'],
+                    forward: ['dataLayer.push', 'gtag'],
                 };
             </script>
             <script src="/~partytown/partytown.js{{ $partytownQuery }}"></script>
             <script>
-                window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
             </script>
             <script
