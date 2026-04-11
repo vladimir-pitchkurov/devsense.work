@@ -5,9 +5,9 @@ description: "Запуск черг Laravel у Sail: sync/redis/database, queue:
 
 # Sail: черги та воркери
 
-Як крутити **черги Laravel**, коли застосунок у **Sail**. Разом із [БД і сервісами](sail-databases) для Redis/RabbitMQ і [Оточенням і деплоєм](sail-env-deploy) для `.env` на різних машинах.
+Як крутити **черги Laravel**, коли застосунок у **Sail**. Разом із [БД і сервісами](sail-databases#networking) для Redis/RabbitMQ і [Оточенням і деплоєм](sail-env-deploy#env-files) для `.env` на різних машинах.
 
-**Навігація:** [Усі інструменти](../) · [Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy) · [Діагностика](sail-troubleshooting)
+**Навігація:** [Усі інструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#forward-ports) · [Діагностика](sail-troubleshooting#wsl-filesync)
 
 ## Зміст
 
@@ -141,8 +141,8 @@ Sail — **достатньо**, щоб писати джоби й інтегр�
 
 ## Див. також
 
-* [Sail — повний гайд](sail)  
-* [БД і сервіси](sail-databases)  
-* [Оточення та деплой](sail-env-deploy)  
+* [Sail — повний гайд](sail#what-sail-is)  
+* [БД і сервіси](sail-databases#networking)  
+* [Оточення та деплой](sail-env-deploy#env-files)  
 
 [← Усі інструменти](../)

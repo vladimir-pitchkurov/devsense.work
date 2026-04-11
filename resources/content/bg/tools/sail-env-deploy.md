@@ -5,9 +5,9 @@ description: "Разделяне на Laravel Sail и хоста: .env.example, 
 
 # Sail: среди и деплой
 
-Как да **подредите променливите на средата** за Sail, екипа и CI — и как се различава от **staging/production**. Вижте също [Sail](sail), [БД](sail-databases) и [Опашки](sail-queues).
+Как да **подредите променливите на средата** за Sail, екипа и CI — и как се различава от **staging/production**. Вижте също [Sail](sail#what-sail-is), [БД](sail-databases#networking) и [Опашки](sail-queues#connections).
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail) · [БД](sail-databases) · [Опашки](sail-queues) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Всички инструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Опашки](sail-queues#connections) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Съдържание
 
@@ -110,8 +110,8 @@ laravel.test:
 
 ## Вижте също
 
-* [Sail — пълен гайд](sail)  
-* [Бази данни и услуги](sail-databases)  
-* [Опашки](sail-queues)  
+* [Sail — пълен гайд](sail#what-sail-is)  
+* [Бази данни и услуги](sail-databases#networking)  
+* [Опашки](sail-queues#queue-work)  
 
 [← Всички инструменти](../)

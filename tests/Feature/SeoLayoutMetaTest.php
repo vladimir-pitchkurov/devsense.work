@@ -9,6 +9,45 @@ use Tests\TestCase;
  */
 class SeoLayoutMetaTest extends TestCase
 {
+    public function test_footer_includes_crawlable_cross_locale_links_on_localized_pages(): void
+    {
+        config(['app.url' => 'https://seo.test']);
+
+        $response = $this->get('/ru/php');
+
+        $response->assertOk();
+        $html = (string) $response->getContent();
+
+        $this->assertStringContainsString('https://seo.test/en/php', $html);
+        $this->assertStringContainsString('https://seo.test/ua/php', $html);
+        $this->assertStringContainsString('footer__locales-link', $html);
+    }
+
+    public function test_home_uses_app_url_for_canonical_and_og_url(): void
+    {
+        config(['app.url' => 'https://seo.test']);
+
+        $response = $this->get('/en');
+
+        $response->assertOk();
+        $html = (string) $response->getContent();
+
+        $this->assertStringContainsString('rel="canonical" href="https://seo.test/en"', $html);
+        $this->assertStringContainsString('property="og:url" content="https://seo.test/en"', $html);
+    }
+
+    public function test_php_index_uses_app_url_for_canonical(): void
+    {
+        config(['app.url' => 'https://seo.test']);
+
+        $response = $this->get('/en/php');
+
+        $response->assertOk();
+        $html = (string) $response->getContent();
+
+        $this->assertStringContainsString('rel="canonical" href="https://seo.test/en/php"', $html);
+    }
+
     public function test_php_guide_page_exposes_canonical_hreflang_and_tech_article_ld_json(): void
     {
         config(['app.url' => 'https://seo.test']);

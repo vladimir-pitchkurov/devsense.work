@@ -5,6 +5,7 @@ namespace App\View\Components;
 use App\Http\Middleware\SetLocale;
 use App\Support\SiteUrl;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\View\Component;
 
@@ -29,8 +30,34 @@ class Layout extends Component
         public ?array $structuredData = null,
         public ?string $breadcrumbCurrent = null,
     ) {
-        $this->canonical = $canonical ?? URL::current();
+        $this->canonical = $canonical ?? self::resolveCanonicalFromRequest();
         $this->ogImage = $this->normalizeAbsoluteUrl($ogImage ?? config('seo.default_og_image'));
+    }
+
+    /**
+     * Prefer canonical URLs built from APP_URL + named routes so scheme/host stay consistent
+     * behind proxies and match hreflang/sitemap (avoids http vs https duplicates in Search Console).
+     */
+    private static function resolveCanonicalFromRequest(): string
+    {
+        $route = Request::route();
+        if ($route === null) {
+            return URL::current();
+        }
+
+        $name = $route->getName();
+        if (! is_string($name)) {
+            return URL::current();
+        }
+
+        $routable = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show'];
+        if (! in_array($name, $routable, true)) {
+            return URL::current();
+        }
+
+        $params = array_merge($route->parameters(), ['locale' => app()->getLocale()]);
+
+        return SiteUrl::route($name, $params);
     }
 
     public function render(): View
@@ -97,7 +124,7 @@ class Layout extends Component
             return [];
         }
 
-        $allowed = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show'];
+        $allowed = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show'];
         if (! in_array($name, $allowed, true)) {
             return [];
         }
@@ -208,6 +235,15 @@ class Layout extends Component
             'tools.show' => $this->breadcrumbCurrent !== null ? [
                 ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
                 ['label' => __('ui.seo.breadcrumb_tools'), 'url' => SiteUrl::route('tools.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'microservices.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_microservices'), 'url' => null],
+            ],
+            'microservices.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_microservices'), 'url' => SiteUrl::route('microservices.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
             default => [],

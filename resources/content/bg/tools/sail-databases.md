@@ -5,9 +5,9 @@ description: "Compose рецепти за Sail: Redis, смяна към Postgre
 
 # Sail: бази данни и Docker услуги
 
-Този гайд е за **услуги до `laravel.test`**: SQL, Redis, по избор RabbitMQ, MongoDB и удобни за dev екстри. Допълва [пълния Sail гайд](sail). Команди за workers — в [Опашки](sail-queues); `.env` и сървъри — в [Среди и деплой](sail-env-deploy).
+Този гайд е за **услуги до `laravel.test`**: SQL, Redis, по избор RabbitMQ, MongoDB и удобни за dev екстри. Допълва [пълния Sail гайд](sail#what-sail-is). Команди за workers — в [Опашки](sail-queues#queue-work); `.env` и сървъри — в [Среди и деплой](sail-env-deploy#env-files).
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail) · [Опашки](sail-queues) · [Env](sail-env-deploy) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Всички инструменти](../) · [Sail](sail#what-sail-is) · [Опашки](sail-queues#connections) · [Env](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Съдържание
 
@@ -182,9 +182,9 @@ rabbitmq:
 
 ## Вижте също
 
-* [Sail — пълен гайд](sail)  
-* [Опашки](sail-queues)  
-* [Среди и деплой](sail-env-deploy)  
-* [Диагностика](sail-troubleshooting)  
+* [Sail — пълен гайд](sail#what-sail-is)  
+* [Опашки](sail-queues#queue-work)  
+* [Среди и деплой](sail-env-deploy#env-files)  
+* [Диагностика](sail-troubleshooting#wsl-filesync)  
 
 [← Всички инструменти](../)

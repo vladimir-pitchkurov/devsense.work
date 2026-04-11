@@ -7,7 +7,7 @@ description: "Practical Laravel Sail guide: change PHP version, add Redis or Rab
 
 **Laravel Sail** is a **Docker Compose** wrapper around a typical Laravel app: PHP-FPM (the `laravel.test` service), database, Redis, Meilisearch, Selenium, and optional extras. It is aimed at **local development** (and CI that can run Compose)—not a drop-in production topology. This guide walks through common customizations and clarifies where Sail ends and real deployment begins.
 
-**In this series:** [Databases & Docker services](sail-databases) · [Queues & workers](sail-queues) · [Environments & deployment](sail-env-deploy) · [Troubleshooting](sail-troubleshooting) · [All tools](../)
+**In this series:** [Databases & Docker services](sail-databases#networking) · [Queues & workers](sail-queues#connections) · [Environments & deployment](sail-env-deploy#env-files) · [Troubleshooting](sail-troubleshooting#wsl-filesync) · [All tools](../)
 
 ## Table of contents
 

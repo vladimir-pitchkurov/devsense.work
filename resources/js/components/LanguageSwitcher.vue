@@ -13,7 +13,7 @@ const locales: Locale[] = [
     { code: 'bg', label: 'BG' }
 ];
 
-const currentLocale = ref<string>('ru');
+const currentLocale = ref<string>('en');
 
 const selectTitle = ref<string>('Choose language');
 

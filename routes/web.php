@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MicroservicesController;
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Controllers\RobotsController;
@@ -16,7 +17,7 @@ Route::get('/', function () {
         $locale = 'en';
     }
 
-    return redirect('/'.$locale);
+    return redirect('/'.$locale, 301);
 });
 
 Route::prefix('{locale}')
@@ -38,6 +39,13 @@ Route::prefix('{locale}')
             Route::get('/{slug}', [PhpToolsController::class, 'show'])
                 ->name('tools.show')
                 ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy|sail-troubleshooting');
+        });
+
+        Route::prefix('microservices')->group(function () {
+            Route::get('/', [MicroservicesController::class, 'index'])->name('microservices.index');
+            Route::get('/{slug}', [MicroservicesController::class, 'show'])
+                ->name('microservices.show')
+                ->where('slug', MicroservicesController::slugRoutePattern());
         });
 
     });

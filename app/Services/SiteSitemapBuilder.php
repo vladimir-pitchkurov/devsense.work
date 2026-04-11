@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Controllers\MicroservicesController;
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
@@ -47,6 +48,21 @@ class SiteSitemapBuilder
     {
         $reflection = new ReflectionClass(PhpToolsController::class);
         $constant = $reflection->getReflectionConstant('TOOL_SLUG_ORDER');
+        if ($constant === false) {
+            return [];
+        }
+
+        /** @var list<string> */
+        return $constant->getValue();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function microservicesSlugs(): array
+    {
+        $reflection = new ReflectionClass(MicroservicesController::class);
+        $constant = $reflection->getReflectionConstant('MICROSERVICES_SLUG_ORDER');
         if ($constant === false) {
             return [];
         }
@@ -226,6 +242,31 @@ class SiteSitemapBuilder
                 $root,
                 fn (string $locale): string => route('tools.show', ['locale' => $locale, 'slug' => $slug], false),
                 $this->lastModifiedAcrossLocales('tools', $slug, $locales),
+                $locales,
+                $hreflangMap,
+                $canonical,
+                $xDefault,
+            );
+        }
+
+        $this->addLocalizedCluster(
+            $sitemap,
+            $root,
+            fn (string $locale): string => route('microservices.index', ['locale' => $locale], false),
+            null,
+            $locales,
+            $hreflangMap,
+            $canonical,
+            $xDefault,
+            0.85,
+        );
+
+        foreach ($this->microservicesSlugs() as $slug) {
+            $this->addLocalizedCluster(
+                $sitemap,
+                $root,
+                fn (string $locale): string => route('microservices.show', ['locale' => $locale, 'slug' => $slug], false),
+                $this->lastModifiedAcrossLocales('microservices', $slug, $locales),
                 $locales,
                 $hreflangMap,
                 $canonical,

@@ -5,9 +5,9 @@ description: "Разделение конфигурации Sail: .env.example, 
 
 # Sail: окружения и деплой
 
-Организация **переменных** и отличия **Sail** от реальных серверов. См. также [Sail](sail), [БД](sail-databases), [Очереди](sail-queues).
+Организация **переменных** и отличия **Sail** от реальных серверов. См. также [Sail](sail#what-sail-is), [БД](sail-databases#networking), [Очереди](sail-queues#connections).
 
-**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Очереди](sail-queues) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Все инструменты](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Очереди](sail-queues#connections) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Содержание
 
@@ -91,4 +91,4 @@ Sail упрощает **разработку** (Mailpit, один узел БД)
 
 ---
 
-[Sail](sail) · [БД](sail-databases) · [Очереди](sail-queues) · [← Все инструменты](../)
+[Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Очереди](sail-queues#queue-work) · [← Все инструменты](../)

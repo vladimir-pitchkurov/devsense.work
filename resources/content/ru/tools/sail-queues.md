@@ -5,9 +5,9 @@ description: "Запуск Laravel-очередей в Sail: sync/redis/database
 
 # Sail: очереди и воркеры
 
-Работа с **очередями** внутри Sail. Контейнеры — в [Базы данных и сервисы](sail-databases), переменные окружения — в [Окружения и деплой](sail-env-deploy).
+Работа с **очередями** внутри Sail. Контейнеры — в [Базы данных и сервисы](sail-databases#networking), переменные окружения — в [Окружения и деплой](sail-env-deploy#env-files).
 
-**Навигация:** [Все инструменты](../) · [Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Все инструменты](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Содержание
 
@@ -89,4 +89,4 @@ Cron в Sail нет: `sail artisan schedule:run` вручную или `schedule
 
 ---
 
-[Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy) · [← Все инструменты](../)
+[Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#env-files) · [← Все инструменты](../)

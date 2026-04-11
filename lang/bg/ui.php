@@ -6,9 +6,14 @@ return [
         'php_short' => 'PHP',
         'php_guides' => 'PHP ръководства',
         'tools' => 'Инструменти',
+        'microservices' => 'Микросервиси',
+        'microservices_short' => 'MS',
     ],
     'footer' => [
         'branch' => 'Клон',
+        'nav_aria' => 'Основни раздели',
+        'locales_aria' => 'Същата страница на други езици',
+        'locales_label' => 'Език:',
     ],
     'a11y' => [
         'theme_switcher' => 'Текуща тема',
@@ -17,12 +22,13 @@ return [
     'errors' => [
         'php_guide_missing' => 'Ръководството за PHP :version все още не е публикувано или не е налично.',
         'tools_guide_missing' => 'Ръководството за инструмента „:slug“ все още не е публикувано или не е налично.',
+        'microservices_guide_missing' => 'Ръководството за микросервиси „:slug“ все още не е публикувано или не е налично.',
     ],
     'welcome' => [
-        'title' => 'DevSense — PHP ръководства и инструменти за Sail',
-        'description' => 'Материали по версии на PHP и практични ръководства за Laravel Sail: Docker, опашки, среди и типични проблеми.',
+        'title' => 'DevSense — PHP ръководства, Sail и микросервиси',
+        'description' => 'Ръководства по PHP, Laravel Sail и микросервиси: API gateway, gRPC и опашки за съобщения.',
         'hero_title' => 'DevSense',
-        'hero_lead' => 'Ръководства за миграция от PHP 5.3 до 8.x и задълбочени текстове за Laravel Sail в локален Docker стек.',
+        'hero_lead' => 'Миграция от PHP 5.3 до 8.x, Laravel Sail за локален Docker и практични схеми на периметъра на микросервиси.',
         'section_aria' => 'Основни раздели',
         'card_php_title' => 'Ръководства по версии на PHP',
         'card_php_excerpt' => 'Синтаксис, deprecations и несъвместимости по релизи — с примери и чеклисти при надграждане.',
@@ -30,6 +36,9 @@ return [
         'card_tools_title' => 'Инструменти — Laravel Sail',
         'card_tools_excerpt' => 'Compose, бази, опашки, .env и CI, плюс какво да правите, когато контейнерите се държат странно.',
         'card_tools_cta' => 'Към инструментите',
+        'card_microservices_title' => 'Микросервиси — API gateway и съобщения',
+        'card_microservices_excerpt' => 'PHP на периметъра и алтернативи на Node, Go и Rust; gRPC и RabbitMQ между услуги — плюсове, минуси и рецепти.',
+        'card_microservices_cta' => 'Към микросервисите',
     ],
     'php_show' => [
         'back_to_guides' => 'Всички ръководства по версии на PHP',
@@ -144,11 +153,29 @@ return [
         'back' => 'Всички инструменти',
         'nav_aria' => 'Навигация в ръководствата за инструменти',
     ],
+    'microservices_index' => [
+        'title' => 'Микросервиси | DevSense',
+        'description' => 'API gateway на PHP и на други рунтайми; вътрешна комуникация с gRPC или RabbitMQ — кога какво е уместно и как се експлоатира.',
+        'hero_title' => 'Микросервиси',
+        'hero_lead' => 'Шлюзове на периметъра, протоколи между услуги и опашки — за екипи на PHP, които взимат инструменти от други екосистеми.',
+        'cta' => 'Отвори ръководството',
+        'cards' => [
+            'api_gateway' => [
+                'title' => 'API gateway: PHP, Node, Go, Rust — gRPC и RabbitMQ',
+                'excerpt' => 'Да сглобите или купите edge слой, да сравните рунтайми за шлюз и BFF, да изберете между синхронен gRPC и асинхронен RabbitMQ в контура.',
+            ],
+        ],
+    ],
+    'microservices_show' => [
+        'back' => 'Всички ръководства за микросервиси',
+        'nav_aria' => 'Навигация в ръководствата за микросервиси',
+    ],
     'seo' => [
         'breadcrumb_aria' => 'Вторична навигация',
         'breadcrumb_home' => 'Начало',
         'breadcrumb_php_guides' => 'PHP ръководства',
         'breadcrumb_tools' => 'Инструменти',
+        'breadcrumb_microservices' => 'Микросервиси',
     ],
     'tools' => [
         'sail' => [

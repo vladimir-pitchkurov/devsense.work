@@ -5,9 +5,9 @@ description: "Split Laravel Sail and host configuration: .env.example, FORWARD_*
 
 # Sail: environments & deployment
 
-How to **organize environment variables** for Sail, teammates, and CI—and how that differs from **staging/production**. See also [Sail overview](sail), [Databases](sail-databases), and [Queues](sail-queues).
+How to **organize environment variables** for Sail, teammates, and CI—and how that differs from **staging/production**. See also [Sail overview](sail#what-sail-is), [Databases](sail-databases#networking), and [Queues](sail-queues#connections).
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Queues](sail-queues) · [Troubleshooting](sail-troubleshooting)
+**Navigation:** [All tools](../) · [Sail overview](sail#what-sail-is) · [Databases](sail-databases#networking) · [Queues](sail-queues#connections) · [Troubleshooting](sail-troubleshooting#wsl-filesync)
 
 ## Table of contents
 
@@ -116,8 +116,8 @@ You may **reuse** the same Docker images built from Sail Dockerfiles, but **orch
 
 ## See also
 
-* [Sail — full guide](sail)  
-* [Databases & services](sail-databases)  
-* [Queues & workers](sail-queues)  
+* [Sail — full guide](sail#what-sail-is)  
+* [Databases & services](sail-databases#networking)  
+* [Queues & workers](sail-queues#queue-work)  
 
 [← All tools](../)

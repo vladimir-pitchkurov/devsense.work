@@ -5,9 +5,9 @@ description: "Compose-рецепти для Sail: Redis, перехід на Pos
 
 # Sail: бази даних і Docker-сервіси
 
-Цей гайд про **сервіси поруч із `laravel.test`**: SQL, Redis, опційний RabbitMQ, MongoDB і зручні для dev додатки. Доповнює [повний гайд Sail](sail). Команди воркерів — у [Черги та воркери](sail-queues); розклад `.env` і серверів — у [Оточення та деплой](sail-env-deploy).
+Цей гайд про **сервіси поруч із `laravel.test`**: SQL, Redis, опційний RabbitMQ, MongoDB і зручні для dev додатки. Доповнює [повний гайд Sail](sail#what-sail-is). Команди воркерів — у [Черги та воркери](sail-queues#queue-work); розклад `.env` і серверів — у [Оточення та деплой](sail-env-deploy#env-files).
 
-**Навігація:** [Усі інструменти](../) · [Sail](sail) · [Черги](sail-queues) · [Env](sail-env-deploy) · [Діагностика](sail-troubleshooting)
+**Навігація:** [Усі інструменти](../) · [Sail](sail#what-sail-is) · [Черги](sail-queues#connections) · [Env](sail-env-deploy#forward-ports) · [Діагностика](sail-troubleshooting#wsl-filesync)
 
 ## Зміст
 
@@ -188,9 +188,9 @@ php artisan sail:install --with=meilisearch
 
 ## Див. також
 
-* [Sail — повний гайд](sail)  
-* [Черги та воркери](sail-queues) — `queue:work`, Horizon, драйвери RabbitMQ  
-* [Оточення та деплой](sail-env-deploy) — розділення `.env` і контраст із production  
-* [Діагностика](sail-troubleshooting)  
+* [Sail — повний гайд](sail#what-sail-is)  
+* [Черги та воркери](sail-queues#queue-work) — `queue:work`, Horizon, драйвери RabbitMQ  
+* [Оточення та деплой](sail-env-deploy#env-files) — розділення `.env` і контраст із production  
+* [Діагностика](sail-troubleshooting#wsl-filesync)  
 
 [← Усі інструменти](../)

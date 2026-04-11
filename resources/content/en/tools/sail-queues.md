@@ -5,9 +5,9 @@ description: "Run Laravel queues inside Sail: sync vs redis vs database, queue:w
 
 # Sail: queues & workers
 
-How to run **Laravel queues** when the app lives in **Sail**. Pair this with [Databases & services](sail-databases) for Redis/RabbitMQ containers and [Environments & deployment](sail-env-deploy) for `.env` across machines.
+How to run **Laravel queues** when the app lives in **Sail**. Pair this with [Databases & services](sail-databases#networking) for Redis/RabbitMQ containers and [Environments & deployment](sail-env-deploy#env-files) for `.env` across machines.
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Env & deploy](sail-env-deploy) · [Troubleshooting](sail-troubleshooting)
+**Navigation:** [All tools](../) · [Sail overview](sail#what-sail-is) · [Databases](sail-databases#networking) · [Env & deploy](sail-env-deploy#forward-ports) · [Troubleshooting](sail-troubleshooting#wsl-filesync)
 
 ## Table of contents
 
@@ -141,8 +141,8 @@ Treat Sail as **correct enough** to write jobs and run integration tests—not a
 
 ## See also
 
-* [Sail — full guide](sail)  
-* [Databases & services](sail-databases)  
-* [Environments & deployment](sail-env-deploy)  
+* [Sail — full guide](sail#what-sail-is)  
+* [Databases & services](sail-databases#networking)  
+* [Environments & deployment](sail-env-deploy#env-files)  
 
 [← All tools](../)

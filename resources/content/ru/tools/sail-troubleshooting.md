@@ -5,9 +5,9 @@ description: "Типичные проблемы Laravel Sail: синхрониз
 
 # Sail: диагностика и производительность
 
-Здесь собраны **частые трения Sail**, которые не являются «багами Laravel»: особенности ФС, сеть Compose, кэш образов и расширения PHP в контейнерах. Читайте вместе с [Базами данных и сервисами](sail-databases), [Очередями](sail-queues) и [Окружениями и деплоем](sail-env-deploy).
+Здесь собраны **частые трения Sail**, которые не являются «багами Laravel»: особенности ФС, сеть Compose, кэш образов и расширения PHP в контейнерах. Читайте вместе с [Базами данных и сервисами](sail-databases#networking), [Очередями](sail-queues#queue-work) и [Окружениями и деплоем](sail-env-deploy#env-files).
 
-**Навигация:** [Все инструменты](../) · [Sail обзор](sail) · [БД](sail-databases) · [Очереди](sail-queues) · [Env и деплой](sail-env-deploy)
+**Навигация:** [Все инструменты](../) · [Sail обзор](sail#what-sail-is) · [БД](sail-databases#networking) · [Очереди](sail-queues#connections) · [Env и деплой](sail-env-deploy#forward-ports)
 
 ## Содержание
 
@@ -61,7 +61,7 @@ APP_PORT=8081
 FORWARD_REDIS_PORT=6380
 ```
 
-Затем `sail down && sail up -d`. **Внутри** контейнеров порты 3306/6379 не меняются; меняется только **хост**. Подробнее: [Окружения и деплой](sail-env-deploy).
+Затем `sail down && sail up -d`. **Внутри** контейнеров порты 3306/6379 не меняются; меняется только **хост**. Подробнее: [Окружения и деплой](sail-env-deploy#forward-ports).
 
 ---
 
@@ -143,9 +143,9 @@ sail exec laravel.test php -m
 
 ## См. также
 
-* [Sail — полный гайд](sail)  
-* [Базы данных и сервисы](sail-databases)  
-* [Очереди и воркеры](sail-queues)  
-* [Окружения и деплой](sail-env-deploy)  
+* [Sail — полный гайд](sail#what-sail-is)  
+* [Базы данных и сервисы](sail-databases#networking)  
+* [Очереди и воркеры](sail-queues#queue-work)  
+* [Окружения и деплой](sail-env-deploy#env-files)  
 
 [← Все инструменты](../)

@@ -5,9 +5,11 @@ description: "Fix common Laravel Sail pain points: WSL2 file sync, UID/GID and s
 
 # Sail: troubleshooting & performance
 
-This guide collects **frequent Sail friction** that is not really “Laravel bugs”: filesystem quirks, Compose networking, image caches, and PHP extensions behaving differently in containers. Use it together with [Databases & services](sail-databases), [Queues & workers](sail-queues), and [Environments & deployment](sail-env-deploy).
+This guide collects **frequent Sail friction** that is not really “Laravel bugs”: filesystem quirks, Compose networking, image caches, and PHP extensions behaving differently in containers. Use it together with [Databases & services](sail-databases#networking), [Queues & workers](sail-queues#queue-work), and [Environments & deployment](sail-env-deploy#env-files).
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Databases](sail-databases) · [Queues](sail-queues) · [Env & deploy](sail-env-deploy)
+**What this page is (and is not):** a **runbook-style** checklist for when Sail “worked yesterday” — ports, bind mounts, Opcache, and dev extensions. It does **not** replace the narrative [Sail overview](sail#what-sail-is); start there for concepts, then return here when you need **symptom → command → next step** flow.
+
+**Navigation:** [All tools](../) · [Sail overview](sail#what-sail-is) · [Databases](sail-databases#networking) · [Queues](sail-queues#connections) · [Env & deploy](sail-env-deploy#forward-ports)
 
 ## Table of contents
 
@@ -61,7 +63,7 @@ APP_PORT=8081
 FORWARD_REDIS_PORT=6380
 ```
 
-Then `sail down && sail up -d`. Inside containers, **internal** ports (3306, 6379) stay the same; only the **host** mapping changes. See [Environments & deployment](sail-env-deploy).
+Then `sail down && sail up -d`. Inside containers, **internal** ports (3306, 6379) stay the same; only the **host** mapping changes. See [Environments & deployment](sail-env-deploy#forward-ports).
 
 ---
 
@@ -143,9 +145,9 @@ To remove a **single** volume, use `docker volume ls` and `docker volume rm <nam
 
 ## See also
 
-* [Sail — full guide](sail)  
-* [Databases & services](sail-databases)  
-* [Queues & workers](sail-queues)  
-* [Environments & deployment](sail-env-deploy)  
+* [Sail — full guide](sail#what-sail-is)  
+* [Databases & services](sail-databases#networking)  
+* [Queues & workers](sail-queues#queue-work)  
+* [Environments & deployment](sail-env-deploy#env-files)  
 
 [← All tools](../)

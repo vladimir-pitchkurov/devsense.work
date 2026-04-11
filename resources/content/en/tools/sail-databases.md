@@ -5,9 +5,9 @@ description: "Compose-first recipes for Laravel Sail: add Redis, switch to Postg
 
 # Sail: databases & Docker services
 
-This guide focuses on **services next to `laravel.test`**: SQL engines, Redis, optional RabbitMQ, MongoDB, and dev-friendly extras. It complements the [full Sail guide](sail). For queue worker commands see [Queues & workers](sail-queues); for `.env` layout and servers see [Environments & deployment](sail-env-deploy).
+This guide focuses on **services next to `laravel.test`**: SQL engines, Redis, optional RabbitMQ, MongoDB, and dev-friendly extras. It complements the [full Sail guide](sail#what-sail-is). For queue worker commands see [Queues & workers](sail-queues#queue-work); for `.env` layout and servers see [Environments & deployment](sail-env-deploy#env-files).
 
-**Navigation:** [All tools](../) · [Sail overview](sail) · [Queues](sail-queues) · [Env & deploy](sail-env-deploy) · [Troubleshooting](sail-troubleshooting)
+**Navigation:** [All tools](../) · [Sail overview](sail#what-sail-is) · [Queues](sail-queues#connections) · [Env & deploy](sail-env-deploy#forward-ports) · [Troubleshooting](sail-troubleshooting#wsl-filesync)
 
 ## Table of contents
 
@@ -188,9 +188,9 @@ Or paste the upstream **Meilisearch** / **Typesense** service block from Sail st
 
 ## See also
 
-* [Sail — full guide](sail) for the big picture  
-* [Queues & workers](sail-queues) for `queue:work`, Horizon, RabbitMQ drivers  
-* [Environments & deployment](sail-env-deploy) for `.env` split and production contrast  
-* [Troubleshooting](sail-troubleshooting) for WSL2, permissions, ports, rebuilds  
+* [Sail — full guide](sail#what-sail-is) for the big picture  
+* [Queues & workers](sail-queues#queue-work) for `queue:work`, Horizon, RabbitMQ drivers  
+* [Environments & deployment](sail-env-deploy#env-files) for `.env` split and production contrast  
+* [Troubleshooting](sail-troubleshooting#wsl-filesync) for WSL2, permissions, ports, rebuilds  
 
 [← All tools](../)

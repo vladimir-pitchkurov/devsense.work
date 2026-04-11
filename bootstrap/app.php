@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $trusted = env('TRUSTED_PROXIES');
+        if (is_string($trusted) && $trusted !== '') {
+            $at = $trusted === '*' ? '*' : array_map(trim(...), explode(',', $trusted));
+            $middleware->trustProxies(at: $at);
+        }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -326,6 +326,10 @@ ps aux | grep php-fpm
 echo memory_get_usage(true), " bytes\n";
 ```
 
+### Вижте също
+
+* [API gateway, gRPC и RabbitMQ](../microservices/api-gateway#comparison) — периметър и междусервизен трафик отвъд само PHP-FPM.
+
 ### Още материали
 
 * [Конфигурация на PHP-FPM](https://www.php.net/manual/en/install.fpm.configuration.php)

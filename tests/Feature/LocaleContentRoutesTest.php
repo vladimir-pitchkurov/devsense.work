@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\MicroservicesController;
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
@@ -27,21 +28,27 @@ class LocaleContentRoutesTest extends TestCase
     {
         config(['app.default_site_locale' => 'en']);
 
-        $this->get('/')->assertRedirect('/en');
+        $response = $this->get('/');
+        $response->assertRedirect('/en');
+        $response->assertStatus(301);
     }
 
     public function test_root_redirects_to_russian_when_configured(): void
     {
         config(['app.default_site_locale' => 'ru']);
 
-        $this->get('/')->assertRedirect('/ru');
+        $response = $this->get('/');
+        $response->assertRedirect('/ru');
+        $response->assertStatus(301);
     }
 
     public function test_root_falls_back_to_english_when_default_site_locale_is_invalid(): void
     {
         config(['app.default_site_locale' => 'not-a-locale']);
 
-        $this->get('/')->assertRedirect('/en');
+        $response = $this->get('/');
+        $response->assertRedirect('/en');
+        $response->assertStatus(301);
     }
 
     public function test_home_renders_for_each_supported_locale(): void
@@ -120,5 +127,39 @@ class LocaleContentRoutesTest extends TestCase
         });
 
         $this->get('/en/php/8.5')->assertNotFound();
+    }
+
+    public function test_microservices_index_renders(): void
+    {
+        $this->get('/en/microservices')->assertOk();
+    }
+
+    public function test_microservices_show_renders_existing_guide(): void
+    {
+        $this->get('/en/microservices/api-gateway')->assertOk();
+    }
+
+    public function test_each_catalogued_microservices_slug_renders_successfully(): void
+    {
+        /** @var list<string> $slugs */
+        $slugs = $this->privateClassConstant(MicroservicesController::class, 'MICROSERVICES_SLUG_ORDER');
+
+        foreach ($slugs as $slug) {
+            $this->get('/en/microservices/'.$slug)->assertOk();
+        }
+    }
+
+    public function test_microservices_show_returns_404_for_unknown_slug(): void
+    {
+        $this->get('/en/microservices/unknown-guide')->assertNotFound();
+    }
+
+    public function test_microservices_show_returns_404_when_markdown_service_returns_no_content(): void
+    {
+        $this->mock(MarkdownContentService::class, function ($mock): void {
+            $mock->shouldReceive('getParsedContent')->once()->andReturn(null);
+        });
+
+        $this->get('/en/microservices/api-gateway')->assertNotFound();
     }
 }

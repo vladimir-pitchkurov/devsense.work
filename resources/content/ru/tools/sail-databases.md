@@ -5,9 +5,9 @@ description: "Compose-рецепты для Sail: Redis, замена на Postg
 
 # Sail: базы данных и Docker-сервисы
 
-Сервисы рядом с **`laravel.test`**: SQL, Redis, RabbitMQ, MongoDB, почта и поиск. Дополняет [полный гайд по Sail](sail). Команды воркеров — в [Очереди и воркеры](sail-queues), `.env` и серверы — в [Окружения и деплой](sail-env-deploy).
+Сервисы рядом с **`laravel.test`**: SQL, Redis, RabbitMQ, MongoDB, почта и поиск. Дополняет [полный гайд по Sail](sail#what-sail-is). Команды воркеров — в [Очереди и воркеры](sail-queues#queue-work), `.env` и серверы — в [Окружения и деплой](sail-env-deploy#env-files).
 
-**Навигация:** [Все инструменты](../) · [Sail обзор](sail) · [Очереди](sail-queues) · [Env и деплой](sail-env-deploy) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Все инструменты](../) · [Sail обзор](sail#what-sail-is) · [Очереди](sail-queues#connections) · [Env и деплой](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Содержание
 
@@ -119,4 +119,4 @@ rabbitmq:
 
 ## См. также
 
-[Sail — полный гайд](sail) · [Очереди](sail-queues) · [Окружения и деплой](sail-env-deploy) · [Диагностика](sail-troubleshooting) · [← Все инструменты](../)
+[Sail — полный гайд](sail#what-sail-is) · [Очереди](sail-queues#queue-work) · [Окружения и деплой](sail-env-deploy#env-files) · [Диагностика](sail-troubleshooting#wsl-filesync) · [← Все инструменты](../)

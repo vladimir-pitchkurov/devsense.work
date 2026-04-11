@@ -5,9 +5,9 @@ description: "Типові проблеми Laravel Sail: синхронізац
 
 # Sail: діагностика та продуктивність
 
-Тут зібрано **часті тертя Sail**, які не є «багами Laravel»: ФС, мережа Compose, кеш образів і розширення PHP в контейнерах. Читайте разом із [БД і сервісами](sail-databases), [Чергами](sail-queues) та [Оточенням і деплоєм](sail-env-deploy).
+Тут зібрано **часті тертя Sail**, які не є «багами Laravel»: ФС, мережа Compose, кеш образів і розширення PHP в контейнерах. Читайте разом із [БД і сервісами](sail-databases#networking), [Чергами](sail-queues#queue-work) та [Оточенням і деплоєм](sail-env-deploy#env-files).
 
-**Навігація:** [Усі інструменти](../) · [Sail](sail) · [БД](sail-databases) · [Черги](sail-queues) · [Env](sail-env-deploy)
+**Навігація:** [Усі інструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Черги](sail-queues#connections) · [Env](sail-env-deploy#forward-ports)
 
 ## Зміст
 
@@ -57,7 +57,7 @@ APP_PORT=8081
 FORWARD_REDIS_PORT=6380
 ```
 
-Потім `sail down && sail up -d`. **Усередині** контейнерів порти 3306/6379 не змінюються. Детальніше: [Оточення та деплой](sail-env-deploy).
+Потім `sail down && sail up -d`. **Усередині** контейнерів порти 3306/6379 не змінюються. Детальніше: [Оточення та деплой](sail-env-deploy#forward-ports).
 
 ---
 
@@ -128,9 +128,9 @@ Redis: `sail exec redis redis-cli ping`.
 
 ## Див. також
 
-* [Sail — повний гайд](sail)  
-* [БД і сервіси](sail-databases)  
-* [Черги](sail-queues)  
-* [Оточення та деплой](sail-env-deploy)  
+* [Sail — повний гайд](sail#what-sail-is)  
+* [БД і сервіси](sail-databases#networking)  
+* [Черги](sail-queues#queue-work)  
+* [Оточення та деплой](sail-env-deploy#env-files)  
 
 [← Усі інструменти](../)

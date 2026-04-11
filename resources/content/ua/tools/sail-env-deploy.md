@@ -5,9 +5,9 @@ description: "Розділення Laravel Sail і хоста: .env.example, FOR
 
 # Sail: оточення та деплой
 
-Як **організувати змінні оточення** для Sail, команди та CI — і чим це відрізняється від **staging/production**. Див. також [Sail](sail), [БД](sail-databases) і [Черги](sail-queues).
+Як **організувати змінні оточення** для Sail, команди та CI — і чим це відрізняється від **staging/production**. Див. також [Sail](sail#what-sail-is), [БД](sail-databases#networking) і [Черги](sail-queues#connections).
 
-**Навігація:** [Усі інструменти](../) · [Sail](sail) · [БД](sail-databases) · [Черги](sail-queues) · [Діагностика](sail-troubleshooting)
+**Навігація:** [Усі інструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Черги](sail-queues#connections) · [Діагностика](sail-troubleshooting#wsl-filesync)
 
 ## Зміст
 
@@ -116,8 +116,8 @@ laravel.test:
 
 ## Див. також
 
-* [Sail — повний гайд](sail)  
-* [БД і сервіси](sail-databases)  
-* [Черги](sail-queues)  
+* [Sail — повний гайд](sail#what-sail-is)  
+* [БД і сервіси](sail-databases#networking)  
+* [Черги](sail-queues#queue-work)  
 
 [← Усі інструменти](../)

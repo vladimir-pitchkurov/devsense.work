@@ -94,7 +94,7 @@ return [
     |
     */
 
-    'default_site_locale' => env('APP_DEFAULT_SITE_LOCALE', 'ru'),
+    'default_site_locale' => env('APP_DEFAULT_SITE_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------

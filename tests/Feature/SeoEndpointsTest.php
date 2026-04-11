@@ -35,6 +35,7 @@ class SeoEndpointsTest extends TestCase
         $this->assertStringContainsString('hreflang="uk"', $content);
         $this->assertStringContainsString('hreflang="x-default"', $content);
         $this->assertStringContainsString('/en/tools/sail', $content);
+        $this->assertStringContainsString('/en/microservices/api-gateway', $content);
     }
 
     public function test_robots_allows_indexing_and_points_sitemap_to_app_url_when_enabled(): void

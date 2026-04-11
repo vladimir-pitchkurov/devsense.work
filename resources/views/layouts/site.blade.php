@@ -114,6 +114,7 @@
             <nav class="header__nav">
                 <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
                 <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
+                <a href="{{ route('microservices.index') }}" class="nav__link">{{ __('ui.nav.microservices') }}</a>
             </nav>
         </div>
     </div>
@@ -131,6 +132,10 @@
     <a href="{{ route('tools.index') }}" class="mobile-nav__item {{ Route::is('tools.*') ? 'active' : '' }}">
         <span class="icon">🛠️</span>
         <span class="label">{{ __('ui.nav.tools') }}</span>
+    </a>
+    <a href="{{ route('microservices.index') }}" class="mobile-nav__item {{ Route::is('microservices.*') ? 'active' : '' }}">
+        <span class="icon">🔀</span>
+        <span class="label">{{ __('ui.nav.microservices_short') }}</span>
     </a>
 </nav>
 
@@ -157,6 +162,61 @@
 
 <footer class="footer">
     <div class="footer__container">
+        <nav class="footer__nav" aria-label="{{ __('ui.footer.nav_aria') }}">
+            <ul class="footer__nav-list">
+                <li class="footer__nav-item">
+                    <a href="{{ route('home') }}" class="footer__nav-link">{{ __('ui.nav.home') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('php.index') }}" class="footer__nav-link">{{ __('ui.nav.php_guides') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('tools.index') }}" class="footer__nav-link">{{ __('ui.nav.tools') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('microservices.index') }}" class="footer__nav-link">{{ __('ui.nav.microservices') }}</a>
+                </li>
+            </ul>
+        </nav>
+        @php
+            $path = trim(request()->path(), '/');
+            $segments = $path === '' ? [] : explode('/', $path);
+            $supportedLocales = \App\Http\Middleware\SetLocale::SUPPORTED_LOCALES;
+            $footerLocaleLinks = [];
+            if ($segments !== [] && in_array($segments[0], $supportedLocales, true)) {
+                $suffixParts = array_slice($segments, 1);
+                $suffix = $suffixParts !== [] ? implode('/', $suffixParts) : '';
+                $rootUrl = rtrim((string) config('app.url'), '/');
+                foreach ($supportedLocales as $loc) {
+                    $footerLocaleLinks[] = [
+                        'code' => $loc,
+                        'label' => strtoupper($loc),
+                        'url' => $rootUrl.'/'.$loc.($suffix !== '' ? '/'.$suffix : ''),
+                    ];
+                }
+            }
+        @endphp
+        @if ($footerLocaleLinks !== [])
+            <nav class="footer__locales" aria-label="{{ __('ui.footer.locales_aria') }}">
+                <p class="footer__locales-label">{{ __('ui.footer.locales_label') }}</p>
+                <ul class="footer__locales-list">
+                    @foreach ($footerLocaleLinks as $link)
+                        <li class="footer__locales-item">
+                            @if ($link['code'] === app()->getLocale())
+                                <span class="footer__locales-current" aria-current="true">{{ $link['label'] }}</span>
+                            @else
+                                <a
+                                    href="{{ $link['url'] }}"
+                                    class="footer__locales-link"
+                                    hreflang="{{ config('seo.hreflang.'.$link['code']) ?? $link['code'] }}"
+                                    lang="{{ $link['code'] }}"
+                                >{{ $link['label'] }}</a>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+        @endif
         <p class="footer__copyright">&copy; {{ date('Y') }} {{ $siteName }}. {{ __('ui.footer.branch') }}: feature/php-guides-and-tools</p>
     </div>
 </footer>

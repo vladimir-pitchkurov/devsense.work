@@ -5,9 +5,9 @@ description: "Laravel опашки в Sail: sync/redis/database, queue:work, Hor
 
 # Sail: опашки и workers
 
-Как да пускате **Laravel опашки**, когато приложението е в **Sail**. За Redis/RabbitMQ контейнери вижте [Бази данни и услуги](sail-databases); за `.env` — [Среди и деплой](sail-env-deploy).
+Как да пускате **Laravel опашки**, когато приложението е в **Sail**. За Redis/RabbitMQ контейнери вижте [Бази данни и услуги](sail-databases#networking); за `.env` — [Среди и деплой](sail-env-deploy#env-files).
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail) · [БД](sail-databases) · [Env](sail-env-deploy) · [Диагностика](sail-troubleshooting)
+**Навигация:** [Всички инструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Съдържание
 
@@ -120,8 +120,8 @@ sail artisan queue:restart
 
 ## Вижте също
 
-* [Sail — пълен гайд](sail)  
-* [Бази данни и услуги](sail-databases)  
-* [Среди и деплой](sail-env-deploy)  
+* [Sail — пълен гайд](sail#what-sail-is)  
+* [Бази данни и услуги](sail-databases#networking)  
+* [Среди и деплой](sail-env-deploy#env-files)  
 
 [← Всички инструменти](../)

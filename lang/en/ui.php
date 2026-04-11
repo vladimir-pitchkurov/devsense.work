@@ -6,9 +6,14 @@ return [
         'php_short' => 'PHP',
         'php_guides' => 'PHP Guides',
         'tools' => 'Tools',
+        'microservices' => 'Microservices',
+        'microservices_short' => 'MS',
     ],
     'footer' => [
         'branch' => 'Branch',
+        'nav_aria' => 'Main sections',
+        'locales_aria' => 'Same page in other languages',
+        'locales_label' => 'Language:',
     ],
     'a11y' => [
         'theme_switcher' => 'Current theme',
@@ -17,12 +22,13 @@ return [
     'errors' => [
         'php_guide_missing' => 'No guide for PHP :version is available yet.',
         'tools_guide_missing' => 'No tool guide for “:slug” is available yet.',
+        'microservices_guide_missing' => 'No microservices guide for “:slug” is available yet.',
     ],
     'welcome' => [
-        'title' => 'DevSense — PHP guides & Sail tools',
-        'description' => 'Version-by-version PHP upgrade notes and practical Laravel Sail guides: Docker services, queues, environments, and troubleshooting.',
+        'title' => 'DevSense — PHP guides, Sail tools & microservices',
+        'description' => 'PHP version guides, Laravel Sail tooling, and microservices notes: API gateways, gRPC, and message queues.',
         'hero_title' => 'DevSense',
-        'hero_lead' => 'PHP migration guides from 5.3 through 8.x, plus deep dives on Laravel Sail for local Docker stacks.',
+        'hero_lead' => 'PHP migration guides from 5.3 through 8.x, Laravel Sail for local Docker stacks, and practical microservice edge patterns.',
         'section_aria' => 'Main sections',
         'card_php_title' => 'PHP version guides',
         'card_php_excerpt' => 'Syntax, deprecations, and breaking changes per release—with examples and checklists when you upgrade.',
@@ -30,6 +36,9 @@ return [
         'card_tools_title' => 'Tools — Laravel Sail',
         'card_tools_excerpt' => 'Compose recipes, databases, queues, env/CI patterns, and common fixes when containers misbehave.',
         'card_tools_cta' => 'Browse tools',
+        'card_microservices_title' => 'Microservices — API gateway & messaging',
+        'card_microservices_excerpt' => 'PHP at the edge versus Node, Go, and Rust gateways; gRPC versus RabbitMQ for service-to-service calls—with trade-offs and recipes.',
+        'card_microservices_cta' => 'Browse microservices',
     ],
     'php_show' => [
         'back_to_guides' => 'All PHP version guides',
@@ -144,11 +153,29 @@ return [
         'back' => 'All tools',
         'nav_aria' => 'Tools guides navigation',
     ],
+    'microservices_index' => [
+        'title' => 'Microservices guides | DevSense',
+        'description' => 'API gateways in PHP and alternatives in Node, Go, and Rust; internal traffic with gRPC or RabbitMQ—when each fits and how to operate it.',
+        'hero_title' => 'Microservices',
+        'hero_lead' => 'Edge gateways, backend protocols, and messaging—written for teams that ship PHP services but borrow tooling from other runtimes.',
+        'cta' => 'Open guide',
+        'cards' => [
+            'api_gateway' => [
+                'title' => 'API gateway: PHP, Node, Go, Rust — gRPC & RabbitMQ',
+                'excerpt' => 'Build or buy an edge layer, compare runtimes for gateways and BFFs, and choose between synchronous gRPC and asynchronous RabbitMQ inside the mesh.',
+            ],
+        ],
+    ],
+    'microservices_show' => [
+        'back' => 'All microservices guides',
+        'nav_aria' => 'Microservices guides navigation',
+    ],
     'seo' => [
         'breadcrumb_aria' => 'Breadcrumb',
         'breadcrumb_home' => 'Home',
         'breadcrumb_php_guides' => 'PHP guides',
         'breadcrumb_tools' => 'Tools',
+        'breadcrumb_microservices' => 'Microservices',
     ],
     'tools' => [
         'sail' => [

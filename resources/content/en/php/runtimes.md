@@ -333,6 +333,10 @@ echo memory_get_usage(true), " bytes\n";
 
 ---
 
+### See also
+
+* [API gateway, gRPC & RabbitMQ](../microservices/api-gateway#comparison) — edge gateways and service-to-service traffic beyond PHP-FPM alone.
+
 ### Further reading
 
 * [PHP-FPM configuration](https://www.php.net/manual/en/install.fpm.configuration.php)
