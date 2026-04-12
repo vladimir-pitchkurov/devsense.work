@@ -43,6 +43,17 @@ class MarkdownContentServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['source_modified_at']);
     }
 
+    public function test_pipe_tables_render_as_html_tables(): void
+    {
+        $service = new MarkdownContentService;
+        $result = $service->getParsedContent('en', 'architecture', 'message-queues-compared');
+
+        $this->assertNotNull($result);
+        $this->assertStringContainsString('<table>', $result['html']);
+        $this->assertStringContainsString('<thead>', $result['html']);
+        $this->assertStringContainsString('<tbody>', $result['html']);
+    }
+
     public function test_falls_back_to_english_when_locale_file_is_missing(): void
     {
         $service = new MarkdownContentService;

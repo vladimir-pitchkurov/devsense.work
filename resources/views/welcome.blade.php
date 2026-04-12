@@ -63,6 +63,25 @@
                     </footer>
                 </article>
             </li>
+            <li class="guides__item">
+                <article class="card">
+                    <header class="card__header">
+                        <h2 class="card__title">{{ __('ui.welcome.card_architecture_title') }}</h2>
+                    </header>
+                    <div class="card__body">
+                        <p class="card__excerpt">{{ __('ui.welcome.card_architecture_excerpt') }}</p>
+                    </div>
+                    <footer class="card__footer">
+                        <a
+                            href="{{ route('architecture.index') }}"
+                            class="card__link"
+                            aria-label="{{ __('ui.welcome.card_architecture_cta') }}"
+                        >
+                            {{ __('ui.welcome.card_architecture_cta') }}
+                        </a>
+                    </footer>
+                </article>
+            </li>
         </ul>
     </section>
 </x-layout>

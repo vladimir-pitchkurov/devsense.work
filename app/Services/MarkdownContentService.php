@@ -8,10 +8,11 @@ use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\Extension\FrontMatter\Output\RenderedContentWithFrontMatter;
+use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
 
 /**
- * Loads Markdown from `resources/content`, parses CommonMark + optional YAML front matter, and caches HTML output.
+ * Loads Markdown from `resources/content`, parses CommonMark + GFM-style tables + optional YAML front matter, and caches HTML output.
  */
 class MarkdownContentService
 {
@@ -23,8 +24,7 @@ class MarkdownContentService
      * @param  string  $locale  Requested locale (e.g. `en`, `ru`).
      * @param  string  $category  Content subdirectory (e.g. `php`, `tools`).
      * @param  string  $slug  File basename without `.md`.
-     *
-     * @return array{html: string, meta: array<string, mixed>, source_modified_at: int}|null  Null when neither locale nor English file exists. `source_modified_at` is a Unix timestamp (seconds) so cached payloads deserialize reliably.
+     * @return array{html: string, meta: array<string, mixed>, source_modified_at: int}|null Null when neither locale nor English file exists. `source_modified_at` is a Unix timestamp (seconds) so cached payloads deserialize reliably.
      */
     public function getParsedContent(string $locale, string $category, string $slug): ?array
     {
@@ -38,15 +38,16 @@ class MarkdownContentService
         }
 
         $modified = File::lastModified($path);
-        $cacheKey = "content_meta_v2_{$locale}_{$category}_{$slug}_{$modified}";
+        $cacheKey = "content_meta_v3_{$locale}_{$category}_{$slug}_{$modified}";
 
         return Cache::rememberForever($cacheKey, function () use ($path) {
             $environment = new Environment([
                 'html_input' => 'allow',
             ]);
 
-            $environment->addExtension(new CommonMarkCoreExtension());
-            $environment->addExtension(new FrontMatterExtension());
+            $environment->addExtension(new CommonMarkCoreExtension);
+            $environment->addExtension(new TableExtension);
+            $environment->addExtension(new FrontMatterExtension);
 
             $converter = new MarkdownConverter($environment);
             $markdown = File::get($path);

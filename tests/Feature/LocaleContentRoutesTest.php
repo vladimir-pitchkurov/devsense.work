@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\ArchitectureController;
 use App\Http\Controllers\MicroservicesController;
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
@@ -161,5 +162,39 @@ class LocaleContentRoutesTest extends TestCase
         });
 
         $this->get('/en/microservices/api-gateway')->assertNotFound();
+    }
+
+    public function test_architecture_index_renders(): void
+    {
+        $this->get('/en/architecture')->assertOk();
+    }
+
+    public function test_architecture_show_renders_existing_guide(): void
+    {
+        $this->get('/en/architecture/high-load-event-ingestion')->assertOk();
+    }
+
+    public function test_each_catalogued_architecture_slug_renders_successfully(): void
+    {
+        /** @var list<string> $slugs */
+        $slugs = $this->privateClassConstant(ArchitectureController::class, 'ARCHITECTURE_SLUG_ORDER');
+
+        foreach ($slugs as $slug) {
+            $this->get('/en/architecture/'.$slug)->assertOk();
+        }
+    }
+
+    public function test_architecture_show_returns_404_for_unknown_slug(): void
+    {
+        $this->get('/en/architecture/unknown-guide')->assertNotFound();
+    }
+
+    public function test_architecture_show_returns_404_when_markdown_service_returns_no_content(): void
+    {
+        $this->mock(MarkdownContentService::class, function ($mock): void {
+            $mock->shouldReceive('getParsedContent')->once()->andReturn(null);
+        });
+
+        $this->get('/en/architecture/high-load-event-ingestion')->assertNotFound();
     }
 }
