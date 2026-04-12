@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchitectureController;
 use App\Http\Controllers\MicroservicesController;
 use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
@@ -46,6 +47,13 @@ Route::prefix('{locale}')
             Route::get('/{slug}', [MicroservicesController::class, 'show'])
                 ->name('microservices.show')
                 ->where('slug', MicroservicesController::slugRoutePattern());
+        });
+
+        Route::prefix('architecture')->group(function () {
+            Route::get('/', [ArchitectureController::class, 'index'])->name('architecture.index');
+            Route::get('/{slug}', [ArchitectureController::class, 'show'])
+                ->name('architecture.show')
+                ->where('slug', ArchitectureController::slugRoutePattern());
         });
 
     });

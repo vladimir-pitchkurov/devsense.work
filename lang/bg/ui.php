@@ -8,6 +8,8 @@ return [
         'tools' => 'Инструменти',
         'microservices' => 'Микросервиси',
         'microservices_short' => 'MS',
+        'architecture' => 'Архитектура',
+        'architecture_short' => 'Арх.',
     ],
     'footer' => [
         'branch' => 'Клон',
@@ -23,12 +25,13 @@ return [
         'php_guide_missing' => 'Ръководството за PHP :version все още не е публикувано или не е налично.',
         'tools_guide_missing' => 'Ръководството за инструмента „:slug“ все още не е публикувано или не е налично.',
         'microservices_guide_missing' => 'Ръководството за микросервиси „:slug“ все още не е публикувано или не е налично.',
+        'architecture_guide_missing' => 'Ръководството по архитектура „:slug“ все още не е публикувано или не е налично.',
     ],
     'welcome' => [
         'title' => 'DevSense — PHP ръководства, Sail и микросервиси',
         'description' => 'Ръководства по PHP, Laravel Sail и микросервиси: API gateway, gRPC и опашки за съобщения.',
         'hero_title' => 'DevSense',
-        'hero_lead' => 'Миграция от PHP 5.3 до 8.x, Laravel Sail за локален Docker и практични схеми на периметъра на микросервиси.',
+        'hero_lead' => 'Миграция от PHP 5.3 до 8.x, Laravel Sail за локален Docker, микросервиси на периметъра и архитектурни бележки за натоварване и данни.',
         'section_aria' => 'Основни раздели',
         'card_php_title' => 'Ръководства по версии на PHP',
         'card_php_excerpt' => 'Синтаксис, deprecations и несъвместимости по релизи — с примери и чеклисти при надграждане.',
@@ -39,6 +42,9 @@ return [
         'card_microservices_title' => 'Микросервиси — API gateway и съобщения',
         'card_microservices_excerpt' => 'PHP на периметъра и алтернативи на Node, Go и Rust; gRPC и RabbitMQ между услуги — плюсове, минуси и рецепти.',
         'card_microservices_cta' => 'Към микросервисите',
+        'card_architecture_title' => 'Архитектура — натоварване, потоци от събития и аналитика',
+        'card_architecture_excerpt' => 'Как да не сринете транзакционната БД с милиони събития: буфери, брокери и разделяне на OLTP и отчети.',
+        'card_architecture_cta' => 'Към раздела архитектура',
     ],
     'php_show' => [
         'back_to_guides' => 'Всички ръководства по версии на PHP',
@@ -170,12 +176,34 @@ return [
         'back' => 'Всички ръководства за микросервиси',
         'nav_aria' => 'Навигация в ръководствата за микросервиси',
     ],
+    'architecture_index' => [
+        'title' => 'Софтуерна архитектура | DevSense',
+        'description' => 'Системен дизайн под натоварване: приемане на събития, буфериране, брокери на съобщения, разделяне на OLTP и аналитика.',
+        'hero_title' => 'Архитектура',
+        'hero_lead' => 'Материали за устойчиви модели на данни и услуги — без магии, с фокус върху това, което реално чупи продукшъна.',
+        'cta' => 'Отвори ръководството',
+        'cards' => [
+            'high_load_event_ingestion' => [
+                'title' => 'Потоци от събития при високо натоварване: буфери, Redis Streams, Kafka и разделяне на OLTP от OLAP',
+                'excerpt' => 'Милиони кликове, залози и завъртания: къде първо да кацне трафикът, как да пазите основната БД и къде да живеят таблата.',
+            ],
+            'message_queues_compared' => [
+                'title' => 'Опашки и брокери: Redis, RabbitMQ, Kafka и какво още има',
+                'excerpt' => 'Сравнение на бекенди за фонови задачи и потоци съобщения: Laravel и други стекове, излишна сложност и оперативни подводни камъни.',
+            ],
+        ],
+    ],
+    'architecture_show' => [
+        'back' => 'Всички ръководства по архитектура',
+        'nav_aria' => 'Навигация в ръководствата по архитектура',
+    ],
     'seo' => [
         'breadcrumb_aria' => 'Вторична навигация',
         'breadcrumb_home' => 'Начало',
         'breadcrumb_php_guides' => 'PHP ръководства',
         'breadcrumb_tools' => 'Инструменти',
         'breadcrumb_microservices' => 'Микросервиси',
+        'breadcrumb_architecture' => 'Архитектура',
     ],
     'tools' => [
         'sail' => [

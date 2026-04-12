@@ -116,6 +116,7 @@
                 <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
                 <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
                 <a href="{{ route('microservices.index') }}" class="nav__link">{{ __('ui.nav.microservices') }}</a>
+                <a href="{{ route('architecture.index') }}" class="nav__link">{{ __('ui.nav.architecture') }}</a>
             </nav>
         </div>
     </div>
@@ -137,6 +138,10 @@
     <a href="{{ route('microservices.index') }}" class="mobile-nav__item {{ Route::is('microservices.*') ? 'active' : '' }}">
         <span class="icon">🔀</span>
         <span class="label">{{ __('ui.nav.microservices_short') }}</span>
+    </a>
+    <a href="{{ route('architecture.index') }}" class="mobile-nav__item {{ Route::is('architecture.*') ? 'active' : '' }}">
+        <span class="icon">🏛️</span>
+        <span class="label">{{ __('ui.nav.architecture_short') }}</span>
     </a>
 </nav>
 
@@ -176,6 +181,9 @@
                 </li>
                 <li class="footer__nav-item">
                     <a href="{{ route('microservices.index') }}" class="footer__nav-link">{{ __('ui.nav.microservices') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('architecture.index') }}" class="footer__nav-link">{{ __('ui.nav.architecture') }}</a>
                 </li>
             </ul>
         </nav>

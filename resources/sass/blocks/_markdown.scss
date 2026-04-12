@@ -75,4 +75,43 @@
     li {
         margin-bottom: 0.5rem;
     }
+
+    // GFM-style tables (league/commonmark TableExtension)
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    table {
+        width: 100%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.9375rem;
+        line-height: 1.45;
+    }
+
+    thead {
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    th,
+    td {
+        border: 1px solid var(--border-color);
+        padding: 0.55rem 0.75rem;
+        vertical-align: top;
+        text-align: left;
+    }
+
+    th {
+        font-weight: 600;
+        background-color: rgba(128, 128, 128, 0.1);
+        color: var(--text-color);
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: rgba(128, 128, 128, 0.04);
+    }
+
+    tbody tr:hover {
+        background-color: rgba(128, 128, 128, 0.08);
+    }
 }

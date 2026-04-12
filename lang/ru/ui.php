@@ -8,6 +8,8 @@ return [
         'tools' => 'Инструменты',
         'microservices' => 'Микросервисы',
         'microservices_short' => 'MS',
+        'architecture' => 'Архитектура',
+        'architecture_short' => 'Арх.',
     ],
     'footer' => [
         'branch' => 'Ветка',
@@ -23,12 +25,13 @@ return [
         'php_guide_missing' => 'Гайд для PHP :version ещё не опубликован или недоступен.',
         'tools_guide_missing' => 'Гайд для инструмента «:slug» ещё не опубликован или недоступен.',
         'microservices_guide_missing' => 'Гайд по микросервисам «:slug» ещё не опубликован или недоступен.',
+        'architecture_guide_missing' => 'Гайд по архитектуре «:slug» ещё не опубликован или недоступен.',
     ],
     'welcome' => [
         'title' => 'DevSense — PHP-гайды, Sail и микросервисы',
         'description' => 'Гайды по версиям PHP, Laravel Sail и микросервисам: API-шлюзы, gRPC и очереди сообщений.',
         'hero_title' => 'DevSense',
-        'hero_lead' => 'Миграция PHP с 5.3 до 8.x, Laravel Sail для локального Docker и практические схемы на периметре микросервисов.',
+        'hero_lead' => 'Миграция PHP с 5.3 до 8.x, Laravel Sail для локального Docker, микросервисы на периметре и архитектурные гайды про нагрузку и данные.',
         'section_aria' => 'Основные разделы',
         'card_php_title' => 'Гайды по версиям PHP',
         'card_php_excerpt' => 'Синтаксис, deprecations и обратная несовместимость по релизам — с примерами и чек-листами при обновлении.',
@@ -39,6 +42,9 @@ return [
         'card_microservices_title' => 'Микросервисы — API gateway и обмен сообщениями',
         'card_microservices_excerpt' => 'PHP на периметре и альтернативы на Node, Go и Rust; gRPC и RabbitMQ между сервисами — плюсы, минусы и рецепты.',
         'card_microservices_cta' => 'К микросервисам',
+        'card_architecture_title' => 'Архитектура — нагрузка, потоки событий и аналитика',
+        'card_architecture_excerpt' => 'Как не убить транзакционную БД миллионами ивентов, зачем буферы и брокеры, и как развести OLTP с отчётами.',
+        'card_architecture_cta' => 'К разделу архитектуры',
     ],
     'php_show' => [
         'back_to_guides' => 'Все гайды по версиям PHP',
@@ -170,12 +176,34 @@ return [
         'back' => 'Все гайды по микросервисам',
         'nav_aria' => 'Навигация по гайдам микросервисов',
     ],
+    'architecture_index' => [
+        'title' => 'Архитектура ПО | DevSense',
+        'description' => 'Системный дизайн под нагрузку: приём событий, буферизация, брокеры сообщений, разделение OLTP и аналитики.',
+        'hero_title' => 'Архитектура',
+        'hero_lead' => 'Материалы про устойчивые схемы данных и сервисов — без магии, с упором на то, что реально ломается в проде.',
+        'cta' => 'Открыть гайд',
+        'cards' => [
+            'high_load_event_ingestion' => [
+                'title' => 'Потоки событий под нагрузкой: буферы, Redis Streams, Kafka и развод OLTP с OLAP',
+                'excerpt' => 'Миллионы кликов, ставок и спинов: куда писать в первую очередь, как снять пиковый поток с основной БД и где жить отчётам.',
+            ],
+            'message_queues_compared' => [
+                'title' => 'Очереди и брокеры: Redis, RabbitMQ, Kafka и что ещё бывает',
+                'excerpt' => 'Сравнение бэкендов для фоновых задач и потоков сообщений: Laravel и другие фреймворки, избыточность, нюансы эксплуатации.',
+            ],
+        ],
+    ],
+    'architecture_show' => [
+        'back' => 'Все гайды по архитектуре',
+        'nav_aria' => 'Навигация по гайдам архитектуры',
+    ],
     'seo' => [
         'breadcrumb_aria' => 'Навигационная цепочка',
         'breadcrumb_home' => 'Главная',
         'breadcrumb_php_guides' => 'PHP-гайды',
         'breadcrumb_tools' => 'Инструменты',
         'breadcrumb_microservices' => 'Микросервисы',
+        'breadcrumb_architecture' => 'Архитектура',
     ],
     'tools' => [
         'sail' => [
