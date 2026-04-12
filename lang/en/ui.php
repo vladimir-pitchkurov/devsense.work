@@ -187,6 +187,10 @@ return [
                 'title' => 'High-load event streams: buffers, Redis Streams, Kafka, and splitting OLTP from OLAP',
                 'excerpt' => 'Clicks, bets, and spins at scale: where to land traffic first, how to protect the primary database, and where dashboards should read from.',
             ],
+            'message_queues_compared' => [
+                'title' => 'Queues & brokers: Redis, RabbitMQ, Kafka, and the wider market',
+                'excerpt' => 'Choosing async backends for Laravel and other stacks—what fits tasks versus event logs, overkill scenarios, and operational gotchas.',
+            ],
         ],
     ],
     'architecture_show' => [

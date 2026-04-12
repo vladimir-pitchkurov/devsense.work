@@ -8,7 +8,7 @@ published: 2026-04-12
 
 Traffic spikes are quiet until they are not. A partner turns on a campaign, a promo goes viral, and suddenly your API is recording **impressions, clicks, spins, and bets** faster than a spreadsheet-minded design can absorb. The tempting shortcut is to **INSERT every signal straight into the same Postgres instance** that already guards wallets, ledgers, and sessions. That works until latency on the **money path** starts to wobble and nightly reports begin to **fight** checkout-sized transactions for the same buffers and WAL. The patterns below are what teams reach for when “just add an index” stops helping.
 
-**Related:** [API gateway & messaging patterns](../microservices/api-gateway) · [Sail: queues & RabbitMQ](../tools/sail-queues)
+**Related:** [Message queues compared: Redis, RabbitMQ, Kafka](message-queues-compared) · [API gateway & messaging patterns](../microservices/api-gateway) · [Sail: queues & RabbitMQ](../tools/sail-queues)
 
 ## Contents
 
