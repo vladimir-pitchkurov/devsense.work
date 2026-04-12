@@ -50,7 +50,7 @@ class Layout extends Component
             return URL::current();
         }
 
-        $routable = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show'];
+        $routable = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show'];
         if (! in_array($name, $routable, true)) {
             return URL::current();
         }
@@ -124,7 +124,7 @@ class Layout extends Component
             return [];
         }
 
-        $allowed = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show'];
+        $allowed = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show'];
         if (! in_array($name, $allowed, true)) {
             return [];
         }
@@ -244,6 +244,15 @@ class Layout extends Component
             'microservices.show' => $this->breadcrumbCurrent !== null ? [
                 ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
                 ['label' => __('ui.seo.breadcrumb_microservices'), 'url' => SiteUrl::route('microservices.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'architecture.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_architecture'), 'url' => null],
+            ],
+            'architecture.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_architecture'), 'url' => SiteUrl::route('architecture.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
             default => [],

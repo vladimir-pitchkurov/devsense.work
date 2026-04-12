@@ -8,6 +8,8 @@ return [
         'tools' => 'Tools',
         'microservices' => 'Microservices',
         'microservices_short' => 'MS',
+        'architecture' => 'Architecture',
+        'architecture_short' => 'Arch.',
     ],
     'footer' => [
         'branch' => 'Branch',
@@ -23,12 +25,13 @@ return [
         'php_guide_missing' => 'No guide for PHP :version is available yet.',
         'tools_guide_missing' => 'No tool guide for “:slug” is available yet.',
         'microservices_guide_missing' => 'No microservices guide for “:slug” is available yet.',
+        'architecture_guide_missing' => 'No architecture guide for “:slug” is available yet.',
     ],
     'welcome' => [
         'title' => 'DevSense — PHP guides, Sail tools & microservices',
         'description' => 'PHP version guides, Laravel Sail tooling, and microservices notes: API gateways, gRPC, and message queues.',
         'hero_title' => 'DevSense',
-        'hero_lead' => 'PHP migration guides from 5.3 through 8.x, Laravel Sail for local Docker stacks, and practical microservice edge patterns.',
+        'hero_lead' => 'PHP migration guides from 5.3 through 8.x, Laravel Sail for local Docker, microservice edge patterns, and architecture notes on load and data flow.',
         'section_aria' => 'Main sections',
         'card_php_title' => 'PHP version guides',
         'card_php_excerpt' => 'Syntax, deprecations, and breaking changes per release—with examples and checklists when you upgrade.',
@@ -39,6 +42,9 @@ return [
         'card_microservices_title' => 'Microservices — API gateway & messaging',
         'card_microservices_excerpt' => 'PHP at the edge versus Node, Go, and Rust gateways; gRPC versus RabbitMQ for service-to-service calls—with trade-offs and recipes.',
         'card_microservices_cta' => 'Browse microservices',
+        'card_architecture_title' => 'Architecture — load, event streams, and analytics',
+        'card_architecture_excerpt' => 'Keep transactional databases healthy under millions of events: buffering, brokers, and splitting OLTP from reporting.',
+        'card_architecture_cta' => 'Browse architecture',
     ],
     'php_show' => [
         'back_to_guides' => 'All PHP version guides',
@@ -170,12 +176,30 @@ return [
         'back' => 'All microservices guides',
         'nav_aria' => 'Microservices guides navigation',
     ],
+    'architecture_index' => [
+        'title' => 'Software architecture | DevSense',
+        'description' => 'System design under load: event ingestion, buffering, message brokers, and separating OLTP from analytics.',
+        'hero_title' => 'Architecture',
+        'hero_lead' => 'Guides on resilient data and service shapes—focused on what actually breaks in production.',
+        'cta' => 'Open guide',
+        'cards' => [
+            'high_load_event_ingestion' => [
+                'title' => 'High-load event streams: buffers, Redis Streams, Kafka, and splitting OLTP from OLAP',
+                'excerpt' => 'Clicks, bets, and spins at scale: where to land traffic first, how to protect the primary database, and where dashboards should read from.',
+            ],
+        ],
+    ],
+    'architecture_show' => [
+        'back' => 'All architecture guides',
+        'nav_aria' => 'Architecture guides navigation',
+    ],
     'seo' => [
         'breadcrumb_aria' => 'Breadcrumb',
         'breadcrumb_home' => 'Home',
         'breadcrumb_php_guides' => 'PHP guides',
         'breadcrumb_tools' => 'Tools',
         'breadcrumb_microservices' => 'Microservices',
+        'breadcrumb_architecture' => 'Architecture',
     ],
     'tools' => [
         'sail' => [
