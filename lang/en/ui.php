@@ -178,7 +178,7 @@ return [
     ],
     'architecture_index' => [
         'title' => 'Software architecture | DevSense',
-        'description' => 'System design under load: event ingestion, buffering, message brokers, database performance, indexes, scaling, and separating OLTP from analytics.',
+        'description' => 'System design under load: event ingestion, buffering, message brokers, database performance, connection pooling for PHP, indexes, scaling, and separating OLTP from analytics.',
         'hero_title' => 'Architecture',
         'hero_lead' => 'Guides on resilient data and service shapes—focused on what actually breaks in production.',
         'cta' => 'Open guide',
@@ -194,6 +194,10 @@ return [
             'database_performance_and_scaling' => [
                 'title' => 'Databases under load: query tuning, indexes, MySQL vs Postgres, and scaling trade-offs',
                 'excerpt' => 'EXPLAIN-driven optimization, index types, why heavy logic in the DB hurts velocity, replication and sharding costs, and how Postgres and MySQL differ in practice.',
+            ],
+            'php_database_connection_pooling' => [
+                'title' => 'PHP apps and the database connection bottleneck: poolers, proxies, and what actually helps',
+                'excerpt' => 'Why FPM and workers multiply DB sessions, how PgBouncer, ProxySQL, and RDS-style proxies sit in the middle, and Laravel-ready notes on transaction pooling and prepared statements.',
             ],
         ],
     ],
