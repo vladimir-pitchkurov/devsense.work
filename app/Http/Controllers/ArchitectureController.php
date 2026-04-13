@@ -18,7 +18,11 @@ class ArchitectureController extends Controller
      *
      * @var list<string>
      */
-    private const ARCHITECTURE_SLUG_ORDER = ['high-load-event-ingestion', 'message-queues-compared'];
+    private const ARCHITECTURE_SLUG_ORDER = [
+        'high-load-event-ingestion',
+        'message-queues-compared',
+        'database-performance-and-scaling',
+    ];
 
     /**
      * Route constraint regex fragment for `{slug}` (alternation of known slugs).

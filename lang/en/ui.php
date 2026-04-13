@@ -178,7 +178,7 @@ return [
     ],
     'architecture_index' => [
         'title' => 'Software architecture | DevSense',
-        'description' => 'System design under load: event ingestion, buffering, message brokers, and separating OLTP from analytics.',
+        'description' => 'System design under load: event ingestion, buffering, message brokers, database performance, indexes, scaling, and separating OLTP from analytics.',
         'hero_title' => 'Architecture',
         'hero_lead' => 'Guides on resilient data and service shapes—focused on what actually breaks in production.',
         'cta' => 'Open guide',
@@ -190,6 +190,10 @@ return [
             'message_queues_compared' => [
                 'title' => 'Queues & brokers: Redis, RabbitMQ, Kafka, and the wider market',
                 'excerpt' => 'Choosing async backends for Laravel and other stacks—what fits tasks versus event logs, overkill scenarios, and operational gotchas.',
+            ],
+            'database_performance_and_scaling' => [
+                'title' => 'Databases under load: query tuning, indexes, MySQL vs Postgres, and scaling trade-offs',
+                'excerpt' => 'EXPLAIN-driven optimization, index types, why heavy logic in the DB hurts velocity, replication and sharding costs, and how Postgres and MySQL differ in practice.',
             ],
         ],
     ],
