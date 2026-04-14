@@ -22,6 +22,8 @@ class ArchitectureController extends Controller
         'high-load-event-ingestion',
         'message-queues-compared',
         'database-performance-and-scaling',
+        'php-database-connection-pooling',
+        'observability-monitoring-laravel',
     ];
 
     /**
