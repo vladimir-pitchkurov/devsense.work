@@ -23,6 +23,7 @@ class ArchitectureController extends Controller
         'message-queues-compared',
         'database-performance-and-scaling',
         'php-database-connection-pooling',
+        'observability-monitoring-laravel',
     ];
 
     /**
