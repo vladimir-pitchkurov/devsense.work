@@ -19,6 +19,7 @@ class ArchitectureController extends Controller
      * @var list<string>
      */
     private const ARCHITECTURE_SLUG_ORDER = [
+        'web-attacks-and-prevention',
         'high-load-event-ingestion',
         'message-queues-compared',
         'database-performance-and-scaling',
