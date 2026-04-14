@@ -183,6 +183,10 @@ return [
         'hero_lead' => 'Guides on resilient data and service shapes—focused on what actually breaks in production.',
         'cta' => 'Open guide',
         'cards' => [
+            'web_attacks_and_prevention' => [
+                'title' => 'Web attacks & defenses: XSS, CSRF, SQLi, SSRF, IDOR, uploads',
+                'excerpt' => 'The most common real-world threats: injections, XSS/CSRF, access control, file uploads, SSRF, and configuration pitfalls. Practical mitigations and checklists.',
+            ],
             'high_load_event_ingestion' => [
                 'title' => 'High-load event streams: buffers, Redis Streams, Kafka, and splitting OLTP from OLAP',
                 'excerpt' => 'Clicks, bets, and spins at scale: where to land traffic first, how to protect the primary database, and where dashboards should read from.',
