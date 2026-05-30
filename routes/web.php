@@ -28,6 +28,10 @@ Route::get('/', function () {
     return redirect('/'.$locale, 301);
 });
 
+Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
 Route::prefix('{locale}')
     ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
     ->middleware(SetLocale::class)
@@ -36,6 +40,16 @@ Route::prefix('{locale}')
         Route::get('/', function () {
             return view('welcome');
         })->name('home');
+
+        Route::prefix('admin')->middleware(['auth', 'can:access-admin'])->group(function () {
+            Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
+            Route::get('/articles/create', [\App\Http\Controllers\Admin\ArticlesController::class, 'create'])->name('admin.articles.create');
+            Route::post('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'store'])->name('admin.articles.store');
+            Route::get('/articles/{article}/edit', [\App\Http\Controllers\Admin\ArticlesController::class, 'edit'])->name('admin.articles.edit');
+            Route::put('/articles/{article}', [\App\Http\Controllers\Admin\ArticlesController::class, 'update'])->name('admin.articles.update');
+            Route::delete('/articles/{article}', [\App\Http\Controllers\Admin\ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
+            Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('admin.media.upload');
+        });
 
         Route::prefix('php')->group(function () {
             Route::get('/', [PhpVersionController::class, 'index'])->name('php.index');

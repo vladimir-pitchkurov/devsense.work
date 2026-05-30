@@ -109,7 +109,22 @@
     @endproduction
 <header class="header sticky">
     <div class="header__container">
-        <a href="{{ route('home') }}" class="header__logo">{{ $siteName }}</a>
+        <a href="{{ route('home') }}" class="header__logo">
+            <svg class="header__logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+                <defs>
+                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--primary-color)" />
+                        <stop offset="100%" stop-color="var(--primary-hover)" />
+                    </linearGradient>
+                </defs>
+                <circle cx="16" cy="16" r="14" stroke="var(--border-color)" stroke-width="1.5" />
+                <circle cx="16" cy="16" r="14" stroke="url(#logo-gradient)" stroke-width="1.5" stroke-dasharray="30 60" stroke-linecap="round" />
+                <path d="M11 10h4c2.2 0 4 1.8 4 4v0c0 2.2-1.8 4-4 4h-4V10z" stroke="url(#logo-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M13 18h2c1.1 0 2 .9 2 2v0c0 1.1-.9 2-2 2h-2" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M18 10l-3 4h3l-3 4" stroke="var(--primary-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>{{ $siteName }}</span>
+        </a>
 
         <div class="header__controls">
             <language-switcher></language-switcher>
