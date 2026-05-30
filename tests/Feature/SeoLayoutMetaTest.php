@@ -127,4 +127,17 @@ class SeoLayoutMetaTest extends TestCase
         $this->assertStringContainsString('name="robots"', $html);
         $this->assertStringContainsString('noindex, nofollow', $html);
     }
+
+    public function test_php_guide_page_includes_faq_page_schema(): void
+    {
+        config(['app.url' => 'https://seo.test']);
+
+        $response = $this->get('/en/php/8.5');
+
+        $response->assertOk();
+        $html = (string) $response->getContent();
+
+        $this->assertStringContainsString('FAQPage', $html);
+        $this->assertStringContainsString('What is the Pipe Operator in PHP 8.5?', $html);
+    }
 }

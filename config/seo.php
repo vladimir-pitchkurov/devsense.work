@@ -75,4 +75,27 @@ return [
         'bg' => 'bg_BG',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Author Profile & E-E-A-T Configuration
+    |--------------------------------------------------------------------------
+    */
+    'author' => [
+        'name' => env('SEO_AUTHOR_NAME', 'Vladimir Pichkurov'),
+        'job_title' => env('SEO_AUTHOR_JOB_TITLE', 'Software Engineer'),
+        'sameAs' => [
+            'https://github.com/vladimir-pitchkurov',
+            'https://linkedin.com/in/vladimir-pitchkurov',
+            'https://habr.com/ru/users/vladimir-pitchkurov',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IndexNow API Configurations
+    |--------------------------------------------------------------------------
+    */
+    'indexnow_key' => env('SEO_INDEXNOW_KEY', '8d2f7850a1e34bcf9db7519bb8d2ef5a'),
+    'indexnow_enabled' => filter_var(env('SEO_INDEXNOW_ENABLED', false), FILTER_VALIDATE_BOOL),
+
 ];

@@ -49,6 +49,12 @@ class MarkdownContentService
             $environment->addExtension(new TableExtension);
             $environment->addExtension(new FrontMatterExtension);
 
+            $environment->addRenderer(
+                \League\CommonMark\Extension\CommonMark\Node\Block\FencedCode::class,
+                new \App\Support\CommonMark\CustomCodeBlockRenderer(),
+                100
+            );
+
             $converter = new MarkdownConverter($environment);
             $markdown = File::get($path);
 

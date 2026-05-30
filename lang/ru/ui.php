@@ -26,6 +26,7 @@ return [
         'tools_guide_missing' => 'Гайд для инструмента «:slug» ещё не опубликован или недоступен.',
         'microservices_guide_missing' => 'Гайд по микросервисам «:slug» ещё не опубликован или недоступен.',
         'architecture_guide_missing' => 'Гайд по архитектуре «:slug» ещё не опубликован или недоступен.',
+        'job_missing' => 'Вакансия «:slug» ещё не опубликована или недоступен.',
     ],
     'welcome' => [
         'title' => 'DevSense — PHP-гайды, Sail и микросервисы',
@@ -45,6 +46,9 @@ return [
         'card_architecture_title' => 'Архитектура — нагрузка, потоки событий и аналитика',
         'card_architecture_excerpt' => 'Как не убить транзакционную БД миллионами ивентов, зачем буферы и брокеры, и как развести OLTP с отчётами.',
         'card_architecture_cta' => 'К разделу архитектуры',
+        'card_jobs_title' => 'Вакансии и Карьера',
+        'card_jobs_excerpt' => 'Присоединяйтесь к нашей сети профессиональных разработчиков — исследуйте открытые позиции в PHP, Laravel, DevOps.',
+        'card_jobs_cta' => 'Смотреть вакансии',
     ],
     'php_show' => [
         'back_to_guides' => 'Все гайды по версиям PHP',
@@ -220,6 +224,7 @@ return [
         'breadcrumb_tools' => 'Инструменты',
         'breadcrumb_microservices' => 'Микросервисы',
         'breadcrumb_architecture' => 'Архитектура',
+        'breadcrumb_jobs' => 'Вакансии',
     ],
     'tools' => [
         'sail' => [

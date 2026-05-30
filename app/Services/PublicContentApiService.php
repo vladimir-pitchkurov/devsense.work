@@ -22,12 +22,12 @@ class PublicContentApiService
     /**
      * @var list<string>
      */
-    private const SUPPORTED_CATEGORIES = ['php', 'tools', 'microservices', 'architecture'];
+    private const SUPPORTED_CATEGORIES = ['php', 'tools', 'microservices', 'architecture', 'jobs'];
 
     /**
      * @return list<array{locale:string,category:string,slug:string,modified:int,path:string}>
      */
-    private function scanIndex(): array
+    public function scanIndex(): array
     {
         $entries = [];
         foreach (self::SUPPORTED_LOCALES as $locale) {
@@ -263,7 +263,10 @@ class PublicContentApiService
         return "{$locale}:{$category}:{$slug}";
     }
 
-    private function canonicalUrl(string $locale, string $category, string $slug): string
+    /**
+     * Get the canonical URL for a content page.
+     */
+    public function canonicalUrl(string $locale, string $category, string $slug): string
     {
         $base = rtrim((string) config('app.url', 'https://devsense.work'), '/');
 
@@ -274,6 +277,7 @@ class PublicContentApiService
                 ? "{$base}/{$locale}/microservices"
                 : "{$base}/{$locale}/microservices/{$slug}",
             'architecture' => "{$base}/{$locale}/architecture/{$slug}",
+            'jobs' => "{$base}/{$locale}/jobs/{$slug}",
             default => "{$base}/{$locale}",
         };
     }

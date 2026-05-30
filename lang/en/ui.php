@@ -26,6 +26,7 @@ return [
         'tools_guide_missing' => 'No tool guide for “:slug” is available yet.',
         'microservices_guide_missing' => 'No microservices guide for “:slug” is available yet.',
         'architecture_guide_missing' => 'No architecture guide for “:slug” is available yet.',
+        'job_missing' => 'No job vacancy matching “:slug” is available yet.',
     ],
     'welcome' => [
         'title' => 'DevSense — PHP guides, Sail tools & microservices',
@@ -45,6 +46,9 @@ return [
         'card_architecture_title' => 'Architecture — load, event streams, and analytics',
         'card_architecture_excerpt' => 'Keep transactional databases healthy under millions of events: buffering, brokers, and splitting OLTP from reporting.',
         'card_architecture_cta' => 'Browse architecture',
+        'card_jobs_title' => 'Careers & Jobs',
+        'card_jobs_excerpt' => 'Join our network of professional developers—explore open roles in PHP, Laravel, DevOps, and modern architecture.',
+        'card_jobs_cta' => 'Browse open positions',
     ],
     'php_show' => [
         'back_to_guides' => 'All PHP version guides',
@@ -220,6 +224,7 @@ return [
         'breadcrumb_tools' => 'Tools',
         'breadcrumb_microservices' => 'Microservices',
         'breadcrumb_architecture' => 'Architecture',
+        'breadcrumb_jobs' => 'Jobs',
     ],
     'tools' => [
         'sail' => [

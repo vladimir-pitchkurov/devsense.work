@@ -1,24 +1,80 @@
 .code-block {
     background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
     border-left: 4px solid var(--code-border-accent);
-    border-radius: 0 8px 8px 0;
-    padding: 1rem;
+    border-radius: 8px;
     margin: 1.5rem -1rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 
     @media (min-width: 768px) {
         margin: 1.5rem 0;
-        padding: 1.25rem 1.5rem;
+    }
+
+    &:hover {
+        border-color: var(--code-border-accent);
+        box-shadow: 0 8px 24px var(--shadow-hover);
+        transform: translateY(-1px);
+    }
+}
+
+.code-block__header {
+    background-color: var(--code-header-bg);
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.code-block__filename {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+        content: "</>";
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        background-color: var(--primary-glow);
+        color: var(--primary-color);
+        padding: 0.15rem 0.35rem;
+        border-radius: 4px;
+        letter-spacing: -0.5px;
     }
 }
 
 .code-block__code {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.85rem;
-    white-space: pre;
+    margin: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 1rem 1.25rem !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 
     @media (min-width: 768px) {
-        font-size: 0.9rem;
+        padding: 1.25rem 1.5rem !important;
+    }
+
+    code {
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.85rem;
+        color: var(--code-text);
+        background: none !important;
+        padding: 0 !important;
+        white-space: pre;
+
+        @media (min-width: 768px) {
+            font-size: 0.9rem;
+        }
     }
 }
+

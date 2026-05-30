@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'api.accesslog' => \App\Http\Middleware\ApiAccessLog::class,
             'auth.apikey' => \App\Http\Middleware\RequireApiKey::class,
+            'llm.friendly' => \App\Http\Middleware\LlmFriendlyMiddleware::class,
         ]);
 
         $trusted = env('TRUSTED_PROXIES');

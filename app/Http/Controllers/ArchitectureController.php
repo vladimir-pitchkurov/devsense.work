@@ -99,6 +99,7 @@ class ArchitectureController extends Controller
                     '@type' => 'WebPage',
                     '@id' => $canonicalUrl,
                 ],
+                'faq' => $meta['faq'] ?? null,
             ],
         ]);
     }

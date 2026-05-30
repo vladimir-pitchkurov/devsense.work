@@ -50,7 +50,11 @@ class Layout extends Component
             return URL::current();
         }
 
-        $routable = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show'];
+        $routable = [
+            'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
+            'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
+            'jobs.index', 'jobs.show'
+        ];
         if (! in_array($name, $routable, true)) {
             return URL::current();
         }
@@ -124,7 +128,11 @@ class Layout extends Component
             return [];
         }
 
-        $allowed = ['home', 'php.index', 'php.show', 'tools.index', 'tools.show', 'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show'];
+        $allowed = [
+            'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
+            'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
+            'jobs.index', 'jobs.show'
+        ];
         if (! in_array($name, $allowed, true)) {
             return [];
         }
@@ -255,6 +263,15 @@ class Layout extends Component
                 ['label' => __('ui.seo.breadcrumb_architecture'), 'url' => SiteUrl::route('architecture.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
+            'jobs.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_jobs') ?? 'Jobs', 'url' => null],
+            ],
+            'jobs.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_jobs') ?? 'Jobs', 'url' => SiteUrl::route('jobs.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
             default => [],
         };
     }
@@ -298,6 +315,16 @@ class Layout extends Component
         $orgId = $root.'#organization';
         $websiteId = $root.'#website';
         $webPageId = $this->canonical.'#webpage';
+        $authorId = $root.'#author';
+
+        $authorConfig = config('seo.author', []);
+        $authorNode = [
+            '@type' => 'Person',
+            '@id' => $authorId,
+            'name' => $authorConfig['name'] ?? 'Vladimir Pitchkurov',
+            'jobTitle' => $authorConfig['job_title'] ?? 'Software Engineer',
+            'sameAs' => $authorConfig['sameAs'] ?? [],
+        ];
 
         $graph = [
             [
@@ -313,6 +340,7 @@ class Layout extends Component
                 'url' => $root,
                 'publisher' => ['@id' => $orgId],
             ],
+            $authorNode,
         ];
 
         $breadcrumb = $this->breadcrumbJsonLd();
@@ -320,6 +348,7 @@ class Layout extends Component
             $graph[] = $breadcrumb;
         }
 
+        $faqData = null;
         if ($this->structuredData === null) {
             $graph[] = [
                 '@type' => 'WebPage',
@@ -333,10 +362,48 @@ class Layout extends Component
             ];
         } else {
             $article = $this->structuredData;
+
+            // Extract FAQ data if present in metadata
+            if (isset($article['faq'])) {
+                $faqData = $article['faq'];
+                unset($article['faq']);
+            }
+
             $article['@id'] = $this->canonical.'#article';
             $article['publisher'] = ['@id' => $orgId];
             $article['isPartOf'] = ['@id' => $websiteId];
+
+            if (in_array($article['@type'] ?? '', ['TechArticle', 'BlogPosting', 'JobPosting'], true)) {
+                $article['author'] = ['@id' => $authorId];
+            }
+
+            if (($article['@type'] ?? '') === 'JobPosting') {
+                $article['hiringOrganization'] = ['@id' => $orgId];
+            }
+
             $graph[] = $article;
+        }
+
+        if (is_array($faqData) && $faqData !== []) {
+            $questions = [];
+            foreach ($faqData as $item) {
+                if (isset($item['question'], $item['answer'])) {
+                    $questions[] = [
+                        '@type' => 'Question',
+                        'name' => $item['question'],
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $item['answer'],
+                        ],
+                    ];
+                }
+            }
+            if ($questions !== []) {
+                $graph[] = [
+                    '@type' => 'FAQPage',
+                    'mainEntity' => $questions,
+                ];
+            }
         }
 
         return [

@@ -84,6 +84,7 @@ class PhpToolsController extends Controller
                     '@type' => 'WebPage',
                     '@id' => $canonicalUrl,
                 ],
+                'faq' => $meta['faq'] ?? null,
             ],
         ]);
     }

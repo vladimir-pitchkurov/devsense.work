@@ -70,38 +70,46 @@ const changeLanguage = (event: Event): void => {
 
 .lang-switcher__select {
     appearance: none;
-    background-color: transparent;
+    background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-color);
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.3rem 1.8rem 0.3rem 0.8rem;
-    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 1.8rem 0.4rem 0.85rem;
+    border-radius: 9999px;
     cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s, box-shadow 0.3s;
     outline: none;
 }
 
 .lang-switcher::after {
     content: "▼";
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     color: var(--text-muted);
     position: absolute;
-    right: 0.6rem;
+    right: 0.8rem;
     pointer-events: none;
+    transition: color 0.2s;
 }
 
 .lang-switcher__select:hover {
-    background-color: var(--page-bg);
+    background-color: var(--code-header-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px var(--shadow-hover);
+    transform: translateY(-1px);
 }
 
 .lang-switcher__select:focus {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 .lang-switcher__select option {
     background-color: var(--bg-color);
     color: var(--text-color);
+    font-weight: normal;
 }
+
 </style>
