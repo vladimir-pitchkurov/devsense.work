@@ -1,92 +1,230 @@
 ---
-title: "Laravel Sail: очереди, Horizon, Redis, RabbitMQ и failed jobs | DevSense"
-description: "Запуск Laravel-очередей в Sail: sync/redis/database, queue:work, Horizon, RabbitMQ через пакеты, failed_jobs, queue:restart и отличия от production."
+title: "Laravel Sail: воркеры очередей, Horizon, Redis, RabbitMQ и failed jobs | DevSense"
+description: "Запуск очередей Laravel внутри Sail: сравнение sync, redis и database, локальный запуск queue:work и Horizon, RabbitMQ с комьюнити-драйверами, failed_jobs, queue:restart и отличия от продакшена."
+faq:
+  - question: "Why are my background jobs not executing in Sail?"
+    answer: "В отличие от драйвера 'sync', драйверы 'database' или 'redis' требуют работающего процесса воркера. Вам нужно запустить контейнер воркера или выполнить 'sail artisan queue:work' в терминале."
+  - question: "Why do my changes in Job classes not take effect in the queue?"
+    answer: "Воркеры очередей Laravel загружают код приложения в память один раз. При изменении кода необходимо выполнить команду 'sail artisan queue:restart', чтобы принудительно перезагрузить воркеры."
+  - question: "How do I run the scheduler in Laravel Sail without a host cron job?"
+    answer: "Вы можете запустить команду 'sail run --rm laravel.test php artisan schedule:work' в отдельном окне терминала, которая будет опрашивать и запускать задачи каждую минуту локально."
+  - question: "How does queue management in Sail differ from production?"
+    answer: "В Sail воркеры запускаются на переднем плане вашего терминала и останавливаются при его закрытии. На продакшене для обеспечения постоянной работы используются менеджеры процессов, такие как Supervisor или Kubernetes."
 ---
 
 # Sail: очереди и воркеры
 
-Работа с **очередями** внутри Sail. Контейнеры — в [Базы данных и сервисы](sail-databases#networking), переменные окружения — в [Окружения и деплой](sail-env-deploy#env-files).
+Вы запускаете фоновую задачу в своем приложении Laravel, но ничего не происходит. На странице задачи отображается статус "В ожидании", а записи в базе данных остаются прежними. И тут вас осеняет: в контейнеризированной среде фоновые задачи не выполняются сами по себе. Без активного процесса воркера (worker), запущенного внутри сети контейнеров Sail, ваши очереди — это просто мертвые записи в БД или молчащие списки Redis.
 
-**Навигация:** [Все инструменты](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
+Попытка запустить воркеры очередей и планировщик задач непосредственно на хост-системе завершится ошибкой, так как у них не будет доступа к базам данных, переменным окружения и PHP-расширениям внутри контейнеров. Чтобы полностью воспроизвести поведение продакшена, вы должны запускать процессы воркеров и управлять ими внутри сети Compose.
+
+В этом руководстве мы покажем, как настраивать подключения к очередям, запускать воркеры и Horizon, обрабатывать сбои задач и сбрасывать устаревший кеш кода в воркерах.
+
+**Навигация:** [Все инструменты](../) · [Sail обзор](sail#what-sail-is) · [Базы данных](sail-databases#networking) · [Env и деплой](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Содержание
 
 * [Драйверы](#connections)
-* [`queue:work`](#queue-work)
-* [Horizon](#horizon)
-* [RabbitMQ](#rabbitmq)
-* [Failed jobs](#failed-jobs)
-* [`queue:restart`](#restart)
-* [Планировщик](#scheduler)
-* [Продакшен](#production)
+* [Запуск `queue:work` в Sail](#queue-work)
+* [Horizon (Redis)](#horizon)
+* [RabbitMQ и AMQP-пакеты](#rabbitmq)
+* [Невыполненные задачи и повторы (Failed jobs)](#failed-jobs)
+* [Изменение кода и `queue:restart`](#restart)
+* [Планировщик (`schedule:run`)](#scheduler)
+* [Отличия от продакшена](#production)
+* [Частые ошибки](#common-mistakes)
+* [Вопросы для самопроверки](#self-check)
 
 ---
 
 <a id="connections"></a>
 ## Драйверы
 
-| Драйвер | Заметки |
-|---------|---------|
-| `sync` | Отладка без воркера |
-| `database` | Таблица `jobs`, нужен воркер |
-| `redis` | Типичный выбор, Horizon |
-| `rabbitmq` | Через пакет + контейнер |
+Выберите драйвер очередей в файле `.env`:
 
-`QUEUE_CONNECTION` в `.env`, затем `sail artisan config:clear`.
+```dotenv
+# .env
+QUEUE_CONNECTION=redis
+```
+
+| Драйвер | Использование в Sail |
+|--------|-------------------|
+| **`sync`** | Синхронная отладка логики задач без запуска воркера. |
+| **`database`** | Простая асинхронная очередь; требует таблицы `jobs` и запущенного воркера. |
+| **`redis`** | Стандартный выбор для продакшена; интегрируется с Horizon; требует службы Redis. |
+| **`rabbitmq`** | Обмен сообщениями по AMQP; требует контейнера RabbitMQ и комьюнити-пакета. |
+
+> [!NOTE]
+> **Кеширование конфигурации**
+> Если вы изменили параметр `QUEUE_CONNECTION` или любые другие переменные очередей, выполните `sail artisan config:clear` или `sail artisan config:cache` для применения изменений в запущенных контейнерах.
 
 ---
 
 <a id="queue-work"></a>
-## `queue:work`
+## Запуск `queue:work` в Sail
+
+Для обработки задач откройте отдельное окно терминала и запустите:
 
 ```bash
-sail artisan queue:work redis --queue=high,default --tries=3
+# Terminal
+sail artisan queue:work
 ```
 
-`--once` для одной задачи. Несколько очередей — несколько процессов или флаги `--queue`.
+Для более тонкой настройки укажите подключение и параметры запуска:
+
+```bash
+# Terminal
+sail artisan queue:work redis --queue=high,default --tries=3 --timeout=90
+```
+
+Чтобы выполнить только одну задачу и завершить процесс (полезно при отладке):
+
+```bash
+# Terminal
+sail artisan queue:work --once
+```
 
 ---
 
 <a id="horizon"></a>
-## Horizon
+## Horizon (Redis)
 
-`QUEUE_CONNECTION=redis`, затем `sail artisan horizon`. На проде — supervisor. Локально останов — Ctrl+C.
+Laravel Horizon предоставляет удобный веб-интерфейс и конфигурацию на основе кода для очередей Redis.
+
+1. Установите Horizon через Composer:
+   ```bash
+   sail composer require laravel/horizon
+   sail artisan horizon:install
+   ```
+2. Запустите Horizon внутри контейнера:
+
+```bash
+# Terminal
+sail artisan horizon
+```
+
+Панель управления будет доступна по адресу `http://localhost/horizon`. В процессе разработки Horizon останавливается нажатием клавиш `Ctrl+C`.
 
 ---
 
 <a id="rabbitmq"></a>
-## RabbitMQ
+## RabbitMQ и AMQP-пакеты
 
-Поставьте [сервис в compose](sail-databases#rabbitmq-sidecar), пакет AMQP, `sail artisan queue:work rabbitmq`. Семантика отличается от Redis — тестируйте задержки и повторы.
+Laravel не содержит встроенного драйвера для RabbitMQ. Для использования AMQP:
+
+1. Добавьте службу RabbitMQ в файл `docker-compose.yml` ([см. рецепты баз данных](sail-databases#rabbitmq-sidecar)).
+2. Установите поддерживаемый комьюнити-пакет (например, `vyuldashev/laravel-queue-rabbitmq`).
+3. Задайте параметры подключения:
+
+```dotenv
+# .env
+QUEUE_CONNECTION=rabbitmq
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+```
+
+4. Запустите обработку:
+   ```bash
+   sail artisan queue:work rabbitmq
+   ```
 
 ---
 
 <a id="failed-jobs"></a>
-## Failed jobs
+## Невыполненные задачи и повторы (Failed jobs)
 
-`sail artisan queue:failed`, `queue:retry {id}`, `queue:flush`. Настройте `$tries`, `$timeout`, `backoff` на джобах.
+Если фоновая задача завершается с исключением, Laravel записывает информацию о ней в таблицу `failed_jobs`.
+
+- Просмотреть список невыполненных задач:
+  ```bash
+  sail artisan queue:failed
+  ```
+- Запустить задачу повторно по ID:
+  ```bash
+  sail artisan queue:retry 5
+  ```
+- Очистить все невыполненные задачи:
+  ```bash
+  sail artisan queue:flush
+  ```
 
 ---
 
 <a id="restart"></a>
-## `queue:restart`
+## Изменение кода и `queue:restart`
 
-После смены кода: `sail artisan queue:restart`. Для частых итераций — `--max-jobs=1` или `--once`.
+Воркеры очередей Laravel загружают фреймворк и код приложения в память один раз и работают в бесконечном цикле. Если вы измените файл задачи (Job), запущенный воркер продолжит выполнять старую версию кода из памяти.
+
+После каждого сохранения изменений в коде перезапускайте воркеры:
+
+```bash
+# Terminal
+sail artisan queue:restart
+```
+
+> [!NOTE]
+> **Автоперезапуск во время разработки**
+> Чтобы не вводить `queue:restart` постоянно при активной локальной разработке, вы можете запустить воркер с флагами `--max-jobs=1` или `--once`.
 
 ---
 
 <a id="scheduler"></a>
-## Планировщик
+## Планировщик (`schedule:run`)
 
-Cron в Sail нет: `sail artisan schedule:run` вручную или `schedule:work` в отдельном терминале. На сервере — cron каждую минуту.
+Sail не содержит автоматически запущенного системного демона cron. Для выполнения запланированных задач локально у вас есть два пути:
+
+1. Запускать планировщик вручную:
+   ```bash
+   sail artisan schedule:run
+   ```
+2. Запустить непрерывный цикл опроса в фоновом режиме:
+
+```bash
+# Terminal
+sail run --rm laravel.test php artisan schedule:work
+```
 
 ---
 
 <a id="production"></a>
-## Продакшен
+## Отличия от продакшена
 
-На сервере воркеры под **supervisor**/K8s, масштабирование, кластер Redis/RabbitMQ. Sail — для разработки и интеграционных проверок.
+| Тема | Sail (локально) | Продакшен |
+|-------|------------------|------------------------|
+| **Менеджер процессов** | Вручную на переднем плане | Демон **Supervisor** или systemd |
+| **Масштабирование** | Один контейнер Docker | Несколько контейнеров / автоскейлинг Kubernetes |
+| **Отказоустойчивость** | Ручной перезапуск контейнера | Резервные узлы и кластеризация |
 
 ---
 
-[Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#env-files) · [← Все инструменты](../)
+## ⚠️ Частые ошибки
+
+**1. Изменение кода задачи без перезапуска воркера**
+Вы исправили ошибку в классе Job, но обработчик очередей продолжает выдавать старую ошибку.
+*Решение:* Воркер закешировал файлы PHP. Выполните `sail artisan queue:restart`.
+
+**2. Запуск `php artisan queue:work` в локальном терминале хоста**
+Запуск команды напрямую на вашей машине приведет к ошибке из-за отсутствия драйверов баз данных или невозможности разрешить внутренние имена хостов контейнеров, такие как `redis` или `mysql`.
+*Решение:* Всегда добавляйте префикс `sail` для выполнения внутри контейнера: `sail artisan queue:work`.
+
+**3. Использование синхронного драйвера `sync` на постоянной основе**
+Использование `QUEUE_CONNECTION=sync` выполняет задачи мгновенно в рамках HTTP-запроса. Это маскирует проблемы с конкурентностью, таймаутами и сериализацией данных, которые обязательно всплывут на продакшене.
+*Решение:* Используйте `database` или `redis` локально, чтобы соответствовать поведению реального сервера.
+
+---
+
+## 🧠 Вопросы для самопроверки
+
+1. **Почему запущенный воркер очереди не выполняет новый код, который вы только что сохранили на диск?**
+2. **Какое имя хоста нужно указать в файле `.env` для RabbitMQ при работе внутри Sail?**
+3. **Как поддерживать работу планировщика задач Laravel в фоновом режиме без настройки cron на хост-системе?**
+4. **Какую команду artisan нужно выполнить для повторного запуска задачи, завершившейся сбоем?**
+
+<details>
+<summary><b>Показать ответы</b></summary>
+
+1. PHP CLI воркеры загружают фреймворк один раз в память и удерживают его. Они не перечитывают файлы с диска для каждой новой задачи. Требуется перезапуск через `sail artisan queue:restart`.
+2. Нужно использовать имя службы из Compose, то есть `rabbitmq`.
+3. Запустить команду `sail run --rm laravel.test php artisan schedule:work`, которая будет удерживать процесс и вызывать планировщик каждую минуту.
+4. Выполнить команду `sail artisan queue:retry {id}`, где `{id}` — идентификатор задачи из таблицы `failed_jobs`, либо `all` для повтора всех упавших задач.
+</details>
