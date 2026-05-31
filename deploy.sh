@@ -6,7 +6,8 @@ echo "🚀 Начало деплоя..."
 
 php artisan down || true
 
-git pull origin prod
+git fetch origin
+git reset --hard origin/prod
 
 composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
