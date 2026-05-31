@@ -26,6 +26,24 @@ if (empty($files)) {
     exit(0);
 }
 
+// Fallback if GD extension is not installed on the host
+if (!extension_loaded('gd')) {
+    echo "⚠️  GD extension is not loaded. Copying files directly without metadata stripping.\n";
+    foreach ($files as $sourcePath) {
+        $filename  = basename($sourcePath);
+        $targetPath = $targetDir . '/' . $filename;
+        echo "Processing (Copy): {$filename} ... ";
+        $result = copy($sourcePath, $targetPath);
+        if ($result) {
+            echo "✅ Done (Copied)\n";
+        } else {
+            echo "❌ Failed!\n";
+        }
+    }
+    echo "\n✨ All images copied. Output: {$targetDir}\n";
+    exit(0);
+}
+
 foreach ($files as $sourcePath) {
     $filename  = basename($sourcePath);
     $ext       = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
