@@ -16,11 +16,11 @@ php artisan optimize
 
 php artisan migrate --force
 
-# Импорт статей из Markdown-файлов в базу данных (для админки)
-php artisan app:migrate-articles-to-database
-
 # Настройка профиля автора (Vladimir Pichkurov)
 php artisan app:setup-author
+
+# Импорт статей из Markdown-файлов в базу данных (для админки)
+php artisan app:migrate-articles-to-database
 
 # Генерация статического файла sitemap.xml
 php artisan sitemap:write
