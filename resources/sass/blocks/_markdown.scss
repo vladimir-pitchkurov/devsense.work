@@ -37,24 +37,24 @@
         background-color: var(--code-bg);
         border-left: 4px solid var(--code-border-accent);
         border-radius: 0 8px 8px 0;
-        padding: 1.25rem 1.5rem;
-        margin: 2rem -1rem;
+        padding: 1.25rem 1.25rem;
+        margin: 2rem 0;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        box-sizing: border-box;
         box-shadow: 0 4px 6px var(--shadow-color);
         transition: background-color 0.3s ease, border-color 0.3s ease;
 
-        @media (min-width: 768px) {
-            margin: 2rem 0;
-        }
-
         code {
             font-family: 'Fira Code', 'Consolas', monospace;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: var(--code-text);
             background: none;
             padding: 0;
             white-space: pre;
+            word-break: normal;
+            overflow-wrap: normal;
         }
     }
 
@@ -69,22 +69,33 @@
 
     ul, ol {
         margin-bottom: 1.25rem;
-        padding-left: 2rem;
+        padding-left: 1.75rem;
     }
 
     li {
         margin-bottom: 0.5rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
-    // GFM-style tables (league/commonmark TableExtension)
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    p {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    // GFM-style tables — scoped overflow to wrapper only
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 1.5rem 0;
+        max-width: 100%;
+    }
 
     table {
         width: 100%;
         max-width: 100%;
         border-collapse: collapse;
-        margin: 1.5rem 0;
+        margin: 0;
         font-size: 0.9375rem;
         line-height: 1.45;
     }
@@ -113,5 +124,102 @@
 
     tbody tr:hover {
         background-color: rgba(128, 128, 128, 0.08);
+    }
+
+    /* GFM style alert blockquotes */
+    .markdown-alert {
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid transparent;
+        border-radius: 0 8px 8px 0;
+        
+        p {
+            margin: 0;
+            &:not(:last-child) {
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        .markdown-alert-title {
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        &.markdown-alert-note {
+            border-left-color: var(--alert-note-border);
+            background-color: var(--alert-note-bg);
+            .markdown-alert-title {
+                color: var(--alert-note-border);
+            }
+        }
+        
+        &.markdown-alert-warning {
+            border-left-color: var(--alert-warning-border);
+            background-color: var(--alert-warning-bg);
+            .markdown-alert-title {
+                color: var(--alert-warning-border);
+            }
+        }
+        
+        &.markdown-alert-important {
+            border-left-color: var(--alert-important-border);
+            background-color: var(--alert-important-bg);
+            .markdown-alert-title {
+                color: var(--alert-important-border);
+            }
+        }
+    }
+
+    /* Quizzes / Spoilers styling */
+    details {
+        background-color: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        transition: all 0.3s ease;
+        
+        &[open] {
+            summary {
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+                
+                &::after {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+        
+        summary {
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-color);
+            user-select: none;
+            
+            &::-webkit-details-marker {
+                display: none;
+            }
+            
+            &::after {
+                content: "→";
+                font-size: 1.15rem;
+                color: var(--primary-color);
+                transition: transform 0.2s ease;
+            }
+        }
     }
 }

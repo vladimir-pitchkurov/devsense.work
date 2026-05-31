@@ -1,315 +1,247 @@
 ---
-title: "API gateway in PHP vs Node, Go & Rust — gRPC & RabbitMQ | DevSense"
-description: "How to place an API gateway in a microservice mesh: PHP at the edge, alternatives in Node, Go, and Rust, plus internal traffic with gRPC or RabbitMQ—trade-offs, recipes, and operational pitfalls."
+title: "API Gateway Architecture: PHP, Node, Go, Rust, gRPC & RabbitMQ | DevSense"
+description: "How to design an API gateway at the edge of your microservice mesh: comparing PHP, Node, Go, and Rust, managing internal gRPC and RabbitMQ traffic, and avoiding common routing pitfalls."
+published: 2026-04-10
+faq:
+  - question: "What is the main difference between an API Gateway and a Backend-for-Frontend (BFF)?"
+    answer: "An API Gateway is a reverse proxy that sits at the edge of your infrastructure to handle cross-cutting concerns like TLS termination, global rate limiting, routing, and authentication. A BFF (Backend-for-Frontend) is a tailored orchestration layer designed specifically for a single frontend client (e.g., mobile or web) to aggregate data from multiple microservices and return a custom JSON payload, avoiding multiple client-side requests."
+  - question: "Why is Go or Rust often preferred over PHP-FPM for the core API Gateway routing layer?"
+    answer: "Go and Rust compile to lightweight, single-process binaries with high-performance event loops, allowing them to route thousands of concurrent connections with extremely low CPU and memory footprint. PHP-FPM spawns a separate worker process per request, which introduces higher memory overhead per connection and lacks asynchronous concurrency out of the box, making it less efficient for simple routing proxy layers."
+  - question: "How does gRPC handle service-to-service communication differently than REST over HTTP/1.1?"
+    answer: "gRPC uses HTTP/2 for multiplexed, long-lived TCP connections and Protobuf (Protocol Buffers) for binary serialization instead of text-based JSON. This reduces network bandwidth and CPU serialization overhead. Additionally, gRPC enforces strict typed contracts through `.proto` files, which guarantees payload compatibility at compile time."
+  - question: "Why should you use correlation IDs when passing messages through RabbitMQ or gRPC?"
+    answer: "In a distributed system, a single user request can trigger multiple internal gRPC calls and async RabbitMQ messages across several microservices. A correlation ID (e.g., `X-Request-ID`) generated at the API Gateway and propagated in all headers and payloads allows distributed tracing tools to reconstruct the entire execution flow, making it possible to debug failures and locate bottlenecks."
 ---
 
-# API gateway: PHP, Node, Go, Rust — gRPC & RabbitMQ
+# API Gateway Architecture: Languages, gRPC, and RabbitMQ
 
-In a microservice architecture, **“API gateway”** usually means the **public edge**: TLS termination, routing, authentication, rate limits, and sometimes a **BFF** (backend-for-frontend) that shapes responses for web or mobile clients. Behind that edge, services talk to each other over **another** channel—often **gRPC** (synchronous RPC) or **message brokers** such as **RabbitMQ** (asynchronous messaging). None of these choices is “the right stack”; they differ in **operational cost**, **team skills**, and **failure modes**.
+Splitting a monolith into microservices shifts your biggest architectural problems from code organization to network communication. The entry point to this network is the **API Gateway**—the gatekeeper responsible for security, routing, and client contract management. But deciding how to build this edge layer, and how to route messages behind it using **gRPC** or **RabbitMQ**, requires understanding the sharp trade-offs between **throughput**, **developer velocity**, and **operational complexity**.
 
-**Related:** [PHP on the server — FPM, Swoole, workers](../php/runtimes#php-fpm) · [Sail: queues & RabbitMQ](../tools/sail-queues#rabbitmq)
+**Related guides:** [High-load event ingestion](high-load-event-ingestion) · [Message queues compared](message-queues-compared) · [Observability and monitoring](observability-monitoring-laravel)
 
 ## Contents
 
-* [What the gateway is actually doing](#role)
-* [PHP as the gateway layer](#php-gateway)
-* [Node.js at the edge](#node-gateway)
-* [Go for gateways and sidecars](#go-gateway)
-* [Rust when every microsecond counts](#rust-gateway)
-* [Internal calls: gRPC](#grpc)
-* [Internal work: RabbitMQ](#rabbitmq)
-* [When to combine gRPC and queues](#hybrid)
+* [The role of the gateway](#role)
+* [PHP at the edge: features over raw speed](#php-gateway)
+* [Node.js: asynchronous I/O and BFFs](#node-gateway)
+* [Go: the cloud-native standard](#go-gateway)
+* [Rust: maximum throughput and safety](#rust-gateway)
+* [Synchronous internal traffic: gRPC](#grpc)
+* [Asynchronous internal workflows: RabbitMQ](#rabbitmq)
+* [Hybrid architectures](#hybrid)
 * [Comparison snapshot](#comparison)
-* [Concrete recipes](#recipes)
+* [Common Mistakes](#common-mistakes)
+* [Checklist](#checklist)
+* [Self-Test Quiz](#self-test-quiz)
 
 ---
 
 <a id="role"></a>
-## What the gateway is actually doing
+## The role of the gateway
 
-Typical responsibilities:
+An API Gateway is more than a simple reverse proxy. It serves as the single entry point for all client traffic, handling:
 
-1. **Ingress** — HTTP/HTTPS from the internet; optional HTTP/3 at the load balancer.
-2. **Policy** — JWT validation, API keys, IP allowlists, WAF hooks.
-3. **Traffic shaping** — rate limiting, request size caps, timeouts.
-4. **Routing** — path prefixes to upstream services (`/billing/*` → billing cluster).
-5. **Aggregation (optional)** — BFF calls several backends and returns one JSON payload.
-
-You can implement (1)–(5) in **application code** (PHP, Node, Go, Rust) or offload parts to **Envoy**, **Traefik**, **Kong**, **NGINX**, or a cloud API gateway, and keep only the BFF in your language. Many production setups **mix**: nginx terminates TLS, Kong applies plugins, a small Go or PHP service adds domain-specific auth.
+1. **Ingress and Routing** — Terminating TLS, matching request paths, and forwarding them to appropriate internal service clusters.
+2. **Security and Policy** — Checking OAuth/JWT tokens, validating API keys, blocking bad bots, and applying rate limits.
+3. **API Composition (BFF)** — Consolidating multiple downstream microservice responses into a single JSON payload for mobile or web clients.
+4. **Protocol Translation** — Accepting public HTTP/REST and translating it into internal gRPC calls.
 
 ---
 
 <a id="php-gateway"></a>
-## PHP as the gateway layer
+## PHP at the edge: features over raw speed
 
 ### When it fits
-
-* Your team already ships **Laravel** or **Symfony**; you want **one codebase** for public HTTP and some orchestration.
-* The gateway is **not** a dumb proxy at millions of RPS—you need **sessions**, **OAuth flows**, **HTML error pages**, or **server-driven UI** fragments.
-* You accept **FPM’s per-request model** (or Octane) and horizontal scale behind a load balancer.
+Using PHP (Laravel or Symfony) as a gateway works well when your gateway is actually a **BFF** (Backend-for-Frontend) that requires rich business logic, session validation, or HTML rendering, rather than a high-performance proxy.
 
 ### Strengths
-
-* **Fast feature velocity** for auth, validation, translations, and business rules.
-* Rich ecosystem: HTTP clients, OpenAPI tooling, queue integration for async side effects.
-* Straightforward hiring and code review compared to a polyglot edge.
+* High developer velocity — your team uses the same language, tools, and testing practices as the rest of the application.
+* Excellent ecosystem for HTTP client integration, authentication schemes, and template generation.
 
 ### Weaknesses
-
-* **Cold-ish starts per request** under FPM vs a tiny Go binary (mitigated with Opcache, preload, sensible autoloading).
-* Easy to accidentally put **heavy synchronous calls** in middleware and block the worker pool.
-* Long-lived connections (massive WebSocket fan-in) may push you toward **Swoole/Octane** or a dedicated proxy.
-
-### Mini-recipe (Laravel-shaped)
-
-Route groups with middleware for throttle + auth; use the HTTP client for upstream calls:
+* The process-per-request model of PHP-FPM consumes more memory under high concurrency compared to event-driven runtimes.
+* High latency for parallel outbound HTTP calls, unless using asynchronous runtimes like **Swoole** or **Laravel Octane**.
 
 ```php
-<?php
-
+// app/Http/Controllers/GatewayController.php
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
 
-Route::middleware(['throttle:api', 'auth:sanctum'])->prefix('v1')->group(function () {
-    Route::get('/orders/{id}', function (string $id) {
-        $response = Http::timeout(3)
-            ->withHeaders(['X-Internal-Token' => config('services.billing.token')])
-            ->get(config('services.billing.url')."/orders/{$id}");
+Route::middleware(['throttle:api', 'auth:sanctum'])->group(function () {
+    Route::get('/dashboard', function () {
+        // Parallel requests simulation via pool
+        $responses = Http::pool(fn ($pool) => [
+            $pool->as('user')->get('http://user-service/profile'),
+            $pool->as('billing')->get('http://billing-service/invoices'),
+        ]);
 
-        abort_unless($response->successful(), $response->status());
-
-        return $response->json();
+        return response()->json([
+            'profile' => $responses['user']->json(),
+            'invoices' => $responses['billing']->json(),
+        ]);
     });
 });
 ```
 
-**Memory / stability:** treat the gateway like any high-traffic PHP app—avoid unbounded in-memory caches of per-user data, set **timeouts** on every outbound call, and use **`pm.max_requests`** (FPM) or worker recycling (Octane) if extensions leak under load.
-
 ---
 
 <a id="node-gateway"></a>
-## Node.js at the edge
+## Node.js: asynchronous I/O and BFFs
 
 ### When it fits
-
-* You want a **thin BFF** with lots of concurrent I/O to HTTP APIs.
-* Frontend developers contribute to the gateway; **JSON** and **SSR** tooling are first-class.
-* You need a huge npm ecosystem (OpenTelemetry, GraphQL, WebSockets).
+Node.js is designed for non-blocking I/O, making it a strong choice for gateways that orchestrate multiple parallel downstream API calls.
 
 ### Strengths
-
-* Natural fit for **many parallel upstream HTTP** calls with `async/await`.
-* Very fast iteration for **API composition** and prototyping.
+* Fast performance for asynchronous network calls using native async/await.
+* Shared JS/TS ecosystem with frontend teams, making it easy to build and maintain BFF layers.
 
 ### Weaknesses
-
-* **Callback/Promise discipline**—blocking the event loop with CPU-heavy work or sync file I/O hurts everyone.
-* Dependency tree churn; supply-chain and **left-pad**-class risks unless you pin and audit.
-* Runtime upgrades and native addons add ops surface.
-
-### Mini-recipe (Fastify sketch)
-
-```bash
-npm init -y
-npm install fastify @fastify/http-proxy
-```
-
-```js
-import Fastify from 'fastify';
-import proxy from '@fastify/http-proxy';
-
-const app = Fastify({ logger: true });
-
-app.register(proxy, {
-  upstream: 'http://billing.internal',
-  prefix: '/billing',
-  rewritePrefix: '/v1',
-});
-
-await app.listen({ port: 3000, host: '0.0.0.0' });
-```
+* A single CPU-bound middleware (like heavy encryption or large JSON parsing) can block the entire event loop, delaying all other active connections.
+* Package management complexity (npm dependency trees) requires strict auditing.
 
 ---
 
 <a id="go-gateway"></a>
-## Go for gateways and sidecars
+## Go: the cloud-native standard
 
 ### When it fits
-
-* You want a **single static binary**, low RSS, predictable GC, easy cross-compile for Linux containers.
-* The edge does **gRPC** to backends or implements **custom load-balancing** logic.
-* Platform team maintains shared libraries across many services.
+Go compiles to a single static binary with a low memory footprint and high concurrency support. It is the language of choice for cloud-native proxies (like Traefik and Kong plugins).
 
 ### Strengths
-
-* Excellent **concurrency primitives** for I/O-bound gateways.
-* Strong culture of **observability** (pprof, OpenTelemetry exporters).
-* `grpc-go` and **grpc-gateway** (HTTP JSON → gRPC) are mature.
+* Extremely fast execution speed with minimal resource consumption.
+* Goroutines make managing thousands of concurrent TCP/HTTP connections simple.
+* Excellent support for gRPC and Protocol Buffers.
 
 ### Weaknesses
-
-* **Generics and error handling** verbosity bother some teams coming from PHP/Python.
-* Reflection-based JSON tags are fine but **codegen** (protobuf) adds pipeline steps.
-
-### Mini-recipe (grpcurl against any gRPC server)
-
-```bash
-go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-grpcurl -plaintext localhost:50051 list
-```
+* Verbose error handling and generic constraints can slow down initial feature development compared to dynamic languages.
 
 ---
 
 <a id="rust-gateway"></a>
-## Rust when every microsecond counts
+## Rust: maximum throughput and safety
 
 ### When it fits
-
-* Latency budgets are **tight**, allocations matter, or you embed security-critical parsing.
-* You are ready to invest in **compile times** and stricter borrow checking.
+Rust is ideal when you need microsecond-level latency control, absolute memory safety without a garbage collector, and have a team comfortable with system-level programming.
 
 ### Strengths
-
-* Predictable performance and **memory safety** without a GC pause story.
-* **Tonic** (gRPC) and **Axum** (HTTP) are widely used in new projects.
+* Zero-cost abstractions and tiny runtime overhead.
+* Strongly typed async ecosystem (Tonic for gRPC, Axum for HTTP).
 
 ### Weaknesses
-
-* **Onboarding cost** is higher than PHP or Node for typical web teams.
-* Slower iteration if every change pays a full release compile in CI.
-
-For many products, Rust at the **edge** is optional; Rust (or Go) for **one** auth or policy service while PHP handles CRUD is a common compromise.
+* High learning curve, slow compile times, and longer development iteration cycles.
 
 ---
 
 <a id="grpc"></a>
-## Internal calls: gRPC
+## Synchronous internal traffic: gRPC
 
-**gRPC** usually means **HTTP/2**, **Protobuf** contracts, and generated stubs in each language.
+Within the private network, HTTP/JSON is often replaced by **gRPC** over HTTP/2.
 
-### Strengths
+```
+[ Client ] ──(HTTP/JSON)──> [ API Gateway ] ──(gRPC/Protobuf)──> [ User Service ]
+```
 
-* **Strong contracts**—fields and types are explicit; breaking changes show up at codegen time.
-* **Efficient on the wire** vs JSON; **streaming** for large payloads.
-* First-class **metadata** (tracing, auth) per call.
-
-### Weaknesses
-
-* **Browser clients** need **gRPC-Web** and a proxy; public mobile apps often stay on REST.
-* Debugging is less comfortable than “curl a JSON endpoint” unless you adopt **grpcurl**, **BloomRPC/Insomnia**, or good logs/metrics.
-* Load balancers must understand **HTTP/2** routing to gRPC services.
-
-**PHP:** use official or community gRPC extensions and generated PHP classes from `.proto` files; keep **timeouts** and **retry budgets** explicit. For greenfield internal APIs, agree on **deadlines** (`grpc-timeout`) across services.
+* **Protobuf Contracts** — Services declare their API schemas in `.proto` files. Code generation creates typed client stubs in Go, PHP, or Node, preventing payload mismatch bugs.
+* **HTTP/2 Multiplexing** — Connections are kept alive and reused for multiple parallel requests, eliminating the overhead of frequent TCP handshakes.
 
 ---
 
 <a id="rabbitmq"></a>
-## Internal work: RabbitMQ
+## Asynchronous internal workflows: RabbitMQ
 
-**RabbitMQ** is an **AMQP** broker: publishers send **messages** to **exchanges**; queues bind with routing keys; consumers **ack** or **nack** messages.
+For write paths and heavy background processes, synchronous HTTP or gRPC calls create tight coupling. Use **RabbitMQ** to decouple services:
 
-### Strengths
+```
+[ Ingest Gateway ] ──(Publish Event)──> [ RabbitMQ Exchange ]
+                                                │
+                                        (Queue Bindings)
+                                                ▼
+                                         [ Work Queue ]
+                                                │
+                                        (Consume Event)
+                                                ▼
+                                        [ Billing Service ]
+```
 
-* **Decouples** producers and consumers in time—spikes buffer in the broker.
-* Patterns: **work queues**, **pub/sub**, **topic** routing, **delayed** plugins (with care).
-* Mature ops story: clustering, mirrored queues (classic), **quorum queues** for newer deployments.
+* **Load Leveling** — Traffic spikes are buffered safely in the broker, protecting consumer microservices from crashing under load.
+* **Flexible Routing** — Exchanges route messages to queues dynamically based on headers, routing keys, or patterns.
 
-### Weaknesses
-
-* **Not a database**—if consumers are down, queues grow; you need **monitoring** and **DLQs**.
-* **Exactly-once** is a myth end-to-end; design **idempotent** consumers.
-* Debugging “message went missing” requires **correlation IDs** and structured logs.
-
-**PHP (Laravel):** `QUEUE_CONNECTION=rabbitmq` with `vladimir-yuldashev/laravel-queue-rabbitmq` or similar; see the Sail queues guide for local Docker. **Never** put RabbitMQ on the public internet without TLS and auth.
+> [!NOTE]
+> **Queue Health**
+> RabbitMQ is an in-memory queue. If your consumers fail or slow down, queues will fill up, eventually spilling to disk and slowing down the broker. Set up alerts on **queue depth** and **consumer count**.
 
 ---
 
 <a id="hybrid"></a>
-## When to combine gRPC and queues
+## Hybrid architectures
 
-* **Command path:** HTTP → gateway → **publish** “OrderPlaced” to RabbitMQ → workers fulfill. Response returns **202 + reference id** or uses **outbox + polling**.
-* **Query path:** HTTP → gateway → **gRPC** to a read-optimized service with a **cache**—low latency, synchronous answer.
-* **Sagas / compensation:** messaging between services with **idempotent** handlers and clear **timeouts**.
-
-Avoid using a queue as a **hidden RPC** without timeouts: “fire message and hope” becomes hard to reason about under partial failures.
+Most modern production systems combine synchronous and asynchronous communication:
+* **Synchronous (gRPC)** — Used for read paths where the user expects an immediate response (e.g., loading a profile, checking a product price).
+* **Asynchronous (RabbitMQ)** — Used for write paths or side effects where eventual consistency is acceptable (e.g., executing a payment, generating a PDF, sending emails).
 
 ---
 
 <a id="comparison"></a>
 ## Comparison snapshot
 
-| Layer / tool | Good when… | Think twice when… |
-|--------------|------------|-------------------|
-| **PHP gateway** | Team skill, rich domain logic at edge, Laravel/Symfony stack | Need bare-metal proxy at extreme RPS with minimal code |
-| **Node gateway** | BFF with many parallel HTTP calls, JS-heavy org | CPU-heavy middleware on the hot path |
-| **Go gateway** | Small binary, gRPC-heavy mesh, platform standard | Team has no Go maintenance appetite |
-| **Rust gateway** | Strict latency/memory goals, security-critical parsing | Rapid prototyping by a PHP-only team |
-| **gRPC internally** | Typed contracts, streaming, polyglot services | Public browser clients must talk directly without extra proxies |
-| **RabbitMQ** | Burst absorption, async workflows, clear consumer scaling | You actually needed a synchronous query/response |
+| Language | Ingress Throughput | Concurrency Model | CPU-Heavy Safety | Developer Velocity |
+|----------|--------------------|-------------------|------------------|--------------------|
+| **PHP (FPM)** | Moderate | Process-per-request | High (isolated) | Very High |
+| **Node.js** | High | Single-thread event loop | Low (blocks loop) | High |
+| **Go** | Extremely High | Goroutines | High | High |
+| **Rust** | Maximum | Thread pools (async) | High | Moderate |
 
 ---
 
-<a id="recipes"></a>
-## Concrete recipes
+<a id="common-mistakes"></a>
+## Common Mistakes
 
-### RabbitMQ locally (Docker)
-
-```bash
-docker run -d --hostname rabbit --name rabbit \
-  -p 5672:5672 -p 15672:15672 \
-  -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest \
-  rabbitmq:4-management
-```
-
-Management UI: `http://localhost:15672` (change defaults in real environments).
-
-### Declaring a queue with the CLI
-
-```bash
-docker exec rabbit rabbitmqadmin declare queue name=orders durable=true
-```
-
-### Minimal Protobuf + codegen (illustrative)
-
-`order.proto`:
-
-```protobuf
-syntax = "proto3";
-package billing.v1;
-
-message GetOrderRequest { string id = 1; }
-message GetOrderResponse { string id = 1; string status = 2; }
-
-service Orders {
-  rpc Get(GetOrderRequest) returns (GetOrderResponse);
-}
-```
-
-Run `protoc` with the **grpc_php_plugin** (and your language plugins) in CI; commit generated code or regenerate in Dockerized builds—pick one policy and stick to it.
-
-### Laravel env sketch for RabbitMQ
-
-```env
-QUEUE_CONNECTION=rabbitmq
-RABBITMQ_HOST=rabbit
-RABBITMQ_PORT=5672
-RABBITMQ_USER=guest
-RABBITMQ_PASSWORD=guest
-RABBITMQ_QUEUE=default
-```
-
-### Fighting “silent” failures
-
-* Propagate **`X-Request-Id`** from the gateway through gRPC metadata and message headers.
-* Set **deadlines** on gRPC calls and **TTL** / **DLX** policies on critical queues.
-* Dashboard **queue depth**, **consumer utilisation**, and **p95** gateway latency in one place—otherwise you debug three tools after an outage.
+1. **Monolithic Gateways**: Adding database migrations, database storage, or core business domain logic to the gateway code.
+2. **Missing Outbound Timeouts**: Making upstream gRPC or HTTP calls without strict timeouts. A single slow backend service will lock up all gateway workers.
+3. **Forgetting Correlation IDs**: Failing to generate and forward a unique `X-Request-ID` across all internal calls and queue messages, making tracing bugs impossible.
+4. **Lack of Backpressure on Queues**: Publishing events to RabbitMQ without queue size limits or dead-letter-exchanges (DLX) for failed messages.
 
 ---
 
-### Further reading
+<a id="checklist"></a>
+## Checklist
 
-* [RabbitMQ documentation](https://www.rabbitmq.com/documentation.html)
-* [gRPC guides](https://grpc.io/docs/)
-* [Envoy proxy](https://www.envoyproxy.io/) — when the edge is mostly policy and routing
-* [Sail: RabbitMQ & queue workers](../tools/sail-queues#rabbitmq) — local Docker recipes on this site
-* [Laravel queues (official docs)](https://laravel.com/docs/queues)
+1. **Single responsibility:** Does the gateway only route, validate, and aggregate without accessing the main database?
+2. **Outbound timeouts:** Are timeouts configured on every internal HTTP and gRPC client call?
+3. **Contracts:** Are internal gRPC schemas synchronized across service repositories using Protocol Buffers?
+4. **Telemetry:** Are correlation IDs generated at the edge and passed down to downstream services and message queues?
+5. **Decoupling:** Are asynchronous background workflows routed through RabbitMQ rather than synchronous gRPC calls?
+
+---
+
+## Summary
+
+The API Gateway is the boundary between the untrusted public web and your structured private network. Choose **PHP** or **Node.js** when you need rapid API composition and frontend collaboration. Choose **Go** or **Rust** when you need to route high-frequency traffic with minimal latency.
+
+---
+
+<a id="self-test-quiz"></a>
+## Self-Test Quiz
+
+### Question 1: What happens if a Node.js API Gateway runs a blocking CPU-heavy loop (like sorting 100,000 array elements) in a request handler?
+- A) Node.js automatically spawns a background thread to handle the sort.
+- B) The event loop freezes, blocking all other incoming HTTP requests and active connections until the sort completes.
+- C) The operating system terminates the process immediately.
+
+<details>
+<summary>Click to view the answer</summary>
+
+**Answer: B**
+Node.js runs request handlers on a single-threaded event loop. If a handler blocks the thread with CPU-bound work, the runtime cannot process other events, freezing all connection handling.
+</details>
+
+### Question 2: Why is gRPC faster and more network-efficient than REST over HTTP/1.1?
+- A) It uses plain text XML instead of JSON.
+- B) It compiles the payload directly into raw machine code before transmitting it.
+- C) It leverages HTTP/2 multiplexing to send multiple parallel requests over a single TCP connection and uses compact binary Protocol Buffers for serialization.
+
+<details>
+<summary>Click to view the answer</summary>
+
+**Answer: C**
+By multiplexing requests over HTTP/2, gRPC avoids TCP handshake delays. Protocol Buffers reduce CPU overhead and bandwidth by packing data into a small binary format.
+</details>

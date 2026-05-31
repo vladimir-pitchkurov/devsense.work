@@ -1,12 +1,14 @@
 .header {
-    background-color: rgba(var(--bg-color-rgb), 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 3px var(--shadow-color);
+    background-color: rgba(var(--bg-color-rgb), 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
     padding: 0.75rem var(--spacing-unit);
     position: sticky;
     top: 0;
     z-index: 100;
     border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s;
 
     @media (min-width: 768px) {
         padding: 1rem;
@@ -22,39 +24,103 @@
 }
 
 .header__logo {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--primary-color);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-color);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    &:hover {
+        .header__logo-icon {
+            transform: scale(1.05);
+
+            rect[stroke-dasharray] {
+                animation: logo-dash-spin 2s linear infinite;
+            }
+        }
+    }
 
     @media (min-width: 768px) {
-        padding: 0 1.5em;
+        padding: 0 1.5rem;
+    }
+}
+
+.header__logo-wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    line-height: 1;
+}
+
+.header__logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-color);
+    white-space: nowrap;
+
+    .logo-char-main {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--text-color);
+    }
+
+    .logo-char-sub {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .logo-char-dot {
+        color: var(--primary-color);
+    }
+}
+
+.header__logo-tagline {
+    display: none;
+
+    @media (min-width: 900px) {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        opacity: 0.75;
+        margin-top: 1px;
+    }
+}
+
+@keyframes logo-dash-spin {
+    to {
+        stroke-dashoffset: -88;
+    }
+}
+
+.header__logo-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+
+    @media (min-width: 768px) {
+        width: 40px;
+        height: 40px;
     }
 }
 
 .header__controls {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     align-items: center;
     /* Reserve space while theme/lang Vue chunks load (async components). */
     min-width: 7rem;
     min-height: 2.25rem;
-}
-
-.nav__link {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    white-space: nowrap;
-
-    &:hover { color: var(--primary-color); }
-}
-
-.desktop-only {
-    @media (max-width: 767px) {
-        display: none !important;
-    }
 }
 
 .header__nav {
@@ -62,7 +128,7 @@
 
     @media (min-width: 768px) {
         display: flex;
-        gap: 1.5rem;
+        gap: 1.75rem;
         align-items: center;
         margin-left: 1.5rem;
         border-left: 1px solid var(--border-color);
@@ -71,13 +137,34 @@
 }
 
 .nav__link {
-    color: var(--text-color);
+    color: var(--text-muted);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
     transition: color 0.2s ease;
+    position: relative;
+    padding: 0.25rem 0;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s ease;
+    }
 
     &:hover {
-        color: var(--primary-color);
+        color: var(--text-color);
+
+        &::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
     }
 }
+

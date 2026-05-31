@@ -59,24 +59,32 @@ class PhpVersionController extends Controller
         $modified = Carbon::createFromTimestamp($data['source_modified_at']);
         $published = $this->publishedCarbon($meta, $modified);
 
+        $articleObj = \App\Models\Article::where('slug', $version)
+            ->with(['tags.translations'])
+            ->first();
+        $tags = $articleObj ? $articleObj->tags : collect();
+
         return view('php.show', [
-            'content' => $data['html'],
-            'meta' => $meta,
-            'version' => $version,
-            'pageTitle' => $pageTitle,
-            'pageDescription' => $pageDescription,
-            'canonicalUrl' => $canonicalUrl,
+            'content'        => $data['html'],
+            'meta'           => $meta,
+            'version'        => $version,
+            'tags'           => $tags,
+            'pageTitle'      => $pageTitle,
+            'pageDescription'=> $pageDescription,
+            'canonicalUrl'   => $canonicalUrl,
+            'ogImage'        => $this->resolveOgImage($meta, 'php', $version),
             'structuredData' => [
-                '@type' => 'TechArticle',
-                'headline' => $pageTitle,
-                'description' => $pageDescription,
-                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
-                'datePublished' => $published->toIso8601String(),
-                'dateModified' => $modified->toIso8601String(),
-                'mainEntityOfPage' => [
+                '@type'           => 'TechArticle',
+                'headline'        => $pageTitle,
+                'description'     => $pageDescription,
+                'inLanguage'      => $hrefLangMap[$locale] ?? $locale,
+                'datePublished'   => $published->toIso8601String(),
+                'dateModified'    => $modified->toIso8601String(),
+                'mainEntityOfPage'=> [
                     '@type' => 'WebPage',
-                    '@id' => $canonicalUrl,
+                    '@id'   => $canonicalUrl,
                 ],
+                'faq' => $meta['faq'] ?? null,
             ],
         ]);
     }

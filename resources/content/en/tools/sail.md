@@ -1,330 +1,220 @@
 ---
 title: "Laravel Sail: Docker local stack, PHP versions, Redis, Postgres, queues & deploy notes | DevSense"
 description: "Practical Laravel Sail guide: change PHP version, add Redis or RabbitMQ, switch MySQL to PostgreSQL, MongoDB notes, queue workers in containers, env separation, and how Sail differs from dev/staging/production servers."
+faq:
+  - question: "What is Laravel Sail?"
+    answer: "Laravel Sail is a lightweight command-line interface for interacting with Laravel's default Docker development environment, built on Docker Compose."
+  - question: "How do I change the PHP version in Laravel Sail?"
+    answer: "Change the PHP_VERSION build argument in your docker-compose.yml file under the laravel.test service, then rebuild using sail build --no-cache."
+  - question: "Why do I get connection refused errors to Redis or MySQL?"
+    answer: "Because you are trying to connect via 127.0.0.1. Inside the Sail container network, you must use the service name (e.g., mysql or redis) as the host."
+  - question: "Can I run Laravel Sail in production?"
+    answer: "No, Laravel Sail is strictly designed for local development. For production, you should build optimized Docker images and deploy them using proper orchestration like Kubernetes, ECS, or Docker Swarm."
 ---
 
-# Laravel Sail: full local-stack guide
+# Laravel Sail: The Ultimate Local-Stack Guide
 
-**Laravel Sail** is a **Docker Compose** wrapper around a typical Laravel app: PHP-FPM (the `laravel.test` service), database, Redis, Meilisearch, Selenium, and optional extras. It is aimed at **local development** (and CI that can run Compose)—not a drop-in production topology. This guide walks through common customizations and clarifies where Sail ends and real deployment begins.
+Laravel Sail is a beautiful **Docker Compose** wrapper designed to stand up a complete development environment (PHP-FPM, MySQL, Redis, Meilisearch, Mailpit, etc.) without managing server configurations on your host machine.
 
-**In this series:** [Databases & Docker services](sail-databases#networking) · [Queues & workers](sail-queues#connections) · [Environments & deployment](sail-env-deploy#env-files) · [Troubleshooting](sail-troubleshooting#wsl-filesync) · [All tools](../)
-
-## Table of contents
-
-* [What Sail is (and is not)](#what-sail-is)
-* [Prerequisites and mental model](#prerequisites)
-* [Daily commands alias](#daily-commands)
-* [Change the PHP version](#php-version)
-* [Default services and `sail:install` options](#default-services)
-* [Add Redis when it is missing](#add-redis)
-* [Add RabbitMQ and wire queues](#add-rabbitmq)
-* [Switch from MySQL to PostgreSQL](#mysql-to-postgres)
-* [MongoDB (container + Laravel)](#mongodb)
-* [Queues: connections, workers, and Sail](#queues)
-* [Mail and debugging (Mailpit)](#mail)
-* [Volumes, performance (WSL2 / macOS)](#volumes-performance)
-* [Xdebug and debugging](#xdebug)
-* [Customizing `docker-compose.yml`](#customizing-compose)
-* [Environment files: local, Docker-only, teams](#environment-files)
-* [Local vs dev/staging/production](#local-vs-deploy)
-* [Troubleshooting checklist](#troubleshooting)
+However, Sail is **not** a production environment. Understanding the boundary between local Sail and real-world production deployment is key to avoiding the dreaded "works on my machine" syndrome. Let's master Sail together!
 
 ---
 
-<a id="what-sail-is"></a>
-## What Sail is (and is not)
-
-- **Is:** A **published** `docker-compose.yml` + Dockerfiles (under `vendor/laravel/sail/runtimes/…`) plus the `./vendor/bin/sail` script. Your project **copies** this into the repo when you run `php artisan sail:install` (or install Sail with Laravel).
-- **Is not:** A hosting product. On a server you might still use Docker or Kubernetes, but you typically **do not** run the Sail script in production—you run **images**, **orchestration**, health checks, secrets managers, and **supervised** queue workers.
-
-Treat Sail as **one reproducible dev environment** that mirrors *some* production choices (same PHP extensions, same DB engine) without being identical to prod networking or scale.
-
-<a id="prerequisites"></a>
-## Prerequisites and mental model
-
-- **Docker Engine** + **Docker Compose v2** installed and running.
-- **WSL2** (Windows): store the project **inside the Linux filesystem** (`~/projects/...`), not `C:\...`, for acceptable I/O; bind mounts from NTFS are slow.
-- Sail runs commands **inside** containers. Host PHP is optional; most teams use only `./vendor/bin/sail artisan …` and `sail composer …`.
+## Table of Contents
+* [Mental Model & Prerequisites](#mental-model)
+* [Essential CLI Shortcuts](#shortcuts)
+* [Changing PHP Versions](#php-version)
+* [Customizing Services (Redis, RabbitMQ, PostgreSQL)](#customizing-services)
+* [Debugging with Mailpit & Xdebug](#debugging)
+* [WSL2 Performance Optimization](#performance)
+* [Sail (Local) vs. Production Comparison](#local-vs-deploy)
+* [🧠 Self-Check Questions](#self-check)
 
 ---
 
-<a id="daily-commands"></a>
-## Daily commands alias
+<a id="mental-model"></a>
+## Mental Model & Prerequisites
 
-Add to your shell profile:
+Sail does not install PHP or Node on your host machine. Instead, it runs commands **inside containerized runtimes**.
+
+If you are on Windows, you **MUST** run Docker inside **WSL2** (Windows Subsystem for Linux) and keep your project folder inside the Linux filesystem (e.g., `~/Development/my-app`), not the Windows `C:\` partition. Working across the Windows-Linux mount boundary causes extreme disk I/O bottlenecks.
+
+---
+
+<a id="shortcuts"></a>
+## Essential CLI Shortcuts
+
+Tired of typing `./vendor/bin/sail` every time? Add a shell alias!
 
 ```bash
+# ~/.zshrc or ~/.bashrc
 alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 ```
 
-Then: `sail up -d`, `sail artisan migrate`, `sail npm run dev`, `sail shell`, `sail down`.
+Now you can run daily commands efficiently:
+- `sail up -d` — Start all services in the background.
+- `sail down` — Stop services.
+- `sail artisan migrate` — Run database migrations.
+- `sail npm run dev` — Run Vite assets locally.
 
 ---
 
 <a id="php-version"></a>
-## Change the PHP version
+## Changing PHP Versions
 
-Sail images are built from published **runtime** Dockerfiles. Typical flow:
-
-1. **Publish** Sail assets (if you have not customized yet):
-
-   ```bash
-   sail artisan sail:publish
-   ```
-
-   This adds `docker-compose.yml` (if not present) and a `Dockerfile` under `vendor/laravel/sail` is referenced from compose—after publish you often get a **`docker/`** (or runtime) path in your project; follow what your Laravel/Sail version generates.
-
-2. In **`docker-compose.yml`**, find the `laravel.test` service **`build.args`** (e.g. `PHP_VERSION=8.3`). Set the desired **minor** (e.g. `8.4`) that Sail supports for your Laravel version.
-
-3. **Rebuild** without cache so the base image layer updates:
-
-   ```bash
-   sail build --no-cache
-   sail up -d
-   ```
-
-4. Confirm:
-
-   ```bash
-   sail php -v
-   ```
-
-If you maintain a **custom Dockerfile**, change the `FROM` line to the matching `laravel/sail-php/x.y` image (check [laravel/sail on GitHub](https://github.com/laravel/sail) for current tags). After edits, always **`build --no-cache`** to avoid stale layers.
-
----
-
-<a id="default-services"></a>
-## Default services and `sail:install` options
-
-When installing Sail, you choose services, e.g.:
-
-```bash
-php artisan sail:install --with=mysql,redis,meilisearch,mailpit,selenium
-```
-
-- **`mysql`** / **`pgsql`** / **`mariadb`**: primary SQL database container.
-- **`redis`**: cache, session, queue backend.
-- **`memcached`**: alternative cache session store.
-- **`meilisearch`**, **`typesense`**, **`soketi`**, etc.: optional stacks.
-
-If you **skipped** Redis but your `.env` still has `REDIS_HOST=redis`, either **add** the service (next section) or point `REDIS_HOST` to `127.0.0.1` and run Redis on the host (not recommended for parity).
-
----
-
-<a id="add-redis"></a>
-## Add Redis when it is missing
-
-1. Edit **`docker-compose.yml`**: add a service (names may vary; align with Laravel docs for your Sail version):
+To upgrade or downgrade your PHP version in Sail, you must modify your Compose config.
 
 ```yaml
-redis:
-    image: 'redis:alpine'
-    ports:
-        - '${FORWARD_REDIS_PORT:-6379}:6379'
-    volumes:
-        - 'sail-redis:/data'
-    networks:
-        - sail
-    healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
+# docker-compose.yml
+services:
+    laravel.test:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.4
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+                # Change this build argument to the desired minor version:
+                PHP_VERSION: '8.4'
 ```
 
-2. Add the **volume** `sail-redis` under `volumes:` at the bottom of the file.
+After modifying the file, rebuild the container layers without cache:
 
-3. On **`laravel.test`**, ensure `depends_on` includes `redis` if you want startup ordering.
+```bash
+# Terminal
+sail build --no-cache
+sail up -d
+```
 
-4. In **`.env`** (inside the app container, use **service names** as hosts):
+---
+
+<a id="customizing-services"></a>
+## Customizing Services
+
+### 1. Connecting to Redis
+If you skipped Redis during installation, you can add it by editing your Compose configuration:
+
+```yaml
+# docker-compose.yml
+services:
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+```
+
+Make sure your environment file matches this:
 
 ```dotenv
+# .env
 REDIS_HOST=redis
-REDIS_PASSWORD=null
 REDIS_PORT=6379
 ```
 
-5. `sail up -d` and test: `sail exec redis redis-cli ping`.
+> [!NOTE]
+> **Did you know?**
+> Inside the Sail network, containers communicate with each other using their service names (like `redis` or `mysql`) as hostnames. Using `127.0.0.1` will fail because it points to the application container itself!
 
----
-
-<a id="add-rabbitmq"></a>
-## Add RabbitMQ and wire queues
-
-Laravel’s core queue drivers include **`database`**, **`redis`**, **`beanstalkd`**, **`sqs`**, etc. **AMQP/RabbitMQ** is not enabled out of the box; you add a **community package** (e.g. one that provides a `rabbitmq` queue driver) and a **RabbitMQ** container.
-
-**1. Compose service** (example):
+### 2. Switching from MySQL to PostgreSQL
+To swap database engines, replace the `mysql` block with `pgsql` in your `docker-compose.yml`:
 
 ```yaml
-rabbitmq:
-    image: 'rabbitmq:3-management-alpine'
-    hostname: rabbitmq
-    ports:
-        - '${FORWARD_RABBITMQ_PORT:-5672}:5672'
-        - '${FORWARD_RABBITMQ_MANAGEMENT_PORT:-15672}:15672'
-    volumes:
-        - 'sail-rabbitmq:/var/lib/rabbitmq'
-    networks:
-        - sail
-    environment:
-        RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER:-sail}'
-        RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASSWORD:-password}'
+# docker-compose.yml
+services:
+    pgsql:
+        image: 'postgres:15-alpine'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - 'sail-pgsql:/var/lib/postgresql/data'
+        networks:
+            - sail
 ```
 
-2. Declare volume `sail-rabbitmq`.
-
-3. **`.env`** (example keys—match your package’s docs):
+And update your `.env`:
 
 ```dotenv
-RABBITMQ_HOST=rabbitmq
-RABBITMQ_PORT=5672
-RABBITMQ_USER=sail
-RABBITMQ_PASSWORD=password
-RABBITMQ_VHOST=/
-QUEUE_CONNECTION=rabbitmq
-```
-
-4. Install and configure the **queue driver package**; publish its config; run `sail artisan config:clear`.
-
-5. Run a worker **inside** Sail:
-
-```bash
-sail artisan queue:work rabbitmq
-```
-
-Use the **management UI** on port `15672` to inspect queues and dead letters while developing.
-
----
-
-<a id="mysql-to-postgres"></a>
-## Switch from MySQL to PostgreSQL
-
-**1. Replace the DB service** in `docker-compose.yml`: remove or disable `mysql`, add `pgsql` using the template from a fresh `sail:install --with=pgsql` project or [Sail’s default compose fragments](https://github.com/laravel/sail).
-
-**2. `laravel.test` `depends_on`**: point to `pgsql` instead of `mysql`.
-
-**3. `.env`:**
-
-```dotenv
+# .env
 DB_CONNECTION=pgsql
 DB_HOST=pgsql
 DB_PORT=5432
-DB_DATABASE=laravel
-DB_USERNAME=sail
-DB_PASSWORD=password
 ```
 
-**4. Remove MySQL-specific session or test config** if any.
-
-**5. Rebuild / up:** `sail down -v` (⚠️ destroys volumes) or migrate data properly; then `sail up -d`, `sail artisan migrate:fresh` for a clean dev DB.
-
-**6. PHP extension:** Sail’s PostgreSQL runtime already includes **`pdo_pgsql`**. If you use custom Dockerfiles, ensure the extension is installed.
-
 ---
 
-<a id="mongodb"></a>
-## MongoDB (container + Laravel)
+<a id="debugging"></a>
+## Debugging with Mailpit & Xdebug
 
-**1. Add MongoDB** to `docker-compose.yml` (official `mongo` image, persistent volume, port forward if you want Compass from host).
+### Mailpit (Fake Mail Server)
+Sail automatically routes outgoing mail to Mailpit. It intercepts emails so you don't accidentally send test messages to real customers. Configure SMTP in `.env`:
 
-**2. Laravel** usually uses **`mongodb/laravel-mongodb`** (or similar maintained package)—not core Eloquent drivers. Follow that package’s **Sail/Docker** notes: you often must install the **MongoDB PHP extension** in the **Sail Dockerfile** (`pecl install mongodb` + `docker-php-ext-enable mongodb`) and rebuild.
+```dotenv
+# .env
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+```
+You can view the intercepted emails by opening the web UI at `http://localhost:8025`.
 
-**3. `.env`:** connection string or `DB_HOST`/`DB_PORT` style per package—use hostname **`mongo`** (service name) from `laravel.test`.
+### Xdebug
+To enable step-by-step debugging, simply set the Xdebug mode in your environment:
 
-**4. Queues / transactions:** MongoDB behaves differently from SQL; migrations are not `Schema` in the same way—read the package docs for **indexes**, **replicas**, and **testing** (in-memory Mongo or Docker service in CI).
-
----
-
-<a id="queues"></a>
-## Queues: connections, workers, and Sail
-
-- **`QUEUE_CONNECTION=sync`** runs jobs **inline**—good for debugging, bad for realistic async behavior.
-- **`database`** / **`redis`**: start a worker in the app container:
-
-  ```bash
-  sail artisan queue:work --tries=3
-  ```
-
-  For **multiple** queues: `queue:work redis --queue=high,default`.
-
-- **Horizon** (Redis): `sail artisan horizon` in dev; in production use **supervisor** or a managed worker.
-
-- **Restart after code changes:** workers cache bootstrapped code; use `queue:restart` or run workers with **`--max-jobs=1`** during heavy TDD (or restart container).
-
-- **RabbitMQ**: see [Add RabbitMQ](#add-rabbitmq); failure modes (NACK, TTL, DLX) differ from Redis lists—test **retry** and **timeout** explicitly.
-
----
-
-<a id="mail"></a>
-## Mail and debugging (Mailpit)
-
-Sail often ships **Mailpit** (or Mailhog in older setups). Point SMTP to the **`mailpit`** host and appropriate ports from `docker-compose.yml` (`MAIL_HOST`, `MAIL_PORT`, etc.). Open the **web UI** on the forwarded port to read outbound mail without sending real email.
-
----
-
-<a id="volumes-performance"></a>
-## Volumes, performance (WSL2 / macOS)
-
-- **Bind mounts** of the whole project can be **slow** on macOS and on WSL2 when files live on Windows drives. Prefer **Linux filesystem** for the repo on WSL2.
-- **Named volumes** for `mysql`, `redis`, etc. preserve data across `sail down`; `sail down -v` **deletes** them—use consciously.
-- Optional **delegated/cached** mount flags are platform-specific; search current Docker docs for your OS.
-
----
-
-<a id="xdebug"></a>
-## Xdebug and debugging
-
-Sail’s PHP images support **Xdebug** toggled via env (see Sail README for your version), e.g. `SAIL_XDEBUG_MODE=debug,develop`. Configure your IDE to listen on the correct port and map **server path** to **host path**. For **step debugging** of queue workers, attach to the **same** container that runs `queue:work`.
-
----
-
-<a id="customizing-compose"></a>
-## Customizing `docker-compose.yml`
-
-- Keep **service names** stable—your `.env` uses them as hostnames.
-- Prefer **environment variables** in compose referencing `.env` (`${VAR}`) so teammates do not commit secrets.
-- For **one-off** tools (Adminer, ngrok sidecar), add services on the same **`sail` network** so `laravel.test` can reach them by name.
-- After structural changes: `sail build && sail up -d`.
-
----
-
-<a id="environment-files"></a>
-## Environment files: local, Docker-only, teams
-
-- **`.env`**: local secrets; never commit. Often **gitignored** with `.env.example` committed.
-- **`.env.example`**: safe defaults and **documentation** for required keys (DB, Redis, queue, mail).
-- **Docker-only values:** some teams use `.env.docker` loaded via `docker-compose` `env_file:`—keep overlap clear to avoid “works in Sail, fails on host” confusion.
-- **CI:** inject env in the pipeline; same `docker compose` file can run tests with a **test** `.env.testing` and `APP_ENV=testing`.
-- **Per-developer overrides:** optional `.env.local` (if your bootstrap loads it) or shell exports for ports `FORWARD_*` to avoid clashes when multiple projects run Sail.
-
-**Forward ports:** `FORWARD_DB_PORT`, `FORWARD_REDIS_PORT`, etc. in `.env` prevent collisions when many stacks run on one machine.
+```dotenv
+# .env
+SAIL_XDEBUG_MODE=develop,debug
+```
+Restart Sail (`sail down && sail up -d`) to apply the configuration.
 
 ---
 
 <a id="local-vs-deploy"></a>
-## Local vs dev/staging/production
+## Sail (Local) vs. Production Comparison
 
-| Topic | Sail (local) | Typical server |
-|--------|----------------|----------------|
-| Process model | `sail up`, ad-hoc `artisan` | **php-fpm** + **nginx**, or Octane |
-| Queues | Manual `queue:work` / Horizon in terminal | **Supervisor**, systemd, or cloud worker |
-| SSL | HTTP on localhost | **TLS** termination, real certs |
-| Secrets | `.env` file | Vault, parameter store, sealed secrets |
-| Scale | Single container per service | Replicas, load balancers, managed Redis/DB |
-| Mail | Mailpit | SMTP relay, SES, etc. |
-
-**Do not** assume “it worked in Sail” means production is configured—especially **queue workers**, **scheduler** (`schedule:run` cron), **OPcache**, and **file storage** (local `storage/` vs S3).
+| Feature | Laravel Sail (Local Dev) | Production Environment |
+|---------|--------------------------|------------------------|
+| **HTTP Server** | PHP built-in server | Nginx / Apache + PHP-FPM, or Octane |
+| **Queues** | Run via terminal `sail artisan queue:work` | Managed via Supervisor or Systemd |
+| **SSL / HTTPS** | Plain HTTP on localhost | TLS terminated on Nginx, Cloudflare or Load Balancer |
+| **Cache & Sessions** | File storage or local Redis container | Clustered Redis or Managed Memcached |
+| **Database** | Ephemeral container | Managed DB (RDS, Cloud SQL) with backups |
 
 ---
 
-<a id="troubleshooting"></a>
-## Troubleshooting checklist
+## ⚠️ Common Mistakes
 
-- **Permission errors** on `storage/` / `bootstrap/cache/`: `sail artisan cache:clear` and fix ownership (often `sail root-shell` + `chown -R sail:sail storage bootstrap/cache`).
-- **“Connection refused” to DB/Redis:** wrong **`DB_HOST` / `REDIS_HOST`** (must be **service name**, not `127.0.0.1`, from inside `laravel.test`).
-- **Stale containers** after Dockerfile edits: `sail build --no-cache`.
-- **Port already allocated:** change `FORWARD_*` variables in `.env`.
-- **Composer inside vs host:** run **`sail composer install`** so extensions and platform match the container.
+**1. Connecting to `127.0.0.1` for Redis/Database inside Sail**
+If your `DB_HOST` is set to `127.0.0.1` in `.env`, your app will not be able to find the database container. Use the service name (`mysql` or `pgsql`) instead.
+
+**2. Running commands on the host instead of the container**
+Running `composer install` or `php artisan migrate` on your local terminal can lead to version mismatches or missing PHP extension errors. Always run them through Sail:
+```bash
+# Terminal
+sail composer install
+sail artisan migrate
+```
 
 ---
 
-## Closing thoughts
+<a id="self-check"></a>
+## 🧠 Self-Check Questions
 
-Sail shines when the whole team shares **one Compose file** and the same **PHP extensions** and **service topology**. Invest once in a clean **`docker-compose.yml`**, documented **`.env.example`**, and a short **README** for “first clone” steps (`cp .env.example .env`, `sail up -d`, `sail artisan migrate`). Keep production concerns—**monitoring**, **backups**, **queue supervision**, **secrets**—separate from Sail, and mirror only what you need for realistic local behavior.
+1. **Why is it important to use WSL2 filesystem paths (like `~/Development`) instead of mounting directly from Windows partitions (`/mnt/c/...`)?**
+2. **True or False?** To enable PostgreSQL, you must manually download and compile the `pdo_pgsql` driver inside the Sail container.
+3. **What hostname should you use in `.env` to send emails via Mailpit inside Sail?**
+4. **How do you restart a queue worker in Sail so that it loads updated code changes?**
+
+<details>
+<summary><b>Reveal Answers</b></summary>
+
+1. Mounting from Windows drives (`C:\`) onto a Linux Docker container introduces severe translation and virtualization layers, slowing down file operations and asset compilation (Vite/Mix) up to 10x.
+2. **False.** Sail's pre-built PHP runtimes already bundle standard extensions, including `pdo_pgsql`. You only need to switch the service in `docker-compose.yml` and `.env`.
+3. You must use `mailpit` as the host.
+4. Run `sail artisan queue:restart`, or run the worker with `--max-jobs=1` during development.
+</details>

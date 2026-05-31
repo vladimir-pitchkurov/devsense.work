@@ -1,183 +1,220 @@
 ---
 title: "Laravel Sail: Docker-стек, PHP, Redis, Postgres, черги та деплой | DevSense"
 description: "Практичний гайд з Laravel Sail: зміна версії PHP, Redis і RabbitMQ, перехід з MySQL на PostgreSQL, MongoDB, воркери черг у контейнерах, розділення .env і відмінності локальної розробки від dev/prod."
+faq:
+  - question: "Що таке Laravel Sail?"
+    answer: "Laravel Sail — это легковесный CLI-интерфейс для взаимодействия с локальным Docker-окружением Laravel, построенным на базе Docker Compose."
+  - question: "Як змінити версію PHP в Laravel Sail?"
+    answer: "Змініть складальний аргумент PHP_VERSION в docker-compose.yml у секції laravel.test, а потім перезберіть контейнер за допомогою команди sail build --no-cache."
+  - question: "Чому виникає помилка Connection Refused при підключенні до Redis або MySQL?"
+    answer: "Швидше за все, ви вказали хост 127.0.0.1. Всередині мережі контейнерів Sail хостами виступають імена відповідних сервісів (наприклад, mysql або redis)."
+  - question: "Чи можна використовувати Laravel Sail на продакшені?"
+    answer: "Ні, Laravel Sail призначений виключно для локальної розробки. Для продакшену необхідно збирати оптимізовані образи та використовувати системи оркестрації (Kubernetes, ECS, Docker Swarm)."
 ---
 
-# Laravel Sail: повний гайд з локального стеку
+# Laravel Sail: Повний гайд з локального стеку
 
-**Laravel Sail** — обгортка над **Docker Compose** для типового застосунку Laravel: PHP-FPM (`laravel.test`), СУБД, Redis, Meilisearch, Selenium тощо. Призначення — **локальна розробка** (і CI з Compose), а не готова продакшен-платформа. Нижче — типові налаштування та межа, де Sail закінчується, а починається реальний деплой.
+Laravel Sail — це зручна обгортка над **Docker Compose**, яка дозволяє розгорнути повноцінне робоче оточення (PHP-FPM, MySQL, Redis, Meilisearch, Mailpit та ін.) без необхідності встановлювати та налаштовувати серверний софт на хост-машині.
 
-**Серія:** [Бази даних і Docker-сервіси](sail-databases#networking) · [Черги та воркери](sail-queues#connections) · [Оточення та деплой](sail-env-deploy#env-files) · [Діагностика](sail-troubleshooting#wsl-filesync) · [Усі інструменти](../)
+Проте Sail — це **не** продакшн-середовище. Чітке розуміння меж між локальним Sail та реальним деплоєм вбереже вас від класичної проблеми «на моєму комп'ютері все працює». Давайте розберемося з усіма тонкощами Sail!
+
+---
 
 ## Зміст
-
-* [Що таке Sail (і чим не є)](#what-sail-is)
-* [Вимоги та модель](#prerequisites)
-* [Аліас і щоденні команди](#daily-commands)
-* [Змінити версію PHP](#php-version)
-* [Сервіси за замовчуванням і `sail:install`](#default-services)
-* [Додати Redis, якщо немає](#add-redis)
-* [RabbitMQ і черги](#add-rabbitmq)
-* [З MySQL на PostgreSQL](#mysql-to-postgres)
-* [MongoDB (контейнер + Laravel)](#mongodb)
-* [Черги: драйвери, воркери, Sail](#queues)
-* [Пошта та Mailpit](#mail)
-* [Томи та продуктивність (WSL2 / macOS)](#volumes-performance)
-* [Xdebug](#xdebug)
-* [Кастомізація `docker-compose.yml`](#customizing-compose)
-* [Файли оточення](#environment-files)
-* [Локально проти dev/staging/production](#local-vs-deploy)
-* [Чеклист проблем](#troubleshooting)
+* [Ментальна модель та вимоги](#mental-model)
+* [Корисні аліаси CLI](#shortcuts)
+* [Зміна версії PHP](#php-version)
+* [Кастомізація сервісів (Redis, RabbitMQ, PostgreSQL)](#customizing-services)
+* [Налагодження з Mailpit та Xdebug](#debugging)
+* [Оптимізація продуктивності в WSL2](#performance)
+* [Порівняння: Sail (локально) vs. Продакшн](#local-vs-deploy)
+* [🧠 Питання для самоперевірки](#self-check)
 
 ---
 
-<a id="what-sail-is"></a>
-## Що таке Sail (і чим не є)
+<a id="mental-model"></a>
+## Ментальна модель та вимоги
 
-- **Це:** опублікований **`docker-compose.yml`**, Dockerfile’и з `vendor/laravel/sail/runtimes/…` і скрипт `./vendor/bin/sail` у репозиторії після `php artisan sail:install`.
-- **Не це:** хостинг. На сервері часто Docker/K8s, але **Sail у production зазвичай не запускають** — там образи, оркестрація, health checks, секрети та **supervisor** для черг.
+Sail не встановлює PHP чи Node.js на ваш фізичний комп'ютер. Замість цього всі команди виконуються **всередині ізольованих контейнерів**.
 
-Sail — **відтворюване dev-оточення**, частково схоже на прод (розширення PHP, той самий рушій БД), але не копія мережі та масштабу.
-
-<a id="prerequisites"></a>
-## Вимоги та модель
-
-- **Docker** і **Compose v2**.
-- **WSL2:** тримайте проєкт у **файловій системі Linux** (`~/projects/...`), не на `C:\`, інакше bind mount гальмує.
-- Команди — **всередині** контейнерів: `sail artisan …`, `sail composer …`.
+Якщо ви працюєте на Windows, вам **необхідно** запустити Docker в режимі **WSL2** (Windows Subsystem for Linux) і зберігати проєкт всередині файлової системи Linux (наприклад, `/home/user/projects/...`), а не на диску `C:\`. Спроби роботи через змонтовані Windows-диски призводять до критичного падіння продуктивності дискового вводу-виводу (I/O).
 
 ---
 
-<a id="daily-commands"></a>
-## Аліас і щоденні команди
+<a id="shortcuts"></a>
+## Корисні аліаси CLI
+
+Набридло кожен раз писати `./vendor/bin/sail`? Налаштуйте зручний аліас у командному рядку!
 
 ```bash
+# ~/.zshrc або ~/.bashrc
 alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 ```
 
-Далі: `sail up -d`, `sail artisan migrate`, `sail npm run dev`, `sail shell`, `sail down`.
+Тепер повсякденні команди стануть набагато коротшими:
+- `sail up -d` — запуск всіх сервісів у фоновому режимі.
+- `sail down` — зупинка та видалення контейнерів.
+- `sail artisan migrate` — запуск миграцій БД.
+- `sail npm run dev` — запуск Vite для збирання фронтенду.
 
 ---
 
 <a id="php-version"></a>
-## Змінити версію PHP
+## Зміна версії PHP
 
-1. За потреби: `sail artisan sail:publish`.
-2. У **`docker-compose.yml`** для `laravel.test` у **`build.args`** встановіть `PHP_VERSION` (наприклад `8.4`) згідно з підтримкою вашої версії Sail.
-3. `sail build --no-cache`, потім `sail up -d`.
-4. Перевірка: `sail php -v`.
+Щоб переключити версію PHP в Sail, необхідно відредагувати конфігурацію Compose:
 
-У власному **Dockerfile** оновіть `FROM` на актуальний образ `laravel/sail-php/...` з [GitHub Sail](https://github.com/laravel/sail).
-
----
-
-<a id="default-services"></a>
-## Сервіси за замовчуванням і `sail:install`
-
-```bash
-php artisan sail:install --with=mysql,redis,meilisearch,mailpit,selenium
+```yaml
+# docker-compose.yml
+services:
+    laravel.test:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.4
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+                # Вкажіть потрібну мінорну версію PHP:
+                PHP_VERSION: '8.4'
 ```
 
-Якщо Redis не встановлювали, а в `.env` лишився `REDIS_HOST=redis`, або **додайте** сервіс, або змініть хост (краще для паритету — контейнер Redis).
+Після зміни версії перезберіть шари образів без кешу:
+
+```bash
+# Термінал
+sail build --no-cache
+sail up -d
+```
 
 ---
 
-<a id="add-redis"></a>
-## Додати Redis, якщо немає
+<a id="customizing-services"></a>
+## Кастомізація сервісів
 
-Додайте сервіс **`redis`** у **`docker-compose.yml`** (образ `redis:alpine`, порт, том `sail-redis`, мережа `sail`, за бажанням healthcheck), оголосіть том унизу файлу, за потреби **`depends_on`** у `laravel.test`. У **`.env`:** `REDIS_HOST=redis`, `REDIS_PORT=6379`. Потім `sail up -d` і `sail exec redis redis-cli ping`.
+### 1. Підключення Redis
+Якщо при створенні проєкту ви пропустили встановлення Redis, додайте його секцію в конфігурацію:
 
----
+```yaml
+# docker-compose.yml
+services:
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+```
 
-<a id="add-rabbitmq"></a>
-## RabbitMQ і черги
+Налаштування у файлі оточення повинні виглядати так:
 
-У ядрі Laravel **немає** вбудованого драйвера RabbitMQ — потрібен **пакет** AMQP і контейнер **RabbitMQ** (наприклад `rabbitmq:3-management-alpine`, порти 5672 та 15672 для UI). У **`.env`** хост **`rabbitmq`**, облікові дані, `QUEUE_CONNECTION` за документацією пакета. Після встановлення пакета: `sail artisan queue:work rabbitmq`. UI на **15672** допомагає дивитися черги та dead letter.
+```dotenv
+# .env
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
 
----
+> [!NOTE]
+> **А ви знали?**
+> Всередині Docker-мережі Sail контейнери спілкуються між собою за іменами сервісів (`redis`, `mysql`). Спроба вказати хост `127.0.0.1` призведе до помилки, оскільки ця адреса всередині контейнера вказує на сам контейнер з додатком!
 
-<a id="mysql-to-postgres"></a>
-## З MySQL на PostgreSQL
+### 2. Заміна MySQL на PostgreSQL
+Щоб змінити СУБД, замініть секцію `mysql` на `pgsql` у файлі `docker-compose.yml`:
 
-Замініть сервіс БД у compose на **pgsql** за шаблоном Sail, оновіть **`depends_on`**, **`.env`:** `DB_CONNECTION=pgsql`, `DB_HOST=pgsql`, порт **5432**. `sail down -v` або міграція даних; далі `sail up -d`, `migrate:fresh` для чистої dev-БД. **`pdo_pgsql`** у типових образах Sail уже є.
+```yaml
+# docker-compose.yml
+services:
+    pgsql:
+        image: 'postgres:15-alpine'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - 'sail-pgsql:/var/lib/postgresql/data'
+        networks:
+            - sail
+```
 
----
+І оновіть параметри у вашому `.env`:
 
-<a id="mongodb"></a>
-## MongoDB (контейнер + Laravel)
-
-Додайте сервіс **mongo**, том, за потреби проброс порту. Зазвичай використовують **`mongodb/laravel-mongodb`** — часто потрібен **`pecl install mongodb`** у Dockerfile Sail і пересборка. З контейнера додатку хост — **ім’я сервису** (`mongo`). Міграції та транзакції відрізняються від SQL — дивіться документацію пакета.
-
----
-
-<a id="queues"></a>
-## Черги: драйвери, воркери, Sail
-
-- **`sync`** — синхронно, для простої відладки.
-- **`database` / `redis`:** `sail artisan queue:work`, кілька черг: `--queue=high,default`.
-- **Horizon:** локально `sail artisan horizon`; на проді — supervisor або хмарний воркер.
-- Після змін коду: **`queue:restart`** або обмеження **`--max-jobs`**.
-- **RabbitMQ:** інша семантика повторів і DLX — перевіряйте тестами.
-
----
-
-<a id="mail"></a>
-## Пошта та Mailpit
-
-`MAIL_HOST` / `MAIL_PORT` на сервіс **mailpit** з compose; веб-UI на проброшеному порту — перегляд листів без реальної відправки.
-
----
-
-<a id="volumes-performance"></a>
-## Томи та продуктивність (WSL2 / macOS)
-
-Повний bind mount репозиторію на macOS і з диска Windows у WSL2 часто **повільний**; код — у Linux FS. Іменовані томи зберігають дані БД/Redis після `sail down`; **`sail down -v`** їх видаляє.
-
----
-
-<a id="xdebug"></a>
-## Xdebug
-
-Увімкнення через змінні Sail (див. README), наприклад `SAIL_XDEBUG_MODE=debug,develop`. Мапінг шляхів IDE ↔ контейнер. Для черг — підключення до контейнера з `queue:work`.
-
----
-
-<a id="customizing-compose"></a>
-## Кастомізація `docker-compose.yml`
-
-Імена сервісів = хости в `.env`. Секрети через `${VAR}`. Додаткові сервіси — у мережі **`sail`**. Після змін: `sail build && sail up -d`.
+```dotenv
+# .env
+DB_CONNECTION=pgsql
+DB_HOST=pgsql
+DB_PORT=5432
+```
 
 ---
 
-<a id="environment-files"></a>
-## Файли оточення
+<a id="debugging"></a>
+## Налагодження з Mailpit та Xdebug
 
-**`.env`** локально не в git; **`.env.example`** — шаблон. Опційно **`env_file`** у compose. У CI — змінні в pipeline; тести з `.env.testing`. **`FORWARD_*`** порти, щоб проєкти не конфліктували.
+### Mailpit (Тестування пошти)
+Sail автоматично направляє всі вихідні листи на заглушку Mailpit. Це захищає вас від випадкового надсилання тестових листів реальним клієнтам. Вкажіть параметри в `.env`:
+
+```dotenv
+# .env
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+```
+Переглянути перехоплені листи можна у веб-інтерфейсі за адресою `http://localhost:8025`.
+
+### Xdebug
+Для активації покрокового дебаггінгу достатньо прописати відповідний режим у `.env`:
+
+```dotenv
+# .env
+SAIL_XDEBUG_MODE=develop,debug
+```
+Перезапустіть контейнери (`sail down && sail up -d`), щоб застосувати зміни.
 
 ---
 
 <a id="local-vs-deploy"></a>
-## Локально проти dev/staging/production
+## Порівняння: Sail (локально) vs. Продакшн
 
-| Тема | Sail | Типовий сервер |
-|------|------|----------------|
-| Процеси | `sail up` | php-fpm + nginx / Octane |
-| Черги | Термінал | Supervisor / хмара |
-| TLS | localhost | Реальні сертифікати |
-| Секрети | Файл | Vault / параметри |
-| Масштаб | 1 контейнер на сервіс | Репліки, LB, managed сервіси |
-
-Окремо перевіряйте **воркери**, **cron `schedule:run`**, **OPcache**, **S3**.
+| Функція | Laravel Sail (Локально) | Продакшн оточення |
+|---------|--------------------------|-------------------|
+| **Веб-сервер** | Вбудований сервер PHP | Nginx / Apache + PHP-FPM, або Octane |
+| **Черги** | Ручний запуск `sail artisan queue:work` | Постійний контроль через Supervisor / Systemd |
+| **SSL / HTTPS** | Звичайний HTTP на localhost | Термінація TLS на Nginx, Cloudflare або Load Balancer |
+| **Кеш та сесії** | Файли або локальний Redis | Кластер Redis або Managed Memcached |
+| **База даних** | Контейнер на локальному диску | Хмарні рішення (RDS, Cloud SQL) з бекапами |
 
 ---
 
-<a id="troubleshooting"></a>
-## Чеклист проблем
+## ⚠️ Часті помилки розробників
 
-Права на **`storage/`** / **`bootstrap/cache/`**; хост БД/Redis — **ім’я сервису**, не `127.0.0.1`; після Dockerfile — **`build --no-cache`**; зайняті порти — **`FORWARD_*`**; залежності — **`sail composer install`**.
+**1. Використання `127.0.0.1` для підключення до БД/Redis**
+Якщо у вашому `.env` як `DB_HOST` вказано `127.0.0.1`, додаток всередині контейнера не зможе достукатися до бази. Завжди використовуйте ім'я сервісу (`mysql` або `pgsql`).
+
+**2. Запуск команд на хост-машині замість контейнера**
+Запуск `composer install` або `php artisan migrate` прямо на хості може призвести до конфлікту версій PHP або помилок відсутності розширень. Використовуйте обгортку Sail:
+```bash
+# Термінал
+sail composer install
+sail artisan migrate
+```
 
 ---
 
-## Підсумок
+<a id="self-check"></a>
+## 🧠 Питання для самоперевірки
 
-Інвестиція в чистий **`docker-compose.yml`** і **`.env.example`** окупається синхроном команди. Продакшен (моніторинг, бекапи, supervisor, секрети) проектуйте окремо й переносьте в Sail лише те, що потрібно для реалістичної локальної роботи.
+1. **Чому критично важливо розміщувати проєкт всередині файлової системи WSL2 (наприклад, `~/projects`), а не монтувати його з розділів Windows (`/mnt/c/...`)?**
+2. **Правда чи брехня?** Щоб використовувати PostgreSQL у Sail, необхідно вручну скачувати та компилювати розширення `pdo_pgsql` всередині контейнера.
+3. **Який хост потрібно прописати в `.env` для відправки листів через Mailpit?**
+4. **Як оновити кеш воркера черг після зміни коду в проєкті?**
+
+<details>
+<summary><b>Показати відповіді</b></summary>
+
+1. Пряме монтування з NTFS у Linux Docker-контейнер створює сильне віртуалізаційне навантаження, через що файлові операції (і збирання Vite) можуть працювати повільніше в 10 разів.
+2. **Ложь.** Базові образи Sail вже постачаються зі стандартними розширеннями, включаючи `pdo_pgsql`. Вам потрібно лише оновити конфігурацію в `docker-compose.yml` та `.env`.
+3. В якості хоста необхідно вказати `mailpit`.
+4. Викличте команду `sail artisan queue:restart` або запускайте воркер з прапорцем `--max-jobs=1` на час розробки.
+</details>
