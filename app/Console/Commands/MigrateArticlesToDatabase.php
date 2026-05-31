@@ -36,9 +36,12 @@ class MigrateArticlesToDatabase extends Command
         // 1. Get or create a super-admin user as the author
         $author = User::where('role', User::ROLE_SUPER_ADMIN)->first();
         if (!$author) {
-            $author = User::factory()->admin()->create([
+            $author = User::create([
                 'name' => 'Default Admin',
                 'email' => 'admin@devsense.work',
+                'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(32)),
+                'role' => User::ROLE_SUPER_ADMIN,
+                'slug' => 'default-admin',
             ]);
             $this->info("Created default admin user: {$author->email}");
         }
