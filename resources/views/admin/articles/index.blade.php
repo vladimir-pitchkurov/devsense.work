@@ -2,9 +2,23 @@
 <div class="admin-container">
     <div class="admin-header">
         <h1 class="admin-title">Manage Articles</h1>
-        <a href="{{ route('admin.articles.create', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--primary">
-            Create New Article
-        </a>
+        <div class="header-actions" style="display: flex; gap: 0.5rem;">
+            <a href="{{ route('admin.dashboard', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                Dashboard
+            </a>
+            <a href="{{ route('admin.categories.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                Categories
+            </a>
+            <a href="{{ route('admin.tags.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                Tags
+            </a>
+            <a href="{{ route('admin.profile.edit', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                Edit Profile
+            </a>
+            <a href="{{ route('admin.articles.create', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--primary">
+                Create New Article
+            </a>
+        </div>
     </div>
 
     @if (session('success'))

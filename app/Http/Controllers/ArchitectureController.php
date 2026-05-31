@@ -23,6 +23,8 @@ class ArchitectureController extends Controller
         'high-load-event-ingestion',
         'message-queues-compared',
         'database-performance-and-scaling',
+        'database-indexes-deep-dive',
+        'database-query-optimization',
         'php-database-connection-pooling',
         'observability-monitoring-laravel',
     ];
@@ -81,23 +83,30 @@ class ArchitectureController extends Controller
         $published = $this->publishedCarbon($meta, $modified);
         $breadcrumbCurrent = Str::headline(str_replace('-', ' ', $slug));
 
+        $articleObj = \App\Models\Article::where('slug', $slug)
+            ->with(['tags.translations'])
+            ->first();
+        $tags = $articleObj ? $articleObj->tags : collect();
+
         return view('architecture.show', [
-            'content' => $data['html'],
-            'meta' => $meta,
-            'pageTitle' => $pageTitle,
+            'content'         => $data['html'],
+            'meta'            => $meta,
+            'tags'            => $tags,
+            'pageTitle'       => $pageTitle,
             'pageDescription' => $pageDescription,
-            'canonicalUrl' => $canonicalUrl,
-            'breadcrumbCurrent' => $breadcrumbCurrent,
-            'structuredData' => [
-                '@type' => 'TechArticle',
-                'headline' => $pageTitle,
-                'description' => $pageDescription,
-                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
-                'datePublished' => $published->toIso8601String(),
-                'dateModified' => $modified->toIso8601String(),
+            'canonicalUrl'    => $canonicalUrl,
+            'breadcrumbCurrent'=> $breadcrumbCurrent,
+            'ogImage'         => $this->resolveOgImage($meta, 'architecture', $slug),
+            'structuredData'  => [
+                '@type'            => 'TechArticle',
+                'headline'         => $pageTitle,
+                'description'      => $pageDescription,
+                'inLanguage'       => $hrefLangMap[$locale] ?? $locale,
+                'datePublished'    => $published->toIso8601String(),
+                'dateModified'     => $modified->toIso8601String(),
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
-                    '@id' => $canonicalUrl,
+                    '@id'   => $canonicalUrl,
                 ],
                 'faq' => $meta['faq'] ?? null,
             ],

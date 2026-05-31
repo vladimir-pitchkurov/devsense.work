@@ -74,23 +74,30 @@ class MicroservicesController extends Controller
         $published = $this->publishedCarbon($meta, $modified);
         $breadcrumbCurrent = Str::headline(str_replace('-', ' ', $slug));
 
+        $articleObj = \App\Models\Article::where('slug', $slug)
+            ->with(['tags.translations'])
+            ->first();
+        $tags = $articleObj ? $articleObj->tags : collect();
+
         return view('microservices.show', [
-            'content' => $data['html'],
-            'meta' => $meta,
-            'pageTitle' => $pageTitle,
-            'pageDescription' => $pageDescription,
-            'canonicalUrl' => $canonicalUrl,
-            'breadcrumbCurrent' => $breadcrumbCurrent,
-            'structuredData' => [
-                '@type' => 'TechArticle',
-                'headline' => $pageTitle,
-                'description' => $pageDescription,
-                'inLanguage' => $hrefLangMap[$locale] ?? $locale,
-                'datePublished' => $published->toIso8601String(),
-                'dateModified' => $modified->toIso8601String(),
+            'content'          => $data['html'],
+            'meta'             => $meta,
+            'tags'             => $tags,
+            'pageTitle'        => $pageTitle,
+            'pageDescription'  => $pageDescription,
+            'canonicalUrl'     => $canonicalUrl,
+            'breadcrumbCurrent'=> $breadcrumbCurrent,
+            'ogImage'          => $this->resolveOgImage($meta, 'microservices', $slug),
+            'structuredData'   => [
+                '@type'            => 'TechArticle',
+                'headline'         => $pageTitle,
+                'description'      => $pageDescription,
+                'inLanguage'       => $hrefLangMap[$locale] ?? $locale,
+                'datePublished'    => $published->toIso8601String(),
+                'dateModified'     => $modified->toIso8601String(),
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
-                    '@id' => $canonicalUrl,
+                    '@id'   => $canonicalUrl,
                 ],
                 'faq' => $meta['faq'] ?? null,
             ],

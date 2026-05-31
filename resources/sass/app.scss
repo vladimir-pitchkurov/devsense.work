@@ -3,8 +3,10 @@
 @use 'layout/header';
 @use 'layout/breadcrumb';
 @use 'layout/mobile-nav';
+@use 'layout/search';
 @use 'blocks/card';
 @use 'blocks/article';
+@use 'blocks/author';
 @use 'blocks/markdown';
 @use 'blocks/code-block';
 
@@ -14,13 +16,19 @@ body.page {
     background-color: var(--page-bg);
     color: var(--text-color);
     margin: 0;
-    margin-bottom: 65px;
+    margin-bottom: calc(65px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 
     @media (min-width: 768px) {
         margin-bottom: 0;
+    }
+
+    @media print {
+        margin-bottom: 0 !important;
+        display: block !important;
+        min-height: 0 !important;
     }
 }
 

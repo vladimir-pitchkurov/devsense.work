@@ -72,4 +72,22 @@ class Article extends Model
         return $this->translations()->where('locale', $locale)->first()
             ?: $this->translations()->where('locale', 'en')->first(); // fallback to english
     }
+
+    /**
+     * Get the public frontend URL for the article.
+     */
+    public function url(): string
+    {
+        $categorySlug = $this->category?->slug;
+
+        if ($categorySlug === 'php') {
+            return route('php.show', ['version' => $this->slug, 'locale' => app()->getLocale()]);
+        }
+
+        if (in_array($categorySlug, ['tools', 'microservices', 'architecture'], true)) {
+            return route($categorySlug . '.show', ['slug' => $this->slug, 'locale' => app()->getLocale()]);
+        }
+
+        return '#';
+    }
 }

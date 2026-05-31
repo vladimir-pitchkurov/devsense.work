@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,7 +20,8 @@ class DatabaseSeederTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
-            'name' => 'Test User',
+            'name' => 'Vladimir Pitchkurov',
+            'role' => User::ROLE_SUPER_ADMIN,
         ]);
     }
 }

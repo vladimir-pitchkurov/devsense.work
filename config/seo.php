@@ -81,12 +81,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'author' => [
-        'name' => env('SEO_AUTHOR_NAME', 'Vladimir Pichkurov'),
-        'job_title' => env('SEO_AUTHOR_JOB_TITLE', 'Software Engineer'),
-        'sameAs' => [
+        'name'      => env('SEO_AUTHOR_NAME', 'Vladimir Pichkurov'),
+        'job_title' => env('SEO_AUTHOR_JOB_TITLE', 'Senior PHP Developer & Backend Architect'),
+        'sameAs'    => [
             'https://github.com/vladimir-pitchkurov',
-            'https://linkedin.com/in/vladimir-pitchkurov',
-            'https://habr.com/ru/users/vladimir-pitchkurov',
+            'https://www.linkedin.com/in/volodimir-pichkurov-626a46150',
+            'https://devsense.work/en/authors/vladimir-pichkurov',
         ],
     ],
 

@@ -65,8 +65,26 @@ class MarkdownContentService
                 $frontMatter = $result->getFrontMatter();
             }
 
+            $html = $result->getContent();
+
+            // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT]
+            $html = preg_replace_callback(
+                '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT)\]([\s\S]*?)<\/blockquote>/i',
+                function ($matches) {
+                    $type = strtoupper($matches[1]);
+                    $cleanType = strtolower($type);
+                    $label = ucfirst($cleanType);
+                    $content = trim($matches[2]);
+                    
+                    return '<div class="markdown-alert markdown-alert-' . $cleanType . '">' .
+                           '<p class="markdown-alert-title">' . $label . '</p>' .
+                           '<p>' . $content . '</div>';
+                },
+                $html
+            );
+
             return [
-                'html' => $result->getContent(),
+                'html' => $html,
                 'meta' => $frontMatter,
                 'source_modified_at' => File::lastModified($path),
             ];

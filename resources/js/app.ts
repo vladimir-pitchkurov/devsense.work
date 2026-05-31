@@ -1,4 +1,5 @@
 import { createApp, defineAsyncComponent } from 'vue';
+import { initTableOfContents } from './toc';
 
 /** Lazy-load header widgets so article HTML paints sooner (mobile LCP/FCP). */
 const ThemeSwitcher = defineAsyncComponent(() => import('./components/ThemeSwitcher.vue'));
@@ -10,3 +11,7 @@ app.component('theme-switcher', ThemeSwitcher);
 app.component('language-switcher', LanguageSwitcher);
 
 app.mount('#app');
+
+document.addEventListener('DOMContentLoaded', () => {
+    initTableOfContents();
+});

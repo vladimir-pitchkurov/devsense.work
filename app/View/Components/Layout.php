@@ -53,13 +53,14 @@ class Layout extends Component
         $routable = [
             'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
             'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
-            'jobs.index', 'jobs.show'
+            'jobs.index', 'jobs.show', 'authors.index', 'authors.show',
         ];
         if (! in_array($name, $routable, true)) {
             return URL::current();
         }
 
         $params = array_merge($route->parameters(), ['locale' => app()->getLocale()]);
+        unset($params['category_slug']);
 
         return SiteUrl::route($name, $params);
     }
@@ -131,7 +132,7 @@ class Layout extends Component
         $allowed = [
             'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
             'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
-            'jobs.index', 'jobs.show'
+            'jobs.index', 'jobs.show', 'authors.index', 'authors.show',
         ];
         if (! in_array($name, $allowed, true)) {
             return [];
@@ -272,6 +273,24 @@ class Layout extends Component
                 ['label' => __('ui.seo.breadcrumb_jobs') ?? 'Jobs', 'url' => SiteUrl::route('jobs.index', ['locale' => $locale])],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
+            'authors.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_authors') ?? 'Authors', 'url' => null],
+            ],
+            'authors.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_authors') ?? 'Authors', 'url' => SiteUrl::route('authors.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'tags.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_tags') ?? 'Tags', 'url' => null],
+            ],
+            'tags.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_tags') ?? 'Tags', 'url' => SiteUrl::route('tags.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
             default => [],
         };
     }
@@ -372,6 +391,16 @@ class Layout extends Component
             $article['@id'] = $this->canonical.'#article';
             $article['publisher'] = ['@id' => $orgId];
             $article['isPartOf'] = ['@id' => $websiteId];
+
+            // Add image to article structured data for Google Discover / rich results
+            if ($this->ogImage !== null) {
+                $article['image'] = [
+                    '@type'  => 'ImageObject',
+                    'url'    => $this->ogImage,
+                    'width'  => (int) config('seo.og_image_width', 1200),
+                    'height' => (int) config('seo.og_image_height', 630),
+                ];
+            }
 
             if (in_array($article['@type'] ?? '', ['TechArticle', 'BlogPosting', 'JobPosting'], true)) {
                 $article['author'] = ['@id' => $authorId];

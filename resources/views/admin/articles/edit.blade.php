@@ -119,7 +119,178 @@
     </form>
 </div>
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.EasyMDEContainer {
+    background-color: rgba(var(--bg-color-rgb), 0.5) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0.5rem !important;
+    margin-top: 0.5rem;
+}
+.editor-toolbar {
+    background-color: var(--code-header-bg) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    opacity: 1 !important;
+    padding: 0.5rem !important;
+}
+.editor-toolbar button {
+    color: var(--text-color) !important;
+    border-radius: 4px !important;
+    transition: all 0.2s !important;
+}
+.editor-toolbar button:hover {
+    background: var(--primary-glow) !important;
+    color: var(--primary-color) !important;
+    border: none !important;
+}
+.editor-toolbar button.active {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+.CodeMirror {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--text-color) !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.9rem !important;
+    border-radius: 0 0 0.5rem 0.5rem !important;
+}
+.CodeMirror-cursor {
+    border-left: 2px solid var(--primary-color) !important;
+}
+.editor-preview {
+    background-color: var(--page-bg) !important;
+    color: var(--text-color) !important;
+    padding: 2rem !important;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script>
+const locales = ['en', 'ru', 'ua', 'bg'];
+const editors = {};
+
+function customPreviewRender(plainText) {
+    if (!this.parent || typeof this.parent.markdown !== 'function') {
+        return plainText;
+    }
+    var html = this.parent.markdown(plainText);
+    
+    // 1. Process GFM Alerts
+    html = html.replace(/<blockquote>\s*<p>\s*\[!NOTE\]([\s\S]*?)<\/p>\s*<\/blockquote>/gi, function(match, content) {
+        return '<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title">Note</p><p>' + content.trim() + '</p></div>';
+    });
+    html = html.replace(/<blockquote>\s*<p>\s*\[!WARNING\]([\s\S]*?)<\/p>\s*<\/blockquote>/gi, function(match, content) {
+        return '<div class="markdown-alert markdown-alert-warning"><p class="markdown-alert-title">Warning</p><p>' + content.trim() + '</p></div>';
+    });
+    html = html.replace(/<blockquote>\s*<p>\s*\[!IMPORTANT\]([\s\S]*?)<\/p>\s*<\/blockquote>/gi, function(match, content) {
+        return '<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title">Important</p><p>' + content.trim() + '</p></div>';
+    });
+    
+    // 2. Process Code Block headers if they contain comment paths
+    html = html.replace(/<pre><code class="([^"]*)">((?:\/\/|#|(?:\/\*))\s*([a-zA-Z0-9_\-\.\/]+)(?:\s*\*\/)?\n)([\s\S]*?)<\/code><\/pre>/gi, function(match, langClass, commentLine, filePath, codeContent) {
+        return '<div class="code-block">' +
+               '<div class="code-block__header"><span class="code-block__filename">' + filePath + '</span></div>' +
+               '<pre class="code-block__code"><code class="' + langClass + '">' + codeContent + '</code></pre>' +
+               '</div>';
+    });
+    
+    return '<div class="markdown-body">' + html + '</div>';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    locales.forEach(loc => {
+        const el = document.getElementById('content_' + loc);
+        if (el) {
+            editors[loc] = new EasyMDE({
+                element: el,
+                spellChecker: false,
+                nativeSpellcheck: false,
+                autosave: {
+                    enabled: false,
+                },
+                previewRender: customPreviewRender,
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "|",
+                    "link", "image", "table", "|",
+                    "preview", "side-by-side", "fullscreen", "|",
+                    {
+                        name: "alert-note",
+                        action: function(editor) {
+                            var cm = editor.codemirror;
+                            var selection = cm.getSelection();
+                            cm.replaceSelection("> [!NOTE]\n> " + (selection || "Ваша заметка / Your note"));
+                            cm.focus();
+                        },
+                        className: "fa fa-info-circle",
+                        title: "Insert Note Alert",
+                    },
+                    {
+                        name: "alert-warning",
+                        action: function(editor) {
+                            var cm = editor.codemirror;
+                            var selection = cm.getSelection();
+                            cm.replaceSelection("> [!WARNING]\n> " + (selection || "Внимание / Warning"));
+                            cm.focus();
+                        },
+                        className: "fa fa-exclamation-triangle",
+                        title: "Insert Warning Alert",
+                    },
+                    {
+                        name: "alert-important",
+                        action: function(editor) {
+                            var cm = editor.codemirror;
+                            var selection = cm.getSelection();
+                            cm.replaceSelection("> [!IMPORTANT]\n> " + (selection || "Важно / Important"));
+                            cm.focus();
+                        },
+                        className: "fa fa-exclamation-circle",
+                        title: "Insert Important Alert",
+                    },
+                    {
+                        name: "code-path",
+                        action: function(editor) {
+                            var cm = editor.codemirror;
+                            var selection = cm.getSelection();
+                            cm.replaceSelection("```php\n// app/Services/MediaUploadService.php\n" + (selection || " // code here\n") + "```");
+                            cm.focus();
+                        },
+                        className: "fa fa-file-code-o",
+                        title: "Insert Code Block with File Path",
+                    },
+                    {
+                        name: "quiz",
+                        action: function(editor) {
+                            var cm = editor.codemirror;
+                            cm.replaceSelection("<details>\n<summary>Вопрос / Question?</summary>\nПравильный ответ / Correct answer!\n</details>");
+                            cm.focus();
+                        },
+                        className: "fa fa-question-circle",
+                        title: "Insert Quiz/Spoiler",
+                    }
+                ]
+            });
+        }
+    });
+
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            locales.forEach(loc => {
+                if (editors[loc]) {
+                    editors[loc].save();
+                }
+            });
+        });
+    }
+});
+
 function switchTab(evt, tabId) {
     var i, tabContent, tabLinks;
     tabContent = document.getElementsByClassName("tab-pane");
@@ -132,8 +303,16 @@ function switchTab(evt, tabId) {
     }
     document.getElementById(tabId).classList.add("active");
     evt.currentTarget.classList.add("active");
+
+    const locale = tabId.replace('tab-', '');
+    if (editors && editors[locale]) {
+        setTimeout(() => {
+            editors[locale].codemirror.refresh();
+        }, 50);
+    }
 }
 </script>
+@endpush
 
 <style>
 .admin-container {

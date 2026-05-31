@@ -18,8 +18,11 @@ const currentLocale = ref<string>('en');
 const selectTitle = ref<string>('Choose language');
 
 onMounted((): void => {
-    const htmlLang = document.documentElement.getAttribute('lang');
+    let htmlLang = document.documentElement.getAttribute('lang');
     if (htmlLang) {
+        if (htmlLang === 'uk') {
+            htmlLang = 'ua';
+        }
         currentLocale.value = htmlLang;
     }
     const fromBody = document.body?.dataset?.a11yLanguageSelect;

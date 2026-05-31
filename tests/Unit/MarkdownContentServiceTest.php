@@ -101,4 +101,37 @@ class MarkdownContentServiceTest extends TestCase
         $this->assertSame(42, $result['source_modified_at']);
         $this->assertStringContainsString('Heading', $result['html']);
     }
+
+    public function test_gfm_alerts_are_processed(): void
+    {
+        Cache::flush();
+
+        $path = resource_path('content/en/php/alert-fixture.md');
+
+        File::shouldReceive('exists')
+            ->once()
+            ->with($path)
+            ->andReturnTrue();
+        File::shouldReceive('lastModified')
+            ->twice()
+            ->with($path)
+            ->andReturn(42);
+        File::shouldReceive('get')
+            ->once()
+            ->with($path)
+            ->andReturn("> [!NOTE]\n> This is a test note.");
+
+        Cache::shouldReceive('rememberForever')
+            ->once()
+            ->andReturnUsing(static fn (string $key, callable $callback): array => $callback());
+
+        $service = new MarkdownContentService;
+        $result = $service->getParsedContent('en', 'php', 'alert-fixture');
+
+        $this->assertNotNull($result);
+        $this->assertStringContainsString('class="markdown-alert markdown-alert-note"', $result['html']);
+        $this->assertStringContainsString('class="markdown-alert-title"', $result['html']);
+        $this->assertStringContainsString('Note', $result['html']);
+        $this->assertStringContainsString('This is a test note.', $result['html']);
+    }
 }

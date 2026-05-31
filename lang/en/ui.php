@@ -10,6 +10,9 @@ return [
         'microservices_short' => 'MS',
         'architecture' => 'Architecture',
         'architecture_short' => 'Arch.',
+        'browse' => 'Browse',
+        'cabinet' => 'Cabinet',
+        'mobile_aria' => 'Main navigation',
     ],
     'footer' => [
         'branch' => 'Branch',
@@ -203,6 +206,14 @@ return [
                 'title' => 'Databases under load: query tuning, indexes, MySQL vs Postgres, and scaling trade-offs',
                 'excerpt' => 'EXPLAIN-driven optimization, index types, why heavy logic in the DB hurts velocity, replication and sharding costs, and how Postgres and MySQL differ in practice.',
             ],
+            'database_indexes_deep_dive' => [
+                'title' => 'Database Indexes Deep Dive: MySQL InnoDB vs. PostgreSQL heap, structures, and choices',
+                'excerpt' => 'How index structures work under the hood, comparing B-Trees, Hash, and GIN indexes, how composite column ordering dictates index usage, and write amplification costs.',
+            ],
+            'database_query_optimization' => [
+                'title' => 'Database Query Optimization: EXPLAIN analysis, join strategies, and scaling under load',
+                'excerpt' => 'A practical guide to reading EXPLAIN query plans, optimizing complex joins, anti-join patterns, keyset pagination, database partitioning, and high-load architectural differences.',
+            ],
             'php_database_connection_pooling' => [
                 'title' => 'PHP apps and the database connection bottleneck: poolers, proxies, and what actually helps',
                 'excerpt' => 'Why FPM and workers multiply DB sessions, how PgBouncer, ProxySQL, and RDS-style proxies sit in the middle, and Laravel-ready notes on transaction pooling and prepared statements.',
@@ -225,6 +236,39 @@ return [
         'breadcrumb_microservices' => 'Microservices',
         'breadcrumb_architecture' => 'Architecture',
         'breadcrumb_jobs' => 'Jobs',
+        'breadcrumb_authors' => 'Authors',
+        'breadcrumb_tags' => 'Tags',
+    ],
+    'authors_index' => [
+        'title'       => 'Meet the Authors | DevSense',
+        'description' => 'The experts behind DevSense — senior PHP engineers and architects sharing deep-dive guides on PHP, Laravel, microservices and more.',
+        'breadcrumb'  => 'Authors',
+        'hero_title'  => 'Meet the Authors',
+        'hero_lead'   => 'Senior engineers and architects who write the deep-dive guides you find here.',
+        'empty'       => 'No authors found.',
+    ],
+    'authors_show' => [
+        'title_suffix'           => 'Author at',
+        'description_fallback'   => ':name — author at DevSense.',
+        'nav_aria'               => 'Authors navigation',
+        'back'                   => 'Back to Authors',
+        'bio_label'              => 'About',
+        'articles_label'         => 'Articles',
+        'socials_label'          => 'Social profiles',
+    ],
+    'tags_index' => [
+        'title'       => 'Browse by Tags | DevSense',
+        'description' => 'Explore technical articles and deep dives filtered by topic tags.',
+        'breadcrumb'  => 'Tags',
+        'hero_title'  => 'Topic Tags',
+        'hero_lead'   => 'Filter our technical guides by key keywords and software topics.',
+        'empty'       => 'No tags found.',
+    ],
+    'tags_show' => [
+        'title_suffix' => 'Guides',
+        'back'         => 'Back to Tags',
+        'empty'        => 'No articles found for this tag.',
+        'hero_title'   => 'Guides tagged with',
     ],
     'tools' => [
         'sail' => [
@@ -235,4 +279,21 @@ return [
             'nav_aria' => 'Tools navigation',
         ],
     ],
+    'search' => [
+        'placeholder' => 'Search articles...',
+        'no_results' => 'No articles found matching your criteria.',
+        'clear_filters' => 'Reset filters',
+        'categories' => 'Categories',
+        'all_categories' => 'All Categories',
+        'tags' => 'Popular Tags',
+        'sort_by' => 'Sort By',
+        'latest' => 'Latest',
+        'oldest' => 'Oldest',
+        'alphabetical' => 'Alphabetical (A-Z)',
+        'authors' => 'Authors',
+        'on_this_page' => 'On this page',
+        'print_pdf' => 'PDF / Print',
+        'label' => 'Search',
+    ],
 ];
+
