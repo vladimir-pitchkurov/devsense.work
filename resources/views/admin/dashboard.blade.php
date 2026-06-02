@@ -12,6 +12,11 @@
             <a href="{{ route('admin.tags.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
                 Tags
             </a>
+            @can('manage-users')
+                <a href="{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Users
+                </a>
+            @endcan
             <a href="{{ route('admin.profile.edit', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
                 Edit Profile
             </a>

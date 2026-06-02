@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\TrackVisits::class,
+            \App\Http\Middleware\CheckBlocked::class,
         ]);
 
         $middleware->alias([

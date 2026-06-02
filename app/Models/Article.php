@@ -71,8 +71,22 @@ class Article extends Model
     public function translate(?string $locale = null): ?ArticleTranslation
     {
         $locale = $locale ?: app()->getLocale();
+        
+        if ($this->relationLoaded('translations')) {
+            $trans = $this->translations->where('locale', $locale)->first();
+            if ($trans) {
+                return $trans;
+            }
+            $fallback = $this->translations->where('locale', 'en')->first();
+            if ($fallback) {
+                return $fallback;
+            }
+            return $this->translations->first();
+        }
+
         return $this->translations()->where('locale', $locale)->first()
-            ?: $this->translations()->where('locale', 'en')->first(); // fallback to english
+            ?: $this->translations()->where('locale', 'en')->first()
+            ?: $this->translations()->first(); // fallback to any available translation
     }
 
     /**

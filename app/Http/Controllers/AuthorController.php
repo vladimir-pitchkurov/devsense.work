@@ -20,7 +20,8 @@ class AuthorController extends Controller
      */
     public function index(): View
     {
-        $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR]);
+        $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
+            ->where('is_blocked', false);
 
         if (!auth()->check() || !auth()->user()->isAdmin()) {
             $query->where('is_public', true)->where('is_approved', true);
@@ -55,6 +56,12 @@ class AuthorController extends Controller
             ->firstOrFail();
 
         $currentUser = auth()->user();
+
+        if ($author->is_blocked) {
+            if (!$currentUser || !$currentUser->isAdmin()) {
+                abort(404);
+            }
+        }
 
         if (!$author->is_approved) {
             if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {

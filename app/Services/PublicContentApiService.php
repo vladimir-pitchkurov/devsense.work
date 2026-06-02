@@ -362,9 +362,28 @@ class PublicContentApiService
             ->first();
 
         if ($article) {
-            $translation = $article->translations()->where('locale', $locale)->first();
+            $currentUser = auth()->user();
+            $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $article->author_id);
+
+            $translation = null;
+            if ($isOwnerOrAdmin) {
+                $translation = $article->pendingTranslations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->first();
+                }
+            }
+
             if (!$translation) {
-                $translation = $article->translations()->where('locale', 'en')->first();
+                $translation = $article->translations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->translations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->translations()->first();
+                }
             }
 
             if ($translation) {

@@ -317,6 +317,7 @@ return [
         'terms_prefix'   => 'I agree to the',
         'terms'          => 'Terms',
         'privacy'        => 'Privacy Policy',
+        'suspended'      => 'Your account has been suspended. Please contact the administrator.',
     ],
 ];
 

@@ -19,7 +19,7 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $query = Article::with(['author', 'category']);
+        $query = Article::with(['author', 'category', 'translations', 'pendingTranslations']);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('author_id', Auth::id());
@@ -44,9 +44,9 @@ class ArticlesController extends Controller
     /**
      * Store a newly created article in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, \App\Services\ContentSanitizer $sanitizer)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'slug' => ['required', 'string', 'unique:articles,slug', 'max:255'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'is_published' => ['nullable', 'boolean'],
@@ -55,11 +55,38 @@ class ArticlesController extends Controller
             
             // Translations validation
             'translations' => ['required', 'array'],
-            'translations.*.title' => ['required', 'string', 'max:255'],
+            'translations.*.title' => ['nullable', 'string', 'max:255'],
             'translations.*.description' => ['nullable', 'string'],
-            'translations.*.content' => ['required', 'string'],
+            'translations.*.content' => ['nullable', 'string'],
             'translations.*.faq' => ['nullable', 'string'], // JSON string from form
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $translations = $request->input('translations', []);
+            $hasAtLeastOne = false;
+
+            foreach ($translations as $locale => $data) {
+                $title = isset($data['title']) ? trim($data['title']) : '';
+                $content = isset($data['content']) ? trim($data['content']) : '';
+
+                $hasTitle = $title !== '';
+                $hasContent = $content !== '';
+
+                if ($hasTitle && $hasContent) {
+                    $hasAtLeastOne = true;
+                } elseif ($hasTitle && !$hasContent) {
+                    $validator->errors()->add("translations.{$locale}.content", "The content field is required when title is filled for the " . strtoupper($locale) . " translation.");
+                } elseif (!$hasTitle && $hasContent) {
+                    $validator->errors()->add("translations.{$locale}.title", "The title field is required when content is filled for the " . strtoupper($locale) . " translation.");
+                }
+            }
+
+            if (!$hasAtLeastOne) {
+                $validator->errors()->add('translations', 'At least one language translation (both Title and Content) must be filled.');
+            }
+        });
+
+        $validator->validate();
 
         $isAdmin = Auth::user()->isAdmin();
 
@@ -77,27 +104,39 @@ class ArticlesController extends Controller
         }
 
         foreach ($request->translations as $locale => $data) {
+            $title = isset($data['title']) ? trim($data['title']) : '';
+            $content = isset($data['content']) ? trim($data['content']) : '';
+
+            if ($title === '' && $content === '') {
+                continue;
+            }
+
+            $sanitizedTitle = $sanitizer->sanitizePlainText($title);
+            $description = $sanitizer->sanitizePlainText($data['description'] ?? null);
+            $sanitizedContent = $sanitizer->sanitizeMarkdown($content);
+            $faqJson = $sanitizer->sanitizeFaq($data['faq'] ?? null);
+
             $faqArray = null;
-            if (!empty($data['faq'])) {
-                $faqArray = json_decode($data['faq'], true);
+            if (!empty($faqJson)) {
+                $faqArray = json_decode($faqJson, true);
             }
 
             if ($isAdmin) {
                 ArticleTranslation::create([
                     'article_id' => $article->id,
                     'locale' => $locale,
-                    'title' => $data['title'],
-                    'description' => $data['description'] ?? null,
-                    'content' => $data['content'],
+                    'title' => $sanitizedTitle,
+                    'description' => $description,
+                    'content' => $sanitizedContent,
                     'faq' => $faqArray,
                 ]);
             } else {
                 PendingArticleTranslation::create([
                     'article_id' => $article->id,
                     'locale' => $locale,
-                    'title' => $data['title'],
-                    'description' => $data['description'] ?? null,
-                    'content' => $data['content'],
+                    'title' => $sanitizedTitle,
+                    'description' => $description,
+                    'content' => $sanitizedContent,
                     'faq' => $faqArray,
                 ]);
             }
@@ -132,13 +171,13 @@ class ArticlesController extends Controller
     /**
      * Update the specified article in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Article $article, \App\Services\ContentSanitizer $sanitizer)
     {
         if (!Auth::user()->isAdmin() && $article->author_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'slug' => ['required', 'string', 'unique:articles,slug,' . $article->id, 'max:255'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'is_published' => ['nullable', 'boolean'],
@@ -147,11 +186,38 @@ class ArticlesController extends Controller
             
             // Translations validation
             'translations' => ['required', 'array'],
-            'translations.*.title' => ['required', 'string', 'max:255'],
+            'translations.*.title' => ['nullable', 'string', 'max:255'],
             'translations.*.description' => ['nullable', 'string'],
-            'translations.*.content' => ['required', 'string'],
+            'translations.*.content' => ['nullable', 'string'],
             'translations.*.faq' => ['nullable', 'string'], // JSON string from form
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $translations = $request->input('translations', []);
+            $hasAtLeastOne = false;
+
+            foreach ($translations as $locale => $data) {
+                $title = isset($data['title']) ? trim($data['title']) : '';
+                $content = isset($data['content']) ? trim($data['content']) : '';
+
+                $hasTitle = $title !== '';
+                $hasContent = $content !== '';
+
+                if ($hasTitle && $hasContent) {
+                    $hasAtLeastOne = true;
+                } elseif ($hasTitle && !$hasContent) {
+                    $validator->errors()->add("translations.{$locale}.content", "The content field is required when title is filled for the " . strtoupper($locale) . " translation.");
+                } elseif (!$hasTitle && $hasContent) {
+                    $validator->errors()->add("translations.{$locale}.title", "The title field is required when content is filled for the " . strtoupper($locale) . " translation.");
+                }
+            }
+
+            if (!$hasAtLeastOne) {
+                $validator->errors()->add('translations', 'At least one language translation (both Title and Content) must be filled.');
+            }
+        });
+
+        $validator->validate();
 
         $isAdmin = Auth::user()->isAdmin();
 
@@ -168,9 +234,29 @@ class ArticlesController extends Controller
         $article->tags()->sync($request->tags ?? []);
 
         foreach ($request->translations as $locale => $data) {
+            $title = isset($data['title']) ? trim($data['title']) : '';
+            $content = isset($data['content']) ? trim($data['content']) : '';
+
+            if ($title === '' && $content === '') {
+                if ($isAdmin) {
+                    ArticleTranslation::where('article_id', $article->id)
+                        ->where('locale', $locale)
+                        ->delete();
+                }
+                PendingArticleTranslation::where('article_id', $article->id)
+                    ->where('locale', $locale)
+                    ->delete();
+                continue;
+            }
+
+            $sanitizedTitle = $sanitizer->sanitizePlainText($title);
+            $description = $sanitizer->sanitizePlainText($data['description'] ?? null);
+            $sanitizedContent = $sanitizer->sanitizeMarkdown($content);
+            $faqJson = $sanitizer->sanitizeFaq($data['faq'] ?? null);
+
             $faqArray = null;
-            if (!empty($data['faq'])) {
-                $faqArray = json_decode($data['faq'], true);
+            if (!empty($faqJson)) {
+                $faqArray = json_decode($faqJson, true);
             }
 
             if ($isAdmin) {
@@ -178,19 +264,22 @@ class ArticlesController extends Controller
                     'article_id' => $article->id,
                     'locale' => $locale,
                 ], [
-                    'title' => $data['title'],
-                    'description' => $data['description'] ?? null,
-                    'content' => $data['content'],
+                    'title' => $sanitizedTitle,
+                    'description' => $description,
+                    'content' => $sanitizedContent,
                     'faq' => $faqArray,
                 ]);
+                PendingArticleTranslation::where('article_id', $article->id)
+                    ->where('locale', $locale)
+                    ->delete();
             } else {
                 PendingArticleTranslation::updateOrCreate([
                     'article_id' => $article->id,
                     'locale' => $locale,
                 ], [
-                    'title' => $data['title'],
-                    'description' => $data['description'] ?? null,
-                    'content' => $data['content'],
+                    'title' => $sanitizedTitle,
+                    'description' => $description,
+                    'content' => $sanitizedContent,
                     'faq' => $faqArray,
                 ]);
             }

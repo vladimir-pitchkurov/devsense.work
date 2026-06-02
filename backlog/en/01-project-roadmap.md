@@ -38,3 +38,21 @@
 ## Phase 6: Community & Interactivity — [ ] Planned
 - [ ] Forum for tech discussions.
 - [ ] Real-time Chat (Laravel Reverb / WebSockets).
+
+## Phase 7: Email Integrity & Verification — [ ] Planned
+- [ ] Implement robust email verification using Resend as the recommended email service provider.
+- [ ] Add strict validation for email registration:
+    - [ ] Perform MX domain record lookups during sign-up to verify domain legitimacy.
+    - [ ] Implement a blocklist for known disposable/temporary fake email providers.
+- [ ] Secure activation flow:
+    - [ ] Send signed validation links with short expiration windows.
+    - [ ] Auto-suspend/block accounts that fail to verify within a specified timeframe.
+
+## Phase 8: Moderation Flow & Fallbacks (Article Translation & Validation Upgrades) — [x] Completed
+- [x] HTML5 validation bypass in hidden tabs (removed `required` attribute blocker).
+- [x] Relaxed translation validation rules (require at least one locale, prevent partial translations).
+- [x] Database-backed localization fallback mechanism (locale -> `en` -> first available).
+- [x] Author cabinet draft preview capability for unapproved or unpublished articles (prevent 404).
+- [x] Live status indicators (`In Review`, `Update in Review`) in the admin article list.
+- [x] Eager-loading of translations inside admin views to avoid N+1 queries.
+

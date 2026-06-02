@@ -205,7 +205,11 @@ class DraftModerationTest extends TestCase
         // Hidden from homepage listing
         $this->get('/en')->assertDontSee('New Article Title');
 
+        // Author can view the preview
+        $this->get('/en/php/new-article-slug')->assertStatus(200);
+
         // Page returns 404 to guests
+        auth()->logout();
         $this->get('/en/php/new-article-slug')->assertNotFound();
     }
 
@@ -358,5 +362,114 @@ class DraftModerationTest extends TestCase
 
         $report->refresh();
         $this->assertSame('resolved', $report->status);
+    }
+
+    /**
+     * Test author can preview their own unapproved article (which is in review / draft).
+     */
+    public function test_author_can_preview_unapproved_draft_article(): void
+    {
+        $article = Article::create([
+            'slug' => 'preview-draft-slug',
+            'author_id' => $this->author->id,
+            'category_id' => $this->category->id,
+            'is_published' => true,
+            'is_approved' => false,
+        ]);
+        $article->pendingTranslations()->create([
+            'locale' => 'en',
+            'title' => 'Draft Preview Title',
+            'content' => '# Draft Preview Content',
+        ]);
+
+        // Non-logged user gets 404
+        $this->get('/en/php/preview-draft-slug')->assertNotFound();
+
+        // Different author gets 404
+        $otherAuthor = User::factory()->author()->create(['is_approved' => true]);
+        $this->actingAs($otherAuthor)->get('/en/php/preview-draft-slug')->assertNotFound();
+
+        // The owner author gets 200 and sees the draft content
+        $this->actingAs($this->author);
+        $response = $this->get('/en/php/preview-draft-slug');
+        $response->assertStatus(200);
+        $response->assertSee('Draft Preview Title');
+    }
+
+    /**
+     * Test author can preview unapproved article under architecture category (dynamic route matching).
+     */
+    public function test_author_can_preview_architecture_draft_article(): void
+    {
+        $architectureCategory = Category::create(['slug' => 'architecture']);
+        
+        $article = Article::create([
+            'slug' => 'dynamic-architecture-slug',
+            'author_id' => $this->author->id,
+            'category_id' => $architectureCategory->id,
+            'is_published' => true,
+            'is_approved' => false,
+        ]);
+        $article->pendingTranslations()->create([
+            'locale' => 'en',
+            'title' => 'Architecture Title',
+            'content' => '# Architecture Content',
+        ]);
+
+        // The owner author gets 200 and sees the draft content on the architecture prefix route
+        $this->actingAs($this->author);
+        $response = $this->get('/en/architecture/dynamic-architecture-slug');
+        $response->assertStatus(200);
+        $response->assertSee('Architecture Title');
+        
+        // Guest gets 404
+        auth()->logout();
+        $this->get('/en/architecture/dynamic-architecture-slug')->assertNotFound();
+    }
+
+    /**
+     * Test correct review status badges are displayed on the article index page.
+     */
+    public function test_admin_and_author_see_correct_badges_on_articles_index(): void
+    {
+        $this->actingAs($this->author);
+
+        // 1. Article awaiting initial approval
+        $article1 = Article::create([
+            'slug' => 'awaiting-approval',
+            'author_id' => $this->author->id,
+            'category_id' => $this->category->id,
+            'is_published' => true,
+            'is_approved' => false,
+        ]);
+        $article1->pendingTranslations()->create([
+            'locale' => 'en',
+            'title' => 'Initial Title',
+            'content' => 'Content',
+        ]);
+
+        // 2. Article approved, but has translation updates awaiting approval
+        $article2 = Article::create([
+            'slug' => 'approved-with-updates',
+            'author_id' => $this->author->id,
+            'category_id' => $this->category->id,
+            'is_published' => true,
+            'is_approved' => true,
+        ]);
+        $article2->translations()->create([
+            'locale' => 'en',
+            'title' => 'Live Title',
+            'content' => 'Live Content',
+        ]);
+        $article2->pendingTranslations()->create([
+            'locale' => 'en',
+            'title' => 'Pending Update Title',
+            'content' => 'Pending Update Content',
+        ]);
+
+        $response = $this->get('/en/admin/articles');
+        $response->assertStatus(200);
+        $response->assertSee('In Review');
+        $response->assertSee('Update in Review');
     }
 }

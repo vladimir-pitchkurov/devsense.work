@@ -17,6 +17,11 @@ class MediaUploadService
      */
     public function uploadAndStrip(UploadedFile $file): array
     {
+        $originalName = $file->getClientOriginalName();
+        if (substr_count($originalName, '.') > 1) {
+            throw new \RuntimeException('Double extensions or multiple dots are not allowed in filenames.');
+        }
+
         $extension = strtolower($file->getClientOriginalExtension());
         $filename = Str::uuid() . '.' . $extension;
 
@@ -36,9 +41,11 @@ class MediaUploadService
             case 'webp':
                 $this->stripWebp($tempPath, $tempFile);
                 break;
-            default:
-                copy($tempPath, $tempFile);
+            case 'gif':
+                $this->stripGif($tempPath, $tempFile);
                 break;
+            default:
+                throw new \RuntimeException('Unsupported image format: ' . $extension);
         }
 
         // Determine environment prefix to separate dev and prod
@@ -80,13 +87,11 @@ class MediaUploadService
     private function stripJpeg(string $source, string $target): void
     {
         $image = @imagecreatefromjpeg($source);
-        if ($image) {
-            imagejpeg($image, $target, 90); // 90% quality
-            imagedestroy($image);
-        } else {
-            // Fallback if GD fails
-            copy($source, $target);
+        if (!$image) {
+            throw new \RuntimeException('Invalid JPEG image content.');
         }
+        imagejpeg($image, $target, 90); // 90% quality
+        imagedestroy($image);
     }
 
     /**
@@ -95,14 +100,13 @@ class MediaUploadService
     private function stripPng(string $source, string $target): void
     {
         $image = @imagecreatefrompng($source);
-        if ($image) {
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-            imagepng($image, $target, 6); // compression level 6 (0-9)
-            imagedestroy($image);
-        } else {
-            copy($source, $target);
+        if (!$image) {
+            throw new \RuntimeException('Invalid PNG image content.');
         }
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        imagepng($image, $target, 6); // compression level 6 (0-9)
+        imagedestroy($image);
     }
 
     /**
@@ -111,13 +115,25 @@ class MediaUploadService
     private function stripWebp(string $source, string $target): void
     {
         $image = @imagecreatefromwebp($source);
-        if ($image) {
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-            imagewebp($image, $target, 85); // 85% quality
-            imagedestroy($image);
-        } else {
-            copy($source, $target);
+        if (!$image) {
+            throw new \RuntimeException('Invalid WebP image content.');
         }
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        imagewebp($image, $target, 85); // 85% quality
+        imagedestroy($image);
+    }
+
+    /**
+     * Recreate GIF to strip metadata.
+     */
+    private function stripGif(string $source, string $target): void
+    {
+        $image = @imagecreatefromgif($source);
+        if (!$image) {
+            throw new \RuntimeException('Invalid GIF image content.');
+        }
+        imagegif($image, $target);
+        imagedestroy($image);
     }
 }

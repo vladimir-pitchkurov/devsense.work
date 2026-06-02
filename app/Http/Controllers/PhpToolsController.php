@@ -45,7 +45,13 @@ class PhpToolsController extends Controller
      */
     public function show(string $slug, MarkdownContentService $markdownService): View
     {
-        if (! in_array($slug, self::TOOL_SLUG_ORDER, true)) {
+        $existsInDb = \App\Models\Article::where('slug', $slug)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'tools');
+            })
+            ->exists();
+
+        if (! in_array($slug, self::TOOL_SLUG_ORDER, true) && !$existsInDb) {
             abort(404);
         }
 
@@ -67,13 +73,24 @@ class PhpToolsController extends Controller
         $breadcrumbCurrent = Str::headline(str_replace('-', ' ', $slug));
 
         $articleObj = \App\Models\Article::where('slug', $slug)
-            ->with(['tags.translations'])
+            ->with(['tags.translations', 'author'])
             ->first();
 
-        if ($articleObj && !$articleObj->is_approved) {
+        if ($articleObj) {
             $currentUser = auth()->user();
-            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $articleObj->author_id)) {
-                abort(404, __('ui.errors.tools_guide_missing', ['slug' => $slug]));
+            $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $articleObj->author_id);
+
+            // Check if author is blocked
+            if ($articleObj->author && $articleObj->author->is_blocked) {
+                if (!$currentUser || !$currentUser->isAdmin()) {
+                    abort(404, __('ui.errors.tools_guide_missing', ['slug' => $slug]));
+                }
+            }
+
+            if (!$articleObj->is_approved || !$articleObj->is_published) {
+                if (!$isOwnerOrAdmin) {
+                    abort(404, __('ui.errors.tools_guide_missing', ['slug' => $slug]));
+                }
             }
         }
 

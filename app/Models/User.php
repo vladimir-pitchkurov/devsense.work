@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
     'name', 'email', 'password', 'role',
     'slug', 'job_title', 'bio', 'avatar_path',
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
-    'is_public', 'is_approved',
+    'is_public', 'is_approved', 'is_blocked',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -119,6 +119,7 @@ class User extends Authenticatable
             'password'          => 'hashed',
             'is_public'         => 'boolean',
             'is_approved'       => 'boolean',
+            'is_blocked'        => 'boolean',
         ];
     }
 

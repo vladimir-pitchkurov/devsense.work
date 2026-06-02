@@ -60,13 +60,24 @@ class PhpVersionController extends Controller
         $published = $this->publishedCarbon($meta, $modified);
 
         $articleObj = \App\Models\Article::where('slug', $version)
-            ->with(['tags.translations'])
+            ->with(['tags.translations', 'author'])
             ->first();
 
-        if ($articleObj && !$articleObj->is_approved) {
+        if ($articleObj) {
             $currentUser = auth()->user();
-            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $articleObj->author_id)) {
-                abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
+            $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $articleObj->author_id);
+
+            // Check if author is blocked
+            if ($articleObj->author && $articleObj->author->is_blocked) {
+                if (!$currentUser || !$currentUser->isAdmin()) {
+                    abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
+                }
+            }
+
+            if (!$articleObj->is_approved || !$articleObj->is_published) {
+                if (!$isOwnerOrAdmin) {
+                    abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
+                }
             }
         }
 

@@ -99,7 +99,7 @@
 
                             <div class="form-group">
                                 <label for="title_{{ $loc }}" class="form-label">Title ({{ strtoupper($loc) }})</label>
-                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title") }}" required placeholder="Article title in {{ $loc }}" class="form-input">
+                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title") }}" placeholder="Article title in {{ $loc }}" class="form-input">
                             </div>
 
                             <div class="form-group">
@@ -109,7 +109,7 @@
 
                             <div class="form-group">
                                 <label for="content_{{ $loc }}" class="form-label">Content ({{ strtoupper($loc) }} - Markdown)</label>
-                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" required placeholder="# Article Heading..." class="form-input form-textarea-code">{{ old("translations.{$loc}.content") }}</textarea>
+                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" placeholder="# Article Heading..." class="form-input form-textarea-code">{{ old("translations.{$loc}.content") }}</textarea>
                             </div>
 
                             <div class="form-group">

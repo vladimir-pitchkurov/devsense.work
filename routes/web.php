@@ -100,6 +100,14 @@ Route::prefix('{locale}')
         Route::prefix('admin')->middleware(['auth', 'can:access-admin'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
+
+            // User Management CRUD (Super Admin Only)
+            Route::middleware('can:manage-users')->group(function () {
+                Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+                Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+                Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+            });
+
             Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
             Route::get('/articles/create', [\App\Http\Controllers\Admin\ArticlesController::class, 'create'])->name('admin.articles.create');
             Route::get('/articles/template', [\App\Http\Controllers\Admin\ArticlesController::class, 'downloadTemplate'])->name('admin.articles.template');
@@ -152,7 +160,6 @@ Route::prefix('{locale}')
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'tools')->name('tools.index');
             Route::get('/{slug}', [PhpToolsController::class, 'show'])
                 ->name('tools.show')
-                ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy|sail-troubleshooting')
                 ->middleware('llm.friendly');
         });
 
@@ -160,7 +167,6 @@ Route::prefix('{locale}')
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'microservices')->name('microservices.index');
             Route::get('/{slug}', [MicroservicesController::class, 'show'])
                 ->name('microservices.show')
-                ->where('slug', MicroservicesController::slugRoutePattern())
                 ->middleware('llm.friendly');
         });
 
@@ -168,7 +174,6 @@ Route::prefix('{locale}')
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'architecture')->name('architecture.index');
             Route::get('/{slug}', [ArchitectureController::class, 'show'])
                 ->name('architecture.show')
-                ->where('slug', ArchitectureController::slugRoutePattern())
                 ->middleware('llm.friendly');
         });
 

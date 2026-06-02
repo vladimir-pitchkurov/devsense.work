@@ -76,10 +76,22 @@
                                 </div>
                             </td>
                             <td>
-                                @if($article->is_published)
-                                    <span class="admin-badge admin-badge--published">Published</span>
+                                @if(!$article->is_approved)
+                                    <span class="admin-badge admin-badge--draft" title="Awaiting moderator approval">In Review</span>
+                                @elseif($article->pendingTranslations->isNotEmpty())
+                                    @if($article->is_published)
+                                        <span class="admin-badge admin-badge--published">Published</span>
+                                        <span class="admin-badge admin-badge--draft" style="display: block; margin-top: 0.25rem; font-size: 0.65rem;" title="Has content updates awaiting approval">Update in Review</span>
+                                    @else
+                                        <span class="admin-badge admin-badge--none">Draft</span>
+                                        <span class="admin-badge admin-badge--draft" style="display: block; margin-top: 0.25rem; font-size: 0.65rem;" title="Has content updates awaiting approval">Update in Review</span>
+                                    @endif
                                 @else
-                                    <span class="admin-badge admin-badge--draft">Draft</span>
+                                    @if($article->is_published)
+                                        <span class="admin-badge admin-badge--published">Published</span>
+                                    @else
+                                        <span class="admin-badge admin-badge--none">Draft</span>
+                                    @endif
                                 @endif
                             </td>
                             <td>
@@ -87,8 +99,8 @@
                             </td>
                             <td class="text-right actions-cell">
                                 <div class="action-buttons">
-                                    @if($article->is_published && $article->category)
-                                        <a href="{{ route($article->category->slug . '.show', ['locale' => app()->getLocale(), 'slug' => $article->slug]) }}" 
+                                    @if($article->category && $article->url() !== '#')
+                                        <a href="{{ $article->url() }}" 
                                            target="_blank" 
                                            class="admin-btn admin-btn--icon" 
                                            title="View on site">

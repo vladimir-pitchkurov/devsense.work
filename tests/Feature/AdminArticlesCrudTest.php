@@ -313,4 +313,134 @@ class AdminArticlesCrudTest extends TestCase
          $response->assertSee('faq:', false);
          $response->assertSee('## Table of Contents', false);
      }
+
+     public function test_article_validation_requires_at_least_one_translation(): void
+     {
+         $this->actingAs($this->author);
+
+         $response = $this->post('/en/admin/articles', [
+             'slug' => 'invalid-no-translations',
+             'category_id' => $this->category->id,
+             'translations' => [
+                 'en' => ['title' => '', 'content' => ''],
+                 'ru' => ['title' => '', 'content' => ''],
+                 'ua' => ['title' => '', 'content' => ''],
+                 'bg' => ['title' => '', 'content' => ''],
+             ]
+         ]);
+
+         $response->assertSessionHasErrors(['translations']);
+     }
+
+     public function test_article_validation_rejects_partially_filled_translation(): void
+     {
+         $this->actingAs($this->author);
+
+         $response = $this->post('/en/admin/articles', [
+             'slug' => 'invalid-partial-translation',
+             'category_id' => $this->category->id,
+             'translations' => [
+                 'en' => ['title' => 'Only Title', 'content' => ''],
+                 'ru' => ['title' => '', 'content' => ''],
+                 'ua' => ['title' => '', 'content' => ''],
+                 'bg' => ['title' => '', 'content' => ''],
+             ]
+         ]);
+
+         $response->assertSessionHasErrors(['translations.en.content']);
+     }
+
+     public function test_article_creation_ignores_empty_translations(): void
+     {
+         $this->actingAs($this->author);
+
+         $response = $this->post('/en/admin/articles', [
+             'slug' => 'single-translation-article',
+             'category_id' => $this->category->id,
+             'translations' => [
+                 'en' => ['title' => 'Title EN', 'content' => 'Content EN'],
+                 'ru' => ['title' => '', 'content' => ''],
+                 'ua' => ['title' => '', 'content' => ''],
+                 'bg' => ['title' => '', 'content' => ''],
+             ]
+         ]);
+
+         $response->assertRedirect('/en/admin/articles');
+         
+         $article = Article::where('slug', 'single-translation-article')->first();
+         $this->assertNotNull($article);
+         
+         $this->assertDatabaseHas('pending_article_translations', [
+             'article_id' => $article->id,
+             'locale' => 'en',
+             'title' => 'Title EN',
+         ]);
+         $this->assertDatabaseMissing('pending_article_translations', [
+             'article_id' => $article->id,
+             'locale' => 'ru',
+         ]);
+     }
+
+     public function test_article_update_deletes_cleared_translations(): void
+     {
+         $admin = User::factory()->admin()->create();
+         $this->actingAs($admin);
+
+         $article = Article::factory()->create([
+             'author_id' => $admin->id,
+             'slug' => 'test-clear-slug',
+             'category_id' => $this->category->id,
+         ]);
+         $article->translations()->create([
+             'locale' => 'en',
+             'title' => 'Title EN',
+             'content' => 'Content EN',
+         ]);
+         $article->translations()->create([
+             'locale' => 'ru',
+             'title' => 'Title RU',
+             'content' => 'Content RU',
+         ]);
+
+         $response = $this->put("/en/admin/articles/{$article->id}", [
+             'slug' => 'test-clear-slug',
+             'category_id' => $this->category->id,
+             'translations' => [
+                 'en' => ['title' => 'Title EN', 'content' => 'Content EN'],
+                 'ru' => ['title' => '', 'content' => ''], // Cleared RU
+                 'ua' => ['title' => '', 'content' => ''],
+                 'bg' => ['title' => '', 'content' => ''],
+             ]
+         ]);
+
+         $response->assertRedirect('/en/admin/articles');
+
+         $this->assertDatabaseHas('article_translations', [
+             'article_id' => $article->id,
+             'locale' => 'en',
+         ]);
+         $this->assertDatabaseMissing('article_translations', [
+             'article_id' => $article->id,
+             'locale' => 'ru',
+         ]);
+     }
+
+     public function test_article_translation_fallback(): void
+     {
+         $article = Article::factory()->create([
+             'slug' => 'fallback-slug',
+             'category_id' => $this->category->id,
+         ]);
+         $article->translations()->create([
+             'locale' => 'ru',
+             'title' => 'Title RU Only',
+             'content' => 'Content RU Only',
+         ]);
+
+         // translate('en') falls back to RU translation since EN translation doesn't exist
+         $translation = $article->translate('en');
+         $this->assertNotNull($translation);
+         $this->assertSame('ru', $translation->locale);
+         $this->assertSame('Title RU Only', $translation->title);
+     }
  }

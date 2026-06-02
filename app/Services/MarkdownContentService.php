@@ -36,14 +36,34 @@ class MarkdownContentService
             ->first();
 
         if ($article) {
-            $translation = $article->translations()->where('locale', $locale)->first();
+            $currentUser = auth()->user();
+            $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $article->author_id);
+
+            $translation = null;
+            if ($isOwnerOrAdmin) {
+                $translation = $article->pendingTranslations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->first();
+                }
+            }
+
             if (!$translation) {
-                $translation = $article->translations()->where('locale', 'en')->first();
+                $translation = $article->translations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->translations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->translations()->first();
+                }
             }
 
             if ($translation) {
                 $modified = max($article->updated_at?->timestamp ?? 0, $translation->updated_at?->timestamp ?? 0);
-                $cacheKey = "db_content_meta_v4_{$locale}_{$category}_{$slug}_{$modified}";
+                $isDraft = $translation instanceof \App\Models\PendingArticleTranslation;
+                $cacheKey = "db_content_meta_v4_{$locale}_{$category}_{$slug}_{$modified}" . ($isDraft ? '_draft' : '');
 
                 $data = Cache::rememberForever($cacheKey, function () use ($translation, $modified) {
                     $environment = new Environment([
