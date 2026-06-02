@@ -18,9 +18,13 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $articles = Article::with(['author', 'category'])
-            ->latest()
-            ->paginate(15);
+        $query = Article::with(['author', 'category']);
+
+        if (!Auth::user()->isAdmin()) {
+            $query->where('author_id', Auth::id());
+        }
+
+        $articles = $query->latest()->paginate(15);
 
         return view('admin.articles.index', compact('articles'));
     }
@@ -94,6 +98,10 @@ class ArticlesController extends Controller
      */
     public function edit(Article $article)
     {
+        if (!Auth::user()->isAdmin() && $article->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $categories = Category::all();
         $tags = Tag::all();
         
@@ -107,6 +115,10 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        if (!Auth::user()->isAdmin() && $article->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'slug' => ['required', 'string', 'unique:articles,slug,' . $article->id, 'max:255'],
             'category_id' => ['nullable', 'exists:categories,id'],
@@ -161,6 +173,10 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
+        if (!Auth::user()->isAdmin() && $article->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $article->delete();
 
         return redirect()

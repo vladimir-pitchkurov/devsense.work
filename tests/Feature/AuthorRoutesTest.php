@@ -173,4 +173,55 @@ class AuthorRoutesTest extends TestCase
         $response->assertSee('Published Article Title');
         $response->assertDontSee('Draft Article Title');
     }
+
+    public function test_private_author_excluded_from_index(): void
+    {
+        $privateAuthor = User::factory()->author()->create([
+            'name' => 'Secret Author',
+            'slug' => 'secret-author',
+            'is_public' => false,
+        ]);
+
+        // Secret author shouldn't show up in index for guests
+        $response = $this->get('/en/authors');
+        $response->assertOk();
+        $response->assertDontSee('Secret Author');
+    }
+
+    public function test_private_author_profile_returns_404_for_guests(): void
+    {
+        $privateAuthor = User::factory()->author()->create([
+            'name' => 'Secret Author',
+            'slug' => 'secret-author',
+            'is_public' => false,
+        ]);
+
+        $this->get('/en/authors/secret-author')->assertNotFound();
+    }
+
+    public function test_private_author_profile_viewable_by_owner(): void
+    {
+        $privateAuthor = User::factory()->author()->create([
+            'name' => 'Secret Author',
+            'slug' => 'secret-author',
+            'is_public' => false,
+        ]);
+
+        $this->actingAs($privateAuthor);
+        $this->get('/en/authors/secret-author')->assertOk();
+    }
+
+    public function test_private_author_profile_viewable_by_admin(): void
+    {
+        $privateAuthor = User::factory()->author()->create([
+            'name' => 'Secret Author',
+            'slug' => 'secret-author',
+            'is_public' => false,
+        ]);
+
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin);
+        $this->get('/en/authors/secret-author')->assertOk();
+    }
 }

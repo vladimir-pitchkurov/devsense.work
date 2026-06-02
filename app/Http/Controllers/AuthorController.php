@@ -20,9 +20,13 @@ class AuthorController extends Controller
      */
     public function index(): View
     {
-        $authors = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
-            ->orderBy('name')
-            ->get();
+        $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR]);
+
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            $query->where('is_public', true);
+        }
+
+        $authors = $query->orderBy('name')->get();
 
         $locale       = app()->getLocale();
         $canonicalUrl = SiteUrl::route('authors.index', ['locale' => $locale]);
@@ -49,6 +53,13 @@ class AuthorController extends Controller
                     ->orWhereRaw("LOWER(REPLACE(REPLACE(name, ' ', '-'), '.', '')) = ?", [strtolower($slug)]);
             })
             ->firstOrFail();
+
+        if (!$author->is_public) {
+            $currentUser = auth()->user();
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {
+                abort(404);
+            }
+        }
 
         $locale       = app()->getLocale();
         $canonicalUrl = SiteUrl::route('authors.show', ['locale' => $locale, 'slug' => $author->slug]);

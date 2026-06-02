@@ -12,6 +12,7 @@ return [
         'architecture_short' => 'Арх.',
         'browse' => 'Разделы',
         'cabinet' => 'Кабинет',
+        'login' => 'Войти',
         'mobile_aria' => 'Основная навигация',
     ],
     'footer' => [

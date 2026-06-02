@@ -49,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        \Illuminate\Pagination\Paginator::defaultView('partials.pagination');
+
         RateLimiter::for('content-api', function (Request $request): Limit {
             return Limit::perMinute(120)->by((string) $request->ip());
         });

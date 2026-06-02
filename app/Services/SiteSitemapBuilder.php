@@ -315,6 +315,42 @@ class SiteSitemapBuilder
             );
         }
 
+        // 6. Public Authors Index
+        $this->addLocalizedCluster(
+            $sitemap,
+            $root,
+            fn (string $locale): string => route('authors.index', ['locale' => $locale], false),
+            null,
+            $locales,
+            $hreflangMap,
+            $canonical,
+            $xDefault,
+            0.6,
+        );
+
+        // 7. Public Author Profiles
+        try {
+            $publicAuthors = \App\Models\User::whereIn('role', [\App\Models\User::ROLE_SUPER_ADMIN, \App\Models\User::ROLE_AUTHOR])
+                ->where('is_public', true)
+                ->get();
+
+            foreach ($publicAuthors as $author) {
+                $this->addLocalizedCluster(
+                    $sitemap,
+                    $root,
+                    fn (string $locale): string => route('authors.show', ['locale' => $locale, 'slug' => $author->slug], false),
+                    $author->updated_at,
+                    $locales,
+                    $hreflangMap,
+                    $canonical,
+                    $xDefault,
+                    0.6,
+                );
+            }
+        } catch (\Throwable $e) {
+            // Ignore database errors during setup
+        }
+
         return $sitemap;
     }
 }

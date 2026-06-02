@@ -12,6 +12,7 @@ return [
         'architecture_short' => 'Arch.',
         'browse' => 'Browse',
         'cabinet' => 'Cabinet',
+        'login' => 'Sign In',
         'mobile_aria' => 'Main navigation',
     ],
     'footer' => [

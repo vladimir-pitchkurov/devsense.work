@@ -42,9 +42,12 @@ class ProfileController extends Controller
             'linkedin_url' => ['nullable', 'url', 'max:255'],
             'twitter_url' => ['nullable', 'url', 'max:255'],
             'website_url' => ['nullable', 'url', 'max:255'],
+            'is_public' => ['nullable', 'boolean'],
         ], [
             'slug.regex' => 'The slug must be a valid URL-friendly string (e.g. jane-doe).',
         ]);
+
+        $validated['is_public'] = (bool) $request->input('is_public', false);
 
         if ($request->hasFile('avatar')) {
             try {

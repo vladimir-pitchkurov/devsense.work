@@ -74,6 +74,9 @@ Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLo
 Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post');
+
 Route::prefix('{locale}')
     ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
     ->middleware(SetLocale::class)

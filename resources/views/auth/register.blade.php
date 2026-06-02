@@ -1,11 +1,11 @@
-<x-layout title="Sign In | DevSense" description="Access the authoring dashboard to manage articles and guides">
+<x-layout title="Register | DevSense" description="Create an authoring account to manage and write articles and guides">
 <main class="login-page">
     <div class="login-container">
         <div class="login-card">
-            <h1 class="login-title">Sign In</h1>
-            <p class="login-subtitle">Access the authoring dashboard to manage articles and guides</p>
+            <h1 class="login-title">Create Account</h1>
+            <p class="login-subtitle">Create an authoring account to start writing articles and guides</p>
 
-            <form action="{{ route('login.post') }}" method="POST" class="login-form">
+            <form action="{{ route('register.post') }}" method="POST" class="login-form">
                 @csrf
 
                 @if ($errors->any())
@@ -19,6 +19,20 @@
                 @endif
 
                 <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="name" 
+                        value="{{ old('name') }}" 
+                        required 
+                        autofocus 
+                        placeholder="John Doe"
+                        class="form-input @error('name') is-invalid @enderror"
+                    >
+                </div>
+
+                <div class="form-group">
                     <label for="email" class="form-label">Email Address</label>
                     <input 
                         type="email" 
@@ -26,7 +40,6 @@
                         id="email" 
                         value="{{ old('email') }}" 
                         required 
-                        autofocus 
                         placeholder="you@example.com"
                         class="form-input @error('email') is-invalid @enderror"
                     >
@@ -44,13 +57,25 @@
                     >
                 </div>
 
+                <div class="form-group">
+                    <label for="password_confirmation" class="form-label">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        name="password_confirmation" 
+                        id="password_confirmation" 
+                        required 
+                        placeholder="••••••••"
+                        class="form-input"
+                    >
+                </div>
+
                 <button type="submit" class="login-button">
-                    Continue to Dashboard
+                    Register as Author
                 </button>
             </form>
 
             <p class="auth-switch-text">
-                Don't have an account? <a href="{{ route('register') }}" class="auth-link">Register here</a>
+                Already have an account? <a href="{{ route('login') }}" class="auth-link">Sign In</a>
             </p>
         </div>
     </div>

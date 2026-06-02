@@ -92,6 +92,19 @@
                 </div>
 
                 <div class="admin-card" style="margin-top: 1.5rem;">
+                    <h2 class="card-title">Privacy Settings</h2>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                        <input type="checkbox" name="is_public" id="is_public" value="1" {{ old('is_public', $user->is_public) ? 'checked' : '' }} style="width: auto; margin: 0; transform: scale(1.2);">
+                        <label for="is_public" class="form-label" style="margin: 0; text-transform: none; font-size: 0.95rem; cursor: pointer; letter-spacing: normal;">
+                            Make my profile page public and crawlable by search engines
+                        </label>
+                    </div>
+                    <p class="form-help" style="margin-left: 1.75rem;">
+                        If unchecked, your public author page will return a 404 error to visitors and search engines, and you will be hidden from the authors directory.
+                    </p>
+                </div>
+
+                <div class="admin-card" style="margin-top: 1.5rem;">
                     <h2 class="card-title">Social Links & Websites</h2>
                     
                     <div class="form-group">

@@ -167,6 +167,24 @@
             <language-switcher></language-switcher>
             <theme-switcher></theme-switcher>
 
+            @auth
+                <a href="{{ route('admin.dashboard', ['locale' => app()->getLocale()]) }}" class="header__cabinet-btn" title="{{ __('ui.nav.cabinet') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header__cabinet-icon">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="header__cabinet-text">{{ __('ui.nav.cabinet') }}</span>
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="header__cabinet-btn" title="{{ __('ui.nav.login') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header__cabinet-icon">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="header__cabinet-text">{{ __('ui.nav.login') }}</span>
+                </a>
+            @endauth
+
             <nav class="header__nav">
                 <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
                 <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>

@@ -50,10 +50,14 @@
 }
 
 .header__logo-wordmark {
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 0;
     line-height: 1;
+
+    @media (min-width: 768px) {
+        display: flex;
+    }
 }
 
 .header__logo-text {
@@ -165,6 +169,44 @@
             transform: scaleX(1);
             transform-origin: left;
         }
+    }
+}
+
+.header__cabinet-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg, rgba(255, 255, 255, 0.03));
+    color: var(--text-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    line-height: 1;
+
+    &:hover {
+        border-color: var(--primary-color);
+        background-color: var(--primary-glow);
+        color: var(--primary-color);
+    }
+}
+
+.header__cabinet-icon {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
+.header__cabinet-text {
+    display: none;
+    
+    @media (min-width: 480px) {
+        display: inline;
     }
 }
 
