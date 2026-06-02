@@ -12,10 +12,11 @@ class RegistrationTest extends TestCase
 
     public function test_registration_page_renders_successfully(): void
     {
-        $response = $this->get('/register');
+        $response = $this->get('/en/register');
         $response->assertStatus(200);
         $response->assertSee('Create Account');
     }
+
 
     public function test_registration_validation_fails_on_empty_fields(): void
     {
@@ -50,6 +51,7 @@ class RegistrationTest extends TestCase
             'email' => 'john@devsense.work',
             'password' => 'secret-pwd-123',
             'password_confirmation' => 'secret-pwd-123',
+            'terms' => 'on',
         ]);
 
         $response->assertRedirect('/en/admin/articles');
@@ -57,6 +59,20 @@ class RegistrationTest extends TestCase
         $user = User::where('email', 'john@devsense.work')->first();
         $this->assertNotNull($user);
         $this->assertEquals(User::ROLE_AUTHOR, $user->role);
+        $this->assertFalse($user->is_approved); // Should start unapproved
         $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_registration_validation_fails_without_terms_acceptance(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'John Author',
+            'email' => 'john@devsense.work',
+            'password' => 'secret-pwd-123',
+            'password_confirmation' => 'secret-pwd-123',
+        ]);
+
+        $response->assertSessionHasErrors(['terms']);
+        $this->assertGuest();
     }
 }

@@ -18,7 +18,7 @@ class MediaUploadController extends Controller
         ]);
 
         try {
-            $url = $uploadService->uploadAndStrip($request->file('image'));
+            [$url] = $uploadService->uploadAndStrip($request->file('image'));
 
             return response()->json([
                 'success' => true,

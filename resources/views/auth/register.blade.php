@@ -1,221 +1,163 @@
-<x-layout title="Register | DevSense" description="Create an authoring account to manage and write articles and guides">
-<main class="login-page">
-    <div class="login-container">
-        <div class="login-card">
-            <h1 class="login-title">Create Account</h1>
-            <p class="login-subtitle">Create an authoring account to start writing articles and guides</p>
+<x-layout :title="__('ui.auth.register_title') . ' | DevSense'" :description="__('ui.auth.register_sub')">
 
-            <form action="{{ route('register.post') }}" method="POST" class="login-form">
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <div class="auth-card__header">
+                <h1 class="auth-card__title">{{ __('ui.auth.register_heading') }}</h1>
+                <p class="auth-card__subtitle">{{ __('ui.auth.register_sub') }}</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="auth-error" role="alert">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
+            <form action="{{ route('register.post') }}" method="POST" class="auth-form" id="registerForm">
                 @csrf
 
-                @if ($errors->any())
-                    <div class="login-error-alert">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <div class="form-group">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input 
-                        type="text" 
-                        name="name" 
-                        id="name" 
-                        value="{{ old('name') }}" 
-                        required 
-                        autofocus 
-                        placeholder="John Doe"
-                        class="form-input @error('name') is-invalid @enderror"
+                <div class="auth-field">
+                    <label for="name" class="auth-label">{{ __('ui.auth.full_name') }}</label>
+                    <input
+                        type="text" name="name" id="name"
+                        value="{{ old('name') }}"
+                        required autofocus autocomplete="name"
+                        placeholder="Jane Doe"
+                        class="auth-input{{ $errors->has('name') ? ' auth-input--error' : '' }}"
                     >
                 </div>
 
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        id="email" 
-                        value="{{ old('email') }}" 
-                        required 
+                <div class="auth-field">
+                    <label for="email" class="auth-label">Email</label>
+                    <input
+                        type="email" name="email" id="email"
+                        value="{{ old('email') }}"
+                        required autocomplete="email"
                         placeholder="you@example.com"
-                        class="form-input @error('email') is-invalid @enderror"
+                        class="auth-input{{ $errors->has('email') ? ' auth-input--error' : '' }}"
                     >
                 </div>
 
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        id="password" 
-                        required 
-                        placeholder="••••••••"
-                        class="form-input @error('password') is-invalid @enderror"
-                    >
+                <div class="auth-field">
+                    <label for="password" class="auth-label">{{ __('ui.auth.password') }}</label>
+                    <div class="auth-input-row">
+                        <input
+                            type="password" name="password" id="password"
+                            required autocomplete="new-password"
+                            placeholder="Min 8 characters"
+                            class="auth-input{{ $errors->has('password') ? ' auth-input--error' : '' }}"
+                        >
+                        <button type="button" class="auth-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="auth-strength" aria-hidden="true">
+                        <div class="auth-strength__bar">
+                            <div class="auth-strength__fill" id="strengthFill"></div>
+                        </div>
+                        <span class="auth-strength__label" id="strengthLabel"></span>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                    <input 
-                        type="password" 
-                        name="password_confirmation" 
-                        id="password_confirmation" 
-                        required 
-                        placeholder="••••••••"
-                        class="form-input"
-                    >
+                <div class="auth-field">
+                    <label for="password_confirmation" class="auth-label">{{ __('ui.auth.confirm_password') }}</label>
+                    <div class="auth-input-row">
+                        <input
+                            type="password" name="password_confirmation" id="password_confirmation"
+                            required autocomplete="new-password"
+                            placeholder="••••••••"
+                            class="auth-input"
+                        >
+                        <button type="button" class="auth-toggle" id="toggleConfirm" aria-label="Toggle confirm password visibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <button type="submit" class="login-button">
-                    Register as Author
-                </button>
+                <div class="auth-field">
+                    <label class="auth-check-row">
+                        <input type="checkbox" name="terms" id="terms" required class="auth-check">
+                        <span class="auth-check-text">
+                            {{ __('ui.auth.terms_prefix') }}
+                            <a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" target="_blank" class="auth-link">{{ __('ui.auth.terms') }}</a>
+                            &amp;
+                            <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" target="_blank" class="auth-link">{{ __('ui.auth.privacy') }}</a>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-submit">{{ __('ui.auth.register_btn') }}</button>
             </form>
 
-            <p class="auth-switch-text">
-                Already have an account? <a href="{{ route('login') }}" class="auth-link">Sign In</a>
+            <p class="auth-switch">
+                {{ __('ui.auth.has_account') }}
+                <a href="{{ route('login.locale', ['locale' => app()->getLocale()]) }}" class="auth-link">{{ __('ui.auth.login_link') }}</a>
             </p>
+
         </div>
     </div>
-</main>
+</div>
 
-<style>
-.login-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 12rem);
-    padding: 2rem;
-}
 
-.login-container {
-    width: 100%;
-    max-width: 440px;
-}
 
-.login-card {
-    background-color: var(--card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--border-color);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 1rem;
-    padding: 2.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-}
+<script>
+(function () {
+    function makeToggle(inputId, btnId) {
+        var btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+            var pw = document.getElementById(inputId);
+            if (!pw) return;
+            var svg = btn.querySelector('svg');
+            var showing = pw.type === 'password';
+            pw.type = showing ? 'text' : 'password';
+            btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+            svg.innerHTML = showing
+                ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>'
+                : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+        });
+    }
+    makeToggle('password', 'togglePassword');
+    makeToggle('password_confirmation', 'toggleConfirm');
 
-.login-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+    var pw   = document.getElementById('password');
+    var fill  = document.getElementById('strengthFill');
+    var label = document.getElementById('strengthLabel');
+    if (pw && fill && label) {
+        var levels = [
+            { pct: 0,   color: '',        text: '' },
+            { pct: 20,  color: '#ef4444', text: 'Weak' },
+            { pct: 45,  color: '#f97316', text: 'Fair' },
+            { pct: 65,  color: '#eab308', text: 'Good' },
+            { pct: 85,  color: '#22c55e', text: 'Strong' },
+            { pct: 100, color: '#10b981', text: 'Very Strong' },
+        ];
+        pw.addEventListener('input', function () {
+            var v = pw.value, score = 0;
+            if (v.length >= 8)  score++;
+            if (v.length >= 12) score++;
+            if (/[A-Z]/.test(v)) score++;
+            if (/[0-9]/.test(v)) score++;
+            if (/[^A-Za-z0-9]/.test(v)) score++;
+            var idx = v.length === 0 ? 0 : Math.min(score + 1, levels.length - 1);
+            var lv = levels[idx];
+            fill.style.width = lv.pct + '%';
+            fill.style.backgroundColor = lv.color;
+            label.textContent = lv.text;
+            label.style.color = lv.color || 'var(--text-muted)';
+        });
+    }
+})();
+</script>
 
-.login-subtitle {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    text-align: center;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-color);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.form-input {
-    background-color: rgba(var(--bg-color-rgb), 0.5);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    color: var(--text-color);
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
-}
-
-.login-button {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.85rem;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
-    margin-top: 0.5rem;
-}
-
-.login-button:hover {
-    transform: translateY(-1px);
-    opacity: 0.95;
-}
-
-.login-button:active {
-    transform: translateY(0);
-}
-
-.login-error-alert {
-    background-color: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.login-error-alert ul {
-    margin: 0;
-    padding-left: 1.25rem;
-}
-
-.auth-switch-text {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.auth-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-}
-
-.auth-link:hover {
-    color: var(--primary-hover);
-    text-decoration: underline;
-}
-</style>
 </x-layout>

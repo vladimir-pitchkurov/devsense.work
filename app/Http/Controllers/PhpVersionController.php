@@ -62,9 +62,18 @@ class PhpVersionController extends Controller
         $articleObj = \App\Models\Article::where('slug', $version)
             ->with(['tags.translations'])
             ->first();
+
+        if ($articleObj && !$articleObj->is_approved) {
+            $currentUser = auth()->user();
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $articleObj->author_id)) {
+                abort(404, __('ui.errors.php_guide_missing', ['version' => $version]));
+            }
+        }
+
         $tags = $articleObj ? $articleObj->tags : collect();
 
         return view('php.show', [
+            'article'        => $articleObj,
             'content'        => $data['html'],
             'meta'           => $meta,
             'version'        => $version,

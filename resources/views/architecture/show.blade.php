@@ -19,6 +19,15 @@
             </svg>
             <span>{{ __('ui.search.print_pdf') }}</span>
         </button>
+        @if (isset($article) && $article)
+            <button onclick="openReportModal('article', {{ $article->id }})" class="btn-report" aria-label="Report content" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                </svg>
+                <span>Report</span>
+            </button>
+        @endif
     </div>
     <div class="article-layout">
         <article class="article article-layout__main">

@@ -23,6 +23,7 @@ class ArticleFactory extends Factory
             'slug' => \Illuminate\Support\Str::slug($this->faker->unique()->sentence(3)),
             'is_published' => false,
             'published_at' => null,
+            'is_approved' => true,
         ];
     }
 

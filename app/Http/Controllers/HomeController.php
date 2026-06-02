@@ -19,6 +19,7 @@ class HomeController extends Controller
         $locale = app()->getLocale();
         
         $query = Article::where('is_published', true)
+            ->where('is_approved', true)
             ->with([
                 'category.translations', 
                 'author', 
@@ -90,14 +91,16 @@ class HomeController extends Controller
         // Get categories, tags, authors for filter panels
         $categories = Category::with(['translations'])->get();
         
-        // Only show tags that have at least one published article
+        // Only show tags that have at least one published and approved article
         $tags = Tag::whereHas('articles', function($q) {
-            $q->where('is_published', true);
+            $q->where('is_published', true)->where('is_approved', true);
         })->with(['translations'])->get();
 
-        $authors = User::whereHas('articles', function($q) {
-            $q->where('is_published', true);
-        })->get();
+        // Only show approved authors who have published and approved articles
+        $authors = User::where('is_approved', true)
+            ->whereHas('articles', function($q) {
+                $q->where('is_published', true)->where('is_approved', true);
+            })->get();
 
         return view('welcome', [
             'articles' => $articles,

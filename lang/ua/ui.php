@@ -13,6 +13,7 @@ return [
         'browse' => 'Розділи',
         'cabinet' => 'Кабінет',
         'login' => 'Увійти',
+        'register' => 'Реєстрація',
         'mobile_aria' => 'Основна навігація',
     ],
     'footer' => [
@@ -292,4 +293,26 @@ return [
         'print_pdf' => 'PDF / Друк',
         'label' => 'Пошук',
     ],
+
+    'auth' => [
+        'login_title'      => 'Вхід',
+        'login_heading'    => 'Увійти',
+        'login_sub'        => 'Доступ до панелі автора',
+        'login_btn'        => 'Увійти',
+        'login_link'       => 'Увійти',
+        'register_title'   => 'Реєстрація',
+        'register_heading' => 'Створити акаунт',
+        'register_sub'     => 'Зареєструйтесь як автор — безкоштовно',
+        'register_btn'     => 'Створити акаунт',
+        'register_link'    => 'Створити акаунт',
+        'full_name'        => "Повне ім'я",
+        'password'         => 'Пароль',
+        'confirm_password' => 'Підтвердіть пароль',
+        'no_account'       => 'Немає акаунту?',
+        'has_account'      => 'Вже є акаунт?',
+        'terms_prefix'     => 'Я погоджуюсь з',
+        'terms'            => 'Умовами користування',
+        'privacy'          => 'Політикою конфіденційності',
+    ],
 ];
+

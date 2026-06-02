@@ -147,6 +147,7 @@ class AuthorRoutesTest extends TestCase
             'category_id' => $category->id,
             'is_published' => true,
             'published_at' => now(),
+            'is_approved' => true,
         ]);
         $pubArticle->translations()->create([
             'locale' => 'en',

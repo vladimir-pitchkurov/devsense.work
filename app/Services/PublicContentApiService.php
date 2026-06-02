@@ -35,6 +35,7 @@ class PublicContentApiService
         try {
             $dbArticles = \App\Models\Article::with(['category', 'translations'])
                 ->where('is_published', true)
+                ->where('is_approved', true)
                 ->get();
 
             foreach ($dbArticles as $article) {
@@ -354,6 +355,7 @@ class PublicContentApiService
     {
         // 1. Query the database first
         $article = \App\Models\Article::where('slug', $slug)
+            ->where('is_approved', true)
             ->whereHas('category', function ($q) use ($category) {
                 $q->where('slug', $category);
             })

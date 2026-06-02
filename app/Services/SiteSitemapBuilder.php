@@ -331,6 +331,7 @@ class SiteSitemapBuilder
         // 7. Public Author Profiles
         try {
             $publicAuthors = \App\Models\User::whereIn('role', [\App\Models\User::ROLE_SUPER_ADMIN, \App\Models\User::ROLE_AUTHOR])
+                ->where('is_approved', true)
                 ->where('is_public', true)
                 ->get();
 

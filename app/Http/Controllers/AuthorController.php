@@ -23,7 +23,7 @@ class AuthorController extends Controller
         $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR]);
 
         if (!auth()->check() || !auth()->user()->isAdmin()) {
-            $query->where('is_public', true);
+            $query->where('is_public', true)->where('is_approved', true);
         }
 
         $authors = $query->orderBy('name')->get();
@@ -54,8 +54,15 @@ class AuthorController extends Controller
             })
             ->firstOrFail();
 
+        $currentUser = auth()->user();
+
+        if (!$author->is_approved) {
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {
+                abort(404);
+            }
+        }
+
         if (!$author->is_public) {
-            $currentUser = auth()->user();
             if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {
                 abort(404);
             }
@@ -85,11 +92,17 @@ class AuthorController extends Controller
             $structuredData['jobTitle'] = $author->job_title;
         }
 
-        $articles = $author->articles()
+        $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
+        $articlesQuery = $author->articles()
             ->where('is_published', true)
             ->with(['translations', 'category'])
-            ->latest('published_at')
-            ->get();
+            ->latest('published_at');
+
+        if (!$isOwnerOrAdmin) {
+            $articlesQuery->where('is_approved', true);
+        }
+
+        $articles = $articlesQuery->get();
 
         return view('authors.show', [
             'author'         => $author,

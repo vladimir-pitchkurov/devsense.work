@@ -77,9 +77,18 @@ class MicroservicesController extends Controller
         $articleObj = \App\Models\Article::where('slug', $slug)
             ->with(['tags.translations'])
             ->first();
+
+        if ($articleObj && !$articleObj->is_approved) {
+            $currentUser = auth()->user();
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $articleObj->author_id)) {
+                abort(404, __('ui.errors.microservices_guide_missing', ['slug' => $slug]));
+            }
+        }
+
         $tags = $articleObj ? $articleObj->tags : collect();
 
         return view('microservices.show', [
+            'article'          => $articleObj,
             'content'          => $data['html'],
             'meta'             => $meta,
             'tags'             => $tags,

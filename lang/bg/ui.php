@@ -13,6 +13,7 @@ return [
         'browse' => 'Раздели',
         'cabinet' => 'Кабинет',
         'login' => 'Вход',
+        'register' => 'Регистрация',
         'mobile_aria' => 'Основна навигация',
     ],
     'footer' => [
@@ -292,4 +293,26 @@ return [
         'print_pdf' => 'PDF / Печат',
         'label' => 'Търсене',
     ],
+
+    'auth' => [
+        'login_title'      => 'Вход',
+        'login_heading'    => 'Влизане',
+        'login_sub'        => 'Достъп до авторския панел',
+        'login_btn'        => 'Влизане',
+        'login_link'       => 'Влизане',
+        'register_title'   => 'Регистрация',
+        'register_heading' => 'Създаване на акаунт',
+        'register_sub'     => 'Регистрирайте се като автор — безплатно',
+        'register_btn'     => 'Създаване на акаунт',
+        'register_link'    => 'Създаване на акаунт',
+        'full_name'        => 'Пълно име',
+        'password'         => 'Парола',
+        'confirm_password' => 'Потвърдете паролата',
+        'no_account'       => 'Нямате акаунт?',
+        'has_account'      => 'Вече имате акаунт?',
+        'terms_prefix'     => 'Съгласявам се с',
+        'terms'            => 'Условията за ползване',
+        'privacy'          => 'Политиката за поверителност',
+    ],
 ];
+

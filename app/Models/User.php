@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
     'name', 'email', 'password', 'role',
     'slug', 'job_title', 'bio', 'avatar_path',
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
-    'is_public',
+    'is_public', 'is_approved',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -57,6 +57,10 @@ class User extends Authenticatable
             // Already an absolute URL (S3 / CDN)
             if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                 return $path;
+            }
+
+            if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+                return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
             }
 
             return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
@@ -114,6 +118,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'is_public'         => 'boolean',
+            'is_approved'       => 'boolean',
         ];
+    }
+
+    /**
+     * Scope a query to only include approved users.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    /**
+     * Get the pending profile update for the user.
+     */
+    public function pendingProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(PendingUserProfile::class);
     }
 }

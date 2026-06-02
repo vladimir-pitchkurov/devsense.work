@@ -113,8 +113,6 @@
     }
 
     &__header {
-        position: relative;
-        z-index: 1;
         padding: 1.5rem 1.5rem 0;
     }
 
@@ -128,8 +126,6 @@
     }
 
     &__body {
-        position: relative;
-        z-index: 1;
         flex: 1;
         padding: 0.75rem 1.5rem 1.5rem;
     }
@@ -142,8 +138,6 @@
     }
 
     &__footer {
-        position: relative;
-        z-index: 1;
         padding: 0 1.5rem 1.5rem;
         margin-top: auto;
     }

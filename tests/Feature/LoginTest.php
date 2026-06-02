@@ -13,10 +13,11 @@ class LoginTest extends TestCase
 
     public function test_login_page_renders_successfully(): void
     {
-        $response = $this->get('/login');
+        $response = $this->get('/en/login');
         $response->assertStatus(200);
         $response->assertSee('Sign In');
     }
+
 
     public function test_login_fails_with_invalid_credentials(): void
     {

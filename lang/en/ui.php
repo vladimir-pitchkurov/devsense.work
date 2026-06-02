@@ -13,6 +13,7 @@ return [
         'browse' => 'Browse',
         'cabinet' => 'Cabinet',
         'login' => 'Sign In',
+        'register' => 'Register',
         'mobile_aria' => 'Main navigation',
     ],
     'footer' => [
@@ -295,6 +296,27 @@ return [
         'on_this_page' => 'On this page',
         'print_pdf' => 'PDF / Print',
         'label' => 'Search',
+    ],
+
+    'auth' => [
+        'login_title'    => 'Sign In',
+        'login_heading'  => 'Sign In',
+        'login_sub'      => 'Access your author dashboard',
+        'login_btn'      => 'Sign In',
+        'login_link'     => 'Sign In',
+        'register_title' => 'Create Account',
+        'register_heading' => 'Create Account',
+        'register_sub'   => 'Register as an author — free, always',
+        'register_btn'   => 'Create Account',
+        'register_link'  => 'Create account',
+        'full_name'      => 'Full Name',
+        'password'       => 'Password',
+        'confirm_password' => 'Confirm Password',
+        'no_account'     => "Don't have an account?",
+        'has_account'    => 'Already have an account?',
+        'terms_prefix'   => 'I agree to the',
+        'terms'          => 'Terms',
+        'privacy'        => 'Privacy Policy',
     ],
 ];
 

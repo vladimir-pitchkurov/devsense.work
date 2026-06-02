@@ -8,43 +8,70 @@ use Illuminate\Support\Str;
 class MediaUploadService
 {
     /**
-     * Upload an image, strip its metadata (EXIF/XMP) using GD, and save it locally.
+     * Upload an image, strip its metadata (EXIF/XMP) using GD, and save it to the configured disk.
      *
      * @param UploadedFile $file
-     * @return string Public URL of the uploaded image
+     * @return array{0: string, 1: string} Tuple of [publicUrl, storedPath]
+     *   - publicUrl: the full absolute URL for display
+     *   - storedPath: the path/key to persist in the database (disk-relative for S3, or relative for local)
      */
-    public function uploadAndStrip(UploadedFile $file): string
+    public function uploadAndStrip(UploadedFile $file): array
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $filename = Str::uuid() . '.' . $extension;
-        $destinationPath = public_path('uploads');
 
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
-
+        // Use a temporary file for the metadata stripping process
+        $tempFile = tempnam(sys_get_temp_dir(), 'avatar_') . '.' . $extension;
         $tempPath = $file->getRealPath();
-        $targetPath = $destinationPath . '/' . $filename;
 
         // Strip metadata using GD depending on image type
         switch ($extension) {
             case 'jpg':
             case 'jpeg':
-                $this->stripJpeg($tempPath, $targetPath);
+                $this->stripJpeg($tempPath, $tempFile);
                 break;
             case 'png':
-                $this->stripPng($tempPath, $targetPath);
+                $this->stripPng($tempPath, $tempFile);
                 break;
             case 'webp':
-                $this->stripWebp($tempPath, $targetPath);
+                $this->stripWebp($tempPath, $tempFile);
                 break;
             default:
-                // Fallback: move file directly if unsupported but allowed extension (like gif)
-                $file->move($destinationPath, $filename);
+                copy($tempPath, $tempFile);
                 break;
         }
 
-        return asset('uploads/' . $filename);
+        // Determine environment prefix to separate dev and prod
+        $environment = app()->environment();
+        $envPrefix = in_array($environment, ['local', 'testing', 'dev', 'development'], true) ? 'dev' : 'prod';
+        $path = "uploads/{$envPrefix}/{$filename}";
+
+        if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+            // Upload to S3/DO Spaces
+            \Illuminate\Support\Facades\Storage::disk('s3')->put(
+                $path,
+                file_get_contents($tempFile),
+                'public'
+            );
+            $url = \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+            $storedPath = $path; // Store the S3 key, not the full URL
+        } else {
+            // Local fallback
+            $destinationPath = public_path("uploads/{$envPrefix}");
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            rename($tempFile, $destinationPath . '/' . $filename);
+            $url = asset("uploads/{$envPrefix}/" . $filename);
+            $storedPath = "uploads/{$envPrefix}/{$filename}";
+        }
+
+        // Clean up temp file
+        if (file_exists($tempFile)) {
+            @unlink($tempFile);
+        }
+
+        return [$url, $storedPath];
     }
 
     /**

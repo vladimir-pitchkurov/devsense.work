@@ -39,6 +39,7 @@ class SearchAndFilterTest extends TestCase
             'category_id' => $phpCategory->id,
             'is_published' => true,
             'published_at' => now()->subDays(2),
+            'is_approved' => true,
         ]);
         $article1->translations()->create([
             'locale' => 'en',
@@ -54,6 +55,7 @@ class SearchAndFilterTest extends TestCase
             'category_id' => $archCategory->id,
             'is_published' => true,
             'published_at' => now(),
+            'is_approved' => true,
         ]);
         $article2->translations()->create([
             'locale' => 'en',

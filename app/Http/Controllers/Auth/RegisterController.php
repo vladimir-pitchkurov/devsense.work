@@ -28,6 +28,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'terms' => ['required', 'accepted'],
         ]);
 
         $user = User::create([
@@ -36,6 +37,7 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
             'role' => User::ROLE_AUTHOR,
             'slug' => Str::slug($request->name),
+            'is_approved' => false,
         ]);
 
         Auth::login($user);

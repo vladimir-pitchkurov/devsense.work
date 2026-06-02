@@ -72,6 +72,20 @@ class DashboardController extends Controller
             ];
         }
 
+        $pendingAuthors = collect();
+        $pendingProfiles = collect();
+        $pendingArticles = collect();
+        $reports = collect();
+
+        if (auth()->user()->isAdmin()) {
+            $pendingAuthors = \App\Models\User::where('is_approved', false)
+                ->where('role', \App\Models\User::ROLE_AUTHOR)
+                ->get();
+            $pendingProfiles = \App\Models\PendingUserProfile::with('user')->get();
+            $pendingArticles = \App\Models\PendingArticleTranslation::with(['article', 'article.author'])->get();
+            $reports = \App\Models\Report::with(['user'])->where('status', 'pending')->orderBy('created_at', 'desc')->get();
+        }
+
         return view('admin.dashboard', compact(
             'totalVisits',
             'botVisits',
@@ -83,7 +97,11 @@ class DashboardController extends Controller
             'topPages',
             'topCrawlers',
             'recentCrawls',
-            'chartData'
+            'chartData',
+            'pendingAuthors',
+            'pendingProfiles',
+            'pendingArticles',
+            'reports'
         ));
     }
 }

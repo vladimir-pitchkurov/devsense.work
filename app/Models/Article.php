@@ -17,7 +17,8 @@ class Article extends Model
         'category_id',
         'slug',
         'is_published',
-        'published_at'
+        'published_at',
+        'is_approved'
     ];
 
     /**
@@ -28,6 +29,7 @@ class Article extends Model
         return [
             'is_published' => 'boolean',
             'published_at' => 'datetime',
+            'is_approved' => 'boolean',
         ];
     }
 
@@ -89,5 +91,53 @@ class Article extends Model
         }
 
         return '#';
+    }
+
+    /**
+     * Scope a query to only include approved articles.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    /**
+     * Get the pending translations for the article.
+     */
+    public function pendingTranslations(): HasMany
+    {
+        return $this->hasMany(PendingArticleTranslation::class);
+    }
+
+    /**
+     * Get either the pending draft or the live translation for a specific locale.
+     */
+    public function getTranslationOrDraft(?string $locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+        
+        $draft = $this->pendingTranslations()->where('locale', $locale)->first();
+        if ($draft) {
+            return (object) [
+                'title' => $draft->title,
+                'description' => $draft->description,
+                'content' => $draft->content,
+                'faq' => $draft->faq,
+                'is_draft' => true,
+            ];
+        }
+        
+        $live = $this->translate($locale);
+        if ($live) {
+            return (object) [
+                'title' => $live->title,
+                'description' => $live->description,
+                'content' => $live->content,
+                'faq' => $live->faq,
+                'is_draft' => false,
+            ];
+        }
+        
+        return null;
     }
 }

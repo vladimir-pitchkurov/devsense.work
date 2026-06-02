@@ -70,12 +70,18 @@ Route::get('/', function () {
     return redirect('/'.$locale, 301);
 });
 
-Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+Route::get('/login', function () {
+    $locale = config('app.default_site_locale', 'en');
+    return redirect('/'.$locale.'/login');
+})->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::get('/register', function () {
+    $locale = config('app.default_site_locale', 'en');
+    return redirect('/'.$locale.'/register');
+})->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post');
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
-Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post');
 
 Route::prefix('{locale}')
     ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
@@ -84,12 +90,19 @@ Route::prefix('{locale}')
 
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
+        // Auth routes (localized)
+        Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login.locale');
+        Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+        Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register.locale');
+        Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
 
         Route::prefix('admin')->middleware(['auth', 'can:access-admin'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
             Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
             Route::get('/articles/create', [\App\Http\Controllers\Admin\ArticlesController::class, 'create'])->name('admin.articles.create');
+            Route::get('/articles/template', [\App\Http\Controllers\Admin\ArticlesController::class, 'downloadTemplate'])->name('admin.articles.template');
             Route::post('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'store'])->name('admin.articles.store');
             Route::get('/articles/{article}/edit', [\App\Http\Controllers\Admin\ArticlesController::class, 'edit'])->name('admin.articles.edit');
             Route::put('/articles/{article}', [\App\Http\Controllers\Admin\ArticlesController::class, 'update'])->name('admin.articles.update');
@@ -113,6 +126,19 @@ Route::prefix('{locale}')
             Route::get('/tags/{tag}/edit', [\App\Http\Controllers\Admin\TagsController::class, 'edit'])->name('admin.tags.edit');
             Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'update'])->name('admin.tags.update');
             Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'destroy'])->name('admin.tags.destroy');
+
+            // Moderation actions
+            Route::post('/moderation/authors/{user}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveAuthor'])->name('admin.moderation.authors.approve');
+            Route::post('/moderation/authors/{user}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectAuthor'])->name('admin.moderation.authors.reject');
+
+            Route::post('/moderation/profiles/{pendingUserProfile}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveProfile'])->name('admin.moderation.profiles.approve');
+            Route::post('/moderation/profiles/{pendingUserProfile}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectProfile'])->name('admin.moderation.profiles.reject');
+
+            Route::post('/moderation/articles/{pendingArticleTranslation}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveArticle'])->name('admin.moderation.articles.approve');
+            Route::post('/moderation/articles/{pendingArticleTranslation}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectArticle'])->name('admin.moderation.articles.reject');
+
+            Route::post('/moderation/reports/{report}/dismiss', [\App\Http\Controllers\Admin\AdminModerationController::class, 'dismissReport'])->name('admin.moderation.reports.dismiss');
+            Route::post('/moderation/reports/{report}/action', [\App\Http\Controllers\Admin\AdminModerationController::class, 'actionReport'])->name('admin.moderation.reports.action');
         });
 
         Route::prefix('php')->group(function () {
@@ -163,4 +189,13 @@ Route::prefix('{locale}')
             Route::get('/{slug}', [\App\Http\Controllers\TagController::class, 'show'])->name('tags.show');
         });
 
+        Route::get('/terms', function () {
+            return view('legal.terms');
+        })->name('terms');
+
+        Route::get('/privacy', function () {
+            return view('legal.privacy');
+        })->name('privacy');
+
+        Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
     });

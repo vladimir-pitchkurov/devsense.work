@@ -9,6 +9,9 @@
 @use 'blocks/author';
 @use 'blocks/markdown';
 @use 'blocks/code-block';
+@use 'blocks/auth';
+@use 'blocks/admin';
+
 
 
 body.page {
