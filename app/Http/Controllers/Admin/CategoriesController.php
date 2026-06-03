@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\CategoryTranslation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
@@ -15,6 +16,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
+        Gate::authorize('manage-users');
+
         $categories = Category::with('translations')->orderBy('slug')->paginate(15);
         return view('admin.categories.index', compact('categories'));
     }
@@ -24,6 +27,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
+        Gate::authorize('manage-users');
+
         return view('admin.categories.create');
     }
 
@@ -32,6 +37,8 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('manage-users');
+
         $request->validate([
             'slug' => ['required', 'string', 'unique:categories,slug', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
             'translations' => ['required', 'array'],
@@ -62,6 +69,8 @@ class CategoriesController extends Controller
      */
     public function edit(Category $category)
     {
+        Gate::authorize('manage-users');
+
         $category->load('translations');
         return view('admin.categories.edit', compact('category'));
     }
@@ -71,6 +80,8 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        Gate::authorize('manage-users');
+
         $request->validate([
             'slug' => ['required', 'string', 'unique:categories,slug,' . $category->id, 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
             'translations' => ['required', 'array'],
@@ -102,6 +113,8 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)
     {
+        Gate::authorize('manage-users');
+
         // Check if there are articles in this category before deleting
         if ($category->articles()->exists()) {
             return back()->withErrors(['error' => 'Cannot delete category that contains articles. Please reassign articles first.']);

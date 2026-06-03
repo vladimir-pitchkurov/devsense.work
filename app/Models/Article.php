@@ -12,14 +12,37 @@ class Article extends Model
 {
     use HasFactory;
 
+    public ?int $temp_category_id = null;
+
     protected $fillable = [
         'author_id',
-        'category_id',
         'slug',
+        'custom_url',
         'is_published',
         'published_at',
-        'is_approved'
+        'is_approved',
+        'category_id', // for backwards compatibility in tests/factories
     ];
+
+    /**
+     * Booted method to handle backwards compatibility for category_id write operations.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Article $article) {
+            if (array_key_exists('category_id', $article->attributes)) {
+                $article->temp_category_id = $article->attributes['category_id'];
+                unset($article->attributes['category_id']);
+            }
+        });
+
+        static::saved(function (Article $article) {
+            if (isset($article->temp_category_id)) {
+                $article->categories()->syncWithoutDetaching([$article->temp_category_id]);
+                unset($article->temp_category_id);
+            }
+        });
+    }
 
     /**
      * Cast attributes.
@@ -42,11 +65,57 @@ class Article extends Model
     }
 
     /**
-     * Get the category of the article.
+     * Get the categories of the article.
      */
-    public function category(): BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class);
+    }
+
+    /**
+     * Backward compatibility helper for category relationship.
+     */
+    public function category(): BelongsToMany
+    {
+        return $this->categories();
+    }
+
+    /**
+     * Intercept relation value for category to return a single model.
+     */
+    public function getRelationValue($key)
+    {
+        if ($key === 'category') {
+            $relation = parent::getRelationValue('category');
+            if ($relation instanceof \Illuminate\Database\Eloquent\Collection) {
+                return $relation->first();
+            }
+            return $relation;
+        }
+        return parent::getRelationValue($key);
+    }
+
+    /**
+     * Backward compatibility helper for getting the primary category.
+     */
+    public function getCategoryAttribute(): ?Category
+    {
+        if ($this->relationLoaded('category')) {
+            $relation = $this->relations['category'];
+            return $relation instanceof \Illuminate\Database\Eloquent\Collection ? $relation->first() : $relation;
+        }
+        if ($this->relationLoaded('categories')) {
+            return $this->categories->first();
+        }
+        return $this->categories->first();
+    }
+
+    /**
+     * Backward compatibility helper for getting the primary category ID.
+     */
+    public function getCategoryIdAttribute(): ?int
+    {
+        return $this->category?->id;
     }
 
     /**
@@ -89,19 +158,24 @@ class Article extends Model
             ?: $this->translations()->first(); // fallback to any available translation
     }
 
-    /**
-     * Get the public frontend URL for the article.
-     */
     public function url(): string
     {
+        if (!empty($this->custom_url)) {
+            $path = '/' . ltrim($this->custom_url, '/');
+            if (str_starts_with($this->custom_url, 'http://') || str_starts_with($this->custom_url, 'https://')) {
+                return $this->custom_url;
+            }
+            return '/' . app()->getLocale() . $path;
+        }
+
         $categorySlug = $this->category?->slug;
 
         if ($categorySlug === 'php') {
             return route('php.show', ['version' => $this->slug, 'locale' => app()->getLocale()]);
         }
 
-        if (in_array($categorySlug, ['tools', 'microservices', 'architecture'], true)) {
-            return route($categorySlug . '.show', ['slug' => $this->slug, 'locale' => app()->getLocale()]);
+        if ($categorySlug) {
+            return '/' . app()->getLocale() . '/' . $categorySlug . '/' . $this->slug;
         }
 
         return '#';

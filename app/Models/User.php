@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,10 +18,10 @@ use Illuminate\Support\Str;
     'name', 'email', 'password', 'role',
     'slug', 'job_title', 'bio', 'avatar_path',
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
-    'is_public', 'is_approved', 'is_blocked',
+    'is_public', 'is_approved', 'is_blocked', 'points',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -124,6 +125,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new \App\Notifications\VerifyEmailQueued);
+    }
+
+    /**
      * Scope a query to only include approved users.
      */
     public function scopeApproved($query)
@@ -137,5 +146,25 @@ class User extends Authenticatable
     public function pendingProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(PendingUserProfile::class);
+    }
+
+    /**
+     * Get the badges unlocked by this user.
+     */
+    public function badges(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the quizzes completed by this user.
+     */
+    public function quizzes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Quiz::class, 'user_quizzes')
+            ->withPivot('score', 'completed_at')
+            ->withTimestamps();
     }
 }

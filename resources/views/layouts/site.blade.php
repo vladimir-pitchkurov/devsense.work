@@ -194,6 +194,7 @@
                 <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
                 <a href="{{ route('microservices.index') }}" class="nav__link">{{ __('ui.nav.microservices') }}</a>
                 <a href="{{ route('architecture.index') }}" class="nav__link">{{ __('ui.nav.architecture') }}</a>
+                <a href="{{ route('quizzes.index') }}" class="nav__link">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
             </nav>
         </div>
     </div>
@@ -294,6 +295,12 @@
                 <li class="footer__nav-item">
                     <a href="{{ route('architecture.index') }}" class="footer__nav-link">{{ __('ui.nav.architecture') }}</a>
                 </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('terms') }}" class="footer__nav-link">{{ __('ui.footer.terms') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('privacy') }}" class="footer__nav-link">{{ __('ui.footer.privacy') }}</a>
+                </li>
             </ul>
         </nav>
         @php
@@ -335,6 +342,14 @@
                 </ul>
             </nav>
         @endif
+        <div class="footer__contacts">
+            <span class="footer__contact-item">
+                {{ __('ui.footer.ceo_label') }}: <strong>Vladimir Pichkurov</strong> (<a href="mailto:vladimir@devsense.work" class="footer__contact-link">vladimir@devsense.work</a>)
+            </span>
+            <span class="footer__contact-item">
+                {{ __('ui.footer.support_label') }}: <a href="mailto:support@mail.devsense.work" class="footer__contact-link">support@mail.devsense.work</a>
+            </span>
+        </div>
         <p class="footer__copyright">&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.</p>
     </div>
 </footer>

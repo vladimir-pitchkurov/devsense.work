@@ -19,7 +19,7 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $query = Article::with(['author', 'category', 'translations', 'pendingTranslations']);
+        $query = Article::with(['author', 'categories', 'translations', 'pendingTranslations']);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('author_id', Auth::id());
@@ -46,9 +46,21 @@ class ArticlesController extends Controller
      */
     public function store(Request $request, \App\Services\ContentSanitizer $sanitizer)
     {
+        if ($request->has('category_id') && !$request->has('categories')) {
+            $request->merge(['categories' => [$request->input('category_id')]]);
+        } elseif (!$request->has('categories')) {
+            $defaultCat = \App\Models\Category::first();
+            if (!$defaultCat) {
+                $defaultCat = \App\Models\Category::create(['slug' => 'default']);
+            }
+            $request->merge(['categories' => [$defaultCat->id]]);
+        }
+
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'slug' => ['required', 'string', 'unique:articles,slug', 'max:255'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'categories' => ['required', 'array', 'min:1'],
+            'categories.*' => ['exists:categories,id'],
+            'custom_url' => ['nullable', 'string', 'max:255', 'unique:articles,custom_url'],
             'is_published' => ['nullable', 'boolean'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:tags,id'],
@@ -93,11 +105,13 @@ class ArticlesController extends Controller
         $article = Article::create([
             'slug' => Str::slug($request->slug),
             'author_id' => Auth::id(),
-            'category_id' => $request->category_id,
+            'custom_url' => $request->custom_url ? '/' . ltrim($request->custom_url, '/') : null,
             'is_published' => (bool) $request->is_published,
             'published_at' => $request->is_published ? now() : null,
             'is_approved' => $isAdmin,
         ]);
+
+        $article->categories()->sync($request->categories);
 
         if ($request->tags) {
             $article->tags()->sync($request->tags);
@@ -163,7 +177,7 @@ class ArticlesController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
         
-        $article->load(['translations', 'tags']);
+        $article->load(['translations', 'tags', 'categories']);
 
         return view('admin.articles.edit', compact('article', 'categories', 'tags'));
     }
@@ -177,9 +191,17 @@ class ArticlesController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        if ($request->has('category_id') && !$request->has('categories')) {
+            $request->merge(['categories' => [$request->input('category_id')]]);
+        } elseif (!$request->has('categories')) {
+            $request->merge(['categories' => $article->categories->pluck('id')->toArray()]);
+        }
+
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'slug' => ['required', 'string', 'unique:articles,slug,' . $article->id, 'max:255'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'categories' => ['required', 'array', 'min:1'],
+            'categories.*' => ['exists:categories,id'],
+            'custom_url' => ['nullable', 'string', 'max:255', 'unique:articles,custom_url,' . $article->id],
             'is_published' => ['nullable', 'boolean'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:tags,id'],
@@ -226,11 +248,12 @@ class ArticlesController extends Controller
 
         $article->update([
             'slug' => Str::slug($request->slug),
-            'category_id' => $request->category_id,
+            'custom_url' => $request->custom_url ? '/' . ltrim($request->custom_url, '/') : null,
             'is_published' => $isPublished,
             'published_at' => $isPublished ? ($wasPublished ? $article->published_at : now()) : null,
         ]);
 
+        $article->categories()->sync($request->categories ?? []);
         $article->tags()->sync($request->tags ?? []);
 
         foreach ($request->translations as $locale => $data) {

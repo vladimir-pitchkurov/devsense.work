@@ -30,7 +30,7 @@ class MarkdownContentService
     {
         // 1. Query the database first
         $article = \App\Models\Article::where('slug', $slug)
-            ->whereHas('category', function ($q) use ($category) {
+            ->whereHas('categories', function ($q) use ($category) {
                 $q->where('slug', $category);
             })
             ->first();

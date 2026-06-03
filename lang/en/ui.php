@@ -21,6 +21,10 @@ return [
         'nav_aria' => 'Main sections',
         'locales_aria' => 'Same page in other languages',
         'locales_label' => 'Language:',
+        'terms' => 'Terms of Service',
+        'privacy' => 'Privacy Policy',
+        'ceo_label' => 'Founder & CEO',
+        'support_label' => 'Suggestions & Feedback',
     ],
     'a11y' => [
         'theme_switcher' => 'Current theme',
@@ -318,6 +322,20 @@ return [
         'terms'          => 'Terms',
         'privacy'        => 'Privacy Policy',
         'suspended'      => 'Your account has been suspended. Please contact the administrator.',
+        'email_verification' => [
+            'subject' => 'Verify Email Address',
+            'greeting' => 'Hello!',
+            'line_1' => 'Please click the button below to verify your email address.',
+            'button' => 'Verify Email Address',
+            'line_2' => 'If you did not create an account, no further action is required.',
+            'title' => 'Verify Your Email',
+            'heading' => 'Verify Your Email',
+            'sub' => 'Before proceeding, please check your email for a verification link.',
+            'resent' => 'A fresh verification link has been sent to your email address.',
+            'resend_btn' => 'Resend Verification Email',
+            'logout_btn' => 'Log Out',
+        ],
     ],
 ];
+
 

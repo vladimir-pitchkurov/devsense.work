@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\ArchitectureController;
 use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\MicroservicesController;
-use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\JobsController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
@@ -96,16 +94,33 @@ Route::prefix('{locale}')
         Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register.locale');
         Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
+        // Email Verification routes
+        Route::get('/email/verify', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'notice'])->middleware(['auth'])->name('verification.notice');
+        Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'verify'])->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
+        Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'send'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-        Route::prefix('admin')->middleware(['auth', 'can:access-admin'])->group(function () {
+
+        Route::prefix('admin')->middleware(['auth', 'verified', 'can:access-admin'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
 
-            // User Management CRUD (Super Admin Only)
+            // User Management, Tickets & Categories CRUD (Super Admin Only)
             Route::middleware('can:manage-users')->group(function () {
                 Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
                 Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
                 Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+
+                Route::get('/tickets', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'index'])->name('admin.tickets.index');
+                Route::get('/tickets/{ticket}', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'show'])->name('admin.tickets.show');
+                Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'reply'])->name('admin.tickets.reply');
+
+                // Categories CRUD
+                Route::get('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.categories.index');
+                Route::get('/categories/create', [\App\Http\Controllers\Admin\CategoriesController::class, 'create'])->name('admin.categories.create');
+                Route::post('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'store'])->name('admin.categories.store');
+                Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.categories.edit');
+                Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'update'])->name('admin.categories.update');
+                Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
             });
 
             Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
@@ -118,14 +133,6 @@ Route::prefix('{locale}')
             Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('admin.profile.edit');
             Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
             Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('admin.media.upload');
-
-            // Categories CRUD
-            Route::get('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.categories.index');
-            Route::get('/categories/create', [\App\Http\Controllers\Admin\CategoriesController::class, 'create'])->name('admin.categories.create');
-            Route::post('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'store'])->name('admin.categories.store');
-            Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.categories.edit');
-            Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'update'])->name('admin.categories.update');
-            Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
 
             // Tags CRUD
             Route::get('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'index'])->name('admin.tags.index');
@@ -158,21 +165,21 @@ Route::prefix('{locale}')
 
         Route::prefix('tools')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'tools')->name('tools.index');
-            Route::get('/{slug}', [PhpToolsController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'tools')
                 ->name('tools.show')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('microservices')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'microservices')->name('microservices.index');
-            Route::get('/{slug}', [MicroservicesController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'microservices')
                 ->name('microservices.show')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('architecture')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'architecture')->name('architecture.index');
-            Route::get('/{slug}', [ArchitectureController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'architecture')
                 ->name('architecture.show')
                 ->middleware('llm.friendly');
         });
@@ -194,6 +201,12 @@ Route::prefix('{locale}')
             Route::get('/{slug}', [\App\Http\Controllers\TagController::class, 'show'])->name('tags.show');
         });
 
+        Route::prefix('quizzes')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PublicQuizController::class, 'index'])->name('quizzes.index');
+            Route::get('/{slug}', [\App\Http\Controllers\PublicQuizController::class, 'show'])->name('quizzes.show');
+            Route::post('/{slug}/complete', [\App\Http\Controllers\PublicQuizController::class, 'complete'])->name('quizzes.complete')->middleware('auth');
+        });
+
         Route::get('/terms', function () {
             return view('legal.terms');
         })->name('terms');
@@ -203,4 +216,15 @@ Route::prefix('{locale}')
         })->name('privacy');
 
         Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
+
+        Route::get('/categories/{category_slug}', [PublicArticleController::class, 'categoryIndex'])->name('categories.show');
+
+        // Dynamic category article show route
+        Route::get('/{category_slug}/{article_slug}', [PublicArticleController::class, 'show'])
+            ->name('articles.show')
+            ->middleware('llm.friendly');
+
+        Route::get('/{any}', [PublicArticleController::class, 'showCustom'])
+            ->name('articles.show_custom')
+            ->where('any', '.*');
     });

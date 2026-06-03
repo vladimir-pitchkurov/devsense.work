@@ -15,6 +15,14 @@
             <a href="{{ route('admin.profile.edit', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
                 Edit Profile
             </a>
+            @can('manage-users')
+                <a href="{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Users
+                </a>
+                <a href="{{ route('admin.tickets.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Tickets
+                </a>
+            @endcan
             <a href="{{ route('admin.articles.create', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--primary">
                 Create New Article
             </a>

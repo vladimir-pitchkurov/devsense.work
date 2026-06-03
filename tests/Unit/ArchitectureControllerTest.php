@@ -2,8 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\ArchitectureController;
-use App\Services\MarkdownContentService;
+use App\Http\Controllers\PublicArticleController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 
@@ -16,9 +15,10 @@ class ArchitectureControllerTest extends TestCase
     {
         $this->expectException(NotFoundHttpException::class);
 
-        app(ArchitectureController::class)->show(
-            'not-a-valid-slug',
-            app(MarkdownContentService::class),
+        app(PublicArticleController::class)->show(
+            'en',
+            'architecture',
+            'not-a-valid-slug'
         );
     }
 }

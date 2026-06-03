@@ -40,6 +40,8 @@ class RegisterController extends Controller
             'is_approved' => false,
         ]);
 
+        event(new \Illuminate\Auth\Events\Registered($user));
+
         Auth::login($user);
 
         $request->session()->regenerate();

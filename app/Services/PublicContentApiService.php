@@ -33,7 +33,7 @@ class PublicContentApiService
 
         // 1. Fetch articles from database
         try {
-            $dbArticles = \App\Models\Article::with(['category', 'translations'])
+            $dbArticles = \App\Models\Article::with(['categories', 'translations'])
                 ->where('is_published', true)
                 ->where('is_approved', true)
                 ->get();
@@ -356,7 +356,7 @@ class PublicContentApiService
         // 1. Query the database first
         $article = \App\Models\Article::where('slug', $slug)
             ->where('is_approved', true)
-            ->whereHas('category', function ($q) use ($category) {
+            ->whereHas('categories', function ($q) use ($category) {
                 $q->where('slug', $category);
             })
             ->first();

@@ -34,15 +34,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="category_id" class="form-label">Category</label>
-                        <select name="category_id" id="category_id" class="form-input">
-                            <option value="">-- Select Category --</option>
+                        <label class="form-label">Categories (Select at least one)</label>
+                        <div class="checkbox-group">
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->slug }}
-                                </option>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ is_array(old('categories')) && in_array($category->id, old('categories')) ? 'checked' : '' }}>
+                                    <span>{{ $category->slug }}</span>
+                                </label>
                             @endforeach
-                        </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom_url" class="form-label">Custom URL (Optional)</label>
+                        <input type="text" name="custom_url" id="custom_url" value="{{ old('custom_url') }}" placeholder="e.g. /my-custom-path" class="form-input">
+                        <p class="form-help">Overwrites default URL structure if set</p>
                     </div>
 
                     <div class="form-group">

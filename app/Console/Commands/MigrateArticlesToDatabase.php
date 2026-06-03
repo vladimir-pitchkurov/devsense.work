@@ -121,10 +121,12 @@ class MigrateArticlesToDatabase extends Command
                             'slug' => $slug,
                         ], [
                             'author_id' => $author->id,
-                            'category_id' => $category->id,
                             'is_published' => true,
                             'published_at' => now(),
                         ]);
+
+                        // Sync category pivot
+                        $article->categories()->syncWithoutDetaching([$category->id]);
 
                         // Sync pivot tag
                         $article->tags()->syncWithoutDetaching([$tag->id]);

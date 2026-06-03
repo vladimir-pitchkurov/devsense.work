@@ -102,7 +102,7 @@ class AuthorController extends Controller
         $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
         $articlesQuery = $author->articles()
             ->where('is_published', true)
-            ->with(['translations', 'category'])
+            ->with(['translations', 'categories'])
             ->latest('published_at');
 
         if (!$isOwnerOrAdmin) {
