@@ -28,10 +28,13 @@ class PublicQuizController extends Controller
             $q->where('locale', $locale);
         }])->get();
 
-        if ($user) {
+        if ($user && $user->hasVerifiedEmail()) {
             $user->load(['badges.translations', 'quizzes']);
             $completedQuizzes = $user->quizzes->pluck('pivot.score', 'id');
             $unlockedBadges = $user->badges;
+        } elseif ($user) {
+            $user->load(['quizzes']);
+            $completedQuizzes = $user->quizzes->pluck('pivot.score', 'id');
         }
 
         return view('quizzes.index', compact('quizzes', 'user', 'completedQuizzes', 'unlockedBadges', 'allBadges'));
@@ -66,7 +69,38 @@ class PublicQuizController extends Controller
             }
         }
 
-        return view('quizzes.show', compact('quiz', 'lastCompletedTimestamp'));
+        $showResultsData = null;
+        if ($user && session('quiz_completed_from_guest') === $quiz->slug) {
+            $answers = session('quiz_user_answers', []);
+            $pointsScored = 0;
+            $correctAnswers = [];
+            $correctIndexes = [];
+            $explanations = [];
+
+            foreach ($quiz->questions as $question) {
+                $submittedAnswer = isset($answers[$question->id]) ? (int) $answers[$question->id] : -1;
+                $isCorrect = ($submittedAnswer === $question->correct_answer_index);
+                
+                if ($isCorrect) {
+                    $pointsScored += $question->points;
+                }
+
+                $correctAnswers[$question->id] = $isCorrect;
+                $correctIndexes[$question->id] = $question->correct_answer_index;
+                $explanations[$question->id] = $question->explanation;
+            }
+
+            $showResultsData = [
+                'points_scored' => $pointsScored,
+                'total_points' => $user->points,
+                'correct_answers' => $correctAnswers,
+                'correct_indexes' => $correctIndexes,
+                'explanations' => $explanations,
+                'new_badges' => ($user && $user->hasVerifiedEmail()) ? session('quiz_new_badges', []) : [],
+            ];
+        }
+
+        return view('quizzes.show', compact('quiz', 'lastCompletedTimestamp', 'showResultsData'));
     }
 
     /**
@@ -78,10 +112,6 @@ class PublicQuizController extends Controller
         $request = request();
         $quiz = Quiz::where('slug', $slug)->with('questions.translations')->firstOrFail();
         $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
-        }
 
         $answers = $request->input('answers', []);
         $pointsScored = 0;
@@ -100,6 +130,21 @@ class PublicQuizController extends Controller
             $correctAnswers[$question->id] = $isCorrect;
             $correctIndexes[$question->id] = $question->correct_answer_index;
             $explanations[$question->id] = $question->explanation;
+        }
+
+        if (!$user) {
+            session([
+                'pending_quiz' => [
+                    'slug' => $quiz->slug,
+                    'answers' => $answers,
+                ]
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'is_guest' => true,
+                'points_scored' => $pointsScored,
+            ]);
         }
 
         // Determine point diff for UserQuiz pivot and User points
@@ -132,13 +177,15 @@ class PublicQuizController extends Controller
         $newBadges = $user->checkAndAwardBadges();
         $unlockedBadges = [];
 
-        foreach ($newBadges as $badge) {
-            $badgeTrans = $badge->translate($locale);
-            $unlockedBadges[] = [
-                'title' => $badgeTrans?->title ?? $badge->slug,
-                'description' => $badgeTrans?->description ?? '',
-                'image_path' => $badge->image_path,
-            ];
+        if ($user->hasVerifiedEmail()) {
+            foreach ($newBadges as $badge) {
+                $badgeTrans = $badge->translate($locale);
+                $unlockedBadges[] = [
+                    'title' => $badgeTrans?->title ?? $badge->slug,
+                    'description' => $badgeTrans?->description ?? '',
+                    'image_path' => $badge->image_path,
+                ];
+            }
         }
 
         return response()->json([

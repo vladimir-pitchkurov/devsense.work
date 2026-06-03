@@ -32,68 +32,81 @@
                         </div>
                     </div>
 
-                    <!-- Progress Bar for Badges -->
-                    @php
-                        $nextBadge = $allBadges->where('points_required', '>', $user->points)->sortBy('points_required')->first();
-                        $prevBadgeThreshold = 0;
-                        if ($nextBadge) {
-                            $prevBadge = $allBadges->where('points_required', '<=', $user->points)->sortByDesc('points_required')->first();
-                            $prevBadgeThreshold = $prevBadge ? $prevBadge->points_required : 0;
-                            $targetPoints = $nextBadge->points_required;
-                            $range = $targetPoints - $prevBadgeThreshold;
-                            $currentOffset = $user->points - $prevBadgeThreshold;
-                            $percent = $range > 0 ? min(100, max(0, ($currentOffset / $range) * 100)) : 100;
-                        } else {
-                            $percent = 100;
-                            $targetPoints = $user->points;
-                        }
-                    @endphp
+                    @if($user->hasVerifiedEmail())
+                        <!-- Progress Bar for Badges -->
+                        @php
+                            $nextBadge = $allBadges->where('points_required', '>', $user->points)->sortBy('points_required')->first();
+                            $prevBadgeThreshold = 0;
+                            if ($nextBadge) {
+                                $prevBadge = $allBadges->where('points_required', '<=', $user->points)->sortByDesc('points_required')->first();
+                                $prevBadgeThreshold = $prevBadge ? $prevBadge->points_required : 0;
+                                $targetPoints = $nextBadge->points_required;
+                                $range = $targetPoints - $prevBadgeThreshold;
+                                $currentOffset = $user->points - $prevBadgeThreshold;
+                                $percent = $range > 0 ? min(100, max(0, ($currentOffset / $range) * 100)) : 100;
+                            } else {
+                                $percent = 100;
+                                $targetPoints = $user->points;
+                            }
+                        @endphp
 
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-labels">
-                            <span>{{ app()->getLocale() === 'ru' ? 'Прогресс достижений' : 'Achievement Progress' }}</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-labels">
+                                <span>{{ app()->getLocale() === 'ru' ? 'Прогресс достижений' : 'Achievement Progress' }}</span>
+                                @if($nextBadge)
+                                    <span>{{ $user->points }} / {{ $targetPoints }} {{ app()->getLocale() === 'ru' ? 'баллов' : 'points' }}</span>
+                                @else
+                                    <span>{{ app()->getLocale() === 'ru' ? 'Максимальный ранг!' : 'Max Rank Unlocked!' }}</span>
+                                @endif
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: {{ $percent }}%"></div>
+                            </div>
                             @if($nextBadge)
-                                <span>{{ $user->points }} / {{ $targetPoints }} {{ app()->getLocale() === 'ru' ? 'баллов' : 'points' }}</span>
-                            @else
-                                <span>{{ app()->getLocale() === 'ru' ? 'Максимальный ранг!' : 'Max Rank Unlocked!' }}</span>
+                                <p class="next-badge-info">
+                                    {{ app()->getLocale() === 'ru' ? 'Следующий бейдж:' : 'Next badge:' }} 
+                                    <strong>{{ $nextBadge->translate()?->title }}</strong> 
+                                    ({{ app()->getLocale() === 'ru' ? 'нужно' : 'requires' }} {{ $nextBadge->points_required }})
+                                </p>
                             @endif
                         </div>
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: {{ $percent }}%"></div>
-                        </div>
-                        @if($nextBadge)
-                            <p class="next-badge-info">
-                                {{ app()->getLocale() === 'ru' ? 'Следующий бейдж:' : 'Next badge:' }} 
-                                <strong>{{ $nextBadge->translate()?->title }}</strong> 
-                                ({{ app()->getLocale() === 'ru' ? 'нужно' : 'requires' }} {{ $nextBadge->points_required }})
-                            </p>
-                        @endif
-                    </div>
 
-                    <!-- Unlocked Badges Row -->
-                    <div class="badges-row-section">
-                        <h3 class="section-subtitle" style="font-family: 'Outfit', sans-serif;">
-                            {{ app()->getLocale() === 'ru' ? 'Ваши бейджи' : 'Your Badges' }}
-                        </h3>
-                        @if($unlockedBadges->isEmpty())
-                            <p class="empty-badges-msg">
-                                {{ app()->getLocale() === 'ru' ? 'Пройдите первый квиз, чтобы разблокировать награду!' : 'Complete your first quiz to unlock a badge!' }}
-                            </p>
-                        @else
-                            <div class="unlocked-badges-grid">
-                                @foreach($unlockedBadges as $badge)
-                                    <div class="badge-item tooltipped" data-tooltip="{{ $badge->translate()?->description }}">
-                                        <div class="badge-icon-wrapper active-badge">
-                                            <!-- Glowing Circle -->
-                                            <div class="badge-glow"></div>
-                                            <span class="badge-emoji">🏆</span>
+                        <!-- Unlocked Badges Row -->
+                        <div class="badges-row-section">
+                            <h3 class="section-subtitle" style="font-family: 'Outfit', sans-serif;">
+                                {{ app()->getLocale() === 'ru' ? 'Ваши бейджи' : 'Your Badges' }}
+                            </h3>
+                            @if($unlockedBadges->isEmpty())
+                                <p class="empty-badges-msg">
+                                    {{ app()->getLocale() === 'ru' ? 'Пройдите первый квиз, чтобы разблокировать награду!' : 'Complete your first quiz to unlock a badge!' }}
+                                </p>
+                            @else
+                                <div class="unlocked-badges-grid">
+                                    @foreach($unlockedBadges as $badge)
+                                        <div class="badge-item tooltipped" data-tooltip="{{ $badge->translate()?->description }}">
+                                            <div class="badge-icon-wrapper active-badge">
+                                                <!-- Glowing Circle -->
+                                                <div class="badge-glow"></div>
+                                                <span class="badge-emoji">🏆</span>
+                                            </div>
+                                            <span class="badge-title">{{ $badge->translate()?->title }}</span>
                                         </div>
-                                        <span class="badge-title">{{ $badge->translate()?->title }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <div class="unverified-reminder-box" style="margin-top: 1.5rem; padding: 1rem; background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.2); border-radius: 8px; text-align: center;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-color); line-height: 1.5;">
+                                {{ app()->getLocale() === 'ru' 
+                                    ? 'Пожалуйста, подтвердите ваш имейл, чтобы разблокировать бейджи и прогресс достижений.' 
+                                    : 'Please verify your email address to unlock badges and achievement progress.' }}
+                            </p>
+                            <a href="{{ route('verification.notice') }}" style="display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 600; text-decoration: none;">
+                                {{ app()->getLocale() === 'ru' ? 'Подтвердить имейл' : 'Verify Email' }} &rarr;
+                            </a>
+                        </div>
+                    @endif
                 </div>
             @else
                 <!-- Guest CTA -->

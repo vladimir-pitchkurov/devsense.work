@@ -183,7 +183,7 @@
 
         let currentQuestionIndex = 0;
         let selectedOptionIndex = null;
-        let userAnswers = {}; // questionId: selectedIndex
+        let userAnswers = @json(session('quiz_user_answers') ?? (object)[]); // questionId: selectedIndex
 
         const questionProgress = document.getElementById('question-progress');
         const quizStepFill = document.getElementById('quiz-step-fill');
@@ -285,7 +285,11 @@
                 return res.json();
             })
             .then(data => {
-                showResults(data);
+                if (data.is_guest) {
+                    showGuestCTA(data.points_scored);
+                } else {
+                    showResults(data);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -300,6 +304,41 @@
                     questionText.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Произошла ошибка при отправке теста. Попробуйте еще раз.' : 'An error occurred. Please try again.' }}";
                 }
             });
+        }
+
+        function showGuestCTA(pointsScored) {
+            document.getElementById('question-container').style.display = 'none';
+            quizBoxFooter.style.display = 'none';
+
+            const appLocale = "{{ app()->getLocale() }}";
+            const resultContainer = document.getElementById('result-container');
+            
+            resultContainer.innerHTML = `
+                <div class="result-celebration" style="padding: 2.5rem 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 1rem; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                    <span class="celebration-emoji" style="font-size: 4rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 4px 10px rgba(99, 102, 241, 0.3));">🎯</span>
+                    <h3 class="result-headline" style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; color: var(--text-color); margin: 0 0 0.75rem;">
+                        ${pointsScored > 0 
+                            ? (appLocale === 'ru' ? 'Вы набрали ' + pointsScored + ' XP!' : 'You scored ' + pointsScored + ' XP!')
+                            : (appLocale === 'ru' ? 'Тест завершен!' : 'Quiz Completed!')
+                        }
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; max-width: 500px; margin: 0 auto 2rem;">
+                        ${appLocale === 'ru' 
+                            ? 'Зарегистрируйтесь или войдите в систему, чтобы сохранить свои результаты, увидеть правильные ответы с подробными объяснениями и разблокировать достижения!' 
+                            : 'Sign up or sign in now to save your results, view correct answers with detailed explanations, and unlock achievements!'
+                        }
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                        <a href="{{ route('register.locale') }}" class="admin-btn admin-btn--primary" style="padding: 0.75rem 1.75rem; font-weight: 600; text-decoration: none; border-radius: 8px; font-family: 'Outfit', sans-serif;">
+                            ${appLocale === 'ru' ? 'Регистрация' : 'Sign Up'}
+                        </a>
+                        <a href="{{ route('login.locale') }}" class="admin-btn admin-btn--secondary" style="padding: 0.75rem 1.75rem; font-weight: 600; text-decoration: none; border-radius: 8px; font-family: 'Outfit', sans-serif;">
+                            ${appLocale === 'ru' ? 'Войти' : 'Sign In'}
+                        </a>
+                    </div>
+                </div>
+            `;
+            resultContainer.style.display = 'block';
         }
 
         function showResults(data) {
@@ -377,7 +416,12 @@
 
         // Initialize
         updateRetakeButton();
-        loadQuestion();
+        const showResultsData = @json($showResultsData);
+        if (showResultsData) {
+            showResults(showResultsData);
+        } else {
+            loadQuestion();
+        }
     });
     </script>
 </x-layout>

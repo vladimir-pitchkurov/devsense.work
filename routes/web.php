@@ -206,8 +206,11 @@ Route::prefix('{locale}')
         Route::prefix('quizzes')->group(function () {
             Route::get('/', [\App\Http\Controllers\PublicQuizController::class, 'index'])->name('quizzes.index');
             Route::get('/{slug}', [\App\Http\Controllers\PublicQuizController::class, 'show'])->name('quizzes.show');
-            Route::post('/{slug}/complete', [\App\Http\Controllers\PublicQuizController::class, 'complete'])->name('quizzes.complete')->middleware('auth');
+            Route::post('/{slug}/complete', [\App\Http\Controllers\PublicQuizController::class, 'complete'])->name('quizzes.complete');
         });
+
+        Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');
+        Route::post('/features/{feature}/vote', [\App\Http\Controllers\FeatureController::class, 'vote'])->name('features.vote')->middleware('auth');
 
         Route::get('/terms', function () {
             return view('legal.terms');

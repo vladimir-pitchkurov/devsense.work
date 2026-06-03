@@ -122,6 +122,7 @@ class MigrateArticlesToDatabase extends Command
                         ], [
                             'author_id' => $author->id,
                             'is_published' => true,
+                            'is_approved' => true,
                             'published_at' => now(),
                         ]);
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Badge;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -114,5 +115,51 @@ class EmailVerificationTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('resent');
         Notification::assertSentTo($user, \App\Notifications\VerifyEmailQueued::class);
+    }
+
+    public function test_unverified_user_cannot_access_cabinet(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+            'role' => User::ROLE_READER,
+        ]);
+
+        $response = $this->actingAs($user)->get('/en/admin');
+
+        $response->assertRedirect('/en/email/verify');
+    }
+
+    public function test_unverified_user_cannot_see_achievements(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+            'role' => User::ROLE_READER,
+        ]);
+
+        $badge = Badge::create([
+            'slug' => 'test-badge',
+            'points_required' => 10,
+            'image_path' => '/images/badges/test.svg',
+        ]);
+        $badge->translations()->create([
+            'locale' => 'en',
+            'title' => 'Test Badge Name',
+            'description' => 'Test Badge Desc',
+        ]);
+
+        $user->badges()->attach($badge->id);
+
+        // 1. Visit quizzes list while unverified - badge should not be shown
+        $response = $this->actingAs($user)->get('/en/quizzes');
+        $response->assertOk();
+        $response->assertDontSee('Test Badge Name');
+
+        // 2. Mark email as verified and visit again - badge should now be shown
+        $user->email_verified_at = now();
+        $user->save();
+
+        $responseVerified = $this->actingAs($user)->get('/en/quizzes');
+        $responseVerified->assertOk();
+        $responseVerified->assertSee('Test Badge Name');
     }
 }

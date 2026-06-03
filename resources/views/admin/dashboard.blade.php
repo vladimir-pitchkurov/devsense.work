@@ -30,6 +30,17 @@
             <button onclick="window.print()" class="admin-btn admin-btn--secondary no-print">
                 Print Report
             </button>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline-block; margin: 0;">
+                @csrf
+                <button type="submit" class="admin-btn admin-btn--danger no-print" style="display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 
