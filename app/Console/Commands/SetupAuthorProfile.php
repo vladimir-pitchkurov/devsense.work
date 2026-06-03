@@ -43,13 +43,24 @@ class SetupAuthorProfile extends Command
         ];
 
         // ── Find or new ──────────────────────────────────────────────────────
-        $user = User::where('email', $email)->first();
+        // Search by email first, then fall back to slug – avoids a unique-key
+        // violation when the account was previously created with a slightly
+        // different email address but the same slug.
+        $user  = User::where('email', $email)->first()
+            ?? User::where('slug', $profile['slug'])->first();
         $isNew = !$user;
 
         if ($isNew) {
             $user = new User();
+            $user->email              = $email;
+            $user->password           = Hash::make($password);
+            $user->email_verified_at  = now();
+        } else {
+            // Normalise the email to the canonical one in case it drifted
             $user->email = $email;
-            $user->password = Hash::make($password);
+            if (!$user->email_verified_at) {
+                $user->email_verified_at = now();
+            }
         }
 
         // ── Fill profile data ────────────────────────────────────────────────
