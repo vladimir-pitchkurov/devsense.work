@@ -12,7 +12,9 @@ class Report extends Model
         'user_id',
         'reportable_type',
         'reportable_id',
+        'type',
         'reason',
+        'screenshot_path',
         'status',
     ];
 

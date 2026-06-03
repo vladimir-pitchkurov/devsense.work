@@ -235,6 +235,11 @@ Route::prefix('{locale}')
         Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
         Route::post('/likes', [\App\Http\Controllers\LikeController::class, 'toggle'])->name('likes.toggle')->middleware('auth');
 
+        // Suggestions / Propositions Routes
+        Route::post('/articles/{article}/suggestions', [\App\Http\Controllers\ArticleSuggestionController::class, 'store'])->name('suggestions.store')->middleware('auth');
+        Route::post('/suggestions/{suggestion}/vote', [\App\Http\Controllers\ArticleSuggestionController::class, 'vote'])->name('suggestions.vote')->middleware('auth');
+        Route::post('/suggestions/{suggestion}/comments', [\App\Http\Controllers\ArticleSuggestionController::class, 'storeComment'])->name('suggestions.comments.store')->middleware('auth');
+
         Route::get('/categories/{category_slug}', [PublicArticleController::class, 'categoryIndex'])->name('categories.show');
 
         // Dynamic category article show route

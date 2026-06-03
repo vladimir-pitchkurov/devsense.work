@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Article;
+use App\Models\ArticleSuggestion;
+use Illuminate\Http\Request;
+
+class ArticleSuggestionController extends Controller
+{
+    /**
+     * Store a new suggestion for the article.
+     */
+    public function store(Request $request, Article $article)
+    {
+        $request->validate([
+            'content' => ['required', 'string', 'min:10', 'max:2000'],
+        ]);
+
+        $article->suggestions()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+            'status'  => 'pending',
+        ]);
+
+        return back()->with('success', __('ui.suggestions.created_success'));
+    }
+
+    /**
+     * Toggle upvote for the suggestion.
+     */
+    public function vote(ArticleSuggestion $suggestion)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $vote = $suggestion->votes()->where('user_id', $user->id)->first();
+
+        if ($vote) {
+            $vote->delete();
+            $voted = false;
+        } else {
+            $suggestion->votes()->create([
+                'user_id' => $user->id,
+            ]);
+            $voted = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'voted'   => $voted,
+            'count'   => $suggestion->votes()->count(),
+        ]);
+    }
+
+    /**
+     * Store a comment/supplement for the suggestion.
+     */
+    public function storeComment(Request $request, ArticleSuggestion $suggestion)
+    {
+        $request->validate([
+            'content' => ['required', 'string', 'min:5', 'max:1000'],
+        ]);
+
+        $suggestion->comments()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+        ]);
+
+        return back()->with('success', __('ui.suggestions.comment_created_success'));
+    }
+}

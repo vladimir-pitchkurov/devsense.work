@@ -23,3 +23,6 @@ Follow the guidelines established in the MDC rule files:
 ## 3. General Best Practices
 - **Documentation**: Maintain all existing comments, docstrings, and type hints.
 - **Testing**: Ensure that all changes are verified by running `./vendor/bin/sail test` before finishing tasks.
+- **Theme Support**: Always ensure all newly added or modified frontend components (e.g., modals, inputs, buttons, tables) support all three active themes (`light`, `dark`, `nord`) by utilizing CSS variables from `base/_variables.scss` (e.g., `var(--bg-color)`, `var(--text-color)`, `var(--page-bg)`, `var(--border-color)`, `var(--primary-color)`). Never hardcode theme-specific colors.
+- **Commit Messages**: At the end of every block of work or task, always propose a suitable Git commit message summarizing the changes made.
+

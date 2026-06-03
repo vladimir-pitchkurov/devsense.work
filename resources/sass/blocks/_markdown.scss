@@ -222,4 +222,26 @@
             }
         }
     }
+
+    a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        border-bottom: 1px dotted transparent;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: var(--primary-hover);
+            border-bottom-color: var(--primary-hover);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        /* Hide manual Table of Contents on desktop because we have the sticky sidebar ToC */
+        & > h2:first-of-type,
+        & > h2:first-of-type + ul,
+        & > h2:first-of-type + ul + hr {
+            display: none !important;
+        }
+    }
 }
