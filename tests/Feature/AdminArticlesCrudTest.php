@@ -32,13 +32,13 @@ class AdminArticlesCrudTest extends TestCase
         $this->get('/en/admin/articles/create')->assertRedirect('/login');
     }
 
-    public function test_reader_cannot_access_admin_articles(): void
+    public function test_reader_can_access_admin_articles(): void
     {
         $reader = User::factory()->create(['role' => User::ROLE_READER]);
 
         $this->actingAs($reader);
 
-        $this->get('/en/admin/articles')->assertStatus(403);
+        $this->get('/en/admin/articles')->assertStatus(200);
     }
 
     public function test_author_can_view_articles_list(): void

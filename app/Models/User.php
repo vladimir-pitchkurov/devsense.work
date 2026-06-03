@@ -159,6 +159,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the likes/dislikes given by this user.
+     */
+    public function likes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Like::class);
+    }
+
+    /**
      * Get the quizzes completed by this user.
      */
     public function quizzes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -166,5 +174,40 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Quiz::class, 'user_quizzes')
             ->withPivot('score', 'completed_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Check and award points-based and articles-based badges to the user.
+     * Returns an array of newly unlocked Badge models.
+     */
+    public function checkAndAwardBadges(): array
+    {
+        $newBadges = [];
+        $currentBadgeIds = $this->badges()->pluck('badges.id')->toArray();
+
+        // 1. Points-based badges
+        $pointsBadges = Badge::where(function($query) {
+            $query->where('points_required', '>', 0)
+                  ->where('points_required', '<=', $this->points);
+        })->get();
+
+        // 2. Articles-based badges
+        $articleCount = $this->articles()->where('is_approved', true)->where('is_published', true)->count();
+        $articlesBadges = Badge::where(function($query) use ($articleCount) {
+            $query->where('articles_required', '>', 0)
+                  ->where('articles_required', '<=', $articleCount);
+        })->get();
+
+        // Merge qualified badges
+        $qualifiedBadges = $pointsBadges->merge($articlesBadges);
+
+        foreach ($qualifiedBadges as $badge) {
+            if (!in_array($badge->id, $currentBadgeIds, true)) {
+                $this->badges()->attach($badge->id, ['unlocked_at' => now()]);
+                $newBadges[] = $badge;
+            }
+        }
+
+        return $newBadges;
     }
 }

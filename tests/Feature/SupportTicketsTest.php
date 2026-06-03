@@ -48,7 +48,8 @@ class SupportTicketsTest extends TestCase
      */
     public function test_inbound_webhook_stores_attachments(): void
     {
-        \Illuminate\Support\Facades\Storage::fake();
+        $disk = (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') ? 's3' : 'local';
+        \Illuminate\Support\Facades\Storage::fake($disk);
 
         $payload = [
             'type' => 'email.received',
@@ -79,8 +80,8 @@ class SupportTicketsTest extends TestCase
         $this->assertNotNull($attachment['path']);
         $this->assertNotNull($attachment['url']);
 
-        \Illuminate\Support\Facades\Storage::assertExists($attachment['path']);
-        $this->assertEquals('Hello World from attachment!', \Illuminate\Support\Facades\Storage::get($attachment['path']));
+        \Illuminate\Support\Facades\Storage::disk($disk)->assertExists($attachment['path']);
+        $this->assertEquals('Hello World from attachment!', \Illuminate\Support\Facades\Storage::disk($disk)->get($attachment['path']));
     }
 
     /**

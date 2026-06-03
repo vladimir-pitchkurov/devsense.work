@@ -35,7 +35,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => User::ROLE_AUTHOR,
+            'role' => User::ROLE_READER,
             'slug' => Str::slug($request->name),
             'is_approved' => false,
         ]);
@@ -46,6 +46,6 @@ class RegisterController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/' . app()->getLocale() . '/admin/articles');
+        return redirect('/' . app()->getLocale() . '/admin');
     }
 }

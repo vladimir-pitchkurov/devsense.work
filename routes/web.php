@@ -104,7 +104,7 @@ Route::prefix('{locale}')
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
 
-            // User Management, Tickets & Categories CRUD (Super Admin Only)
+            // User Management, Tickets, Categories CRUD & Content Moderation (Super Admin Only)
             Route::middleware('can:manage-users')->group(function () {
                 Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
                 Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
@@ -121,6 +121,19 @@ Route::prefix('{locale}')
                 Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.categories.edit');
                 Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'update'])->name('admin.categories.update');
                 Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
+
+                // Moderation actions
+                Route::post('/moderation/authors/{user}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveAuthor'])->name('admin.moderation.authors.approve');
+                Route::post('/moderation/authors/{user}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectAuthor'])->name('admin.moderation.authors.reject');
+
+                Route::post('/moderation/profiles/{pendingUserProfile}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveProfile'])->name('admin.moderation.profiles.approve');
+                Route::post('/moderation/profiles/{pendingUserProfile}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectProfile'])->name('admin.moderation.profiles.reject');
+
+                Route::post('/moderation/articles/{pendingArticleTranslation}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveArticle'])->name('admin.moderation.articles.approve');
+                Route::post('/moderation/articles/{pendingArticleTranslation}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectArticle'])->name('admin.moderation.articles.reject');
+
+                Route::post('/moderation/reports/{report}/dismiss', [\App\Http\Controllers\Admin\AdminModerationController::class, 'dismissReport'])->name('admin.moderation.reports.dismiss');
+                Route::post('/moderation/reports/{report}/action', [\App\Http\Controllers\Admin\AdminModerationController::class, 'actionReport'])->name('admin.moderation.reports.action');
             });
 
             Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
@@ -134,26 +147,15 @@ Route::prefix('{locale}')
             Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
             Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('admin.media.upload');
 
-            // Tags CRUD
-            Route::get('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'index'])->name('admin.tags.index');
-            Route::get('/tags/create', [\App\Http\Controllers\Admin\TagsController::class, 'create'])->name('admin.tags.create');
-            Route::post('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'store'])->name('admin.tags.store');
-            Route::get('/tags/{tag}/edit', [\App\Http\Controllers\Admin\TagsController::class, 'edit'])->name('admin.tags.edit');
-            Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'update'])->name('admin.tags.update');
-            Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'destroy'])->name('admin.tags.destroy');
-
-            // Moderation actions
-            Route::post('/moderation/authors/{user}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveAuthor'])->name('admin.moderation.authors.approve');
-            Route::post('/moderation/authors/{user}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectAuthor'])->name('admin.moderation.authors.reject');
-
-            Route::post('/moderation/profiles/{pendingUserProfile}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveProfile'])->name('admin.moderation.profiles.approve');
-            Route::post('/moderation/profiles/{pendingUserProfile}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectProfile'])->name('admin.moderation.profiles.reject');
-
-            Route::post('/moderation/articles/{pendingArticleTranslation}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveArticle'])->name('admin.moderation.articles.approve');
-            Route::post('/moderation/articles/{pendingArticleTranslation}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectArticle'])->name('admin.moderation.articles.reject');
-
-            Route::post('/moderation/reports/{report}/dismiss', [\App\Http\Controllers\Admin\AdminModerationController::class, 'dismissReport'])->name('admin.moderation.reports.dismiss');
-            Route::post('/moderation/reports/{report}/action', [\App\Http\Controllers\Admin\AdminModerationController::class, 'actionReport'])->name('admin.moderation.reports.action');
+            // Tags CRUD (Authors & Admins only)
+            Route::middleware('can:manage-tags')->group(function () {
+                Route::get('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'index'])->name('admin.tags.index');
+                Route::get('/tags/create', [\App\Http\Controllers\Admin\TagsController::class, 'create'])->name('admin.tags.create');
+                Route::post('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'store'])->name('admin.tags.store');
+                Route::get('/tags/{tag}/edit', [\App\Http\Controllers\Admin\TagsController::class, 'edit'])->name('admin.tags.edit');
+                Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'update'])->name('admin.tags.update');
+                Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'destroy'])->name('admin.tags.destroy');
+            });
         });
 
         Route::prefix('php')->group(function () {
@@ -216,6 +218,7 @@ Route::prefix('{locale}')
         })->name('privacy');
 
         Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
+        Route::post('/likes', [\App\Http\Controllers\LikeController::class, 'toggle'])->name('likes.toggle')->middleware('auth');
 
         Route::get('/categories/{category_slug}', [PublicArticleController::class, 'categoryIndex'])->name('categories.show');
 

@@ -15,6 +15,26 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        if (!$user->isAdmin()) {
+            $user->load(['badges.translations', 'quizzes']);
+
+            // Get incomplete quizzes (quizzes not completed yet)
+            $completedQuizIds = $user->quizzes->pluck('id')->toArray();
+            $incompleteQuizzes = \App\Models\Quiz::whereNotIn('id', $completedQuizIds)
+                ->with('translations')
+                ->get();
+
+            // Total articles published
+            $publishedArticlesCount = $user->articles()
+                ->where('is_approved', true)
+                ->where('is_published', true)
+                ->count();
+
+            return view('admin.user_dashboard', compact('user', 'incompleteQuizzes', 'publishedArticlesCount'));
+        }
+
         // 1. Core counters
         $totalVisits = PageVisit::count();
         $botVisits = PageVisit::where('is_bot', true)->count();

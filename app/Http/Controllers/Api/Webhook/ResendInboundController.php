@@ -119,13 +119,15 @@ class ResendInboundController extends Controller
                     
                     $uniquePath = 'support_attachments/' . uniqid('att_', true) . '_' . $safeBaseName . ($extension ? '.' . $extension : '');
 
-                    Storage::put($uniquePath, $decodedContent);
+                    $disk = (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') ? 's3' : 'local';
+
+                    Storage::disk($disk)->put($uniquePath, $decodedContent);
 
                     $attachmentsData[] = [
                         'name'         => $fileName,
                         'content_type' => $contentType,
                         'path'         => $uniquePath,
-                        'url'          => Storage::url($uniquePath),
+                        'url'          => Storage::disk($disk)->url($uniquePath),
                     ];
                 }
             }

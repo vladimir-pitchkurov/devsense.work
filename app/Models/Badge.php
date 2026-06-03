@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Badge extends Model
 {
-    protected $fillable = ['slug', 'points_required', 'image_path'];
+    protected $fillable = ['slug', 'points_required', 'articles_required', 'image_path'];
 
     public function translations(): HasMany
     {

@@ -37,10 +37,11 @@ class AdminProfileTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    public function test_reader_cannot_access_profile_edit(): void
+    public function test_reader_can_access_profile_edit(): void
     {
         $response = $this->actingAs($this->reader)->get('/en/admin/profile');
-        $response->assertStatus(403);
+        $response->assertOk();
+        $response->assertSee('Plain Reader');
     }
 
     public function test_author_can_access_profile_edit(): void

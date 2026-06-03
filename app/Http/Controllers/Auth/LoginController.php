@@ -29,7 +29,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/' . app()->getLocale() . '/admin/articles');
+            return redirect()->intended('/' . app()->getLocale() . '/admin');
         }
 
         return back()->withErrors([

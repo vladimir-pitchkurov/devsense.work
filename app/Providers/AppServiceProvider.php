@@ -61,6 +61,10 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(VacancyPublished::class, PingIndexNowListener::class);
 
         Gate::define('access-admin', function ($user) {
+            return true;
+        });
+
+        Gate::define('manage-tags', function ($user) {
             return $user->isAuthor();
         });
 

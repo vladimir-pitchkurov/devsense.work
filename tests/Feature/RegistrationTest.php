@@ -54,11 +54,11 @@ class RegistrationTest extends TestCase
             'terms' => 'on',
         ]);
 
-        $response->assertRedirect('/en/admin/articles');
+        $response->assertRedirect('/en/admin');
         
         $user = User::where('email', 'john@devsense.work')->first();
         $this->assertNotNull($user);
-        $this->assertEquals(User::ROLE_AUTHOR, $user->role);
+        $this->assertEquals(User::ROLE_READER, $user->role);
         $this->assertFalse($user->is_approved); // Should start unapproved
         $this->assertAuthenticatedAs($user);
     }

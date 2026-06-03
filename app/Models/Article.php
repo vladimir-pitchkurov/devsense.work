@@ -22,6 +22,7 @@ class Article extends Model
         'published_at',
         'is_approved',
         'category_id', // for backwards compatibility in tests/factories
+        'points_awarded',
     ];
 
     /**
@@ -40,6 +41,30 @@ class Article extends Model
             if (isset($article->temp_category_id)) {
                 $article->categories()->syncWithoutDetaching([$article->temp_category_id]);
                 unset($article->temp_category_id);
+            }
+
+            if ($article->is_approved && $article->is_published) {
+                $author = $article->author;
+                if ($author) {
+                    $userChanged = false;
+
+                    if (!$article->points_awarded) {
+                        $article->updateQuietly(['points_awarded' => true]);
+                        $author->points += 100;
+                        $userChanged = true;
+                    }
+
+                    if ($author->role === User::ROLE_READER) {
+                        $author->role = User::ROLE_AUTHOR;
+                        $userChanged = true;
+                    }
+
+                    if ($userChanged) {
+                        $author->save();
+                    }
+
+                    $author->checkAndAwardBadges();
+                }
             }
         });
     }
@@ -62,6 +87,30 @@ class Article extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Get the likes/dislikes for the article.
+     */
+    public function likes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(\App\Models\Like::class, 'likeable');
+    }
+
+    /**
+     * Get the total count of likes.
+     */
+    public function likesCount(): int
+    {
+        return $this->likes()->where('is_dislike', false)->count();
+    }
+
+    /**
+     * Get the total count of dislikes.
+     */
+    public function dislikesCount(): int
+    {
+        return $this->likes()->where('is_dislike', true)->count();
     }
 
     /**

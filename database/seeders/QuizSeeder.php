@@ -57,13 +57,59 @@ class QuizSeeder extends Seeder
                         'description' => 'Набрано более 200 очков в квизах.'
                     ]
                 ]
+            ],
+            [
+                'slug' => 'writer-novice',
+                'articles_required' => 1,
+                'image_path' => '/images/badges/writer-novice.svg',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Novice Writer',
+                        'description' => 'Published your first article.'
+                    ],
+                    'ru' => [
+                        'title' => 'Начинающий писатель',
+                        'description' => 'Опубликована первая статья.'
+                    ]
+                ]
+            ],
+            [
+                'slug' => 'writer-prolific',
+                'articles_required' => 5,
+                'image_path' => '/images/badges/writer-prolific.svg',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Prolific Writer',
+                        'description' => 'Published 5 articles.'
+                    ],
+                    'ru' => [
+                        'title' => 'Плодовитый писатель',
+                        'description' => 'Опубликовано 5 статей.'
+                    ]
+                ]
+            ],
+            [
+                'slug' => 'writer-master',
+                'articles_required' => 10,
+                'image_path' => '/images/badges/writer-master.svg',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Master Writer',
+                        'description' => 'Published 10 articles.'
+                    ],
+                    'ru' => [
+                        'title' => 'Мастер пера',
+                        'description' => 'Опубликовано 10 статей.'
+                    ]
+                ]
             ]
         ];
 
         foreach ($badgesData as $data) {
             $badge = Badge::create([
                 'slug' => $data['slug'],
-                'points_required' => $data['points_required'],
+                'points_required' => $data['points_required'] ?? null,
+                'articles_required' => $data['articles_required'] ?? null,
                 'image_path' => $data['image_path'],
             ]);
 

@@ -38,6 +38,8 @@
 ## Phase 6: Community & Interactivity — [ ] Planned
 - [ ] Forum for tech discussions.
 - [ ] Real-time Chat (Laravel Reverb / WebSockets).
+- [ ] Article Comments and Discussion threads.
+- [ ] Developer Connections (user networks and connection requests).
 
 ## Phase 7: Email Integrity & Verification — [ ] Planned
 - [ ] Implement robust email verification using Resend as the recommended email service provider.

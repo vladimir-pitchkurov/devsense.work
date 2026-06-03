@@ -129,21 +129,16 @@ class PublicQuizController extends Controller
         }
 
         // Award Badges
+        $newBadges = $user->checkAndAwardBadges();
         $unlockedBadges = [];
-        $availableBadges = Badge::where('points_required', '<=', $user->points)->get();
-        $currentBadgeIds = $user->badges()->pluck('badges.id')->toArray();
 
-        foreach ($availableBadges as $badge) {
-            if (!in_array($badge->id, $currentBadgeIds, true)) {
-                $user->badges()->attach($badge->id, ['unlocked_at' => now()]);
-                
-                $badgeTrans = $badge->translate($locale);
-                $unlockedBadges[] = [
-                    'title' => $badgeTrans?->title ?? $badge->slug,
-                    'description' => $badgeTrans?->description ?? '',
-                    'image_path' => $badge->image_path,
-                ];
-            }
+        foreach ($newBadges as $badge) {
+            $badgeTrans = $badge->translate($locale);
+            $unlockedBadges[] = [
+                'title' => $badgeTrans?->title ?? $badge->slug,
+                'description' => $badgeTrans?->description ?? '',
+                'image_path' => $badge->image_path,
+            ];
         }
 
         return response()->json([

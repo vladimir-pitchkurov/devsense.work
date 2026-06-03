@@ -48,7 +48,7 @@ class DraftModerationTest extends TestCase
             'terms' => 'on',
         ]);
 
-        $response->assertRedirect('/en/admin/articles');
+        $response->assertRedirect('/en/admin');
 
         $author = User::where('email', 'newauthor@devsense.work')->first();
         $this->assertNotNull($author);
