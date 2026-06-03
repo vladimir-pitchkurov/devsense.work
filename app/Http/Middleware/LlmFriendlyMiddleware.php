@@ -34,28 +34,43 @@ class LlmFriendlyMiddleware
             $route = $request->route();
             if ($route !== null) {
                 $routeName = $route->getName();
-                $category = match ($routeName) {
-                    'php.show' => 'php',
-                    'tools.show' => 'tools',
-                    'microservices.show' => 'microservices',
-                    'architecture.show' => 'architecture',
-                    'jobs.show' => 'jobs',
-                    default => null,
-                };
+                
+                $category = null;
+                $slug = null;
+                
+                if ($routeName === 'articles.show_custom') {
+                    $any = $route->parameter('any');
+                    $path = '/' . ltrim($any, '/');
+                    $article = \App\Models\Article::where('custom_url', $path)->with('categories')->first();
+                    if ($article) {
+                        $category = $article->categories->first()?->slug ?? 'tools';
+                        $slug = $article->slug;
+                    }
+                } else {
+                    $category = match ($routeName) {
+                        'php.show' => 'php',
+                        'tools.show' => 'tools',
+                        'microservices.show' => 'microservices',
+                        'architecture.show' => 'architecture',
+                        'jobs.show' => 'jobs',
+                        'articles.show' => $route->parameter('category_slug'),
+                        default => null,
+                    };
+                    
+                    $slug = match ($routeName) {
+                        'php.show' => $route->parameter('version'),
+                        'articles.show' => $route->parameter('article_slug'),
+                        default => $route->parameter('slug'),
+                    };
+                }
 
-                if ($category !== null) {
-                    $slug = $routeName === 'php.show'
-                        ? $route->parameter('version')
-                        : $route->parameter('slug');
-
-                    if ($slug !== null) {
-                        $locale = App::getLocale();
-                        $doc = $this->apiService->getMarkdownDocument($locale, $category, $slug);
-                        
-                        if ($doc !== null) {
-                            return response($doc['markdown'], 200)
-                                ->header('Content-Type', 'text/markdown; charset=UTF-8');
-                        }
+                if ($category !== null && $slug !== null) {
+                    $locale = App::getLocale();
+                    $doc = $this->apiService->getMarkdownDocument($locale, $category, $slug);
+                    
+                    if ($doc !== null) {
+                        return response($doc['markdown'], 200)
+                            ->header('Content-Type', 'text/markdown; charset=UTF-8');
                     }
                 }
             }

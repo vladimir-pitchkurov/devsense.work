@@ -113,8 +113,6 @@
     }
 
     &__header {
-        position: relative;
-        z-index: 1;
         padding: 1.5rem 1.5rem 0;
     }
 
@@ -128,8 +126,6 @@
     }
 
     &__body {
-        position: relative;
-        z-index: 1;
         flex: 1;
         padding: 0.75rem 1.5rem 1.5rem;
     }
@@ -142,8 +138,6 @@
     }
 
     &__footer {
-        position: relative;
-        z-index: 1;
         padding: 0 1.5rem 1.5rem;
         margin-top: auto;
     }
@@ -158,11 +152,20 @@
         text-decoration: none;
         transition: color 0.2s ease;
 
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
         &::after {
             content: "→";
             font-size: 1rem;
             transition: transform 0.2s ease;
             line-height: 1;
+            position: relative;
+            z-index: 3;
         }
 
         &:hover {

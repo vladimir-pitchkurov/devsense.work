@@ -34,3 +34,8 @@ sail npm run build
 ```
 
 Then open the app in your browser (the URL depends on your Sail/compose setup).
+
+## AI Agents Information
+
+If you are an AI coding assistant (like Claude, Gemini, Antigravity, etc.) working on this repository, please review [docs/agent-context.md](file:///docs/agent-context.md) for full project architecture details, state representation, roadmap, and standard rules for writing or refactoring articles.
+

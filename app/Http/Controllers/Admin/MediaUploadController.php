@@ -13,12 +13,16 @@ class MediaUploadController extends Controller
      */
     public function upload(Request $request, MediaUploadService $uploadService)
     {
+        if (!auth()->user()->isAuthor()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'], // max 5MB
         ]);
 
         try {
-            $url = $uploadService->uploadAndStrip($request->file('image'));
+            [$url] = $uploadService->uploadAndStrip($request->file('image'));
 
             return response()->json([
                 'success' => true,

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,9 +18,10 @@ use Illuminate\Support\Str;
     'name', 'email', 'password', 'role',
     'slug', 'job_title', 'bio', 'avatar_path',
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
+    'is_public', 'is_approved', 'is_blocked', 'points',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -56,6 +58,10 @@ class User extends Authenticatable
             // Already an absolute URL (S3 / CDN)
             if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                 return $path;
+            }
+
+            if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+                return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
             }
 
             return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
@@ -112,6 +118,96 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
+            'is_public'         => 'boolean',
+            'is_approved'       => 'boolean',
+            'is_blocked'        => 'boolean',
         ];
+    }
+
+    /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new \App\Notifications\VerifyEmailQueued);
+    }
+
+    /**
+     * Scope a query to only include approved users.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    /**
+     * Get the pending profile update for the user.
+     */
+    public function pendingProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(PendingUserProfile::class);
+    }
+
+    /**
+     * Get the badges unlocked by this user.
+     */
+    public function badges(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the likes/dislikes given by this user.
+     */
+    public function likes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Like::class);
+    }
+
+    /**
+     * Get the quizzes completed by this user.
+     */
+    public function quizzes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Quiz::class, 'user_quizzes')
+            ->withPivot('score', 'completed_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check and award points-based and articles-based badges to the user.
+     * Returns an array of newly unlocked Badge models.
+     */
+    public function checkAndAwardBadges(): array
+    {
+        $newBadges = [];
+        $currentBadgeIds = $this->badges()->pluck('badges.id')->toArray();
+
+        // 1. Points-based badges
+        $pointsBadges = Badge::where(function($query) {
+            $query->where('points_required', '>', 0)
+                  ->where('points_required', '<=', $this->points);
+        })->get();
+
+        // 2. Articles-based badges
+        $articleCount = $this->articles()->where('is_approved', true)->where('is_published', true)->count();
+        $articlesBadges = Badge::where(function($query) use ($articleCount) {
+            $query->where('articles_required', '>', 0)
+                  ->where('articles_required', '<=', $articleCount);
+        })->get();
+
+        // Merge qualified badges
+        $qualifiedBadges = $pointsBadges->merge($articlesBadges);
+
+        foreach ($qualifiedBadges as $badge) {
+            if (!in_array($badge->id, $currentBadgeIds, true)) {
+                $this->badges()->attach($badge->id, ['unlocked_at' => now()]);
+                $newBadges[] = $badge;
+            }
+        }
+
+        return $newBadges;
     }
 }

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Events\ArticlePublished;
 use App\Events\VacancyPublished;
 use App\Listeners\PingIndexNowListener;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 /**
  * Registers application-level bindings and bootstraps framework hooks.
@@ -33,10 +35,36 @@ class AppServiceProvider extends ServiceProvider
     {
         URL::defaults(['locale' => app()->getLocale()]);
 
+        VerifyEmail::createUrlUsing(function ($notifiable) {
+            return URL::temporarySignedRoute(
+                'verification.verify',
+                now()->addMinutes(config('auth.verification.expire', 60)),
+                [
+                    'locale' => app()->getLocale(),
+                    'id' => $notifiable->getKey(),
+                    'hash' => sha1($notifiable->getEmailForVerification()),
+                ]
+            );
+        });
+
+        VerifyEmail::toMailUsing(function ($notifiable, $url) {
+            return (new MailMessage)
+                ->subject(__('ui.auth.email_verification.subject'))
+                ->greeting(__('ui.auth.email_verification.greeting'))
+                ->line(__('ui.auth.email_verification.line_1'))
+                ->action(__('ui.auth.email_verification.button'), $url)
+                ->line(__('ui.auth.email_verification.line_2'));
+        });
+
+
         Event::listen(ArticlePublished::class, PingIndexNowListener::class);
         Event::listen(VacancyPublished::class, PingIndexNowListener::class);
 
         Gate::define('access-admin', function ($user) {
+            return true;
+        });
+
+        Gate::define('manage-tags', function ($user) {
             return $user->isAuthor();
         });
 
@@ -48,6 +76,8 @@ class AppServiceProvider extends ServiceProvider
         if (is_string($appUrl) && str_starts_with($appUrl, 'https://')) {
             URL::forceScheme('https');
         }
+
+        \Illuminate\Pagination\Paginator::defaultView('partials.pagination');
 
         RateLimiter::for('content-api', function (Request $request): Limit {
             return Limit::perMinute(120)->by((string) $request->ip());

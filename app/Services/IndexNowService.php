@@ -36,6 +36,11 @@ class IndexNowService
         $key = config('seo.indexnow_key');
         $host = parse_url((string) config('app.url'), PHP_URL_HOST);
 
+        if (app()->environment() !== 'production') {
+            Log::info("SEO: IndexNow ping skipped because environment is " . app()->environment());
+            return false;
+        }
+
         if (! $enabled || ! $key || ! $host) {
             Log::info("SEO: IndexNow ping skipped. Enabled: " . ($enabled ? 'true' : 'false') . ", Has Key: " . ($key ? 'true' : 'false'));
             return false;

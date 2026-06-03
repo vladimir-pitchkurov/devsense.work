@@ -38,6 +38,7 @@ class TagRoutesTest extends TestCase
             'category_id' => $this->category->id,
             'is_published' => true,
             'published_at' => now(),
+            'is_approved' => true,
         ]);
         $article->translations()->create([
             'locale' => 'en',
@@ -112,6 +113,7 @@ class TagRoutesTest extends TestCase
             'author_id' => $this->author->id,
             'category_id' => $this->category->id,
             'is_published' => true,
+            'is_approved' => true,
         ]);
         $article->tags()->syncWithoutDetaching([$this->activeTag->id]);
 

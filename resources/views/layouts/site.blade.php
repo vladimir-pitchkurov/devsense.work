@@ -167,11 +167,34 @@
             <language-switcher></language-switcher>
             <theme-switcher></theme-switcher>
 
+            @auth
+                <a href="{{ route('admin.dashboard', ['locale' => app()->getLocale()]) }}" class="header__cabinet-btn" title="{{ __('ui.nav.cabinet') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header__cabinet-icon">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="header__cabinet-text">{{ __('ui.nav.cabinet') }}</span>
+                </a>
+            @else
+                @php
+                    $locale = app()->getLocale();
+                    $loginUrl  = Route::has('login.locale')  ? route('login.locale',  ['locale' => $locale]) : route('login');
+                @endphp
+                <a href="{{ $loginUrl }}" class="header__cabinet-btn" title="{{ __('ui.nav.login') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header__cabinet-icon">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="header__cabinet-text">{{ __('ui.nav.login') }}</span>
+                </a>
+            @endauth
+
             <nav class="header__nav">
                 <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
                 <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
                 <a href="{{ route('microservices.index') }}" class="nav__link">{{ __('ui.nav.microservices') }}</a>
                 <a href="{{ route('architecture.index') }}" class="nav__link">{{ __('ui.nav.architecture') }}</a>
+                <a href="{{ route('quizzes.index') }}" class="nav__link">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
             </nav>
         </div>
     </div>
@@ -218,8 +241,10 @@
     @auth
         <a href="{{ route('admin.dashboard', ['locale' => app()->getLocale()]) }}" class="mobile-nav__item {{ Route::is('admin.*') ? 'active' : '' }}" aria-label="{{ __('ui.nav.cabinet') ?? 'Cabinet' }}">
     @else
-        <a href="{{ route('login') }}" class="mobile-nav__item {{ Route::is('login') ? 'active' : '' }}" aria-label="{{ __('ui.nav.cabinet') ?? 'Cabinet' }}">
+        @php $mobileLoginUrl = Route::has('login.locale') ? route('login.locale', ['locale' => app()->getLocale()]) : route('login'); @endphp
+        <a href="{{ $mobileLoginUrl }}" class="mobile-nav__item {{ Route::is('login.locale') ? 'active' : '' }}" aria-label="{{ __('ui.nav.cabinet') ?? 'Cabinet' }}">
     @endauth
+
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="8" r="4"/>
@@ -270,6 +295,12 @@
                 <li class="footer__nav-item">
                     <a href="{{ route('architecture.index') }}" class="footer__nav-link">{{ __('ui.nav.architecture') }}</a>
                 </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('terms') }}" class="footer__nav-link">{{ __('ui.footer.terms') }}</a>
+                </li>
+                <li class="footer__nav-item">
+                    <a href="{{ route('privacy') }}" class="footer__nav-link">{{ __('ui.footer.privacy') }}</a>
+                </li>
             </ul>
         </nav>
         @php
@@ -311,9 +342,228 @@
                 </ul>
             </nav>
         @endif
+        <div class="footer__contacts">
+            <span class="footer__contact-item">
+                {{ __('ui.footer.ceo_label') }}: <strong>Vladimir Pichkurov</strong> (<a href="mailto:vladimir@devsense.work" class="footer__contact-link">vladimir@devsense.work</a>)
+            </span>
+            <span class="footer__contact-item">
+                {{ __('ui.footer.support_label') }}: <a href="mailto:support@mail.devsense.work" class="footer__contact-link">support@mail.devsense.work</a>
+            </span>
+        </div>
         <p class="footer__copyright">&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.</p>
     </div>
 </footer>
+
+<!-- Content Report Modal -->
+<div id="reportModal" class="report-modal" style="display: none;">
+    <div class="report-modal__overlay" onclick="closeReportModal()"></div>
+    <div class="report-modal__container">
+        <header class="report-modal__header">
+            <h3 class="report-modal__title">Report Content</h3>
+            <button onclick="closeReportModal()" class="report-modal__close" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </header>
+        <form id="reportForm" onsubmit="submitReportForm(event)">
+            @csrf
+            <input type="hidden" name="reportable_type" id="report-type">
+            <input type="hidden" name="reportable_id" id="report-id">
+            
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                <label class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Reason for Report</label>
+                <div class="report-reasons" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
+                        <input type="radio" name="reason_preset" value="Harassment or Hate Speech" checked>
+                        <span>Harassment or Hate Speech</span>
+                    </label>
+                    <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
+                        <input type="radio" name="reason_preset" value="Copyright Infringement">
+                        <span>Copyright / Plagiarism</span>
+                    </label>
+                    <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
+                        <input type="radio" name="reason_preset" value="Discrimination / Non-scientific Content">
+                        <span>Discrimination or Unscientific content</span>
+                    </label>
+                    <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
+                        <input type="radio" name="reason_preset" value="Other">
+                        <span>Other (specify below)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                <label for="report-reason-details" class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Details (Required)</label>
+                <textarea name="reason" id="report-reason-details" rows="4" class="form-input" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.375rem; padding: 0.5rem; box-sizing: border-box; font-family: inherit; font-size: 0.95rem;" placeholder="Please describe the violation in detail..." required></textarea>
+                <span id="report-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: none;"></span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+                <button type="button" onclick="closeReportModal()" class="admin-btn admin-btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 0.375rem; cursor: pointer;">
+                    Cancel
+                </button>
+                <button type="submit" id="reportSubmitBtn" class="admin-btn admin-btn--primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-weight: 600;">
+                    Submit Report
+                </button>
+            </div>
+        </form>
+        <div id="report-success-msg" style="display: none; text-align: center; padding: 2rem 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" width="48" height="48" style="margin: 0 auto 1rem auto; display: block;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <h4 style="color: #10b981; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">Report Submitted</h4>
+            <p id="report-success-text" style="color: var(--text-muted); font-size: 0.9rem; margin: 0;"></p>
+            <button onclick="closeReportModal()" class="admin-btn admin-btn--secondary" style="margin-top: 1.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 0.375rem; cursor: pointer;">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.report-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+}
+.report-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+.report-modal__container {
+    position: relative;
+    background: var(--card-bg, #1a202c);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 480px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    color: var(--text-color);
+    animation: scaleIn 0.2s ease-out;
+}
+.report-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+.report-modal__title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-color);
+}
+.report-modal__close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.report-modal__close:hover {
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<script>
+function openReportModal(type, id) {
+    document.getElementById('report-type').value = type;
+    document.getElementById('report-id').value = id;
+    document.getElementById('report-reason-details').value = '';
+    document.getElementById('report-error').style.display = 'none';
+    document.getElementById('reportForm').style.display = 'block';
+    document.getElementById('report-success-msg').style.display = 'none';
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function closeReportModal() {
+    document.getElementById('reportModal').style.display = 'none';
+}
+
+function submitReportForm(event) {
+    event.preventDefault();
+    const submitBtn = document.getElementById('reportSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Submitting...';
+    
+    const details = document.getElementById('report-reason-details').value;
+    if (details.trim().length < 5) {
+        document.getElementById('report-error').innerText = 'Please provide details (at least 5 characters).';
+        document.getElementById('report-error').style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Report';
+        return;
+    }
+    
+    const preset = document.querySelector('input[name="reason_preset"]:checked').value;
+    const finalReason = preset === 'Other' ? details : preset + ': ' + details;
+    
+    const type = document.getElementById('report-type').value;
+    const id = document.getElementById('report-id').value;
+    const token = document.querySelector('input[name="_token"]').value;
+    
+    fetch('/' + document.documentElement.lang + '/reports', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify({
+            reportable_type: type,
+            reportable_id: id,
+            reason: finalReason
+        })
+    })
+    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+    .then(res => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Report';
+        if (res.status === 200 && res.body.success) {
+            document.getElementById('reportForm').style.display = 'none';
+            document.getElementById('report-success-text').innerText = res.body.message;
+            document.getElementById('report-success-msg').style.display = 'block';
+        } else {
+            document.getElementById('report-error').innerText = res.body.error || 'Failed to submit report. Please try again.';
+            document.getElementById('report-error').style.display = 'block';
+        }
+    })
+    .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Report';
+        document.getElementById('report-error').innerText = 'A network error occurred. Please try again.';
+        document.getElementById('report-error').style.display = 'block';
+    });
+}
+</script>
+
     @stack('scripts')
 </body>
 </html>

@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'allow_indexing' => filter_var(env('SEO_ALLOW_INDEXING', true), FILTER_VALIDATE_BOOL),
+    'allow_indexing' => filter_var(env('SEO_ALLOW_INDEXING', env('APP_ENV') === 'production'), FILTER_VALIDATE_BOOL),
 
     /*
     |--------------------------------------------------------------------------

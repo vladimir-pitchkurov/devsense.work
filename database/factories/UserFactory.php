@@ -31,6 +31,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'role' => User::ROLE_READER,
+            'is_approved' => true,
         ];
     }
 
@@ -51,6 +52,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'role' => User::ROLE_SUPER_ADMIN,
+            'is_approved' => true,
         ]);
     }
 
@@ -61,6 +63,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'role' => User::ROLE_AUTHOR,
+            'is_approved' => true,
         ]);
     }
 }

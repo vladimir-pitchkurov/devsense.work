@@ -31,6 +31,14 @@
                     <p class="author-profile__job-title" itemprop="jobTitle">{{ $author->job_title }}</p>
                 @endif
 
+                <button onclick="openReportModal('user', {{ $author->id }})" class="btn-report" style="margin-top: 0.5rem; margin-bottom: 0.5rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 0.375rem; padding: 0.4rem 0.7rem; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; width: fit-content; font-family: inherit;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                    </svg>
+                    <span>Report Author</span>
+                </button>
+
                 {{-- Social links --}}
                 @php $links = $author->socialLinks(); @endphp
                 @if (!empty($links))

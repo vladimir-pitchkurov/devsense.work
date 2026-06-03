@@ -1,4 +1,7 @@
 <x-layout title="Admin - Edit Profile | DevSense" description="Edit your author profile details">
+@php
+    $profile = $user->pendingProfile ?: $user;
+@endphp
 <div class="admin-container">
     <div class="admin-header">
         <h1 class="admin-title">Edit Profile</h1>
@@ -15,6 +18,12 @@
     <form action="{{ route('admin.profile.update', ['locale' => app()->getLocale()]) }}" method="POST" enctype="multipart/form-data" class="admin-form">
         @csrf
         @method('PUT')
+
+        @if ($user->pendingProfile)
+            <div class="admin-alert admin-alert--info">
+                <strong>Notice:</strong> You have a profile update pending administrator approval. The form below shows your drafted changes.
+            </div>
+        @endif
 
         @if (session('success'))
             <div class="admin-alert admin-alert--success">
@@ -40,7 +49,7 @@
                     <h2 class="card-title">Avatar</h2>
                     
                     <div class="avatar-preview-container">
-                        <img src="{{ $user->avatarUrl() }}" alt="{{ $user->name }}" class="profile-avatar-img" id="avatarPreview">
+                        <img src="{{ $profile->avatarUrl() }}" alt="{{ $profile->name }}" class="profile-avatar-img" id="avatarPreview">
                     </div>
 
                     <div class="form-group">
@@ -70,25 +79,38 @@
                     
                     <div class="form-group">
                         <label for="name" class="form-label">Display Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required placeholder="e.g. Jane Doe" class="form-input">
+                        <input type="text" name="name" id="name" value="{{ old('name', $profile->name) }}" required placeholder="e.g. Jane Doe" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label for="slug" class="form-label">Author URL Slug</label>
-                        <input type="text" name="slug" id="slug" value="{{ old('slug', $user->slug) }}" required placeholder="e.g. jane-doe" class="form-input">
+                        <input type="text" name="slug" id="slug" value="{{ old('slug', $profile->slug) }}" required placeholder="e.g. jane-doe" class="form-input">
                         <p class="form-help">Used for your public page: <code>/{{ app()->getLocale() }}/authors/{slug}</code></p>
                     </div>
 
                     <div class="form-group">
                         <label for="job_title" class="form-label">Job Title / Title</label>
-                        <input type="text" name="job_title" id="job_title" value="{{ old('job_title', $user->job_title) }}" placeholder="e.g. Senior PHP Architect" class="form-input">
+                        <input type="text" name="job_title" id="job_title" value="{{ old('job_title', $profile->job_title) }}" placeholder="e.g. Senior PHP Architect" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label for="bio" class="form-label">Biography / About Yourself</label>
-                        <textarea name="bio" id="bio" rows="6" placeholder="Write a short professional bio..." class="form-input">{{ old('bio', $user->bio) }}</textarea>
+                        <textarea name="bio" id="bio" rows="6" placeholder="Write a short professional bio..." class="form-input">{{ old('bio', $profile->bio) }}</textarea>
                         <p class="form-help">Markdown is supported. Describe your experience to boost E-E-A-T credibility.</p>
                     </div>
+                </div>
+
+                <div class="admin-card" style="margin-top: 1.5rem;">
+                    <h2 class="card-title">Privacy Settings</h2>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                        <input type="checkbox" name="is_public" id="is_public" value="1" {{ old('is_public', $user->is_public) ? 'checked' : '' }} style="width: auto; margin: 0; transform: scale(1.2);">
+                        <label for="is_public" class="form-label" style="margin: 0; text-transform: none; font-size: 0.95rem; cursor: pointer; letter-spacing: normal;">
+                            Make my profile page public and crawlable by search engines
+                        </label>
+                    </div>
+                    <p class="form-help" style="margin-left: 1.75rem;">
+                        If unchecked, your public author page will return a 404 error to visitors and search engines, and you will be hidden from the authors directory.
+                    </p>
                 </div>
 
                 <div class="admin-card" style="margin-top: 1.5rem;">
@@ -96,22 +118,22 @@
                     
                     <div class="form-group">
                         <label for="github_url" class="form-label">GitHub URL</label>
-                        <input type="url" name="github_url" id="github_url" value="{{ old('github_url', $user->github_url) }}" placeholder="https://github.com/username" class="form-input">
+                        <input type="url" name="github_url" id="github_url" value="{{ old('github_url', $profile->github_url) }}" placeholder="https://github.com/username" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label for="linkedin_url" class="form-label">LinkedIn URL</label>
-                        <input type="url" name="linkedin_url" id="linkedin_url" value="{{ old('linkedin_url', $user->linkedin_url) }}" placeholder="https://linkedin.com/in/username" class="form-input">
+                        <input type="url" name="linkedin_url" id="linkedin_url" value="{{ old('linkedin_url', $profile->linkedin_url) }}" placeholder="https://linkedin.com/in/username" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label for="twitter_url" class="form-label">Twitter / X URL</label>
-                        <input type="url" name="twitter_url" id="twitter_url" value="{{ old('twitter_url', $user->twitter_url) }}" placeholder="https://twitter.com/username" class="form-input">
+                        <input type="url" name="twitter_url" id="twitter_url" value="{{ old('twitter_url', $profile->twitter_url) }}" placeholder="https://twitter.com/username" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label for="website_url" class="form-label">Personal Website URL</label>
-                        <input type="url" name="website_url" id="website_url" value="{{ old('website_url', $user->website_url) }}" placeholder="https://yourwebsite.com" class="form-input">
+                        <input type="url" name="website_url" id="website_url" value="{{ old('website_url', $profile->website_url) }}" placeholder="https://yourwebsite.com" class="form-input">
                     </div>
 
                     <div class="form-actions" style="margin-top: 2rem;">
@@ -135,188 +157,4 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 </script>
-
-<style>
-.admin-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.admin-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--text-color);
-}
-
-.admin-alert {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 2rem;
-    font-weight: 500;
-}
-
-.admin-alert--success {
-    background-color: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    color: #10b981;
-}
-
-.admin-alert--danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-}
-
-.admin-alert--danger ul {
-    margin: 0.5rem 0 0 0;
-    padding-left: 1.25rem;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-}
-
-@media (min-width: 992px) {
-    .form-grid {
-        grid-template-columns: 320px 1fr;
-    }
-}
-
-.admin-card {
-    background-color: var(--card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
-
-.text-center {
-    text-align: center;
-}
-
-.avatar-preview-container {
-    margin: 1.5rem auto;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid var(--primary-color);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    background-color: rgba(var(--bg-color-rgb), 0.5);
-}
-
-.profile-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--text-color);
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    text-align: left;
-}
-
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-color);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.form-input {
-    background-color: rgba(var(--bg-color-rgb), 0.5);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    color: var(--text-color);
-    font-family: inherit;
-    font-size: 0.95rem;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
-}
-
-.form-help {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin: 0;
-}
-
-.admin-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.admin-badge--category {
-    background-color: rgba(var(--primary-color-rgb), 0.1);
-    color: var(--primary-color);
-    border: 1px solid rgba(var(--primary-color-rgb), 0.2);
-}
-
-.admin-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
-    border: 1px solid transparent;
-}
-
-.admin-btn--primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    color: #fff;
-}
-
-.admin-btn--secondary {
-    background-color: transparent;
-    border-color: var(--border-color);
-    color: var(--text-color);
-}
-
-.admin-btn--secondary:hover {
-    background-color: rgba(var(--border-color-rgb), 0.1);
-}
-
-.admin-btn:hover {
-    transform: translateY(-1px);
-}
-</style>
 </x-layout>

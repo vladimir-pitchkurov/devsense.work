@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\ArchitectureController;
-use App\Http\Controllers\MicroservicesController;
-use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
 use App\Services\MarkdownContentService;
@@ -99,9 +96,8 @@ class LocaleContentRoutesTest extends TestCase
 
     public function test_each_catalogued_tool_slug_renders_successfully(): void
     {
-        /** @var list<string> $slugs */
-        $slugs = $this->privateClassConstant(PhpToolsController::class, 'TOOL_SLUG_ORDER');
-
+        $slugs = ['sail', 'sail-databases', 'sail-queues', 'sail-env-deploy', 'sail-troubleshooting'];
+ 
         foreach ($slugs as $slug) {
             $this->get('/en/tools/'.$slug)->assertOk();
         }
@@ -142,9 +138,8 @@ class LocaleContentRoutesTest extends TestCase
 
     public function test_each_catalogued_microservices_slug_renders_successfully(): void
     {
-        /** @var list<string> $slugs */
-        $slugs = $this->privateClassConstant(MicroservicesController::class, 'MICROSERVICES_SLUG_ORDER');
-
+        $slugs = ['api-gateway'];
+ 
         foreach ($slugs as $slug) {
             $this->get('/en/microservices/'.$slug)->assertOk();
         }
@@ -176,9 +171,17 @@ class LocaleContentRoutesTest extends TestCase
 
     public function test_each_catalogued_architecture_slug_renders_successfully(): void
     {
-        /** @var list<string> $slugs */
-        $slugs = $this->privateClassConstant(ArchitectureController::class, 'ARCHITECTURE_SLUG_ORDER');
-
+        $slugs = [
+            'web-attacks-and-prevention',
+            'high-load-event-ingestion',
+            'message-queues-compared',
+            'database-performance-and-scaling',
+            'database-indexes-deep-dive',
+            'database-query-optimization',
+            'php-database-connection-pooling',
+            'observability-monitoring-laravel',
+        ];
+ 
         foreach ($slugs as $slug) {
             $this->get('/en/architecture/'.$slug)->assertOk();
         }

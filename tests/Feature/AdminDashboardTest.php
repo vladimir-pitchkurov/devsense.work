@@ -25,25 +25,45 @@ class AdminDashboardTest extends TestCase
     }
 
     /**
-     * Test readers (unauthorized role) cannot access the dashboard.
+     * Test readers can access their own cabinet dashboard.
      */
-    public function test_reader_cannot_access_dashboard(): void
+    public function test_reader_can_access_own_dashboard(): void
     {
         $reader = User::factory()->create(['role' => User::ROLE_READER]);
 
         $response = $this->actingAs($reader)->get('/en/admin');
-        $response->assertStatus(403);
+        $response->assertStatus(200);
+        $response->assertSee($reader->name);
+        $response->assertSee('Experience Points');
+        $response->assertDontSee('Analytics Dashboard');
 
         $responseDashboard = $this->actingAs($reader)->get('/en/admin/dashboard');
-        $responseDashboard->assertStatus(403);
+        $responseDashboard->assertStatus(200);
+        $responseDashboard->assertSee($reader->name);
+        $responseDashboard->assertSee('Experience Points');
+        $responseDashboard->assertDontSee('Analytics Dashboard');
     }
 
     /**
-     * Test authorized authors/admins can access the dashboard.
+     * Test authors can access their own cabinet dashboard.
      */
-    public function test_authorized_user_can_access_dashboard_and_view_metrics(): void
+    public function test_author_can_access_own_dashboard(): void
     {
         $author = User::factory()->author()->create();
+
+        $response = $this->actingAs($author)->get('/en/admin');
+        $response->assertStatus(200);
+        $response->assertSee($author->name);
+        $response->assertSee('Experience Points');
+        $response->assertDontSee('Analytics Dashboard');
+    }
+
+    /**
+     * Test super admin can access the analytics dashboard.
+     */
+    public function test_super_admin_can_access_analytics_dashboard(): void
+    {
+        $admin = User::factory()->admin()->create();
 
         // Create some sample traffic records to render
         PageVisit::create([
@@ -58,7 +78,7 @@ class AdminDashboardTest extends TestCase
             'referer' => 'https://google.com',
         ]);
 
-        $response = $this->actingAs($author)->get('/en/admin');
+        $response = $this->actingAs($admin)->get('/en/admin');
         $response->assertStatus(200);
         $response->assertSee('Analytics Dashboard');
         $response->assertSee('Total Visits');

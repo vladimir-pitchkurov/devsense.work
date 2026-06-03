@@ -15,6 +15,7 @@ class AdminTaxonomyTest extends TestCase
 
     private User $author;
     private User $reader;
+    private User $admin;
 
     protected function setUp(): void
     {
@@ -22,6 +23,7 @@ class AdminTaxonomyTest extends TestCase
 
         $this->author = User::factory()->create(['role' => User::ROLE_AUTHOR]);
         $this->reader = User::factory()->create(['role' => User::ROLE_READER]);
+        $this->admin = User::factory()->create(['role' => User::ROLE_SUPER_ADMIN]);
     }
 
     /*
@@ -40,20 +42,25 @@ class AdminTaxonomyTest extends TestCase
         $this->actingAs($this->reader)->get('/en/admin/categories')->assertStatus(403);
     }
 
-    public function test_author_can_view_categories_list(): void
+    public function test_author_cannot_access_categories(): void
+    {
+        $this->actingAs($this->author)->get('/en/admin/categories')->assertStatus(403);
+    }
+
+    public function test_admin_can_view_categories_list(): void
     {
         $category = Category::create(['slug' => 'test-cat']);
         $category->translations()->create(['locale' => 'en', 'name' => 'Test Cat Name']);
 
-        $response = $this->actingAs($this->author)->get('/en/admin/categories');
+        $response = $this->actingAs($this->admin)->get('/en/admin/categories');
         $response->assertOk();
         $response->assertSee('test-cat');
         $response->assertSee('Test Cat Name');
     }
 
-    public function test_author_can_create_category(): void
+    public function test_admin_can_create_category(): void
     {
-        $response = $this->actingAs($this->author)->post('/en/admin/categories', [
+        $response = $this->actingAs($this->admin)->post('/en/admin/categories', [
             'slug' => 'new-cat-slug',
             'translations' => [
                 'en' => ['name' => 'English Name'],
@@ -72,12 +79,12 @@ class AdminTaxonomyTest extends TestCase
         ]);
     }
 
-    public function test_author_can_update_category(): void
+    public function test_admin_can_update_category(): void
     {
         $category = Category::create(['slug' => 'old-cat']);
         $category->translations()->create(['locale' => 'en', 'name' => 'Old Name']);
 
-        $response = $this->actingAs($this->author)->put("/en/admin/categories/{$category->id}", [
+        $response = $this->actingAs($this->admin)->put("/en/admin/categories/{$category->id}", [
             'slug' => 'updated-cat',
             'translations' => [
                 'en' => ['name' => 'Updated Name'],
@@ -112,19 +119,19 @@ class AdminTaxonomyTest extends TestCase
             'is_published' => true,
         ]);
 
-        $response = $this->actingAs($this->author)->from('/en/admin/categories')->delete("/en/admin/categories/{$category->id}");
+        $response = $this->actingAs($this->admin)->from('/en/admin/categories')->delete("/en/admin/categories/{$category->id}");
         $response->assertRedirect('/en/admin/categories');
         $response->assertSessionHasErrors(['error']);
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
 
-    public function test_author_can_delete_empty_category(): void
+    public function test_admin_can_delete_empty_category(): void
     {
         $category = Category::create(['slug' => 'empty-cat']);
         $category->translations()->create(['locale' => 'en', 'name' => 'Empty Category']);
 
-        $response = $this->actingAs($this->author)->delete("/en/admin/categories/{$category->id}");
+        $response = $this->actingAs($this->admin)->delete("/en/admin/categories/{$category->id}");
         $response->assertRedirect('/en/admin/categories');
 
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);

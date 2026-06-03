@@ -19,3 +19,7 @@ Route::prefix('v1')
             ->name('api.v1.search');
     });
 
+Route::post('/webhooks/resend-inbound', [\App\Http\Controllers\Api\Webhook\ResendInboundController::class, 'handle'])
+    ->name('api.webhooks.resend-inbound');
+
+

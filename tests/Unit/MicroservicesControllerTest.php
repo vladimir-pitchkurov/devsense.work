@@ -2,8 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\MicroservicesController;
-use App\Services\MarkdownContentService;
+use App\Http\Controllers\PublicArticleController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 
@@ -16,9 +15,10 @@ class MicroservicesControllerTest extends TestCase
     {
         $this->expectException(NotFoundHttpException::class);
 
-        app(MicroservicesController::class)->show(
-            'not-a-valid-slug',
-            app(MarkdownContentService::class),
+        app(PublicArticleController::class)->show(
+            'en',
+            'microservices',
+            'not-a-valid-slug'
         );
     }
 }

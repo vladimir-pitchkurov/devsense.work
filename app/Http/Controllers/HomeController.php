@@ -19,8 +19,12 @@ class HomeController extends Controller
         $locale = app()->getLocale();
         
         $query = Article::where('is_published', true)
+            ->where('is_approved', true)
+            ->whereHas('author', function ($q) {
+                $q->where('is_approved', true)->where('is_blocked', false);
+            })
             ->with([
-                'category.translations', 
+                'categories.translations', 
                 'author', 
                 'tags.translations', 
                 'translations' => function ($q) use ($locale) {
@@ -34,7 +38,9 @@ class HomeController extends Controller
         if ($categorySlug) {
             $selectedCategory = Category::where('slug', $categorySlug)->first();
             if ($selectedCategory) {
-                $query->where('category_id', $selectedCategory->id);
+                $query->whereHas('categories', function ($q) use ($selectedCategory) {
+                    $q->where('categories.id', $selectedCategory->id);
+                });
             }
         }
 
@@ -65,15 +71,27 @@ class HomeController extends Controller
                 $q->where('locale', $locale)
                   ->where(function ($sub) use ($search) {
                       $sub->where('title', 'like', "%{$search}%")
-                          ->orWhere('description', 'like', "%{$search}%")
-                          ->orWhere('content', 'like', "%{$search}%");
+                           ->orWhere('description', 'like', "%{$search}%")
+                           ->orWhere('content', 'like', "%{$search}%");
                   });
             });
         }
 
         // Sorting
         $sort = $request->query('sort', 'latest');
-        if ($sort === 'oldest') {
+        if ($categorySlug === 'php' && $sort === 'latest') {
+            $orderCases = [];
+            foreach (\App\Http\Controllers\PhpVersionController::PHP_VERSION_ORDER as $index => $version) {
+                $orderCases[] = "WHEN '" . addslashes($version) . "' THEN " . ($index + 1);
+            }
+            $query->orderByRaw("CASE articles.slug " . implode(' ', $orderCases) . " ELSE 999 END ASC");
+        } elseif ($categorySlug === 'php' && $sort === 'oldest') {
+            $orderCases = [];
+            foreach (array_reverse(\App\Http\Controllers\PhpVersionController::PHP_VERSION_ORDER) as $index => $version) {
+                $orderCases[] = "WHEN '" . addslashes($version) . "' THEN " . ($index + 1);
+            }
+            $query->orderByRaw("CASE articles.slug " . implode(' ', $orderCases) . " ELSE 999 END ASC");
+        } elseif ($sort === 'oldest') {
             $query->orderBy('published_at', 'asc');
         } elseif ($sort === 'alphabetical') {
             $query->join('article_translations', 'articles.id', '=', 'article_translations.article_id')
@@ -90,14 +108,21 @@ class HomeController extends Controller
         // Get categories, tags, authors for filter panels
         $categories = Category::with(['translations'])->get();
         
-        // Only show tags that have at least one published article
+        // Only show tags that have at least one published and approved article from an approved, non-blocked author
         $tags = Tag::whereHas('articles', function($q) {
-            $q->where('is_published', true);
+            $q->where('is_published', true)
+              ->where('is_approved', true)
+              ->whereHas('author', function ($aq) {
+                  $aq->where('is_approved', true)->where('is_blocked', false);
+              });
         })->with(['translations'])->get();
 
-        $authors = User::whereHas('articles', function($q) {
-            $q->where('is_published', true);
-        })->get();
+        // Only show approved and non-blocked authors who have published and approved articles
+        $authors = User::where('is_approved', true)
+            ->where('is_blocked', false)
+            ->whereHas('articles', function($q) {
+                $q->where('is_published', true)->where('is_approved', true);
+            })->get();
 
         return view('welcome', [
             'articles' => $articles,

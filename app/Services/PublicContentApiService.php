@@ -30,6 +30,44 @@ class PublicContentApiService
     public function scanIndex(): array
     {
         $entries = [];
+
+        // 1. Fetch articles from database
+        try {
+            $dbArticles = \App\Models\Article::with(['categories', 'translations'])
+                ->where('is_published', true)
+                ->where('is_approved', true)
+                ->get();
+
+            foreach ($dbArticles as $article) {
+                $categorySlug = $article->category?->slug;
+                if (!$categorySlug || !in_array($categorySlug, self::SUPPORTED_CATEGORIES, true)) {
+                    continue;
+                }
+
+                foreach ($article->translations as $translation) {
+                    if (!in_array($translation->locale, self::SUPPORTED_LOCALES, true)) {
+                        continue;
+                    }
+
+                    $modified = max(
+                        $article->updated_at?->timestamp ?? 0,
+                        $translation->updated_at?->timestamp ?? 0
+                    );
+
+                    $entries[] = [
+                        'locale' => $translation->locale,
+                        'category' => $categorySlug,
+                        'slug' => $article->slug,
+                        'modified' => $modified,
+                        'path' => 'db://' . $categorySlug . '/' . $article->slug . '/' . $translation->locale,
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {
+            // Safe fallback during migrations / testing
+        }
+
+        // 2. Fetch fallback markdown files from filesystem
         foreach (self::SUPPORTED_LOCALES as $locale) {
             foreach (self::SUPPORTED_CATEGORIES as $category) {
                 $dir = resource_path("content/{$locale}/{$category}");
@@ -43,13 +81,25 @@ class PublicContentApiService
                         continue;
                     }
                     $slug = $file->getBasename('.md');
-                    $entries[] = [
-                        'locale' => $locale,
-                        'category' => $category,
-                        'slug' => $slug,
-                        'modified' => $file->getMTime(),
-                        'path' => $file->getPathname(),
-                    ];
+
+                    // Skip duplicates from DB
+                    $exists = false;
+                    foreach ($entries as $entry) {
+                        if ($entry['locale'] === $locale && $entry['category'] === $category && $entry['slug'] === $slug) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!$exists) {
+                        $entries[] = [
+                            'locale' => $locale,
+                            'category' => $category,
+                            'slug' => $slug,
+                            'modified' => $file->getMTime(),
+                            'path' => $file->getPathname(),
+                        ];
+                    }
                 }
             }
         }
@@ -62,6 +112,22 @@ class PublicContentApiService
     private function indexCacheKey(): string
     {
         $max = 0;
+
+        // 1. Database maximum modified timestamp
+        try {
+            $maxDbArticle = \App\Models\Article::max('updated_at');
+            if ($maxDbArticle) {
+                $max = max($max, strtotime($maxDbArticle));
+            }
+            $maxDbTranslation = \App\Models\ArticleTranslation::max('updated_at');
+            if ($maxDbTranslation) {
+                $max = max($max, strtotime($maxDbTranslation));
+            }
+        } catch (\Throwable $e) {
+            // Safe fallback during migrations
+        }
+
+        // 2. Filesystem maximum modified timestamp
         foreach (self::SUPPORTED_LOCALES as $locale) {
             $dir = resource_path("content/{$locale}");
             if (! File::isDirectory($dir)) {
@@ -72,7 +138,7 @@ class PublicContentApiService
             }
         }
 
-        return "public_content_api_index_v1_{$max}";
+        return "public_content_api_index_v2_{$max}";
     }
 
     /**
@@ -287,6 +353,61 @@ class PublicContentApiService
      */
     public function getMarkdownDocument(string $locale, string $category, string $slug): ?array
     {
+        // 1. Query the database first
+        $article = \App\Models\Article::where('slug', $slug)
+            ->where('is_approved', true)
+            ->whereHas('categories', function ($q) use ($category) {
+                $q->where('slug', $category);
+            })
+            ->first();
+
+        if ($article) {
+            $currentUser = auth()->user();
+            $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $article->author_id);
+
+            $translation = null;
+            if ($isOwnerOrAdmin) {
+                $translation = $article->pendingTranslations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->pendingTranslations()->first();
+                }
+            }
+
+            if (!$translation) {
+                $translation = $article->translations()->where('locale', $locale)->first();
+                if (!$translation) {
+                    $translation = $article->translations()->where('locale', 'en')->first();
+                }
+                if (!$translation) {
+                    $translation = $article->translations()->first();
+                }
+            }
+
+            if ($translation) {
+                $meta = [
+                    'title' => $translation->title,
+                    'description' => $translation->description,
+                    'faq' => $translation->faq,
+                    'published' => $article->published_at?->format('Y-m-d') ?? $article->created_at?->format('Y-m-d'),
+                ];
+
+                $yaml = Yaml::dump($meta);
+                $markdown = "---\n" . $yaml . "---\n" . $translation->content;
+                $modified = max($article->updated_at?->timestamp ?? 0, $translation->updated_at?->timestamp ?? 0);
+
+                return [
+                    'path' => 'db://' . $category . '/' . $slug . '/' . $translation->locale,
+                    'markdown' => $markdown,
+                    'modified' => $modified,
+                    'meta' => $meta,
+                ];
+            }
+        }
+
+        // 2. Filesystem fallback
         $path = resource_path("content/{$locale}/{$category}/{$slug}.md");
         if (! File::exists($path)) {
             $path = resource_path("content/en/{$category}/{$slug}.md");

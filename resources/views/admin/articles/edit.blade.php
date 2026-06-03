@@ -35,15 +35,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="category_id" class="form-label">Category</label>
-                        <select name="category_id" id="category_id" class="form-input">
-                            <option value="">-- Select Category --</option>
+                        <label class="form-label">Categories (Select at least one)</label>
+                        <div class="checkbox-group">
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id', $article->category_id) == $category->id ? 'selected' : '' }}>
-                                    {{ $category->slug }}
-                                </option>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ in_array($category->id, old('categories', $article->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
+                                    <span>{{ $category->slug }}</span>
+                                </label>
                             @endforeach
-                        </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom_url" class="form-label">Custom URL (Optional)</label>
+                        <input type="text" name="custom_url" id="custom_url" value="{{ old('custom_url', $article->custom_url) }}" placeholder="e.g. /my-custom-path" class="form-input">
+                        <p class="form-help">Overwrites default URL structure if set</p>
                     </div>
 
                     <div class="form-group">
@@ -74,26 +80,36 @@
             <!-- Right Side: Translations (multilanguage fields) -->
             <div class="form-content">
                 <div class="admin-card">
-                    <!-- Locale Tabs -->
-                    <div class="tabs-header">
-                        @foreach(['en' => 'English', 'ru' => 'Russian', 'ua' => 'Ukrainian', 'bg' => 'Bulgarian'] as $loc => $label)
-                            <button type="button" class="tab-btn {{ $loop->first ? 'active' : '' }}" onclick="switchTab(event, 'tab-{{ $loc }}')">
-                                {{ $label }}
+                    <div class="tabs-header-container">
+                        <div class="tabs-header">
+                            @foreach(['en' => 'English', 'ru' => 'Russian', 'ua' => 'Ukrainian', 'bg' => 'Bulgarian'] as $loc => $label)
+                                <button type="button" class="tab-btn {{ $loop->first ? 'active' : '' }}" onclick="switchTab(event, 'tab-{{ $loc }}')">
+                                    {{ $label }}
+                                </button>
+                            @endforeach
+                        </div>
+                        <div class="tabs-actions">
+                            <a href="{{ route('admin.articles.template', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary" title="Download Markdown template for formatting guidelines">
+                                <i class="fa fa-download" style="margin-right: 0.5rem;"></i> Download Template
+                            </a>
+                            <button type="button" class="admin-btn admin-btn--secondary" onclick="triggerImport()" title="Import content from a Markdown file to pre-populate fields for active tab">
+                                <i class="fa fa-upload" style="margin-right: 0.5rem;"></i> Import Markdown (.md)
                             </button>
-                        @endforeach
+                            <input type="file" id="import_md_file" accept=".md" style="display: none;" onchange="handleImport(event)">
+                        </div>
                     </div>
 
                     <!-- Locale Tab Contents -->
                     @foreach(['en', 'ru', 'ua', 'bg'] as $loc)
                         @php
-                            $translation = $article->translate($loc);
+                            $translation = $article->getTranslationOrDraft($loc);
                         @endphp
                         <div id="tab-{{ $loc }}" class="tab-pane {{ $loop->first ? 'active' : '' }}">
                             <h3 class="tab-pane-title">{{ strtoupper($loc) }} Content</h3>
 
                             <div class="form-group">
                                 <label for="title_{{ $loc }}" class="form-label">Title ({{ strtoupper($loc) }})</label>
-                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title", $translation?->title) }}" required placeholder="Article title in {{ $loc }}" class="form-input">
+                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title", $translation?->title) }}" placeholder="Article title in {{ $loc }}" class="form-input">
                             </div>
 
                             <div class="form-group">
@@ -103,7 +119,7 @@
 
                             <div class="form-group">
                                 <label for="content_{{ $loc }}" class="form-label">Content ({{ strtoupper($loc) }} - Markdown)</label>
-                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" required placeholder="# Article Heading..." class="form-input form-textarea-code">{{ old("translations.{$loc}.content", $translation?->content) }}</textarea>
+                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" placeholder="# Article Heading..." class="form-input form-textarea-code">{{ old("translations.{$loc}.content", $translation?->content) }}</textarea>
                             </div>
 
                             <div class="form-group">
@@ -122,51 +138,6 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-.EasyMDEContainer {
-    background-color: rgba(var(--bg-color-rgb), 0.5) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 0.5rem !important;
-    margin-top: 0.5rem;
-}
-.editor-toolbar {
-    background-color: var(--code-header-bg) !important;
-    border: none !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    opacity: 1 !important;
-    padding: 0.5rem !important;
-}
-.editor-toolbar button {
-    color: var(--text-color) !important;
-    border-radius: 4px !important;
-    transition: all 0.2s !important;
-}
-.editor-toolbar button:hover {
-    background: var(--primary-glow) !important;
-    color: var(--primary-color) !important;
-    border: none !important;
-}
-.editor-toolbar button.active {
-    background: var(--primary-color) !important;
-    color: #ffffff !important;
-}
-.CodeMirror {
-    background-color: transparent !important;
-    border: none !important;
-    color: var(--text-color) !important;
-    font-family: 'Fira Code', monospace !important;
-    font-size: 0.9rem !important;
-    border-radius: 0 0 0.5rem 0.5rem !important;
-}
-.CodeMirror-cursor {
-    border-left: 2px solid var(--primary-color) !important;
-}
-.editor-preview {
-    background-color: var(--page-bg) !important;
-    color: var(--text-color) !important;
-    padding: 2rem !important;
-}
-</style>
 @endpush
 
 @push('scripts')
@@ -291,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+let activeLocale = 'en';
+
 function switchTab(evt, tabId) {
     var i, tabContent, tabLinks;
     tabContent = document.getElementsByClassName("tab-pane");
@@ -305,190 +278,147 @@ function switchTab(evt, tabId) {
     evt.currentTarget.classList.add("active");
 
     const locale = tabId.replace('tab-', '');
+    activeLocale = locale;
     if (editors && editors[locale]) {
         setTimeout(() => {
             editors[locale].codemirror.refresh();
         }, 50);
     }
 }
+
+function triggerImport() {
+    document.getElementById('import_md_file').click();
+}
+
+function handleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const parsed = parseFrontMatter(text);
+        
+        if (parsed.attributes.title) {
+            const titleInput = document.getElementById('title_' + activeLocale);
+            if (titleInput) titleInput.value = parsed.attributes.title;
+        }
+        if (parsed.attributes.description) {
+            const descInput = document.getElementById('description_' + activeLocale);
+            if (descInput) descInput.value = parsed.attributes.description;
+        }
+        if (parsed.attributes.slug) {
+            const slugInput = document.getElementById('slug');
+            if (slugInput) slugInput.value = parsed.attributes.slug;
+        }
+        if (parsed.attributes.faq) {
+            const faqInput = document.getElementById('faq_' + activeLocale);
+            if (faqInput) {
+                faqInput.value = typeof parsed.attributes.faq === 'string'
+                    ? parsed.attributes.faq
+                    : JSON.stringify(parsed.attributes.faq, null, 2);
+            }
+        }
+        if (parsed.body) {
+            const contentInput = document.getElementById('content_' + activeLocale);
+            if (contentInput) {
+                contentInput.value = parsed.body.trim();
+                if (editors[activeLocale]) {
+                    editors[activeLocale].value(parsed.body.trim());
+                }
+            }
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function parseFrontMatter(text) {
+    const result = {
+        attributes: {},
+        body: text
+    };
+    
+    const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+    if (!match) {
+        return result;
+    }
+    
+    const frontMatter = match[1];
+    result.body = text.slice(match[0].length);
+    
+    const lines = frontMatter.split(/\r?\n/);
+    let currentKey = null;
+    let currentArray = null;
+    let currentObj = null;
+    
+    for (let line of lines) {
+        if (!line.trim()) continue;
+        
+        const topLevelMatch = line.match(/^([a-zA-Z0-9_-]+)\s*:\s*(.*)$/);
+        if (topLevelMatch) {
+            const key = topLevelMatch[1].trim();
+            let val = topLevelMatch[2].trim();
+            
+            if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                val = val.slice(1, -1);
+            }
+            
+            currentKey = key;
+            currentArray = null;
+            currentObj = null;
+            
+            if (val === '') {
+                result.attributes[key] = null;
+            } else {
+                result.attributes[key] = val;
+            }
+            continue;
+        }
+        
+        const arrayItemMatch = line.match(/^\s*-\s*(.*)$/);
+        if (arrayItemMatch && currentKey) {
+            if (!Array.isArray(result.attributes[currentKey])) {
+                result.attributes[currentKey] = [];
+            }
+            currentArray = result.attributes[currentKey];
+            
+            const innerVal = arrayItemMatch[1].trim();
+            const innerKvMatch = innerVal.match(/^([a-zA-Z0-9_-]+)\s*:\s*(.*)$/);
+            if (innerKvMatch) {
+                currentObj = {};
+                const k = innerKvMatch[1].trim();
+                let v = innerKvMatch[2].trim();
+                if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+                    v = v.slice(1, -1);
+                }
+                currentObj[k] = v;
+                currentArray.push(currentObj);
+            } else {
+                let v = innerVal;
+                if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+                    v = v.slice(1, -1);
+                }
+                currentArray.push(v);
+                currentObj = null;
+            }
+            continue;
+        }
+        
+        const kvMatch = line.match(/^\s*([a-zA-Z0-9_-]+)\s*:\s*(.*)$/);
+        if (kvMatch && currentObj) {
+            const k = kvMatch[1].trim();
+            let v = kvMatch[2].trim();
+            if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+                v = v.slice(1, -1);
+            }
+            currentObj[k] = v;
+            continue;
+        }
+    }
+    
+    return result;
+}
 </script>
 @endpush
-
-<style>
-.admin-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.admin-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--text-color);
-}
-
-.admin-alert--danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 2rem;
-}
-
-.admin-alert--danger ul {
-    margin: 0.5rem 0 0 0;
-    padding-left: 1.25rem;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-}
-
-@media (min-width: 992px) {
-    .form-grid {
-        grid-template-columns: 320px 1fr;
-    }
-}
-
-.card-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--text-color);
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-color);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.form-input {
-    background-color: rgba(var(--bg-color-rgb), 0.5);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    color: var(--text-color);
-    font-family: inherit;
-    font-size: 0.95rem;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
-}
-
-.form-textarea-code {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.85rem;
-    tab-size: 4;
-}
-
-.form-help {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin: 0;
-}
-
-.checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    background-color: rgba(var(--bg-color-rgb), 0.3);
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: var(--text-color);
-    cursor: pointer;
-}
-
-.checkbox-label--large {
-    font-weight: 600;
-    border-top: 1px solid var(--border-color);
-    padding-top: 1rem;
-    margin-top: 0.5rem;
-}
-
-.tabs-header {
-    display: flex;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-    gap: 0.5rem;
-}
-
-.tab-btn {
-    background: none;
-    border: none;
-    padding: 0.75rem 1rem;
-    color: var(--text-muted);
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
-}
-
-.tab-btn:hover {
-    color: var(--text-color);
-}
-
-.tab-btn.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-}
-
-.tab-pane {
-    display: none;
-}
-
-.tab-pane.active {
-    display: block;
-}
-
-.tab-pane-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
-}
-
-.admin-btn--full {
-    width: 100%;
-}
-</style>
 </x-layout>

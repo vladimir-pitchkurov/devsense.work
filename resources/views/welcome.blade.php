@@ -164,7 +164,7 @@
                 </div>
 
                 <div class="search-pagination">
-                    {{ $articles->links() }}
+                    {{ $articles->links('partials.pagination') }}
                 </div>
             @endif
         </main>

@@ -20,9 +20,14 @@ class AuthorController extends Controller
      */
     public function index(): View
     {
-        $authors = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
-            ->orderBy('name')
-            ->get();
+        $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
+            ->where('is_blocked', false);
+
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            $query->where('is_public', true)->where('is_approved', true);
+        }
+
+        $authors = $query->orderBy('name')->get();
 
         $locale       = app()->getLocale();
         $canonicalUrl = SiteUrl::route('authors.index', ['locale' => $locale]);
@@ -50,6 +55,26 @@ class AuthorController extends Controller
             })
             ->firstOrFail();
 
+        $currentUser = auth()->user();
+
+        if ($author->is_blocked) {
+            if (!$currentUser || !$currentUser->isAdmin()) {
+                abort(404);
+            }
+        }
+
+        if (!$author->is_approved) {
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {
+                abort(404);
+            }
+        }
+
+        if (!$author->is_public) {
+            if (!$currentUser || (!$currentUser->isAdmin() && $currentUser->id !== $author->id)) {
+                abort(404);
+            }
+        }
+
         $locale       = app()->getLocale();
         $canonicalUrl = SiteUrl::route('authors.show', ['locale' => $locale, 'slug' => $author->slug]);
         $hrefLangMap  = config('seo.hreflang', []);
@@ -74,11 +99,17 @@ class AuthorController extends Controller
             $structuredData['jobTitle'] = $author->job_title;
         }
 
-        $articles = $author->articles()
+        $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
+        $articlesQuery = $author->articles()
             ->where('is_published', true)
-            ->with(['translations', 'category'])
-            ->latest('published_at')
-            ->get();
+            ->with(['translations', 'categories'])
+            ->latest('published_at');
+
+        if (!$isOwnerOrAdmin) {
+            $articlesQuery->where('is_approved', true);
+        }
+
+        $articles = $articlesQuery->get();
 
         return view('authors.show', [
             'author'         => $author,

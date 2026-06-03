@@ -58,8 +58,8 @@
                 @endforeach
             </ul>
 
-            <div class="pagination-container" style="margin-top: 2rem; display: flex; justify-content: center;">
-                {{ $articles->links() }}
+            <div class="search-pagination">
+                {{ $articles->links('partials.pagination') }}
             </div>
         @endif
     </section>

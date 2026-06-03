@@ -66,8 +66,8 @@ class MediaUploadTest extends TestCase
         
         // Extract local file path from URL
         $url = $data['url'];
-        $filename = basename($url);
-        $filePath = public_path('uploads/' . $filename);
+        $path = parse_url($url, PHP_URL_PATH);
+        $filePath = public_path(ltrim($path, '/'));
         
         $this->assertFileExists($filePath);
         
@@ -85,5 +85,31 @@ class MediaUploadTest extends TestCase
         
         // Clean up
         @unlink($filePath);
+    }
+
+    public function test_author_can_upload_image_to_s3_when_configured(): void
+    {
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+
+        $this->actingAs($this->author);
+        $file = UploadedFile::fake()->image('avatar.jpg', 100, 100);
+
+        $response = $this->post('/en/admin/media/upload', [
+            'image' => $file,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['success', 'url']);
+        
+        $data = $response->json();
+        $this->assertTrue($data['success']);
+        
+        // Assert file exists on S3 fake disk under the correct prefix (e.g. dev/ or prod/)
+        $environment = app()->environment();
+        $envPrefix = in_array($environment, ['local', 'testing', 'dev', 'development'], true) ? 'dev' : 'prod';
+        
+        $files = Storage::disk('s3')->allFiles("uploads/{$envPrefix}");
+        $this->assertCount(1, $files);
     }
 }

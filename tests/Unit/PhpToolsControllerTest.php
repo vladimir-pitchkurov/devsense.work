@@ -2,8 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\PhpToolsController;
-use App\Services\MarkdownContentService;
+use App\Http\Controllers\PublicArticleController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 
@@ -16,9 +15,10 @@ class PhpToolsControllerTest extends TestCase
     {
         $this->expectException(NotFoundHttpException::class);
 
-        app(PhpToolsController::class)->show(
-            'not-a-valid-tool-slug',
-            app(MarkdownContentService::class),
+        app(PublicArticleController::class)->show(
+            'en',
+            'tools',
+            'not-a-valid-tool-slug'
         );
     }
 }

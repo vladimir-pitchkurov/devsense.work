@@ -30,6 +30,9 @@ php artisan seo:ping-indexnow
 
 sudo systemctl reload php8.5-fpm
 
+# Перезапуск очередей (Supervisor)
+sudo supervisorctl restart laravel-worker:*
+
 php artisan up
 
 echo "✅ Деплой успешно завершен!"

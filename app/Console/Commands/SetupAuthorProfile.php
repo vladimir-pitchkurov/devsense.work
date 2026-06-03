@@ -25,7 +25,7 @@ class SetupAuthorProfile extends Command
 
     public function handle(): int
     {
-        $email    = 'vladimirpitbul@gmail.com';
+        $email    = 'vladimir@devsense.work';
         $password = $this->option('password') ?: 'change-me-on-first-login';
 
         // ── Profile data ────────────────────────────────────────────────────
@@ -33,8 +33,8 @@ class SetupAuthorProfile extends Command
             'name'        => 'Vladimir Pichkurov',
             'role'        => User::ROLE_SUPER_ADMIN,
             'slug'        => 'vladimir-pichkurov',
-            'job_title'   => 'Senior PHP Developer & Backend Architect',
-            'bio'         => 'Senior Backend Architect with 9+ years of commercial experience designing and scaling complex web systems. Expert in PHP (Laravel, Symfony), MySQL, PostgreSQL, Redis, and microservices architecture. Built 20+ production systems serving 1M+ users. B2B contractor based in Varna, Bulgaria (EU timezone).',
+            'job_title'   => 'Founder & CEO, DevSense | Senior Systems Architect',
+            'bio'         => 'Founder & CEO of DevSense. Senior Systems Architect and Backend Engineer with 9+ years of commercial experience designing and scaling complex web systems. Expert in PHP (Laravel, Symfony), MySQL, PostgreSQL, Redis, and microservices architecture. Direct email: vladimir@devsense.work.',
             'github_url'  => 'https://github.com/vladimir-pitchkurov',
             'linkedin_url' => 'https://www.linkedin.com/in/volodimir-pichkurov-626a46150',
             'twitter_url' => null,

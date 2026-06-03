@@ -39,6 +39,7 @@ class SearchAndFilterTest extends TestCase
             'category_id' => $phpCategory->id,
             'is_published' => true,
             'published_at' => now()->subDays(2),
+            'is_approved' => true,
         ]);
         $article1->translations()->create([
             'locale' => 'en',
@@ -54,6 +55,7 @@ class SearchAndFilterTest extends TestCase
             'category_id' => $archCategory->id,
             'is_published' => true,
             'published_at' => now(),
+            'is_approved' => true,
         ]);
         $article2->translations()->create([
             'locale' => 'en',
@@ -128,4 +130,85 @@ class SearchAndFilterTest extends TestCase
         $phpPos = strpos($html, 'PHP 8.4 New Features');
         $this->assertTrue($phpPos < $idxPos);
     }
+
+    public function test_php_category_sorts_by_version(): void
+    {
+        $author = User::where('slug', 'john-doe')->first();
+        $phpCategory = Category::where('slug', 'php')->first();
+
+        // Delete default php article from setUp to have clean versions
+        Article::where('slug', '8.4')->delete();
+
+        // Create articles in random order of version but different published_at
+        // to show version sort takes priority over published_at
+        $v83 = Article::create([
+            'slug' => '8.3',
+            'author_id' => $author->id,
+            'category_id' => $phpCategory->id,
+            'is_published' => true,
+            'published_at' => now(), // newer date
+            'is_approved' => true,
+        ]);
+        $v83->translations()->create([
+            'locale' => 'en',
+            'title' => 'PHP 8.3 Guide',
+            'description' => 'PHP 8.3 version info',
+            'content' => 'Content for PHP 8.3',
+        ]);
+
+        $v85 = Article::create([
+            'slug' => '8.5',
+            'author_id' => $author->id,
+            'category_id' => $phpCategory->id,
+            'is_published' => true,
+            'published_at' => now()->subDays(5), // older date
+            'is_approved' => true,
+        ]);
+        $v85->translations()->create([
+            'locale' => 'en',
+            'title' => 'PHP 8.5 Guide',
+            'description' => 'PHP 8.5 version info',
+            'content' => 'Content for PHP 8.5',
+        ]);
+
+        $v84 = Article::create([
+            'slug' => '8.4',
+            'author_id' => $author->id,
+            'category_id' => $phpCategory->id,
+            'is_published' => true,
+            'published_at' => now()->subDays(2),
+            'is_approved' => true,
+        ]);
+        $v84->translations()->create([
+            'locale' => 'en',
+            'title' => 'PHP 8.4 Guide',
+            'description' => 'PHP 8.4 version info',
+            'content' => 'Content for PHP 8.4',
+        ]);
+
+        // Default sort (latest versions first): 8.5 then 8.4 then 8.3
+        $response = $this->get('/en/php');
+        $response->assertStatus(200);
+        $html = $response->getContent();
+        
+        $pos85 = strpos($html, 'PHP 8.5 Guide');
+        $pos84 = strpos($html, 'PHP 8.4 Guide');
+        $pos83 = strpos($html, 'PHP 8.3 Guide');
+        
+        $this->assertTrue($pos85 < $pos84, '8.5 should be before 8.4');
+        $this->assertTrue($pos84 < $pos83, '8.4 should be before 8.3');
+
+        // Oldest versions first: 8.3 then 8.4 then 8.5
+        $response = $this->get('/en/php?sort=oldest');
+        $response->assertStatus(200);
+        $html = $response->getContent();
+        
+        $pos85 = strpos($html, 'PHP 8.5 Guide');
+        $pos84 = strpos($html, 'PHP 8.4 Guide');
+        $pos83 = strpos($html, 'PHP 8.3 Guide');
+        
+        $this->assertTrue($pos83 < $pos84, '8.3 should be before 8.4');
+        $this->assertTrue($pos84 < $pos85, '8.4 should be before 8.5');
+    }
 }
+

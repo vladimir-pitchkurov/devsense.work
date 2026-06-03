@@ -6,18 +6,41 @@
             <a href="{{ route('admin.articles.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
                 Articles
             </a>
-            <a href="{{ route('admin.categories.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
-                Categories
-            </a>
-            <a href="{{ route('admin.tags.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
-                Tags
-            </a>
+            @can('manage-users')
+                <a href="{{ route('admin.categories.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Categories
+                </a>
+            @endcan
+            @can('manage-tags')
+                <a href="{{ route('admin.tags.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Tags
+                </a>
+            @endcan
+            @can('manage-users')
+                <a href="{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Users
+                </a>
+                <a href="{{ route('admin.tickets.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
+                    Tickets
+                </a>
+            @endcan
             <a href="{{ route('admin.profile.edit', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
                 Edit Profile
             </a>
             <button onclick="window.print()" class="admin-btn admin-btn--secondary no-print">
                 Print Report
             </button>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline-block; margin: 0;">
+                @csrf
+                <button type="submit" class="admin-btn admin-btn--danger no-print" style="display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 
@@ -83,6 +106,331 @@
             </div>
         </div>
     </div>
+
+    <!-- Flash message alerts inside admin dashboard -->
+    @if (session('success'))
+        <div class="admin-alert admin-alert--success" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="admin-alert admin-alert--danger" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <!-- Moderation Queue Section -->
+    @if (Auth::user()->isAdmin())
+        <div class="admin-card moderation-queue-card" style="margin-bottom: 2rem;">
+            <h2 class="section-title">Moderation Queue</h2>
+            
+            @php
+                $pendingAuthorsCount = $pendingAuthors->count();
+                $pendingProfilesCount = $pendingProfiles->count();
+                $pendingArticlesCount = $pendingArticles->count();
+                $reportsCount = $reports->count();
+                $totalModerationCount = $pendingAuthorsCount + $pendingProfilesCount + $pendingArticlesCount + $reportsCount;
+            @endphp
+            
+            @if ($totalModerationCount === 0)
+                <div class="text-center" style="padding: 2.5rem 0; border-color: rgba(16, 185, 129, 0.3); background-color: rgba(16, 185, 129, 0.02); border-radius: 0.75rem; border: 1px dashed rgba(16, 185, 129, 0.3);">
+                    <h3 style="color: #10b981; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 1.2rem; font-weight: 700;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20" style="vertical-align: middle;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        All Caught Up!
+                    </h3>
+                    <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">No registrations, profile edits, drafts, or complaints require approval at this time.</p>
+                </div>
+            @else
+                <div class="tabs-header" style="display: flex; gap: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; overflow-x: auto; white-space: nowrap; margin-bottom: 1.5rem;">
+                    <button onclick="switchModerationTab('authors')" id="tab-btn-authors" class="tab-btn tab-btn--active">
+                        Authors Registration ({{ $pendingAuthorsCount }})
+                    </button>
+                    <button onclick="switchModerationTab('profiles')" id="tab-btn-profiles" class="tab-btn">
+                        Profile Updates ({{ $pendingProfilesCount }})
+                    </button>
+                    <button onclick="switchModerationTab('articles')" id="tab-btn-articles" class="tab-btn">
+                        Articles Drafts ({{ $pendingArticlesCount }})
+                    </button>
+                    <button onclick="switchModerationTab('reports')" id="tab-btn-reports" class="tab-btn">
+                        User Reports ({{ $reportsCount }})
+                    </button>
+                </div>
+
+                <!-- Authors Tab Content -->
+                <div id="tab-content-authors" class="tab-content">
+                    @if ($pendingAuthors->isEmpty())
+                        <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No pending authors registration requests.</p>
+                    @else
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Registered</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($pendingAuthors as $author)
+                                        <tr>
+                                            <td><strong>{{ $author->name }}</strong></td>
+                                            <td><code>{{ $author->email }}</code></td>
+                                            <td>{{ $author->created_at->diffForHumans() }}</td>
+                                            <td class="text-right" style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                                <form action="{{ route('admin.moderation.authors.approve', ['locale' => app()->getLocale(), 'user' => $author->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                                    @csrf
+                                                    <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #10b981; border: none; color: white;">
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('admin.moderation.authors.reject', ['locale' => app()->getLocale(), 'user' => $author->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                                    @csrf
+                                                    <button type="submit" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-color: #ef4444; color: #ef4444; background: transparent;" onclick="return confirm('Are you sure you want to reject this registration?')">
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Profiles Tab Content -->
+                <div id="tab-content-profiles" class="tab-content" style="display: none;">
+                    @if ($pendingProfiles->isEmpty())
+                        <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No pending profile updates.</p>
+                    @else
+                        @foreach ($pendingProfiles as $draft)
+                            <div class="moderation-item" style="border-bottom: 1px solid var(--border-color); padding: 1.5rem 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                                    <div>
+                                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">{{ $draft->name }} (Profile Edit)</h3>
+                                        <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-muted);">
+                                            User: <strong>{{ $draft->user->name }}</strong> | Email: <code>{{ $draft->user->email }}</code>
+                                        </p>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <button onclick="toggleProfileDiff({{ $draft->id }})" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                                            View Changes
+                                        </button>
+                                        <form action="{{ route('admin.moderation.profiles.approve', ['locale' => app()->getLocale(), 'pendingUserProfile' => $draft->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #10b981; border: none; color: white;">
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.moderation.profiles.reject', ['locale' => app()->getLocale(), 'pendingUserProfile' => $draft->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-color: #ef4444; color: #ef4444; background: transparent;" onclick="return confirm('Are you sure you want to reject these changes?')">
+                                                Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div id="profile-diff-{{ $draft->id }}" class="profile-diff-drawer" style="display: none; margin-top: 1.5rem; background: rgba(0,0,0,0.15); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                                    <table class="admin-table" style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 20%;">Field</th>
+                                                <th style="width: 40%;">Original Live</th>
+                                                <th style="width: 40%;">Proposed Update</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Name</strong></td>
+                                                <td style="color: var(--text-muted);">{{ $draft->user->name }}</td>
+                                                <td style="{{ $draft->name !== $draft->user->name ? 'color: #10b981; font-weight: bold;' : '' }}">{{ $draft->name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Slug</strong></td>
+                                                <td style="color: var(--text-muted);">{{ $draft->user->slug }}</td>
+                                                <td style="{{ $draft->slug !== $draft->user->slug ? 'color: #10b981; font-weight: bold;' : '' }}">{{ $draft->slug }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Job Title</strong></td>
+                                                <td style="color: var(--text-muted);">{{ $draft->user->job_title ?: '(empty)' }}</td>
+                                                <td style="{{ $draft->job_title !== $draft->user->job_title ? 'color: #10b981; font-weight: bold;' : '' }}">{{ $draft->job_title ?: '(empty)' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Bio</strong></td>
+                                                <td style="color: var(--text-muted); white-space: pre-wrap;">{{ $draft->user->bio ?: '(empty)' }}</td>
+                                                <td style="{{ $draft->bio !== $draft->user->bio ? 'color: #10b981; font-weight: bold;' : '' }}; white-space: pre-wrap;">{{ $draft->bio ?: '(empty)' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Avatar</strong></td>
+                                                <td>
+                                                    <img src="{{ $draft->user->avatarUrl() }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                                </td>
+                                                <td>
+                                                    @if ($draft->avatar_path !== $draft->user->avatar_path)
+                                                        <img src="{{ $draft->avatarUrl() }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
+                                                        <span style="display: block; font-size: 0.75rem; color: #10b981;">(New Avatar)</span>
+                                                    @else
+                                                        <img src="{{ $draft->user->avatarUrl() }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; opacity: 0.5;">
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @foreach (['github_url' => 'GitHub', 'linkedin_url' => 'LinkedIn', 'twitter_url' => 'Twitter/X', 'website_url' => 'Website'] as $field => $label)
+                                                <tr>
+                                                    <td><strong>{{ $label }}</strong></td>
+                                                    <td style="color: var(--text-muted);">{{ $draft->user->$field ?: '(empty)' }}</td>
+                                                    <td style="{{ $draft->$field !== $draft->user->$field ? 'color: #10b981; font-weight: bold;' : '' }}">{{ $draft->$field ?: '(empty)' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+
+                <!-- Articles Tab Content -->
+                <div id="tab-content-articles" class="tab-content" style="display: none;">
+                    @if ($pendingArticles->isEmpty())
+                        <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No pending article translations draft updates.</p>
+                    @else
+                        @foreach ($pendingArticles as $draft)
+                            <div class="moderation-item" style="border-bottom: 1px solid var(--border-color); padding: 1.5rem 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                                    <div>
+                                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">{{ $draft->title }}</h3>
+                                        <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-muted);">
+                                            By <strong>{{ $draft->article->author->name ?? 'Unknown' }}</strong> | Locale: <span class="locale-badge locale-badge--active" style="text-transform: uppercase;">{{ $draft->locale }}</span> | Slug: <code>{{ $draft->article->slug }}</code>
+                                        </p>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <button onclick="toggleArticleDiff({{ $draft->id }})" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                                            View Changes
+                                        </button>
+                                        <form action="{{ route('admin.moderation.articles.approve', ['locale' => app()->getLocale(), 'pendingArticleTranslation' => $draft->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #10b981; border: none; color: white;">
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.moderation.articles.reject', ['locale' => app()->getLocale(), 'pendingArticleTranslation' => $draft->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-color: #ef4444; color: #ef4444; background: transparent;" onclick="return confirm('Are you sure you want to reject this draft?')">
+                                                Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                @php
+                                    $liveTranslation = $draft->article->translate($draft->locale);
+                                    $liveTitle = $liveTranslation ? $liveTranslation->title : '';
+                                    $liveDescription = $liveTranslation ? $liveTranslation->description : '';
+                                    $liveContent = $liveTranslation ? $liveTranslation->content : '';
+                                    $liveFaq = $liveTranslation && $liveTranslation->faq ? json_encode($liveTranslation->faq, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '';
+                                    $draftFaq = $draft->faq ? json_encode($draft->faq, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '';
+                                @endphp
+                                
+                                <div id="article-diff-{{ $draft->id }}" class="article-diff-drawer" style="display: none; margin-top: 1.5rem; background: rgba(0,0,0,0.15); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-color);">Title Comparison</h4>
+                                    <div id="diff-title-{{ $draft->id }}" class="diff-container" data-original="{{ $liveTitle }}" data-draft="{{ $draft->title }}" style="margin-bottom: 1.5rem;"></div>
+                                    
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-color);">Description Comparison</h4>
+                                    <div id="diff-desc-{{ $draft->id }}" class="diff-container" data-original="{{ $liveDescription }}" data-draft="{{ $draft->description }}" style="margin-bottom: 1.5rem;"></div>
+                                    
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-color);">Content (Markdown) Comparison</h4>
+                                    <div id="diff-content-{{ $draft->id }}" class="diff-container" data-original="{{ $liveContent }}" data-draft="{{ $draft->content }}" style="margin-bottom: 1.5rem;"></div>
+
+                                    @if($liveFaq || $draftFaq)
+                                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-color);">FAQ Comparison</h4>
+                                        <div id="diff-faq-{{ $draft->id }}" class="diff-container" data-original="{{ $liveFaq }}" data-draft="{{ $draftFaq }}"></div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+
+                <!-- Reports Tab Content -->
+                <div id="tab-content-reports" class="tab-content" style="display: none;">
+                    @if ($reports->isEmpty())
+                        <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No pending content reports/complaints.</p>
+                    @else
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Report ID</th>
+                                        <th>Target Content</th>
+                                        <th>Reason for Complaint</th>
+                                        <th>Reporter</th>
+                                        <th>Date Reported</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($reports as $report)
+                                        <tr>
+                                            <td><code>#{{ $report->id }}</code></td>
+                                            <td>
+                                                @if ($report->reportable)
+                                                    @if ($report->reportable_type === 'App\Models\Article')
+                                                        <strong>Article:</strong> 
+                                                        <a href="{{ $report->reportable->url() }}" target="_blank" style="color: var(--primary-color);">
+                                                            {{ $report->reportable->slug }}
+                                                        </a>
+                                                    @elseif ($report->reportable_type === 'App\Models\User')
+                                                        <strong>Author Profile:</strong> 
+                                                        <a href="{{ route('authors.show', ['locale' => app()->getLocale(), 'slug' => $report->reportable->slug]) }}" target="_blank" style="color: var(--primary-color);">
+                                                            {{ $report->reportable->name }}
+                                                        </a>
+                                                    @else
+                                                        {{ class_basename($report->reportable_type) }} (ID: {{ $report->reportable_id }})
+                                                    @endif
+                                                @else
+                                                    <span style="color: #ef4444; font-style: italic;">Deleted Content (ID: {{ $report->reportable_id }})</span>
+                                                @endif
+                                            </td>
+                                            <td><span style="font-weight: 500;">{{ $report->reason }}</span></td>
+                                            <td>
+                                                @if ($report->user)
+                                                    {{ $report->user->name }} (<code>{{ $report->user->email }}</code>)
+                                                @else
+                                                    <span style="color: var(--text-muted); font-style: italic;">Anonymous Guest</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-nowrap">{{ $report->created_at->diffForHumans() }}</td>
+                                            <td class="text-right" style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                                @if ($report->reportable)
+                                                    <form action="{{ route('admin.moderation.reports.action', ['locale' => app()->getLocale(), 'report' => $report->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                                        @csrf
+                                                        <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #ef4444; border: none; color: white;" onclick="return confirm('Are you sure you want to suspend/block this content?')">
+                                                            Suspend Content
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <form action="{{ route('admin.moderation.reports.dismiss', ['locale' => app()->getLocale(), 'report' => $report->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                                    @csrf
+                                                    <button type="submit" class="admin-btn admin-btn--secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-color: var(--border-color); color: var(--text-color); background: transparent;">
+                                                        Dismiss Report
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            @endif
+        </div>
+    @endif
 
     <!-- Traffic Trend & Pie-ish Stats -->
     <div class="dashboard-row">
@@ -271,435 +619,130 @@
     </div>
 </div>
 
-<style>
-.admin-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+
+
+<script>
+function switchModerationTab(tabName) {
+    document.getElementById('tab-content-authors').style.display = 'none';
+    document.getElementById('tab-content-profiles').style.display = 'none';
+    document.getElementById('tab-content-articles').style.display = 'none';
+    document.getElementById('tab-content-reports').style.display = 'none';
+
+    document.getElementById('tab-btn-authors').classList.remove('tab-btn--active');
+    document.getElementById('tab-btn-profiles').classList.remove('tab-btn--active');
+    document.getElementById('tab-btn-articles').classList.remove('tab-btn--active');
+    document.getElementById('tab-btn-reports').classList.remove('tab-btn--active');
+
+    document.getElementById('tab-content-' + tabName).style.display = 'block';
+    document.getElementById('tab-btn-' + tabName).classList.add('tab-btn--active');
 }
 
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.admin-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--text-color);
-}
-
-.admin-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
-    border: 1px solid transparent;
-}
-
-.admin-btn--secondary {
-    background-color: transparent;
-    border-color: var(--border-color);
-    color: var(--text-color);
-}
-
-.admin-btn--secondary:hover {
-    background-color: rgba(99, 102, 241, 0.05);
-    border-color: var(--primary-color);
-}
-
-.admin-btn:hover {
-    transform: translateY(-1px);
-}
-
-/* Stats Cards */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-@media (min-width: 640px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+function toggleArticleDiff(id) {
+    const drawer = document.getElementById('article-diff-' + id);
+    if (drawer.style.display === 'none') {
+        drawer.style.display = 'block';
+        renderContainerDiff('diff-title-' + id);
+        renderContainerDiff('diff-desc-' + id);
+        renderContainerDiff('diff-content-' + id);
+        
+        const faqContainer = document.getElementById('diff-faq-' + id);
+        if (faqContainer) {
+            renderContainerDiff('diff-faq-' + id);
+        }
+    } else {
+        drawer.style.display = 'none';
     }
 }
 
-@media (min-width: 1024px) {
-    .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
+function toggleProfileDiff(id) {
+    const drawer = document.getElementById('profile-diff-' + id);
+    drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderContainerDiff(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container || container.getAttribute('data-rendered')) return;
+    
+    const original = container.getAttribute('data-original') || '';
+    const draft = container.getAttribute('data-draft') || '';
+    
+    container.innerHTML = generateDiff(original, draft);
+    container.setAttribute('data-rendered', 'true');
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function generateDiff(original, draft) {
+    if (!original && draft) {
+        return draft.split('\n').map(line => `<div class="diff-line diff-line--added"><span class="diff-prefix">+</span>${escapeHtml(line)}</div>`).join('');
     }
-}
-
-.stat-card {
-    background-color: var(--card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-}
-
-.stat-card__icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.stat-card__icon {
-    width: 24px;
-    height: 24px;
-}
-
-.stat-card__icon-wrapper--blue {
-    background-color: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-}
-
-.stat-card__icon-wrapper--green {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-}
-
-.stat-card__icon-wrapper--indigo {
-    background-color: rgba(99, 102, 241, 0.1);
-    color: #6366f1;
-}
-
-.stat-card__icon-wrapper--purple {
-    background-color: rgba(168, 85, 247, 0.1);
-    color: #a855f7;
-}
-
-.stat-card__content {
-    min-width: 0;
-}
-
-.stat-card__label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stat-card__value {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--text-color);
-    line-height: 1.2;
-    margin: 0.25rem 0;
-    font-family: 'Outfit', sans-serif;
-}
-
-.stat-card__sub {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-/* Dashboard Grid Rows */
-.dashboard-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-@media (min-width: 1024px) {
-    .dashboard-row {
-        grid-template-columns: 2fr 1fr;
+    if (original && !draft) {
+        return original.split('\n').map(line => `<div class="diff-line diff-line--deleted"><span class="diff-prefix">-</span>${escapeHtml(line)}</div>`).join('');
     }
     
-    .dashboard-row--tables {
-        grid-template-columns: 1fr 1fr;
+    const origLines = original.split('\n');
+    const draftLines = draft.split('\n');
+    
+    let html = '';
+    let i = 0, j = 0;
+    while (i < origLines.length || j < draftLines.length) {
+        if (i < origLines.length && j < draftLines.length) {
+            if (origLines[i].trim() === draftLines[j].trim()) {
+                html += `<div class="diff-line diff-line--unchanged"><span class="diff-prefix">&nbsp;</span>${escapeHtml(origLines[i])}</div>`;
+                i++;
+                j++;
+            } else {
+                let foundInOrig = -1;
+                for (let k = i; k < Math.min(i + 15, origLines.length); k++) {
+                    if (origLines[k].trim() === draftLines[j].trim()) {
+                        foundInOrig = k;
+                        break;
+                    }
+                }
+                
+                if (foundInOrig !== -1) {
+                    for (let k = i; k < foundInOrig; k++) {
+                        html += `<div class="diff-line diff-line--deleted"><span class="diff-prefix">-</span>${escapeHtml(origLines[k])}</div>`;
+                    }
+                    i = foundInOrig;
+                } else {
+                    let foundInDraft = -1;
+                    for (let k = j; k < Math.min(j + 15, draftLines.length); k++) {
+                        if (origLines[i].trim() === draftLines[k].trim()) {
+                            foundInDraft = k;
+                            break;
+                        }
+                    }
+                    
+                    if (foundInDraft !== -1) {
+                        for (let k = j; k < foundInDraft; k++) {
+                            html += `<div class="diff-line diff-line--added"><span class="diff-prefix">+</span>${escapeHtml(draftLines[k])}</div>`;
+                        }
+                        j = foundInDraft;
+                    } else {
+                        html += `<div class="diff-line diff-line--deleted"><span class="diff-prefix">-</span>${escapeHtml(origLines[i])}</div>`;
+                        html += `<div class="diff-line diff-line--added"><span class="diff-prefix">+</span>${escapeHtml(draftLines[j])}</div>`;
+                        i++;
+                        j++;
+                    }
+                }
+            }
+        } else if (i < origLines.length) {
+            html += `<div class="diff-line diff-line--deleted"><span class="diff-prefix">-</span>${escapeHtml(origLines[i])}</div>`;
+            i++;
+        } else if (j < draftLines.length) {
+            html += `<div class="diff-line diff-line--added"><span class="diff-prefix">+</span>${escapeHtml(draftLines[j])}</div>`;
+            j++;
+        }
     }
+    return html;
 }
-
-.admin-card {
-    background-color: var(--card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-}
-
-.section-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-color);
-    margin: 0 0 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-}
-
-/* Weekly Graph */
-.chart-card {
-    display: flex;
-    flex-direction: column;
-}
-
-.chart-outer {
-    display: flex;
-    gap: 1rem;
-    flex-grow: 1;
-    margin-bottom: 1.5rem;
-    position: relative;
-    padding-top: 1rem;
-}
-
-.chart-y-axis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-align: right;
-    width: 2.5rem;
-    padding-bottom: 1.5rem;
-}
-
-.chart-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-grow: 1;
-    height: 200px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
-}
-
-.chart-bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    max-width: 4rem;
-}
-
-.chart-bar-group {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 1.5rem;
-    height: 160px;
-    background-color: rgba(99, 102, 241, 0.03);
-    border-radius: 0.25rem;
-    overflow: hidden;
-    gap: 1px;
-}
-
-.chart-bar-segment {
-    width: 100%;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.segment--human {
-    background-color: #10b981; /* Green */
-}
-
-.segment--search {
-    background-color: #6366f1; /* Indigo */
-}
-
-.segment--ai {
-    background-color: #a855f7; /* Purple */
-}
-
-.chart-bar-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.5rem;
-    white-space: nowrap;
-}
-
-.chart-legend {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    font-size: 0.85rem;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-muted);
-}
-
-.legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dot--human { background-color: #10b981; }
-.dot--search { background-color: #6366f1; }
-.dot--ai { background-color: #a855f7; }
-
-/* Composition / Split ratio card */
-.composition-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.composition-bar {
-    height: 24px;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    background-color: rgba(99, 102, 241, 0.05);
-}
-
-.comp-segment {
-    height: 100%;
-}
-
-.comp-segment--human { background-color: #10b981; }
-.comp-segment--search { background-color: #6366f1; }
-.comp-segment--ai { background-color: #a855f7; }
-
-.composition-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.comp-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
-}
-
-.comp-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.comp-name {
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.comp-stat {
-    font-size: 0.85rem;
-    font-family: monospace;
-    color: var(--text-muted);
-}
-
-/* Tables style */
-.table-responsive {
-    overflow-x: auto;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.admin-table th, .admin-table td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border-color);
-    vertical-align: middle;
-}
-
-.admin-table th {
-    font-weight: 700;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background-color: rgba(99, 102, 241, 0.02);
-}
-
-.path-code {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.85rem;
-    background-color: rgba(99, 102, 241, 0.05);
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.25rem;
-    color: var(--primary-color);
-}
-
-.font-semibold {
-    font-weight: 600;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.badge {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.badge--ai {
-    background-color: rgba(168, 85, 247, 0.1);
-    color: #a855f7;
-    border: 1px solid rgba(168, 85, 247, 0.2);
-}
-
-.badge--search {
-    background-color: rgba(99, 102, 241, 0.1);
-    color: #6366f1;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
-.locale-badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 0.15rem 0.35rem;
-    border-radius: 0.25rem;
-}
-
-.locale-badge--active {
-    background-color: var(--primary-color);
-    color: #fff;
-}
-
-/* Crawler Log styles */
-.crawler-logs-card {
-    margin-top: 1rem;
-}
-
-.text-nowrap {
-    white-space: nowrap;
-}
-
-.ip-hash {
-    font-family: monospace;
-    color: var(--text-muted);
-}
-
-.ua-cell {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-</style>
+</script>
 </x-layout>

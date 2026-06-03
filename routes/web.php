@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\ArchitectureController;
 use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\MicroservicesController;
-use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\JobsController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
@@ -70,9 +68,18 @@ Route::get('/', function () {
     return redirect('/'.$locale, 301);
 });
 
-Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+Route::get('/login', function () {
+    $locale = config('app.default_site_locale', 'en');
+    return redirect('/'.$locale.'/login');
+})->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::get('/register', function () {
+    $locale = config('app.default_site_locale', 'en');
+    return redirect('/'.$locale.'/register');
+})->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post');
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
 
 Route::prefix('{locale}')
     ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
@@ -81,12 +88,57 @@ Route::prefix('{locale}')
 
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
+        // Auth routes (localized)
+        Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login.locale');
+        Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+        Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register.locale');
+        Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
-        Route::prefix('admin')->middleware(['auth', 'can:access-admin'])->group(function () {
+        // Email Verification routes
+        Route::get('/email/verify', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'notice'])->middleware(['auth'])->name('verification.notice');
+        Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'verify'])->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
+        Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'send'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+        Route::prefix('admin')->middleware(['auth', 'verified', 'can:access-admin'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
+
+            // User Management, Tickets, Categories CRUD & Content Moderation (Super Admin Only)
+            Route::middleware('can:manage-users')->group(function () {
+                Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+                Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+                Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+
+                Route::get('/tickets', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'index'])->name('admin.tickets.index');
+                Route::get('/tickets/{ticket}', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'show'])->name('admin.tickets.show');
+                Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Admin\AdminTicketsController::class, 'reply'])->name('admin.tickets.reply');
+
+                // Categories CRUD
+                Route::get('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.categories.index');
+                Route::get('/categories/create', [\App\Http\Controllers\Admin\CategoriesController::class, 'create'])->name('admin.categories.create');
+                Route::post('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'store'])->name('admin.categories.store');
+                Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.categories.edit');
+                Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'update'])->name('admin.categories.update');
+                Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
+
+                // Moderation actions
+                Route::post('/moderation/authors/{user}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveAuthor'])->name('admin.moderation.authors.approve');
+                Route::post('/moderation/authors/{user}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectAuthor'])->name('admin.moderation.authors.reject');
+
+                Route::post('/moderation/profiles/{pendingUserProfile}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveProfile'])->name('admin.moderation.profiles.approve');
+                Route::post('/moderation/profiles/{pendingUserProfile}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectProfile'])->name('admin.moderation.profiles.reject');
+
+                Route::post('/moderation/articles/{pendingArticleTranslation}/approve', [\App\Http\Controllers\Admin\AdminModerationController::class, 'approveArticle'])->name('admin.moderation.articles.approve');
+                Route::post('/moderation/articles/{pendingArticleTranslation}/reject', [\App\Http\Controllers\Admin\AdminModerationController::class, 'rejectArticle'])->name('admin.moderation.articles.reject');
+
+                Route::post('/moderation/reports/{report}/dismiss', [\App\Http\Controllers\Admin\AdminModerationController::class, 'dismissReport'])->name('admin.moderation.reports.dismiss');
+                Route::post('/moderation/reports/{report}/action', [\App\Http\Controllers\Admin\AdminModerationController::class, 'actionReport'])->name('admin.moderation.reports.action');
+            });
+
             Route::get('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'index'])->name('admin.articles.index');
             Route::get('/articles/create', [\App\Http\Controllers\Admin\ArticlesController::class, 'create'])->name('admin.articles.create');
+            Route::get('/articles/template', [\App\Http\Controllers\Admin\ArticlesController::class, 'downloadTemplate'])->name('admin.articles.template');
             Route::post('/articles', [\App\Http\Controllers\Admin\ArticlesController::class, 'store'])->name('admin.articles.store');
             Route::get('/articles/{article}/edit', [\App\Http\Controllers\Admin\ArticlesController::class, 'edit'])->name('admin.articles.edit');
             Route::put('/articles/{article}', [\App\Http\Controllers\Admin\ArticlesController::class, 'update'])->name('admin.articles.update');
@@ -95,21 +147,15 @@ Route::prefix('{locale}')
             Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
             Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('admin.media.upload');
 
-            // Categories CRUD
-            Route::get('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.categories.index');
-            Route::get('/categories/create', [\App\Http\Controllers\Admin\CategoriesController::class, 'create'])->name('admin.categories.create');
-            Route::post('/categories', [\App\Http\Controllers\Admin\CategoriesController::class, 'store'])->name('admin.categories.store');
-            Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.categories.edit');
-            Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'update'])->name('admin.categories.update');
-            Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
-
-            // Tags CRUD
-            Route::get('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'index'])->name('admin.tags.index');
-            Route::get('/tags/create', [\App\Http\Controllers\Admin\TagsController::class, 'create'])->name('admin.tags.create');
-            Route::post('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'store'])->name('admin.tags.store');
-            Route::get('/tags/{tag}/edit', [\App\Http\Controllers\Admin\TagsController::class, 'edit'])->name('admin.tags.edit');
-            Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'update'])->name('admin.tags.update');
-            Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'destroy'])->name('admin.tags.destroy');
+            // Tags CRUD (Authors & Admins only)
+            Route::middleware('can:manage-tags')->group(function () {
+                Route::get('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'index'])->name('admin.tags.index');
+                Route::get('/tags/create', [\App\Http\Controllers\Admin\TagsController::class, 'create'])->name('admin.tags.create');
+                Route::post('/tags', [\App\Http\Controllers\Admin\TagsController::class, 'store'])->name('admin.tags.store');
+                Route::get('/tags/{tag}/edit', [\App\Http\Controllers\Admin\TagsController::class, 'edit'])->name('admin.tags.edit');
+                Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'update'])->name('admin.tags.update');
+                Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagsController::class, 'destroy'])->name('admin.tags.destroy');
+            });
         });
 
         Route::prefix('php')->group(function () {
@@ -121,25 +167,22 @@ Route::prefix('{locale}')
 
         Route::prefix('tools')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'tools')->name('tools.index');
-            Route::get('/{slug}', [PhpToolsController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'tools')
                 ->name('tools.show')
-                ->where('slug', 'sail|sail-databases|sail-queues|sail-env-deploy|sail-troubleshooting')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('microservices')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'microservices')->name('microservices.index');
-            Route::get('/{slug}', [MicroservicesController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'microservices')
                 ->name('microservices.show')
-                ->where('slug', MicroservicesController::slugRoutePattern())
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('architecture')->group(function () {
             Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'architecture')->name('architecture.index');
-            Route::get('/{slug}', [ArchitectureController::class, 'show'])
+            Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'architecture')
                 ->name('architecture.show')
-                ->where('slug', ArchitectureController::slugRoutePattern())
                 ->middleware('llm.friendly');
         });
 
@@ -160,4 +203,34 @@ Route::prefix('{locale}')
             Route::get('/{slug}', [\App\Http\Controllers\TagController::class, 'show'])->name('tags.show');
         });
 
+        Route::prefix('quizzes')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PublicQuizController::class, 'index'])->name('quizzes.index');
+            Route::get('/{slug}', [\App\Http\Controllers\PublicQuizController::class, 'show'])->name('quizzes.show');
+            Route::post('/{slug}/complete', [\App\Http\Controllers\PublicQuizController::class, 'complete'])->name('quizzes.complete');
+        });
+
+        Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');
+        Route::post('/features/{feature}/vote', [\App\Http\Controllers\FeatureController::class, 'vote'])->name('features.vote')->middleware('auth');
+
+        Route::get('/terms', function () {
+            return view('legal.terms');
+        })->name('terms');
+
+        Route::get('/privacy', function () {
+            return view('legal.privacy');
+        })->name('privacy');
+
+        Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
+        Route::post('/likes', [\App\Http\Controllers\LikeController::class, 'toggle'])->name('likes.toggle')->middleware('auth');
+
+        Route::get('/categories/{category_slug}', [PublicArticleController::class, 'categoryIndex'])->name('categories.show');
+
+        // Dynamic category article show route
+        Route::get('/{category_slug}/{article_slug}', [PublicArticleController::class, 'show'])
+            ->name('articles.show')
+            ->middleware('llm.friendly');
+
+        Route::get('/{any}', [PublicArticleController::class, 'showCustom'])
+            ->name('articles.show_custom')
+            ->where('any', '.*');
     });

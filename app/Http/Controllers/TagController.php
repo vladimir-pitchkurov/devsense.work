@@ -53,7 +53,7 @@ class TagController extends Controller
 
         $articles = $tag->articles()
             ->where('is_published', true)
-            ->with(['translations', 'category'])
+            ->with(['translations', 'categories'])
             ->latest('published_at')
             ->paginate(12);
 

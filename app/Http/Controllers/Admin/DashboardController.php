@@ -15,6 +15,26 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        if (!$user->isAdmin()) {
+            $user->load(['badges.translations', 'quizzes']);
+
+            // Get incomplete quizzes (quizzes not completed yet)
+            $completedQuizIds = $user->quizzes->pluck('id')->toArray();
+            $incompleteQuizzes = \App\Models\Quiz::whereNotIn('id', $completedQuizIds)
+                ->with('translations')
+                ->get();
+
+            // Total articles published
+            $publishedArticlesCount = $user->articles()
+                ->where('is_approved', true)
+                ->where('is_published', true)
+                ->count();
+
+            return view('admin.user_dashboard', compact('user', 'incompleteQuizzes', 'publishedArticlesCount'));
+        }
+
         // 1. Core counters
         $totalVisits = PageVisit::count();
         $botVisits = PageVisit::where('is_bot', true)->count();
@@ -72,6 +92,20 @@ class DashboardController extends Controller
             ];
         }
 
+        $pendingAuthors = collect();
+        $pendingProfiles = collect();
+        $pendingArticles = collect();
+        $reports = collect();
+
+        if (auth()->user()->isAdmin()) {
+            $pendingAuthors = \App\Models\User::where('is_approved', false)
+                ->where('role', \App\Models\User::ROLE_AUTHOR)
+                ->get();
+            $pendingProfiles = \App\Models\PendingUserProfile::with('user')->get();
+            $pendingArticles = \App\Models\PendingArticleTranslation::with(['article', 'article.author'])->get();
+            $reports = \App\Models\Report::with(['user'])->where('status', 'pending')->orderBy('created_at', 'desc')->get();
+        }
+
         return view('admin.dashboard', compact(
             'totalVisits',
             'botVisits',
@@ -83,7 +117,11 @@ class DashboardController extends Controller
             'topPages',
             'topCrawlers',
             'recentCrawls',
-            'chartData'
+            'chartData',
+            'pendingAuthors',
+            'pendingProfiles',
+            'pendingArticles',
+            'reports'
         ));
     }
 }

@@ -1,0 +1,11 @@
+# Antigravity Indexing Ignore List
+.git/
+node_modules/
+vendor/
+storage/
+bootstrap/cache/
+public/build/
+public/hot/
+public/storage/
+.phpunit.result.cache
+*.log
