@@ -146,33 +146,38 @@
         </div>
     </form>
 
-    <div class="admin-card" style="margin-top: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-        <h2 class="card-title">{{ __('ui.auth.password_reset.change_title') }}</h2>
-        <form action="{{ route('admin.profile.password', ['locale' => app()->getLocale()]) }}" method="POST" class="admin-form" style="margin-top: 1rem;">
-            @csrf
-            @method('PUT')
-            
-            <div class="form-group">
-                <label for="current_password" class="form-label">{{ __('ui.auth.password_reset.current_password') }}</label>
-                <input type="password" name="current_password" id="current_password" required placeholder="••••••••" class="form-input">
-            </div>
+    <div class="form-grid" style="margin-top: 1.5rem;">
+        <div class="form-sidebar" style="visibility: hidden; height: 0; overflow: hidden; margin: 0; padding: 0;"></div>
+        <div class="form-content">
+            <div class="admin-card">
+                <h2 class="card-title">{{ __('ui.auth.password_reset.change_title') }}</h2>
+                <form action="{{ route('admin.profile.password', ['locale' => app()->getLocale()]) }}" method="POST" class="admin-form" style="margin-top: 1rem;">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">{{ __('ui.auth.password_reset.current_password') }}</label>
+                        <input type="password" name="current_password" id="current_password" required placeholder="••••••••" class="form-input">
+                    </div>
 
-            <div class="form-group">
-                <label for="change_password" class="form-label">{{ __('ui.auth.password_reset.new_password') }}</label>
-                <input type="password" name="password" id="change_password" required placeholder="••••••••" class="form-input">
-            </div>
+                    <div class="form-group">
+                        <label for="change_password" class="form-label">{{ __('ui.auth.password_reset.new_password') }}</label>
+                        <input type="password" name="password" id="change_password" required placeholder="••••••••" class="form-input">
+                    </div>
 
-            <div class="form-group">
-                <label for="password_confirmation" class="form-label">{{ __('ui.auth.password_reset.confirm_new_password') }}</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" required placeholder="••••••••" class="form-input">
-            </div>
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">{{ __('ui.auth.password_reset.confirm_new_password') }}</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" required placeholder="••••••••" class="form-input">
+                    </div>
 
-            <div class="form-actions" style="margin-top: 1.5rem;">
-                <button type="submit" class="admin-btn admin-btn--primary">
-                    {{ __('ui.auth.password_reset.change_btn') }}
-                </button>
+                    <div class="form-actions" style="margin-top: 1.5rem;">
+                        <button type="submit" class="admin-btn admin-btn--primary">
+                            {{ __('ui.auth.password_reset.change_btn') }}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

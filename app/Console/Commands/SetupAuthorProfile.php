@@ -55,17 +55,23 @@ class SetupAuthorProfile extends Command
             $user->email              = $email;
             $user->password           = Hash::make($password);
             $user->email_verified_at  = now();
+            $user->fill($profile);
+            $user->save();
         } else {
             // Normalise the email to the canonical one in case it drifted
             $user->email = $email;
             if (!$user->email_verified_at) {
                 $user->email_verified_at = now();
             }
-        }
+            // Ensure they maintain the super admin role
+            $user->role = User::ROLE_SUPER_ADMIN;
 
-        // ── Fill profile data ────────────────────────────────────────────────
-        $user->fill($profile);
-        $user->save();
+            // Only overwrite profile fields if --force is explicitly passed
+            if ($this->option('force')) {
+                $user->fill($profile);
+            }
+            $user->save();
+        }
 
         // Only change password when explicitly requested
         if ($this->option('password')) {
