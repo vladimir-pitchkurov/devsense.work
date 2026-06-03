@@ -28,7 +28,10 @@
                 </div>
 
                 <div class="auth-field">
-                    <label for="password" class="auth-label">{{ __('ui.auth.password') }}</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label for="password" class="auth-label" style="margin-bottom: 0;">{{ __('ui.auth.password') }}</label>
+                        <a href="{{ route('password.request.locale', ['locale' => app()->getLocale()]) }}" class="auth-link" style="font-size: 0.85rem;">{{ __('ui.auth.password_reset.forgot_link') }}</a>
+                    </div>
                     <div class="auth-input-row">
                         <input
                             type="password" name="password" id="password"

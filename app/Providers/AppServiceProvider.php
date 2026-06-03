@@ -13,6 +13,7 @@ use App\Events\ArticlePublished;
 use App\Events\VacancyPublished;
 use App\Listeners\PingIndexNowListener;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 
 /**
@@ -54,6 +55,23 @@ class AppServiceProvider extends ServiceProvider
                 ->line(__('ui.auth.email_verification.line_1'))
                 ->action(__('ui.auth.email_verification.button'), $url)
                 ->line(__('ui.auth.email_verification.line_2'));
+        });
+
+        ResetPassword::createUrlUsing(function ($notifiable, $token) {
+            return route('password.reset', [
+                'locale' => app()->getLocale(),
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ]);
+        });
+
+        ResetPassword::toMailUsing(function ($notifiable, $url) {
+            return (new MailMessage)
+                ->subject(__('ui.auth.password_reset.subject'))
+                ->greeting(__('ui.auth.password_reset.greeting'))
+                ->line(__('ui.auth.password_reset.line_1'))
+                ->action(__('ui.auth.password_reset.button'), $url)
+                ->line(__('ui.auth.password_reset.line_2'));
         });
 
 

@@ -133,6 +133,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Send the password reset notification.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\ResetPasswordQueued($token));
+    }
+
+    /**
      * Scope a query to only include approved users.
      */
     public function scopeApproved($query)
