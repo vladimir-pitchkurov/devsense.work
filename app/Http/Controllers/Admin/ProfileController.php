@@ -94,4 +94,25 @@ class ProfileController extends Controller
             ->route('admin.profile.edit', ['locale' => app()->getLocale()])
             ->with('success', $message);
     }
+
+    /**
+     * Update user password from profile settings.
+     */
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        return redirect()
+            ->route('admin.profile.edit', ['locale' => app()->getLocale()])
+            ->with('success', __('ui.auth.password_reset.change_success'));
+    }
 }

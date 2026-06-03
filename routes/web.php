@@ -80,6 +80,11 @@ Route::get('/register', function () {
 Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post');
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+Route::get('/password/reset', function () {
+    $locale = config('app.default_site_locale', 'en');
+    return redirect('/'.$locale.'/password/reset');
+})->name('password.request');
+
 
 Route::prefix('{locale}')
     ->whereIn('locale', SetLocale::SUPPORTED_LOCALES)
@@ -93,6 +98,12 @@ Route::prefix('{locale}')
         Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
         Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register.locale');
         Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+        // Password Reset routes
+        Route::get('/password/reset', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request.locale')->middleware('guest');
+        Route::post('/password/email', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('guest');
+        Route::get('/password/reset/{token}', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
+        Route::post('/password/reset', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update')->middleware('guest');
 
         // Email Verification routes
         Route::get('/email/verify', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'notice'])->middleware(['auth'])->name('verification.notice');
@@ -145,6 +156,7 @@ Route::prefix('{locale}')
             Route::delete('/articles/{article}', [\App\Http\Controllers\Admin\ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
             Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('admin.profile.edit');
             Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+            Route::put('/profile/password', [\App\Http\Controllers\Admin\ProfileController::class, 'changePassword'])->name('admin.profile.password');
             Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('admin.media.upload');
 
             // Tags CRUD (Authors & Admins only)
