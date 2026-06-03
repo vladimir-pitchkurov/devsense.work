@@ -158,6 +158,13 @@
                     color: #fff !important;
                 }
                 </style>
+
+                @include('partials.article-suggestions', [
+                    'suggestions' => $article->suggestions()
+                        ->with(['user', 'votes', 'comments.user'])
+                        ->get()
+                        ->sortByDesc(fn($s) => $s->votes->count())
+                ])
             @endif
         </article>
 

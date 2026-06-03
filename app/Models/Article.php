@@ -90,6 +90,14 @@ class Article extends Model
     }
 
     /**
+     * Get the suggestions/feedback for the article.
+     */
+    public function suggestions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ArticleSuggestion::class);
+    }
+
+    /**
      * Get the likes/dislikes for the article.
      */
     public function likes(): \Illuminate\Database\Eloquent\Relations\MorphMany

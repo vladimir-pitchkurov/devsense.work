@@ -359,7 +359,7 @@
     <div class="report-modal__overlay" onclick="closeReportModal()"></div>
     <div class="report-modal__container">
         <header class="report-modal__header">
-            <h3 class="report-modal__title">Report Content</h3>
+            <h3 class="report-modal__title" id="report-modal-title">{{ __('ui.reports.modal_title') }}</h3>
             <button onclick="closeReportModal()" class="report-modal__close" aria-label="Close modal">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -373,39 +373,48 @@
             <input type="hidden" name="reportable_id" id="report-id">
             
             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
-                <label class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Reason for Report</label>
+                <label class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">{{ __('ui.reports.type_label') }}</label>
                 <div class="report-reasons" style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
-                        <input type="radio" name="reason_preset" value="Harassment or Hate Speech" checked>
-                        <span>Harassment or Hate Speech</span>
+                        <input type="radio" name="report_type" value="spam" checked>
+                        <span>{{ __('ui.reports.categories.spam') }}</span>
                     </label>
                     <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
-                        <input type="radio" name="reason_preset" value="Copyright Infringement">
-                        <span>Copyright / Plagiarism</span>
+                        <input type="radio" name="report_type" value="insult">
+                        <span>{{ __('ui.reports.categories.insult') }}</span>
                     </label>
                     <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
-                        <input type="radio" name="reason_preset" value="Discrimination / Non-scientific Content">
-                        <span>Discrimination or Unscientific content</span>
+                        <input type="radio" name="report_type" value="promo">
+                        <span>{{ __('ui.reports.categories.promo') }}</span>
                     </label>
                     <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
-                        <input type="radio" name="reason_preset" value="Other">
-                        <span>Other (specify below)</span>
+                        <input type="radio" name="report_type" value="plagiarism">
+                        <span>{{ __('ui.reports.categories.plagiarism') }}</span>
+                    </label>
+                    <label class="reason-option" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: var(--text-color);">
+                        <input type="radio" name="report_type" value="other">
+                        <span>{{ __('ui.reports.categories.other') }}</span>
                     </label>
                 </div>
             </div>
 
             <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
-                <label for="report-reason-details" class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Details (Required)</label>
-                <textarea name="reason" id="report-reason-details" rows="4" class="form-input" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.375rem; padding: 0.5rem; box-sizing: border-box; font-family: inherit; font-size: 0.95rem;" placeholder="Please describe the violation in detail..." required></textarea>
+                <label for="report-reason-details" class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">{{ __('ui.reports.reason_label') }}</label>
+                <textarea name="reason" id="report-reason-details" rows="4" class="form-input" style="background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.375rem; padding: 0.5rem; box-sizing: border-box; font-family: inherit; font-size: 0.95rem;" placeholder="{{ __('ui.reports.reason_placeholder') }}" required></textarea>
                 <span id="report-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: none;"></span>
+            </div>
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                <label for="report-screenshot" class="form-label" style="text-transform: none; font-size: 0.9rem; font-weight: 600; color: var(--text-color);">{{ __('ui.reports.screenshot_label') }}</label>
+                <input type="file" name="screenshot" id="report-screenshot" accept="image/*" class="form-input" style="color: var(--text-color); font-size: 0.9rem; background: transparent; border: none; padding: 0;">
             </div>
 
             <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
                 <button type="button" onclick="closeReportModal()" class="admin-btn admin-btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 0.375rem; cursor: pointer;">
-                    Cancel
+                    {{ __('ui.reports.cancel_btn') }}
                 </button>
                 <button type="submit" id="reportSubmitBtn" class="admin-btn admin-btn--primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-weight: 600;">
-                    Submit Report
+                    {{ __('ui.reports.submit_btn') }}
                 </button>
             </div>
         </form>
@@ -413,153 +422,157 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" width="48" height="48" style="margin: 0 auto 1rem auto; display: block;">
                 <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <h4 style="color: #10b981; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">Report Submitted</h4>
+            <h4 style="color: #10b981; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">{{ __('ui.reports.modal_title') }}</h4>
             <p id="report-success-text" style="color: var(--text-muted); font-size: 0.9rem; margin: 0;"></p>
             <button onclick="closeReportModal()" class="admin-btn admin-btn--secondary" style="margin-top: 1.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 0.375rem; cursor: pointer;">
-                Close
+                {{ __('ui.reports.cancel_btn') }}
             </button>
         </div>
     </div>
 </div>
 
-<style>
-.report-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    animation: fadeIn 0.2s ease-out;
-}
-.report-modal__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-}
-.report-modal__container {
-    position: relative;
-    background: var(--card-bg, #1a202c);
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    width: 100%;
-    max-width: 480px;
-    padding: 1.5rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-    z-index: 10001;
-    color: var(--text-color);
-    animation: scaleIn 0.2s ease-out;
-}
-.report-modal__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-}
-.report-modal__title {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-family: 'Outfit', sans-serif;
-    color: var(--text-color);
-}
-.report-modal__close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 0.375rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.report-modal__close:hover {
-    color: var(--text-color);
-    background: rgba(255, 255, 255, 0.05);
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-</style>
 
 <script>
 function openReportModal(type, id) {
-    document.getElementById('report-type').value = type;
-    document.getElementById('report-id').value = id;
-    document.getElementById('report-reason-details').value = '';
-    document.getElementById('report-error').style.display = 'none';
-    document.getElementById('reportForm').style.display = 'block';
-    document.getElementById('report-success-msg').style.display = 'none';
-    document.getElementById('reportModal').style.display = 'flex';
+    console.log('openReportModal triggered with type:', type, 'id:', id);
+    
+    const reportType = document.getElementById('report-type');
+    if (reportType) reportType.value = type;
+
+    const reportId = document.getElementById('report-id');
+    if (reportId) reportId.value = id;
+
+    const reasonDetails = document.getElementById('report-reason-details');
+    if (reasonDetails) reasonDetails.value = '';
+
+    const screenshot = document.getElementById('report-screenshot');
+    if (screenshot) screenshot.value = '';
+
+    const errorMsg = document.getElementById('report-error');
+    if (errorMsg) errorMsg.style.display = 'none';
+
+    const reportForm = document.getElementById('reportForm');
+    if (reportForm) reportForm.style.display = 'block';
+
+    const successMsg = document.getElementById('report-success-msg');
+    if (successMsg) successMsg.style.display = 'none';
+
+    const modal = document.getElementById('reportModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    } else {
+        console.warn('Report modal container element (#reportModal) not found in DOM.');
+    }
+
+    // Map target labels for title
+    const targetLabels = {
+        'article': "{{ __('ui.reports.targets.article') }}",
+        'user': "{{ __('ui.reports.targets.user') }}",
+        'comment': "{{ __('ui.reports.targets.comment') }}",
+        'App\\Models\\Article': "{{ __('ui.reports.targets.article') }}",
+        'App\\Models\\User': "{{ __('ui.reports.targets.user') }}",
+        'App\\Models\\ArticleSuggestionComment': "{{ __('ui.reports.targets.comment') }}"
+    };
+    const targetName = targetLabels[type] || "{{ __('ui.reports.targets.article') }}";
+    
+    const modalTitle = document.getElementById('report-modal-title');
+    if (modalTitle) {
+        modalTitle.innerText = "{{ __('ui.reports.modal_title') }}: " + targetName;
+    }
 }
 
 function closeReportModal() {
-    document.getElementById('reportModal').style.display = 'none';
+    const modal = document.getElementById('reportModal');
+    if (modal) modal.style.display = 'none';
 }
 
 function submitReportForm(event) {
     event.preventDefault();
     const submitBtn = document.getElementById('reportSubmitBtn');
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'Submitting...';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Submitting...';
+    }
     
-    const details = document.getElementById('report-reason-details').value;
+    const reasonDetails = document.getElementById('report-reason-details');
+    const details = reasonDetails ? reasonDetails.value : '';
+    const errorMsg = document.getElementById('report-error');
+    
     if (details.trim().length < 5) {
-        document.getElementById('report-error').innerText = 'Please provide details (at least 5 characters).';
-        document.getElementById('report-error').style.display = 'block';
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Report';
+        if (errorMsg) {
+            errorMsg.innerText = 'Please provide details (at least 5 characters).';
+            errorMsg.style.display = 'block';
+        }
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "{{ __('ui.reports.submit_btn') }}";
+        }
         return;
     }
     
-    const preset = document.querySelector('input[name="reason_preset"]:checked').value;
-    const finalReason = preset === 'Other' ? details : preset + ': ' + details;
+    const checkedRadio = document.querySelector('input[name="report_type"]:checked');
+    const category = checkedRadio ? checkedRadio.value : 'other';
     
-    const type = document.getElementById('report-type').value;
-    const id = document.getElementById('report-id').value;
-    const token = document.querySelector('input[name="_token"]').value;
+    const reportType = document.getElementById('report-type');
+    const type = reportType ? reportType.value : '';
+    
+    const reportId = document.getElementById('report-id');
+    const id = reportId ? reportId.value : '';
+    
+    const tokenEl = document.querySelector('input[name="_token"]');
+    const token = tokenEl ? tokenEl.value : '';
+    
+    const screenshotInput = document.getElementById('report-screenshot');
+    
+    const formData = new FormData();
+    formData.append('reportable_type', type);
+    formData.append('reportable_id', id);
+    formData.append('type', category);
+    formData.append('reason', details);
+    if (screenshotInput && screenshotInput.files && screenshotInput.files[0]) {
+        formData.append('screenshot', screenshotInput.files[0]);
+    }
     
     fetch('/' + document.documentElement.lang + '/reports', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({
-            reportable_type: type,
-            reportable_id: id,
-            reason: finalReason
-        })
+        body: formData
     })
     .then(response => response.json().then(data => ({ status: response.status, body: data })))
     .then(res => {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Report';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "{{ __('ui.reports.submit_btn') }}";
+        }
         if (res.status === 200 && res.body.success) {
-            document.getElementById('reportForm').style.display = 'none';
-            document.getElementById('report-success-text').innerText = res.body.message;
-            document.getElementById('report-success-msg').style.display = 'block';
+            const reportForm = document.getElementById('reportForm');
+            if (reportForm) reportForm.style.display = 'none';
+            
+            const successText = document.getElementById('report-success-text');
+            if (successText) successText.innerText = res.body.message;
+            
+            const successMsg = document.getElementById('report-success-msg');
+            if (successMsg) successMsg.style.display = 'block';
         } else {
-            document.getElementById('report-error').innerText = res.body.error || 'Failed to submit report. Please try again.';
-            document.getElementById('report-error').style.display = 'block';
+            if (errorMsg) {
+                errorMsg.innerText = res.body.error || 'Failed to submit report. Please try again.';
+                errorMsg.style.display = 'block';
+            }
         }
     })
     .catch(err => {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Report';
-        document.getElementById('report-error').innerText = 'A network error occurred. Please try again.';
-        document.getElementById('report-error').style.display = 'block';
+        console.error('Error submitting report:', err);
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "{{ __('ui.reports.submit_btn') }}";
+        }
+        if (errorMsg) {
+            errorMsg.innerText = 'A network error occurred. Please try again.';
+            errorMsg.style.display = 'block';
+        }
     });
 }
 </script>
