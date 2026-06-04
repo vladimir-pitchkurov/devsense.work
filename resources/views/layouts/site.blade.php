@@ -523,6 +523,21 @@ function submitReportForm(event) {
     const token = tokenEl ? tokenEl.value : '';
     
     const screenshotInput = document.getElementById('report-screenshot');
+    if (screenshotInput && screenshotInput.files && screenshotInput.files[0]) {
+        const file = screenshotInput.files[0];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            if (errorMsg) {
+                errorMsg.innerText = 'The selected file is too large (max 5MB). Please choose a smaller image.';
+                errorMsg.style.display = 'block';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "{{ __('ui.reports.submit_btn') }}";
+            }
+            return;
+        }
+    }
     
     const formData = new FormData();
     formData.append('reportable_type', type);
