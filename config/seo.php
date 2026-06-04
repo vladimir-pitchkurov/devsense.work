@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'allow_indexing' => filter_var(env('SEO_ALLOW_INDEXING', true), FILTER_VALIDATE_BOOL),
+    'allow_indexing' => filter_var(env('SEO_ALLOW_INDEXING', env('APP_ENV') === 'production'), FILTER_VALIDATE_BOOL),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,5 +74,28 @@ return [
         'ua' => 'uk_UA',
         'bg' => 'bg_BG',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Author Profile & E-E-A-T Configuration
+    |--------------------------------------------------------------------------
+    */
+    'author' => [
+        'name'      => env('SEO_AUTHOR_NAME', 'Vladimir Pichkurov'),
+        'job_title' => env('SEO_AUTHOR_JOB_TITLE', 'Senior PHP Developer & Backend Architect'),
+        'sameAs'    => [
+            'https://github.com/vladimir-pitchkurov',
+            'https://www.linkedin.com/in/volodimir-pichkurov-626a46150',
+            'https://devsense.work/en/authors/vladimir-pichkurov',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IndexNow API Configurations
+    |--------------------------------------------------------------------------
+    */
+    'indexnow_key' => env('SEO_INDEXNOW_KEY', '8d2f7850a1e34bcf9db7519bb8d2ef5a'),
+    'indexnow_enabled' => filter_var(env('SEO_INDEXNOW_ENABLED', false), FILTER_VALIDATE_BOOL),
 
 ];

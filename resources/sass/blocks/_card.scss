@@ -1,25 +1,57 @@
 .hero {
     margin-bottom: 2rem;
+    padding: 2.5rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--hero-gradient);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+        padding: 3.5rem 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+    }
 
     &__title {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        font-weight: 700;
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.8rem, 5vw, 2.75rem);
+        font-weight: 800;
         margin: 0 0 0.75rem;
-        line-height: 1.2;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
+        color: var(--text-color);
+        position: relative;
+        z-index: 1;
     }
 
     &__description {
         margin: 0;
         max-width: 52rem;
         color: var(--text-muted);
-        line-height: 1.55;
+        line-height: 1.6;
+        font-size: 1.05rem;
+        position: relative;
+        z-index: 1;
     }
 }
 
 .guides {
     &__list {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
         grid-template-columns: 1fr;
         list-style: none;
         margin: 0;
@@ -44,58 +76,101 @@
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     background: var(--bg-color);
+    position: relative;
     overflow: hidden;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    &:hover {
-        border-color: color-mix(in srgb, var(--border-color) 70%, var(--text-color));
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--card-glow);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 0;
     }
 
-    [data-theme='dark'] &:hover {
-        box-shadow: 0 4px 28px rgba(0, 0, 0, 0.35);
+    &:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 12px 30px var(--shadow-hover);
+        transform: translateY(-4px);
+
+        &::before {
+            opacity: 1;
+        }
+
+        .card__link {
+            color: var(--primary-hover);
+            &::after {
+                transform: translateX(4px);
+            }
+        }
     }
 
     &__header {
-        padding: 1rem 1.1rem 0;
+        padding: 1.5rem 1.5rem 0;
     }
 
     &__title {
-        font-size: 1.05rem;
-        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
         margin: 0;
-        line-height: 1.35;
+        line-height: 1.3;
+        color: var(--text-color);
     }
 
     &__body {
         flex: 1;
-        padding: 0.65rem 1.1rem 1rem;
+        padding: 0.75rem 1.5rem 1.5rem;
     }
 
     &__excerpt {
         margin: 0;
-        font-size: 0.9rem;
-        line-height: 1.5;
+        font-size: 0.95rem;
+        line-height: 1.55;
         color: var(--text-muted);
     }
 
     &__footer {
-        padding: 0 1.1rem 1rem;
+        padding: 0 1.5rem 1.5rem;
         margin-top: auto;
     }
 
     &__link {
         display: inline-flex;
         align-items: center;
-        font-size: 0.9rem;
+        gap: 0.35rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: var(--primary-color);
         text-decoration: none;
+        transition: color 0.2s ease;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        &::after {
+            content: "→";
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+            line-height: 1;
+            position: relative;
+            z-index: 3;
+        }
 
         &:hover {
-            text-decoration: underline;
+            text-decoration: none;
         }
     }
 }
+

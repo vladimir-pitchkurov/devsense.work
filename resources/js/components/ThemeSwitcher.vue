@@ -40,19 +40,29 @@ const cycleTheme = (): void => {
 
 <style scoped>
 .theme-switcher {
-    background: none;
+    background: var(--bg-color);
     border: 1px solid var(--border-color);
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0 0.6rem;
-    border-radius: 6px;
+    font-size: 1.1rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
     color: var(--text-color);
-    transition: background-color 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s, box-shadow 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
+    outline: none;
 }
 .theme-switcher:hover {
-    background-color: var(--page-bg);
+    background-color: var(--code-header-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px var(--shadow-hover);
+    transform: translateY(-1px);
 }
+.theme-switcher:active {
+    transform: translateY(0);
+}
+
 </style>

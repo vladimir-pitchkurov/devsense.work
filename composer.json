@@ -13,7 +13,10 @@
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.8",
+        "league/flysystem-aws-s3-v3": "^3.34",
         "predis/predis": "^2.3",
+        "resend/resend-laravel": "^1.4",
+        "spatie/laravel-backup": "^10.2",
         "spatie/laravel-sitemap": "^8.1",
         "symfony/yaml": "^8.0"
     },

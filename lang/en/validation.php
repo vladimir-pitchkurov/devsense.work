@@ -167,6 +167,10 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
 
+    // Email integrity rules
+    'disposable_email' => 'Temporary or disposable email addresses are not allowed. Please use a real email address.',
+    'no_mx_record'     => 'The email domain does not appear to accept emails. Please check the address and try again.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

@@ -1,42 +1,96 @@
 :root, [data-theme="light"] {
     --bg-color: #ffffff;
     --bg-color-rgb: 255, 255, 255;
-    --primary-color: #4f46e5;
+    --primary-color: #6366f1; /* Premium Indigo */
+    --primary-hover: #4f46e5;
+    --primary-glow: rgba(99, 102, 241, 0.15);
     --page-bg: #f8fafc;
-    --text-color: #0f172a;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --spacing-unit: 1rem;
-    --code-bg: #f1f5f9;
-    --code-border-accent: #4f46e5;
+    --text-color: #0f172a; /* Slate 900 */
+    --text-muted: #64748b; /* Slate 500 */
+    --border-color: #e2e8f0; /* Slate 200 */
+    --shadow-color: rgba(99, 102, 241, 0.05);
+    --shadow-hover: rgba(99, 102, 241, 0.12);
+    --spacing-unit: 1.25rem;
+    
+    /* Code block tokens */
+    --code-bg: #f8fafc;
+    --code-border-accent: #6366f1;
     --code-text: #334155;
+    --code-header-bg: #f1f5f9;
+
+    /* Gradients */
+    --hero-gradient: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+    --card-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0) 100%);
+
+    /* Alert styles */
+    --alert-note-border: #3b82f6;
+    --alert-note-bg: rgba(59, 130, 246, 0.05);
+    --alert-warning-border: #f59e0b;
+    --alert-warning-bg: rgba(245, 158, 11, 0.05);
+    --alert-important-border: #a855f7;
+    --alert-important-bg: rgba(168, 85, 247, 0.05);
 }
 
 [data-theme="dark"] {
-    --bg-color: #1e293b;
-    --bg-color-rgb: 30, 41, 59;
-    --primary-color: #10b981;
-    --page-bg: #0f172a;
-    --text-color: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-    --code-bg: #020617;
-    --code-border-accent: #10b981;
+    --bg-color: #0f172a; /* Slate 900 */
+    --bg-color-rgb: 15, 23, 42;
+    --primary-color: #3b82f6; /* Modern Blue */
+    --primary-hover: #60a5fa;
+    --primary-glow: rgba(59, 130, 246, 0.2);
+    --page-bg: #030712; /* Extreme Dark */
+    --text-color: #f8fafc; /* Slate 50 */
+    --text-muted: #94a3b8; /* Slate 400 */
+    --border-color: #1e293b; /* Slate 800 */
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.5);
+    
+    /* Code block tokens */
+    --code-bg: #090d16;
+    --code-border-accent: #3b82f6;
     --code-text: #e2e8f0;
+    --code-header-bg: #0f172a;
+
+    /* Gradients */
+    --hero-gradient: linear-gradient(135deg, #1e1b4b 0%, #030712 100%);
+    --card-glow: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 100%);
+
+    /* Alert styles */
+    --alert-note-border: #3b82f6;
+    --alert-note-bg: rgba(59, 130, 246, 0.15);
+    --alert-warning-border: #f59e0b;
+    --alert-warning-bg: rgba(245, 158, 11, 0.15);
+    --alert-important-border: #a855f7;
+    --alert-important-bg: rgba(168, 85, 247, 0.15);
 }
 
 [data-theme="nord"] {
-    --bg-color: #3b4252;
-    --bg-color-rgb: 59, 66, 82;
-    --primary-color: #88c0d0;
-    --page-bg: #2e3440;
-    --text-color: #eceff4;
+    --bg-color: #2e3440; /* Nord Polar Night */
+    --bg-color-rgb: 46, 52, 64;
+    --primary-color: #88c0d0; /* Nord Frost */
+    --primary-hover: #8fbcbb;
+    --primary-glow: rgba(136, 192, 208, 0.2);
+    --page-bg: #242933; /* Nord Polar Night Dark */
+    --text-color: #eceff4; /* Nord Snow Storm */
     --text-muted: #d8dee9;
-    --border-color: #4c566a;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --code-bg: #242933;
+    --border-color: #3b4252;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --shadow-hover: rgba(0, 0, 0, 0.4);
+    
+    /* Code block tokens */
+    --code-bg: #2e3440;
     --code-border-accent: #88c0d0;
     --code-text: #e5e9f0;
+    --code-header-bg: #242933;
+
+    /* Gradients */
+    --hero-gradient: linear-gradient(135deg, #2e3440 0%, #1a1c23 100%);
+    --card-glow: linear-gradient(135deg, rgba(136, 192, 208, 0.08) 0%, rgba(136, 192, 208, 0) 100%);
+
+    /* Alert styles */
+    --alert-note-border: #88c0d0;
+    --alert-note-bg: rgba(136, 192, 208, 0.15);
+    --alert-warning-border: #ebcb8b;
+    --alert-warning-bg: rgba(235, 203, 139, 0.15);
+    --alert-important-border: #b48ead;
+    --alert-important-bg: rgba(180, 142, 173, 0.15);
 }

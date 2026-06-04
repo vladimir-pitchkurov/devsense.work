@@ -1,54 +1,86 @@
 ---
-title: "Laravel Sail: опашки, Horizon, Redis, RabbitMQ и failed jobs | DevSense"
-description: "Laravel опашки в Sail: sync/redis/database, queue:work, Horizon локално, RabbitMQ чрез пакети, failed_jobs, queue:restart и разлики с production."
+title: "Laravel Sail: работници за опашки, Horizon, Redis, RabbitMQ & несполучливи задачи | DevSense"
+description: "Стартиране на Laravel опашки в Sail: sync vs redis vs database, локален запуск на queue:work и Horizon, RabbitMQ с комюнити драйвери, failed_jobs, queue:restart и как се различава от продукция."
+faq:
+  - question: "Защо моите фонови задачи не се изпълняват в Sail?"
+    answer: "За разлика от драйвера 'sync', драйвери като 'database' или 'redis' изискват работещ процес на работник (worker). Трябва да стартирате контейнер за работник или да изпълните 'sail artisan queue:work' в терминала."
+  - question: "Защо промените в Job класовете ми не се отразяват в опашката?"
+    answer: "Работниците за опашки в Laravel зареждат кода на приложението в паметта веднъж. Когато правите промени по кода, трябва да изпълните 'sail artisan queue:restart', за да ги презаредите."
+  - question: "Как да стартирам планировчика в Laravel Sail без хост cron задача?"
+    answer: "Можете да стартирате 'sail run --rm laravel.test php artisan schedule:work' в отделен терминал, което ще изпълнява задачите на всяка минута локално."
+  - question: "Как се различава управлението на опашки в Sail от това в продукция?"
+    answer: "В Sail работниците работят на преден план в терминала ви и спират, когато го затворите. В продукция мениджъри на процеси като Supervisor или Kubernetes се грижат работниците да работят непрекъснато."
 ---
 
-# Sail: опашки и workers
+# Sail: опашки и работници
 
-Как да пускате **Laravel опашки**, когато приложението е в **Sail**. За Redis/RabbitMQ контейнери вижте [Бази данни и услуги](sail-databases#networking); за `.env` — [Среди и деплой](sail-env-deploy#env-files).
+Вие задействате фонова задача във вашето Laravel приложение, но нищо не се случва. Страницата на задачата показва статус \"В изчакване\", а записите в базата данни остават непроменени. И тогава ви хрумва: в контейнеризирана среда фоновите задачи не се изпълняват сами. Без активен процес на работник (worker), работещ вътре в мрежата на Sail контейнерите, вашите опашки са просто мъртви записи в БД или мълчаливи списъци на Redis.
 
-**Навигация:** [Всички инструменти](../) · [Sail](sail#what-sail-is) · [БД](sail-databases#networking) · [Env](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
+Стартирането на работници за опашки и планировчици на задачи директно на вашата хост операционна система ще се провали, тъй като те нямат достъп до контейнеризираните бази данни, променливите на средата и PHP разширенията на Sail. За да симулирате изпълнението в продукция, трябва да стартирате и управлявате процесите на работниците вътре в Compose мрежата.
+
+В това ръководство ще ви покажем как да конфигурирате връзки към опашки, да стартирате работници и Horizon, да управлявате сривове в задачите и да опреснявате остарелия кеш на кода в работниците.
+
+**Навигация:** [Всички инструменти](../) · [Sail обзор](sail#what-sail-is) · [Бази данни](sail-databases#networking) · [Env и деплой](sail-env-deploy#forward-ports) · [Диагностика](sail-troubleshooting#wsl-filesync)
 
 ## Съдържание
 
-* [Връзки накратко](#connections)
-* [`queue:work` в Sail](#queue-work)
+* [Драйвери](#connections)
+* [Стартиране на `queue:work` в Sail](#queue-work)
 * [Horizon (Redis)](#horizon)
 * [RabbitMQ и AMQP пакети](#rabbitmq)
-* [Неуспешни jobs и повтори](#failed-jobs)
+* [Неуспешни задачи и повторни опити](#failed-jobs)
 * [Промени в кода и `queue:restart`](#restart)
 * [Планировчик (`schedule:run`)](#scheduler)
-* [Контраст с production](#production)
+* [Разлики с продукция](#production)
+* [Чести грешки](#common-mistakes)
+* [Въпроси за самопроверка](#self-check)
 
 ---
 
 <a id="connections"></a>
-## Връзки накратко
+## Драйвери
 
-| Драйвер | В Sail |
-|--------|--------|
-| **`sync`** | Debug без worker; без паралелизъм. |
-| **`database`** | Таблица `jobs` + един или повече workers. |
-| **`redis`** | Типично с Horizon; нужен Redis услуга. |
-| **`sqs`** | Облачна опашка; по-рядко само локално. |
-| **`rabbitmq`** (пакет) | AMQP; контейнер + пакет. |
+Изберете драйвер за опашки в `.env` файла:
 
-**`QUEUE_CONNECTION`** в `.env`. След промяна: `sail artisan config:clear`.
+```dotenv
+# .env
+QUEUE_CONNECTION=redis
+```
+
+| Драйвер | Употреба в Sail |
+|--------|-------------------|
+| **`sync`** | Синхронно дебъгване на логиката на задачите без стартиране на работник. |
+| **`database`** | Проста асинхронна опашка; изисква таблица `jobs` и работещ работник. |
+| **`redis`** | Стандартен избор за продукция; интегрира се с Horizon; изисква Redis услуга. |
+| **`rabbitmq`** | AMQP обмен; изисква RabbitMQ контейнер и допълнителен комюнити пакет. |
+
+> [!NOTE]
+> **Кеширане на конфигурацията**
+> Ако промените `QUEUE_CONNECTION` или други променливи на опашката, изпълнете `sail artisan config:clear` или `sail artisan config:cache` за прилагане на промените в стартираните контейнери.
 
 ---
 
 <a id="queue-work"></a>
-## `queue:work` в Sail
+## Стартиране на `queue:work` в Sail
+
+За да обработвате задачи, отворете отделен терминал и стартирайте:
 
 ```bash
+# Terminal
 sail artisan queue:work
 ```
 
+За допълнителен контрол укажете конкретна връзка и опции за стартиране:
+
 ```bash
+# Terminal
 sail artisan queue:work redis --queue=high,default --tries=3 --timeout=90
 ```
 
+За да изпълните само една задача и да излезете (полезно при дебъгване):
+
 ```bash
+# Terminal
 sail artisan queue:work --once
 ```
 
@@ -57,71 +89,142 @@ sail artisan queue:work --once
 <a id="horizon"></a>
 ## Horizon (Redis)
 
-**`QUEUE_CONNECTION=redis`** и инсталиран Horizon.
+Laravel Horizon предоставя удобен уеб интерфейс и конфигурация на базата на код за опашки на Redis.
+
+1. Инсталирайте Horizon чрез Composer:
+   ```bash
+   sail composer require laravel/horizon
+   sail artisan horizon:install
+   ```
+2. Стартирайте Horizon вътре в контейнера:
 
 ```bash
+# Terminal
 sail artisan horizon
 ```
 
-В production Supervisor/systemd; в Sail — Ctrl+C.
+Панелът за управление ще бъде достъпен на адрес `http://localhost/horizon`. По време на разработка Horizon се спира с клавишната комбинация `Ctrl+C`.
 
 ---
 
 <a id="rabbitmq"></a>
 ## RabbitMQ и AMQP пакети
 
-1. Услуга в Compose ([пример](sail-databases#rabbitmq-sidecar)).
-2. AMQP пакет; publish config.
-3. **`QUEUE_CONNECTION`** по документация.
-4. `sail artisan queue:work rabbitmq`
+Laravel не съдържа вграден драйвер за RabbitMQ. За да използвате AMQP:
+
+1. Добавете RabbitMQ услугата в `docker-compose.yml` файла ([вижте рецептите за бази данни](sail-databases#rabbitmq-sidecar)).
+2. Инсталирайте поддържан комюнити пакет (например `vyuldashev/laravel-queue-rabbitmq`).
+3. Задайте детайлите за връзка:
+
+```dotenv
+# .env
+QUEUE_CONNECTION=rabbitmq
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+```
+
+4. Стартирайте обработката:
+   ```bash
+   sail artisan queue:work rabbitmq
+   ```
 
 ---
 
 <a id="failed-jobs"></a>
-## Неуспешни jobs и повтори
+## Неуспешни задачи и повторни опити
 
-- Миграция **`failed_jobs`** при `database` failed driver.
-- `sail artisan queue:failed`
-- `sail artisan queue:retry {id}`
-- `sail artisan queue:flush`
+Ако фонова задача завърши с изключение, Laravel записва информацията в таблицата `failed_jobs`.
+
+- Преглед на списъка с неуспешни задачи:
+  ```bash
+  sail artisan queue:failed
+  ```
+- Повторно изпълнение по ID:
+  ```bash
+  sail artisan queue:retry 5
+  ```
+- Изчистване на всички неуспешни задачи:
+  ```bash
+  sail artisan queue:flush
+  ```
 
 ---
 
 <a id="restart"></a>
 ## Промени в кода и `queue:restart`
 
+Работниците на опашки в Laravel зареждат рамката и кода на приложението в паметта веднъж и работят в безкраен цикъл. Ако промените файл на задача (Job), стартираният работник ще продължи да изпълнява старата версия на кода от паметта.
+
+След всяко запазване на промени по кода, рестартирайте работниците:
+
 ```bash
+# Terminal
 sail artisan queue:restart
 ```
 
-Локално: **`--once`** или **`--max-jobs=1`**.
+> [!NOTE]
+> **Авторестартиране по време на разработка**
+> За да не въвеждате `queue:restart` непрекъснато при активна локална разработка, можете да стартирате работника с флагове `--max-jobs=1` или `--once`.
 
 ---
 
 <a id="scheduler"></a>
 ## Планировчик (`schedule:run`)
 
-- Ръчно: `sail artisan schedule:run`
-- **`sail run --rm laravel.test php artisan schedule:work`**
-- Production: cron всяка минута.
+Sail не включва автоматично стартиран системен cron демон. За изпълнение на планирани задачи локално имате два начина:
+
+1. Стартиране на планировчика ръчно:
+   ```bash
+   sail artisan schedule:run
+   ```
+2. Стартиране на непрекъснат цикъл на опресняване във фонов режим:
+
+```bash
+# Terminal
+sail run --rm laravel.test php artisan schedule:work
+```
 
 ---
 
 <a id="production"></a>
-## Контраст с production
+## Разлики с продукция
 
-| Тема | Sail | Production |
-|------|------|------------|
-| Worker lifecycle | Терминал / Horizon foreground | Supervisor, K8s, managed |
-| Scaling | Един контейнер | Много workers |
-| Redis | Един контейнер | Кластер / managed |
+| Тема | Sail (локално) | Продукция |
+|-------|------------------|------------------------|
+| **Мениджър на процеси** | Ръчно на преден план | Демон **Supervisor** или systemd |
+| **Мащабиране** | Един Docker контейнер | Няколко контейнера / автоскейлинг в Kubernetes |
+| **Отказоустойчивост** | Ръчно рестартиране на контейнер | Резервни възли и клъстеризация |
 
 ---
 
-## Вижте също
+## ⚠️ Чести грешки
 
-* [Sail — пълен гайд](sail#what-sail-is)  
-* [Бази данни и услуги](sail-databases#networking)  
-* [Среди и деплой](sail-env-deploy#env-files)  
+**1. Промяна на кода на задача без рестартиране на работника**
+Вие поправяте грешка в Job класа, но обработчикът на опашки продължава да показва старата грешка.
+*Решение:* Работникът е закеширал PHP файловете. Изпълнете `sail artisan queue:restart`.
 
-[← Всички инструменти](../)
+**2. Стартиране на `php artisan queue:work` на локалния хост терминал**
+Стартирането на командата директно на вашата машина ще се срине поради липса на драйвери за бази данни или невъзможност за разрешаване на вътрешни имена на контейнери като `redis` или `mysql`.
+*Решение:* Винаги добавяйте префикс `sail` за изпълнение вътре в контейнера: `sail artisan queue:work`.
+
+**3. Постоянно използване на синхронния драйвер `sync`**
+Използването на `QUEUE_CONNECTION=sync` изпълнява задачите мигновено в рамките на HTTP заявката. Това маскира проблеми с конкурентност, таймаути и сериализация на данни, които задължително ще се появят в продукция.
+*Решение:* Използвайте `database` или `redis` локално, за да съответства на поведението в продукция.
+
+---
+
+## 🧠 Въпроси за самопроверка
+
+1. **Защо работещ работник на опашка не изпълнява новия код, който току-що сте записали на диска?**
+2. **Какво име на хост трябва да посочите в `.env` файла за RabbitMQ при работа вътре в Sail?**
+3. **Как да поддържате работата на планировчика на задачи Laravel във фонов режим без настройка на cron на хост системата?**
+4. **Коя artisan команда трябва да изпълните за повторно стартиране на задача, завършила с неуспех?**
+
+<details>
+<summary><b>Покажи отговорите</b></summary>
+
+1. PHP CLI работниците зареждат фреймуърка веднъж в паметта и го задържат. Те не препрочитат файловете от диска за всяка нова задача. Изисква се рестартиране чрез `sail artisan queue:restart`.
+2. Трябва да използвате името на услугата от Compose, което е `rabbitmq`.
+3. Стартирайте командата `sail run --rm laravel.test php artisan schedule:work`, която ще задържи процеса и ще вика планировчика всяка минута.
+4. Изпълнете командата `sail artisan queue:retry {id}`, където `{id}` е идентификаторът на задачата от таблицата `failed_jobs`, или `all` за повтаряне на всички провалени задачи.
+</details>

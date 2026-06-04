@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\ArchitectureController;
-use App\Http\Controllers\MicroservicesController;
-use App\Http\Controllers\PhpToolsController;
 use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
 use Carbon\Carbon;
@@ -47,14 +44,7 @@ class SiteSitemapBuilder
      */
     private function toolSlugs(): array
     {
-        $reflection = new ReflectionClass(PhpToolsController::class);
-        $constant = $reflection->getReflectionConstant('TOOL_SLUG_ORDER');
-        if ($constant === false) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return $constant->getValue();
+        return ['sail', 'sail-databases', 'sail-queues', 'sail-env-deploy', 'sail-troubleshooting'];
     }
 
     /**
@@ -62,14 +52,7 @@ class SiteSitemapBuilder
      */
     private function microservicesSlugs(): array
     {
-        $reflection = new ReflectionClass(MicroservicesController::class);
-        $constant = $reflection->getReflectionConstant('MICROSERVICES_SLUG_ORDER');
-        if ($constant === false) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return $constant->getValue();
+        return ['api-gateway'];
     }
 
     /**
@@ -77,14 +60,16 @@ class SiteSitemapBuilder
      */
     private function architectureSlugs(): array
     {
-        $reflection = new ReflectionClass(ArchitectureController::class);
-        $constant = $reflection->getReflectionConstant('ARCHITECTURE_SLUG_ORDER');
-        if ($constant === false) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return $constant->getValue();
+        return [
+            'web-attacks-and-prevention',
+            'high-load-event-ingestion',
+            'message-queues-compared',
+            'database-performance-and-scaling',
+            'database-indexes-deep-dive',
+            'database-query-optimization',
+            'php-database-connection-pooling',
+            'observability-monitoring-laravel',
+        ];
     }
 
     /**
@@ -313,6 +298,43 @@ class SiteSitemapBuilder
                 $canonical,
                 $xDefault,
             );
+        }
+
+        // 6. Public Authors Index
+        $this->addLocalizedCluster(
+            $sitemap,
+            $root,
+            fn (string $locale): string => route('authors.index', ['locale' => $locale], false),
+            null,
+            $locales,
+            $hreflangMap,
+            $canonical,
+            $xDefault,
+            0.6,
+        );
+
+        // 7. Public Author Profiles
+        try {
+            $publicAuthors = \App\Models\User::whereIn('role', [\App\Models\User::ROLE_SUPER_ADMIN, \App\Models\User::ROLE_AUTHOR])
+                ->where('is_approved', true)
+                ->where('is_public', true)
+                ->get();
+
+            foreach ($publicAuthors as $author) {
+                $this->addLocalizedCluster(
+                    $sitemap,
+                    $root,
+                    fn (string $locale): string => route('authors.show', ['locale' => $locale, 'slug' => $author->slug], false),
+                    $author->updated_at,
+                    $locales,
+                    $hreflangMap,
+                    $canonical,
+                    $xDefault,
+                    0.6,
+                );
+            }
+        } catch (\Throwable $e) {
+            // Ignore database errors during setup
         }
 
         return $sitemap;

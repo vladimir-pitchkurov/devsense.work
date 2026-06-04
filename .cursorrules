@@ -1,0 +1,28 @@
+# DevSense Laravel Playground - AI Agent Rules
+
+Always refer to the project context files before planning or executing changes.
+
+## 1. Project Stack & Execution
+- **Core Stack**: Laravel 13, PHP 8.5, Vite + Vue 3, Tailwind CSS v4, PostgreSQL, Redis, Meilisearch.
+- **Commands**: Always run commands via **Laravel Sail** (`./vendor/bin/sail ...`) from the repository root:
+  - Run Tests: `./vendor/bin/sail test` or `./vendor/bin/sail php artisan test`
+  - Artisan: `./vendor/bin/sail php artisan <command>`
+  - Composer: `./vendor/bin/sail composer <command>`
+  - Node/NPM: `./vendor/bin/sail npm <command>`
+
+## 2. Project Rules & Guidelines
+Follow the guidelines established in the MDC rule files:
+1. **Context Initialization**: Review [.cursor/project-progress.md](file:///.cursor/project-progress.md) to understand current status, roadmap, and instructions.
+2. **Read Context Rule**: Refer to [.cursor/rules/read-dot-cursor-context.mdc](file:///.cursor/rules/read-dot-cursor-context.mdc) (always active).
+3. **Content Writing Standards**: Refer to [.cursor/rules/writing-guidelines.mdc](file:///.cursor/rules/writing-guidelines.mdc) (applies to `resources/content/**/*.md`).
+   - Use the specific technical article skeleton.
+   - Strip AI watermarks and metadata from images.
+   - Configure SEO/AEO FAQ metadata in front matter.
+   - Use relative localized link structures.
+
+## 3. General Best Practices
+- **Documentation**: Maintain all existing comments, docstrings, and type hints.
+- **Testing**: Ensure that all changes are verified by running `./vendor/bin/sail test` before finishing tasks.
+- **Theme Support**: Always ensure all newly added or modified frontend components (e.g., modals, inputs, buttons, tables) support all three active themes (`light`, `dark`, `nord`) by utilizing CSS variables from `base/_variables.scss` (e.g., `var(--bg-color)`, `var(--text-color)`, `var(--page-bg)`, `var(--border-color)`, `var(--primary-color)`). Never hardcode theme-specific colors.
+- **Commit Messages**: At the end of every block of work or task, always propose a suitable Git commit message summarizing the changes made.
+

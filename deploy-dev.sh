@@ -6,7 +6,8 @@ echo "🚀 Начало деплоя..."
 
 php artisan down || true
 
-git pull origin development
+git fetch origin
+git reset --hard origin/development
 
 composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
@@ -15,7 +16,22 @@ php artisan optimize
 
 php artisan migrate --force
 
+# Настройка профиля автора (Vladimir Pichkurov)
+php artisan app:setup-author
+
+# Импорт статей из Markdown-файлов в базу данных (для админки)
+php artisan app:migrate-articles-to-database
+
+# Генерация статического файла sitemap.xml
+php artisan sitemap:write
+
+# Пинг поисковых систем (Bing, Yandex и др.) через IndexNow API
+php artisan seo:ping-indexnow
+
 sudo systemctl reload php8.5-fpm
+
+# Перезапуск очередей (Supervisor)
+sudo supervisorctl restart laravel-worker:*
 
 php artisan up
 

@@ -5,7 +5,8 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
-# Локальные заметки для агентов; правила в .cursor/rules/ коммитятся
+# Локальные заметки для агентов; правила в .agents/rules/ коммитятся
+/.agents/project-progress.md
 /.cursor/project-progress.md
 /.fleet
 /.idea

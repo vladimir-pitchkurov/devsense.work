@@ -35,4 +35,4 @@ jobs:
 
       - name: 🔄 Run Dev Deploy Script
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /var/www/devsense/dev && bash deploy-dev.sh"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /var/www/devsense/dev && git fetch origin && git reset --hard origin/development && bash deploy-dev.sh"

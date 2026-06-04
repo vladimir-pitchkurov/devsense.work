@@ -38,4 +38,31 @@ class UserModelTest extends TestCase
 
         $this->assertNull($user->email_verified_at);
     }
+
+    public function test_user_has_default_role_reader(): void
+    {
+        $user = User::factory()->make();
+
+        $this->assertSame(User::ROLE_READER, $user->role);
+        $this->assertFalse($user->isAdmin());
+        $this->assertFalse($user->isAuthor());
+    }
+
+    public function test_user_is_admin(): void
+    {
+        $admin = User::factory()->admin()->make();
+
+        $this->assertSame(User::ROLE_SUPER_ADMIN, $admin->role);
+        $this->assertTrue($admin->isAdmin());
+        $this->assertTrue($admin->isAuthor());
+    }
+
+    public function test_user_is_author(): void
+    {
+        $author = User::factory()->author()->make();
+
+        $this->assertSame(User::ROLE_AUTHOR, $author->role);
+        $this->assertFalse($author->isAdmin());
+        $this->assertTrue($author->isAuthor());
+    }
 }
