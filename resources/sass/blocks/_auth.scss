@@ -78,7 +78,8 @@
     display: flex;
     align-items: center;
 
-    .auth-input {
+    .auth-input,
+    .form-input {
         padding-right: 2.75rem;
     }
 }
