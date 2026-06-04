@@ -28,10 +28,24 @@ php artisan sitemap:write
 # Пинг поисковых систем (Bing, Yandex и др.) через IndexNow API
 php artisan seo:ping-indexnow
 
-sudo systemctl reload php8.5-fpm
+# ── Перезагрузка PHP-FPM ─────────────────────────────────────────────────────
+if sudo -n systemctl reload php8.5-fpm 2>/dev/null; then
+    echo "✅ php8.5-fpm перезагружен через systemctl"
+else
+    FPM_PID_FILE="/var/run/php/php8.5-fpm.pid"
+    if [ -f "$FPM_PID_FILE" ]; then
+        kill -USR2 "$(cat "$FPM_PID_FILE")" && echo "✅ php8.5-fpm перезагружен через SIGUSR2"
+    else
+        echo "⚠️  Не удалось перезагрузить php8.5-fpm — настройте sudoers"
+    fi
+fi
 
-# Перезапуск очередей (Supervisor)
-sudo supervisorctl restart laravel-worker:*
+# ── Перезапуск очередей (Supervisor) ─────────────────────────────────────────
+if sudo -n supervisorctl restart laravel-worker:* 2>/dev/null; then
+    echo "✅ Supervisor workers перезапущены"
+else
+    echo "⚠️  Не удалось перезапустить supervisor workers — настройте sudoers"
+fi
 
 php artisan up
 
