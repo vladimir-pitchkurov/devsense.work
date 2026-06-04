@@ -590,6 +590,30 @@ function submitReportForm(event) {
         }
     });
 }
+
+// Global delegated listener for password visibility toggles (works inside Vue-managed DOM as well)
+document.addEventListener('click', function (event) {
+    const btn = event.target.closest('.auth-toggle');
+    if (!btn) return;
+
+    const container = btn.closest('.auth-input-row');
+    if (!container) return;
+
+    const pw = container.querySelector('input');
+    if (!pw) return;
+
+    event.preventDefault();
+
+    const eyeIcon = btn.querySelector('.eye-icon');
+    const eyeOffIcon = btn.querySelector('.eye-off-icon');
+    const showing = pw.type === 'password';
+
+    pw.type = showing ? 'text' : 'password';
+    btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+
+    if (eyeIcon) eyeIcon.style.display = showing ? 'none' : 'block';
+    if (eyeOffIcon) eyeOffIcon.style.display = showing ? 'block' : 'none';
+});
 </script>
 
     @stack('scripts')
