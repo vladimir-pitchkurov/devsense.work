@@ -66,18 +66,4 @@
 
 
 
-<script>
-document.getElementById('togglePassword')?.addEventListener('click', function () {
-    var pw = document.getElementById('password');
-    if (!pw) return;
-    var eyeIcon = this.querySelector('.eye-icon');
-    var eyeOffIcon = this.querySelector('.eye-off-icon');
-    var showing = pw.type === 'password';
-    pw.type = showing ? 'text' : 'password';
-    this.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
-    if (eyeIcon) eyeIcon.style.display = showing ? 'none' : 'block';
-    if (eyeOffIcon) eyeOffIcon.style.display = showing ? 'block' : 'none';
-});
-</script>
-
 </x-layout>

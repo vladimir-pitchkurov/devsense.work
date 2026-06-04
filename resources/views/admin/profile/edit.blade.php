@@ -236,26 +236,5 @@ function previewImage(event) {
     }
     reader.readAsDataURL(file);
 }
-
-(function () {
-    function makeToggle(inputId, btnId) {
-        var btn = document.getElementById(btnId);
-        if (!btn) return;
-        btn.addEventListener('click', function () {
-            var pw = document.getElementById(inputId);
-            if (!pw) return;
-            var eyeIcon = btn.querySelector('.eye-icon');
-            var eyeOffIcon = btn.querySelector('.eye-off-icon');
-            var showing = pw.type === 'password';
-            pw.type = showing ? 'text' : 'password';
-            btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
-            if (eyeIcon) eyeIcon.style.display = showing ? 'none' : 'block';
-            if (eyeOffIcon) eyeOffIcon.style.display = showing ? 'block' : 'none';
-        });
-    }
-    makeToggle('current_password', 'toggleCurrentPassword');
-    makeToggle('change_password', 'toggleChangePassword');
-    makeToggle('password_confirmation', 'togglePasswordConfirm');
-})();
 </script>
 </x-layout>
