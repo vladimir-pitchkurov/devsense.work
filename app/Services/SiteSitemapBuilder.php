@@ -2,12 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\PhpVersionController;
 use App\Http\Middleware\SetLocale;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
-use ReflectionClass;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url as SitemapUrl;
 
@@ -16,60 +13,19 @@ use Spatie\Sitemap\Tags\Url as SitemapUrl;
  */
 class SiteSitemapBuilder
 {
+    private PublicContentApiService $apiService;
+
+    public function __construct(PublicContentApiService $apiService)
+    {
+        $this->apiService = $apiService;
+    }
+
     /**
      * @return list<string>
      */
     private function supportedLocales(): array
     {
         return SetLocale::SUPPORTED_LOCALES;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function phpVersions(): array
-    {
-        $reflection = new ReflectionClass(PhpVersionController::class);
-        $constant = $reflection->getReflectionConstant('PHP_VERSION_ORDER');
-        if ($constant === false) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return $constant->getValue();
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function toolSlugs(): array
-    {
-        return ['sail', 'sail-databases', 'sail-queues', 'sail-env-deploy', 'sail-troubleshooting'];
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function microservicesSlugs(): array
-    {
-        return ['api-gateway'];
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function architectureSlugs(): array
-    {
-        return [
-            'web-attacks-and-prevention',
-            'high-load-event-ingestion',
-            'message-queues-compared',
-            'database-performance-and-scaling',
-            'database-indexes-deep-dive',
-            'database-query-optimization',
-            'php-database-connection-pooling',
-            'observability-monitoring-laravel',
-        ];
     }
 
     /**
@@ -145,36 +101,6 @@ class SiteSitemapBuilder
         $sitemap->add($tag);
     }
 
-    private function lastModifiedAcrossLocales(string $category, string $slug, array $locales): ?Carbon
-    {
-        $timestamps = [];
-
-        foreach ($locales as $locale) {
-            $path = $this->markdownPath($locale, $category, $slug);
-            if ($path !== null) {
-                $timestamps[] = File::lastModified($path);
-            }
-        }
-
-        if ($timestamps === []) {
-            return null;
-        }
-
-        return Carbon::createFromTimestamp(max($timestamps));
-    }
-
-    private function markdownPath(string $locale, string $category, string $slug): ?string
-    {
-        $path = resource_path("content/{$locale}/{$category}/{$slug}.md");
-        if (File::exists($path)) {
-            return $path;
-        }
-
-        $fallback = resource_path("content/en/{$category}/{$slug}.md");
-
-        return File::exists($fallback) ? $fallback : null;
-    }
-
     public function build(): Sitemap
     {
         $root = rtrim((string) config('app.url'), '/');
@@ -188,6 +114,7 @@ class SiteSitemapBuilder
 
         $sitemap = Sitemap::create();
 
+        // 1. Base Clusters
         $this->addLocalizedCluster(
             $sitemap,
             $root,
@@ -212,19 +139,6 @@ class SiteSitemapBuilder
             0.9,
         );
 
-        foreach ($this->phpVersions() as $version) {
-            $this->addLocalizedCluster(
-                $sitemap,
-                $root,
-                fn (string $locale): string => route('php.show', ['locale' => $locale, 'version' => $version], false),
-                $this->lastModifiedAcrossLocales('php', $version, $locales),
-                $locales,
-                $hreflangMap,
-                $canonical,
-                $xDefault,
-            );
-        }
-
         $this->addLocalizedCluster(
             $sitemap,
             $root,
@@ -236,19 +150,6 @@ class SiteSitemapBuilder
             $xDefault,
             0.9,
         );
-
-        foreach ($this->toolSlugs() as $slug) {
-            $this->addLocalizedCluster(
-                $sitemap,
-                $root,
-                fn (string $locale): string => route('tools.show', ['locale' => $locale, 'slug' => $slug], false),
-                $this->lastModifiedAcrossLocales('tools', $slug, $locales),
-                $locales,
-                $hreflangMap,
-                $canonical,
-                $xDefault,
-            );
-        }
 
         $this->addLocalizedCluster(
             $sitemap,
@@ -262,19 +163,6 @@ class SiteSitemapBuilder
             0.85,
         );
 
-        foreach ($this->microservicesSlugs() as $slug) {
-            $this->addLocalizedCluster(
-                $sitemap,
-                $root,
-                fn (string $locale): string => route('microservices.show', ['locale' => $locale, 'slug' => $slug], false),
-                $this->lastModifiedAcrossLocales('microservices', $slug, $locales),
-                $locales,
-                $hreflangMap,
-                $canonical,
-                $xDefault,
-            );
-        }
-
         $this->addLocalizedCluster(
             $sitemap,
             $root,
@@ -287,20 +175,67 @@ class SiteSitemapBuilder
             0.85,
         );
 
-        foreach ($this->architectureSlugs() as $slug) {
-            $this->addLocalizedCluster(
-                $sitemap,
-                $root,
-                fn (string $locale): string => route('architecture.show', ['locale' => $locale, 'slug' => $slug], false),
-                $this->lastModifiedAcrossLocales('architecture', $slug, $locales),
-                $locales,
-                $hreflangMap,
-                $canonical,
-                $xDefault,
-            );
+        $this->addLocalizedCluster(
+            $sitemap,
+            $root,
+            fn (string $locale): string => route('jobs.index', ['locale' => $locale], false),
+            null,
+            $locales,
+            $hreflangMap,
+            $canonical,
+            $xDefault,
+            0.8,
+        );
+
+        // 2. Dynamic Article Clusters
+        $entries = $this->apiService->scanIndex();
+        $articlesByGroup = [];
+        foreach ($entries as $entry) {
+            $key = $entry['category'] . ':' . $entry['slug'];
+            if (!isset($articlesByGroup[$key])) {
+                $articlesByGroup[$key] = [
+                    'category' => $entry['category'],
+                    'slug' => $entry['slug'],
+                    'modified' => 0,
+                ];
+            }
+            $articlesByGroup[$key]['modified'] = max($articlesByGroup[$key]['modified'], $entry['modified']);
         }
 
-        // 6. Public Authors Index
+        foreach ($articlesByGroup as $group) {
+            $category = $group['category'];
+            $slug = $group['slug'];
+            $lastMod = $group['modified'] > 0 ? Carbon::createFromTimestamp($group['modified']) : null;
+
+            if ($category === 'php') {
+                $this->addLocalizedCluster(
+                    $sitemap,
+                    $root,
+                    fn (string $locale): string => route('php.show', ['locale' => $locale, 'version' => $slug], false),
+                    $lastMod,
+                    $locales,
+                    $hreflangMap,
+                    $canonical,
+                    $xDefault,
+                );
+            } else {
+                $routeName = "{$category}.show";
+                if (\Route::has($routeName)) {
+                    $this->addLocalizedCluster(
+                        $sitemap,
+                        $root,
+                        fn (string $locale): string => route($routeName, ['locale' => $locale, 'slug' => $slug], false),
+                        $lastMod,
+                        $locales,
+                        $hreflangMap,
+                        $canonical,
+                        $xDefault,
+                    );
+                }
+            }
+        }
+
+        // 3. Public Authors Index
         $this->addLocalizedCluster(
             $sitemap,
             $root,
@@ -313,7 +248,7 @@ class SiteSitemapBuilder
             0.6,
         );
 
-        // 7. Public Author Profiles
+        // 4. Public Author Profiles
         try {
             $publicAuthors = \App\Models\User::whereIn('role', [\App\Models\User::ROLE_SUPER_ADMIN, \App\Models\User::ROLE_AUTHOR])
                 ->where('is_approved', true)

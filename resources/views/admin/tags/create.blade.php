@@ -1,9 +1,9 @@
-<x-layout title="Admin - Create Tag | DevSense" description="Create a new article tag">
+<x-layout title="Admin - {{ __('ui.admin.create_tag') }} | DevSense" description="Create a new article tag">
 <div class="admin-container">
     <div class="admin-header">
-        <h1 class="admin-title">Create Tag</h1>
+        <h1 class="admin-title">{{ __('ui.admin.create_tag') }}</h1>
         <a href="{{ route('admin.tags.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
-            Back to List
+            {{ __('ui.admin.back_to_list') }}
         </a>
     </div>
 
@@ -12,7 +12,7 @@
 
         @if ($errors->any())
             <div class="admin-alert admin-alert--danger">
-                <strong>Please fix the errors below:</strong>
+                <strong>{{ __('ui.admin.fix_errors') }}</strong>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -25,16 +25,16 @@
             <!-- Left Side: Basic settings -->
             <div class="form-sidebar">
                 <div class="admin-card">
-                    <h2 class="card-title">Settings</h2>
+                    <h2 class="card-title">{{ __('ui.admin.settings') }}</h2>
                     
                     <div class="form-group">
-                        <label for="slug" class="form-label">Slug</label>
+                        <label for="slug" class="form-label">{{ __('ui.admin.slug') }}</label>
                         <input type="text" name="slug" id="slug" value="{{ old('slug') }}" required placeholder="e.g. oop" class="form-input">
-                        <p class="form-help">Must be unique and URL-friendly</p>
+                        <p class="form-help">{{ __('ui.admin.slug_help') }}</p>
                     </div>
 
                     <button type="submit" class="admin-btn admin-btn--primary admin-btn--full">
-                        Create Tag
+                        {{ __('ui.admin.create_tag_btn') }}
                     </button>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 <div class="admin-card">
                     <!-- Locale Tabs -->
                     <div class="tabs-header">
-                        @foreach(['en' => 'English', 'ru' => 'Russian', 'ua' => 'Ukrainian', 'bg' => 'Bulgarian'] as $loc => $label)
+                        @foreach(\App\Http\Middleware\SetLocale::LOCALE_LABELS as $loc => $label)
                             <button type="button" class="tab-btn {{ $loop->first ? 'active' : '' }}" onclick="switchTab(event, 'tab-{{ $loc }}')">
                                 {{ $label }}
                             </button>
@@ -52,13 +52,13 @@
                     </div>
 
                     <!-- Locale Tab Contents -->
-                    @foreach(['en', 'ru', 'ua', 'bg'] as $loc)
+                    @foreach(\App\Http\Middleware\SetLocale::SUPPORTED_LOCALES as $loc)
                         <div id="tab-{{ $loc }}" class="tab-pane {{ $loop->first ? 'active' : '' }}">
-                            <h3 class="tab-pane-title">{{ strtoupper($loc) }} Translation</h3>
+                            <h3 class="tab-pane-title">{{ __('ui.admin.locale_translation', ['locale' => strtoupper($loc)]) }}</h3>
 
                             <div class="form-group">
-                                <label for="name_{{ $loc }}" class="form-label">Tag Name ({{ strtoupper($loc) }})</label>
-                                <input type="text" name="translations[{{ $loc }}][name]" id="name_{{ $loc }}" value="{{ old("translations.{$loc}.name") }}" required placeholder="Tag name in {{ $loc }}" class="form-input">
+                                <label for="name_{{ $loc }}" class="form-label">{{ __('ui.admin.tag_name', ['locale' => strtoupper($loc)]) }}</label>
+                                <input type="text" name="translations[{{ $loc }}][name]" id="name_{{ $loc }}" value="{{ old("translations.{$loc}.name") }}" required placeholder="{{ __('ui.admin.tag_name_placeholder', ['locale' => $loc]) }}" class="form-input">
                             </div>
                         </div>
                     @endforeach

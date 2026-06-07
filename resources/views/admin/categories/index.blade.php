@@ -52,7 +52,7 @@
                             </td>
                             <td>
                                 <div class="locale-badges">
-                                    @foreach(['en', 'ru', 'ua', 'bg'] as $loc)
+                                    @foreach(\App\Http\Middleware\SetLocale::SUPPORTED_LOCALES as $loc)
                                         @if($category->translate($loc))
                                             <span class="locale-badge locale-badge--active" title="{{ strtoupper($loc) }} Translation exists">{{ strtoupper($loc) }}</span>
                                         @else
