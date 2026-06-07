@@ -60,6 +60,10 @@ return [
         'en' => 'en',
         'ua' => 'uk',
         'bg' => 'bg',
+        'de' => 'de',
+        'fr' => 'fr',
+        'es' => 'es',
+        'it' => 'it',
     ],
 
     /*
@@ -73,6 +77,10 @@ return [
         'en' => 'en_US',
         'ua' => 'uk_UA',
         'bg' => 'bg_BG',
+        'de' => 'de_DE',
+        'fr' => 'fr_FR',
+        'es' => 'es_ES',
+        'it' => 'it_IT',
     ],
 
     /*

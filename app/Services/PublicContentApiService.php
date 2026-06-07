@@ -17,7 +17,7 @@ class PublicContentApiService
     /**
      * @var list<string>
      */
-    private const SUPPORTED_LOCALES = ['en', 'ru', 'ua', 'bg'];
+    private const SUPPORTED_LOCALES = ['en', 'ru', 'ua', 'bg', 'de', 'fr', 'es', 'it'];
 
     /**
      * @var list<string>

@@ -40,8 +40,8 @@ class JobsRecruitmentTest extends TestCase
 
         $this->assertStringContainsString('"@type":"JobPosting"', $html);
         $this->assertStringContainsString('"title":"Senior PHP Developer (Laravel)"', $html);
-        $this->assertStringContainsString('"hiringOrganization":{"@id":"http://localhost:8080#organization"}', $html);
-        $this->assertStringContainsString('"author":{"@id":"http://localhost:8080#author"}', $html);
+        $this->assertStringContainsString('"hiringOrganization":{"@id":"' . config('app.url') . '#organization"}', $html);
+        $this->assertStringContainsString('"author":{"@id":"' . config('app.url') . '#author"}', $html);
     }
 
     public function test_jobs_show_page_serves_raw_markdown_to_llm_crawlers(): void

@@ -1,9 +1,9 @@
-<x-layout title="Admin - Edit Article | DevSense" description="Edit existing article or documentation guide">
+<x-layout title="Admin - {{ __('ui.admin.edit_article') }} | DevSense" description="Edit existing article or documentation guide">
 <div class="admin-container">
     <div class="admin-header">
-        <h1 class="admin-title">Edit Article</h1>
+        <h1 class="admin-title">{{ __('ui.admin.edit_article') }}</h1>
         <a href="{{ route('admin.articles.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary">
-            Back to List
+            {{ __('ui.admin.back_to_list') }}
         </a>
     </div>
 
@@ -13,7 +13,7 @@
 
         @if ($errors->any())
             <div class="admin-alert admin-alert--danger">
-                <strong>Please fix the errors below:</strong>
+                <strong>{{ __('ui.admin.fix_errors') }}</strong>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -26,16 +26,16 @@
             <!-- Left Side: Basic settings -->
             <div class="form-sidebar">
                 <div class="admin-card">
-                    <h2 class="card-title">Settings</h2>
+                    <h2 class="card-title">{{ __('ui.admin.settings') }}</h2>
                     
                     <div class="form-group">
-                        <label for="slug" class="form-label">Slug</label>
+                        <label for="slug" class="form-label">{{ __('ui.admin.slug') }}</label>
                         <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug) }}" required placeholder="e.g. php-8-4-property-hooks" class="form-input">
-                        <p class="form-help">Must be unique and URL-friendly</p>
+                        <p class="form-help">{{ __('ui.admin.slug_help') }}</p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Categories (Select at least one)</label>
+                        <label class="form-label">{{ __('ui.admin.categories_select') }}</label>
                         <div class="checkbox-group">
                             @foreach($categories as $category)
                                 <label class="checkbox-label">
@@ -47,13 +47,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="custom_url" class="form-label">Custom URL (Optional)</label>
+                        <label for="custom_url" class="form-label">{{ __('ui.admin.custom_url') }}</label>
                         <input type="text" name="custom_url" id="custom_url" value="{{ old('custom_url', $article->custom_url) }}" placeholder="e.g. /my-custom-path" class="form-input">
-                        <p class="form-help">Overwrites default URL structure if set</p>
+                        <p class="form-help">{{ __('ui.admin.custom_url_help') }}</p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Tags</label>
+                        <label class="form-label">{{ __('ui.admin.tags') }}</label>
                         <div class="checkbox-group">
                             @foreach($tags as $tag)
                                 <label class="checkbox-label">
@@ -67,12 +67,12 @@
                     <div class="form-group">
                         <label class="checkbox-label checkbox-label--large">
                             <input type="checkbox" name="is_published" value="1" {{ old('is_published', $article->is_published) ? 'checked' : '' }}>
-                            <span>Publish Article</span>
+                            <span>{{ __('ui.admin.publish_article') }}</span>
                         </label>
                     </div>
 
                     <button type="submit" class="admin-btn admin-btn--primary admin-btn--full">
-                        Update Article
+                        {{ __('ui.admin.update_article') }}
                     </button>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                 <div class="admin-card">
                     <div class="tabs-header-container">
                         <div class="tabs-header">
-                            @foreach(['en' => 'English', 'ru' => 'Russian', 'ua' => 'Ukrainian', 'bg' => 'Bulgarian'] as $loc => $label)
+                            @foreach(\App\Http\Middleware\SetLocale::LOCALE_LABELS as $loc => $label)
                                 <button type="button" class="tab-btn {{ $loop->first ? 'active' : '' }}" onclick="switchTab(event, 'tab-{{ $loc }}')">
                                     {{ $label }}
                                 </button>
@@ -90,42 +90,42 @@
                         </div>
                         <div class="tabs-actions">
                             <a href="{{ route('admin.articles.template', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary" title="Download Markdown template for formatting guidelines">
-                                <i class="fa fa-download" style="margin-right: 0.5rem;"></i> Download Template
+                                <i class="fa fa-download" style="margin-right: 0.5rem;"></i> {{ __('ui.admin.download_template') }}
                             </a>
                             <button type="button" class="admin-btn admin-btn--secondary" onclick="triggerImport()" title="Import content from a Markdown file to pre-populate fields for active tab">
-                                <i class="fa fa-upload" style="margin-right: 0.5rem;"></i> Import Markdown (.md)
+                                <i class="fa fa-upload" style="margin-right: 0.5rem;"></i> {{ __('ui.admin.import_markdown') }}
                             </button>
                             <input type="file" id="import_md_file" accept=".md" style="display: none;" onchange="handleImport(event)">
                         </div>
                     </div>
 
                     <!-- Locale Tab Contents -->
-                    @foreach(['en', 'ru', 'ua', 'bg'] as $loc)
+                    @foreach(\App\Http\Middleware\SetLocale::SUPPORTED_LOCALES as $loc)
                         @php
                             $translation = $article->getTranslationOrDraft($loc);
                         @endphp
                         <div id="tab-{{ $loc }}" class="tab-pane {{ $loop->first ? 'active' : '' }}">
-                            <h3 class="tab-pane-title">{{ strtoupper($loc) }} Content</h3>
+                            <h3 class="tab-pane-title">{{ __('ui.admin.locale_content', ['locale' => strtoupper($loc)]) }}</h3>
 
                             <div class="form-group">
-                                <label for="title_{{ $loc }}" class="form-label">Title ({{ strtoupper($loc) }})</label>
-                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title", $translation?->title) }}" placeholder="Article title in {{ $loc }}" class="form-input">
+                                <label for="title_{{ $loc }}" class="form-label">{{ __('ui.admin.title', ['locale' => strtoupper($loc)]) }}</label>
+                                <input type="text" name="translations[{{ $loc }}][title]" id="title_{{ $loc }}" value="{{ old("translations.{$loc}.title", $translation?->title) }}" placeholder="{{ __('ui.admin.title_placeholder', ['locale' => $loc]) }}" class="form-input">
                             </div>
 
                             <div class="form-group">
-                                <label for="description_{{ $loc }}" class="form-label">Meta Description ({{ strtoupper($loc) }})</label>
-                                <textarea name="translations[{{ $loc }}][description]" id="description_{{ $loc }}" rows="2" placeholder="SEO meta description..." class="form-input">{{ old("translations.{$loc}.description", $translation?->description) }}</textarea>
+                                <label for="description_{{ $loc }}" class="form-label">{{ __('ui.admin.meta_description', ['locale' => strtoupper($loc)]) }}</label>
+                                <textarea name="translations[{{ $loc }}][description]" id="description_{{ $loc }}" rows="2" placeholder="{{ __('ui.admin.meta_description_placeholder') }}" class="form-input">{{ old("translations.{$loc}.description", $translation?->description) }}</textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="content_{{ $loc }}" class="form-label">Content ({{ strtoupper($loc) }} - Markdown)</label>
-                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" placeholder="# Article Heading..." class="form-input form-textarea-code">{{ old("translations.{$loc}.content", $translation?->content) }}</textarea>
+                                <label for="content_{{ $loc }}" class="form-label">{{ __('ui.admin.content_label', ['locale' => strtoupper($loc)]) }}</label>
+                                <textarea name="translations[{{ $loc }}][content]" id="content_{{ $loc }}" rows="15" placeholder="{{ __('ui.admin.content_placeholder') }}" class="form-input form-textarea-code">{{ old("translations.{$loc}.content", $translation?->content) }}</textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="faq_{{ $loc }}" class="form-label">FAQ JSON ({{ strtoupper($loc) }})</label>
+                                <label for="faq_{{ $loc }}" class="form-label">{{ __('ui.admin.faq_label', ['locale' => strtoupper($loc)]) }}</label>
                                 <textarea name="translations[{{ $loc }}][faq]" id="faq_{{ $loc }}" rows="3" placeholder='[{"question": "Q1?", "answer": "A1"}]' class="form-input form-textarea-code">{{ old("translations.{$loc}.faq", $translation?->faq ? json_encode($translation->faq, JSON_UNESCAPED_UNICODE) : '') }}</textarea>
-                                <p class="form-help">Optional JSON array of Q/A objects for schema.org markup</p>
+                                <p class="form-help">{{ __('ui.admin.faq_help') }}</p>
                             </div>
                         </div>
                     @endforeach
@@ -143,7 +143,7 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script>
-const locales = ['en', 'ru', 'ua', 'bg'];
+const locales = @json(\App\Http\Middleware\SetLocale::SUPPORTED_LOCALES);
 const editors = {};
 
 function customPreviewRender(plainText) {

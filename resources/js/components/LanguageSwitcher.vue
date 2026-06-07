@@ -10,7 +10,11 @@ const locales: Locale[] = [
     { code: 'ru', label: 'RU' },
     { code: 'en', label: 'EN' },
     { code: 'ua', label: 'UA' },
-    { code: 'bg', label: 'BG' }
+    { code: 'bg', label: 'BG' },
+    { code: 'de', label: 'DE' },
+    { code: 'fr', label: 'FR' },
+    { code: 'es', label: 'ES' },
+    { code: 'it', label: 'IT' }
 ];
 
 const currentLocale = ref<string>('en');
