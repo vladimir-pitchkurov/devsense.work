@@ -19,6 +19,7 @@ Follow the guidelines established in the MDC rule files:
    - Strip AI watermarks and metadata from images.
    - Configure SEO/AEO FAQ metadata in front matter.
    - Use relative localized link structures.
+   - Write new articles immediately with translations to all supported languages (en, ru, ua, bg, de, fr, es, it).
 
 ## 3. General Best Practices
 - **Documentation**: Maintain all existing comments, docstrings, and type hints. Avoid leaving excessive comments in the code; if code comments are necessary, they MUST be written exclusively in English.
