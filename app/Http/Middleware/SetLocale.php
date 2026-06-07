@@ -18,7 +18,18 @@ class SetLocale
      *
      * @var list<string>
      */
-    public const SUPPORTED_LOCALES = ['ru', 'en', 'ua', 'bg'];
+    public const SUPPORTED_LOCALES = ['ru', 'en', 'ua', 'bg', 'de', 'fr', 'es', 'it'];
+
+    public const LOCALE_LABELS = [
+        'en' => 'English',
+        'ru' => 'Russian',
+        'ua' => 'Ukrainian',
+        'bg' => 'Bulgarian',
+        'de' => 'German',
+        'fr' => 'French',
+        'es' => 'Spanish',
+        'it' => 'Italian',
+    ];
 
     /**
      * Handle an incoming request.

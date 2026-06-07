@@ -191,28 +191,49 @@ class Article extends Model
         return $this->hasMany(ArticleTranslation::class);
     }
 
-    /**
-     * Get translation for a specific locale.
-     */
     public function translate(?string $locale = null): ?ArticleTranslation
     {
         $locale = $locale ?: app()->getLocale();
+        $newLocales = ['de', 'fr', 'es', 'it'];
         
         if ($this->relationLoaded('translations')) {
             $trans = $this->translations->where('locale', $locale)->first();
             if ($trans) {
                 return $trans;
             }
-            $fallback = $this->translations->where('locale', 'en')->first();
-            if ($fallback) {
-                return $fallback;
+            
+            if (in_array($locale, $newLocales, true)) {
+                $fallbackEn = $this->translations->where('locale', 'en')->first();
+                if ($fallbackEn) {
+                    return $fallbackEn;
+                }
+                $fallbackUa = $this->translations->where('locale', 'ua')->first();
+                if ($fallbackUa) {
+                    return $fallbackUa;
+                }
+            } else {
+                $fallbackEn = $this->translations->where('locale', 'en')->first();
+                if ($fallbackEn) {
+                    return $fallbackEn;
+                }
             }
+            
             return $this->translations->first();
         }
 
-        return $this->translations()->where('locale', $locale)->first()
-            ?: $this->translations()->where('locale', 'en')->first()
-            ?: $this->translations()->first(); // fallback to any available translation
+        $trans = $this->translations()->where('locale', $locale)->first();
+        if ($trans) {
+            return $trans;
+        }
+
+        if (in_array($locale, $newLocales, true)) {
+            return $this->translations()->where('locale', 'en')->first()
+                ?: $this->translations()->where('locale', 'ua')->first()
+                ?: $this->translations()->first();
+        }
+
+        return $this->translations()->where('locale', 'en')->first()
+            ?: $this->translations()->first();
     }
 
     public function url(): string
