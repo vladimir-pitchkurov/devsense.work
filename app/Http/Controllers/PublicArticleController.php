@@ -63,7 +63,7 @@ class PublicArticleController extends Controller
                   });
             })->get();
 
-        return view('welcome', [
+        return view('catalog', [
             'articles' => $articles,
             'categories' => $categories,
             'tags' => $tags,

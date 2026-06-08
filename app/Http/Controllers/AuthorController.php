@@ -20,8 +20,7 @@ class AuthorController extends Controller
      */
     public function index(): View
     {
-        $query = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
-            ->where('is_blocked', false);
+        $query = User::where('is_blocked', false);
 
         if (!auth()->check() || !auth()->user()->isAdmin()) {
             $query->where('is_public', true)->where('is_approved', true);
@@ -48,8 +47,7 @@ class AuthorController extends Controller
     public function show(string $slug): View
     {
         // Match by slug column first, then fall back to slug generated from name
-        $author = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR])
-            ->where(function ($q) use ($slug) {
+        $author = User::where(function ($q) use ($slug) {
                 $q->where('slug', $slug)
                     ->orWhereRaw("LOWER(REPLACE(REPLACE(name, ' ', '-'), '.', '')) = ?", [strtolower($slug)]);
             })
@@ -80,19 +78,34 @@ class AuthorController extends Controller
         $hrefLangMap  = config('seo.hreflang', []);
         $langCode     = $hrefLangMap[$locale] ?? $locale;
 
-        $pageTitle       = $author->name.' — '.(__('ui.authors_show.title_suffix').' DevSense');
+        $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
+        $showRealDetails = !$author->is_anonymous || $isOwnerOrAdmin;
+
+        $displayName = $showRealDetails 
+            ? $author->name 
+            : (app()->getLocale() === 'ru' ? 'Анонимный соискатель' : 'Anonymous Candidate');
+
+        $displayAvatar = $showRealDetails 
+            ? $author->avatarUrl() 
+            : 'https://ui-avatars.com/api/?name=A+C&size=256&background=64748b&color=ffffff&bold=true&format=png';
+
+        $displaySocials = $showRealDetails 
+            ? array_values($author->socialLinks()) 
+            : [];
+
+        $pageTitle       = $displayName.' — '.(__('ui.authors_show.title_suffix').' DevSense');
         $pageDescription = $author->bio
             ? mb_substr(strip_tags($author->bio), 0, 160)
-            : __('ui.authors_show.description_fallback', ['name' => $author->name]);
+            : __('ui.authors_show.description_fallback', ['name' => $displayName]);
 
         $structuredData = [
             '@type'       => 'Person',
-            'name'        => $author->name,
+            'name'        => $displayName,
             'description' => $pageDescription,
-            'image'       => $author->avatarUrl(),
+            'image'       => $displayAvatar,
             'url'         => $canonicalUrl,
             'inLanguage'  => $langCode,
-            'sameAs'      => array_values($author->socialLinks()),
+            'sameAs'      => $displaySocials,
         ];
 
         if ($author->job_title) {

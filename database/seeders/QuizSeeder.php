@@ -11,13 +11,8 @@ class QuizSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Clean up old quizzes and badges to prevent duplicates
-        Quiz::whereIn('slug', ['php-8-4-hooks', 'laravel-security', 'php-basics-interview'])->delete();
-        Badge::whereIn('slug', [
-            'php-novice', 'laravel-defender', 'tech-lead',
-            'writer-novice', 'writer-prolific', 'writer-master',
-            'php-basics-bronze', 'php-basics-silver', 'php-basics-gold', 'php-basics-expert'
-        ])->delete();
+        // 1. Clean up old quizzes to prevent duplicates
+        Quiz::whereIn('slug', ['php-8-4-hooks', 'laravel-security'])->delete();
 
         // 2. Seed Badges
         $badgesData = [
@@ -178,29 +173,33 @@ class QuizSeeder extends Seeder
         ];
 
         foreach ($badgesData as $data) {
-            $badge = Badge::create([
-                'slug' => $data['slug'],
-                'points_required' => $data['points_required'] ?? null,
-                'articles_required' => $data['articles_required'] ?? null,
-                'image_path' => $data['image_path'],
-                'quiz_slug' => $data['quiz_slug'] ?? null,
-                'min_percentage' => $data['min_percentage'] ?? null,
-            ]);
+            $badge = Badge::updateOrCreate(
+                ['slug' => $data['slug']],
+                [
+                    'points_required' => $data['points_required'] ?? null,
+                    'articles_required' => $data['articles_required'] ?? null,
+                    'image_path' => $data['image_path'],
+                    'quiz_slug' => $data['quiz_slug'] ?? null,
+                    'min_percentage' => $data['min_percentage'] ?? null,
+                ]
+            );
 
             foreach ($data['translations'] as $locale => $tData) {
-                $badge->translations()->create([
-                    'locale' => $locale,
-                    'title' => $tData['title'],
-                    'description' => $tData['description'],
-                ]);
+                $badge->translations()->updateOrCreate(
+                    ['locale' => $locale],
+                    [
+                        'title' => $tData['title'],
+                        'description' => $tData['description'],
+                    ]
+                );
             }
         }
 
         // 3. Seed Quiz: PHP Basics Interview
-        $quiz = Quiz::create([
-            'slug' => 'php-basics-interview',
-            'points' => 1000,
-        ]);
+        $quiz = Quiz::updateOrCreate(
+            ['slug' => 'php-basics-interview'],
+            ['points' => 1000]
+        );
 
         $quizTrans = [
             'en' => ['title' => 'PHP Basics Interview', 'description' => 'A comprehensive test of 100 questions covering core PHP concepts, scope, OOP, magic methods, and functional PHP.'],
@@ -214,12 +213,17 @@ class QuizSeeder extends Seeder
         ];
 
         foreach ($quizTrans as $locale => $tData) {
-            $quiz->translations()->create([
-                'locale' => $locale,
-                'title' => $tData['title'],
-                'description' => $tData['description'],
-            ]);
+            $quiz->translations()->updateOrCreate(
+                ['locale' => $locale],
+                [
+                    'title' => $tData['title'],
+                    'description' => $tData['description'],
+                ]
+            );
         }
+
+        // Delete existing questions for this quiz to prevent duplicates/accumulation, then recreate
+        $quiz->questions()->delete();
 
         // 4. Load Quiz Questions from localized JSON files
         $locales = ['en', 'ru', 'ua', 'bg', 'de', 'fr', 'es', 'it'];

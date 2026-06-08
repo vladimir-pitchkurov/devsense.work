@@ -93,20 +93,22 @@ class AuthorRoutesTest extends TestCase
         $this->get('/en/authors/nobody-here')->assertNotFound();
     }
 
-    public function test_readers_are_excluded_from_authors_index(): void
+    public function test_public_approved_readers_are_included_in_candidates_index(): void
     {
         $reader = User::factory()->create([
             'name'  => 'Plain Reader',
             'email' => 'reader@example.com',
             'role'  => User::ROLE_READER,
             'slug'  => 'plain-reader',
+            'is_public' => true,
+            'is_approved' => true,
         ]);
 
-        // The index should not show readers
-        $this->get('/en/authors')->assertDontSee('Plain Reader');
+        // The index should show public approved readers
+        $this->get('/en/authors')->assertSee('Plain Reader');
 
-        // Their slug should return 404 on show page
-        $this->get('/en/authors/plain-reader')->assertNotFound();
+        // Their slug should render successfully
+        $this->get('/en/authors/plain-reader')->assertOk();
     }
 
     public function test_author_avatar_url_returns_ui_avatars_fallback_when_no_avatar(): void

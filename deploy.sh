@@ -28,8 +28,8 @@ php artisan optimize
 
 php artisan migrate --force
 
-# Настройка профиля автора (Vladimir Pichkurov)
-#php artisan app:setup-author
+# Сидирование квизов и ачивок (безопасно для пользовательского прогресса)
+php artisan db:seed --class=QuizSeeder --force
 
 # Импорт статей из Markdown-файлов в базу данных (для админки)
 #php artisan app:migrate-articles-to-database

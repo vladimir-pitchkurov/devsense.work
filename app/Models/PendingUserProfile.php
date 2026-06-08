@@ -18,6 +18,16 @@ class PendingUserProfile extends Model
         'linkedin_url',
         'twitter_url',
         'website_url',
+        'intro',
+        'experience',
+        'job_status',
+        'is_anonymous',
+        'portfolio',
+    ];
+
+    protected $casts = [
+        'is_anonymous' => 'boolean',
+        'portfolio' => 'array',
     ];
 
     /**
@@ -54,5 +64,21 @@ class PendingUserProfile extends Model
 
         return 'https://ui-avatars.com/api/?name='.urlencode($initials)
             .'&size=256&background=6366f1&color=ffffff&bold=true&format=png';
+    }
+
+    /**
+     * Absolute public URL for a portfolio project image.
+     */
+    public function getPortfolioImageUrl(string $path): string
+    {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+            return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+        }
+
+        return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
     }
 }
