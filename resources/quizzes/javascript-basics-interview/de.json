@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Was ist das Ergebnis des Ausdrucks '[] == ![]' in JavaScript?",
+    "options": [
+      "true",
+      "false",
+      "TypeError",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der unäre Negationsoperator '!' hat eine höhere Priorität als '==', daher wird '![]' als der boolesche Wert 'false' ausgewertet. Der Vergleich wird zu '[] == false'. Wenn ein Objekt (Array) mit einem booleschen Wert verglichen wird, wird das Array in einen primitiven Wert (einen leeren String '') umgewandelt und der boolesche Wert wird in '0' umgewandelt. Schließlich wird der leere String '' in die Zahl '0' umgewandelt, was den Ausdruck zu '0 == 0' macht, was 'true' ergibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was gibt der Operator 'typeof null' zurück?",
+    "options": [
+      "'null'",
+      "'undefined'",
+      "'object'",
+      "'function'"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In JavaScript gibt 'typeof null' den Wert 'object' zurück. Dies ist ein historischer Fehler in der ersten Implementierung von JavaScript, bei dem Werte durch ein Typ-Tag und einen Wert dargestellt wurden. Das Typ-Tag für Objekte war '0' und null wurde als Null-Zeiger (der ebenfalls 0 war) dargestellt, was dazu führte, dass typeof es fälschlicherweise als Objekt klassifizierte.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Wert des Ausdrucks '1 + 2 + \"3\"' in JavaScript?",
+    "options": [
+      "6",
+      "\"123\"",
+      "\"33\"",
+      "NaN"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "JavaScript wertet den Ausdruck von links nach rechts aus. Zuerst wird '1 + 2' als Zahlen ausgewertet, was '3' ergibt. Dann wird der Ausdruck zu '3 + \"3\"'. Da einer der Operanden ein String ist, wandelt JavaScript die Zahl '3' in den String '\"3\"' um und führt eine String-Verkettung durch, was zu '\"33\"' führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Wert des Ausdrucks '\"3\" - 1' in JavaScript?",
+    "options": [
+      "2",
+      "\"2\"",
+      "NaN",
+      "TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Gegensatz zum Additionsoperator '+' ist der Subtraktionsoperator '-' nur für numerische Operationen definiert. Daher wandelt JavaScript den String '\"3\"' automatisch in die Zahl '3' um und führt die Subtraktion durch, was zu der Zahl '2' führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptunterschied zwischen dem losen Gleichheitsoperator '==' und dem strikten Gleichheitsoperator '==='?",
+    "options": [
+      "'==' vergleicht Variablen nach Referenz, während '===' sie nach Wert vergleicht.",
+      "'==' führt vor dem Vergleich zweier Werte eine Typumwandlung durch, wohingegen '===' sowohl Wert als auch Typ ohne Umwandlung vergleicht.",
+      "'==' ist schneller, da es keine Typen prüft.",
+      "'===' ist in modernen ECMAScript-Standards veraltet."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der lose Gleichheitsoperator '==' wandelt seine Operanden vor dem Vergleich in einen gemeinsamen Typ um. Der strikte Gleichheitsoperator '===' führt keine Typumwandlung durch und gibt sofort 'false' zurück, wenn die Operanden unterschiedliche Typen haben.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Datentyp von 'NaN' (Not-a-Number) und wie verhält er sich im Vergleich zu sich selbst?",
+    "options": [
+      "Sein Typ ist 'number', und 'NaN === NaN' ist false.",
+      "Sein Typ ist 'undefined', und 'NaN === NaN' ist true.",
+      "Sein Typ ist 'nan', und 'NaN == NaN' ist false.",
+      "Sein Typ ist 'number', und 'NaN === NaN' ist true."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Typ von 'NaN' ist 'number'. Gemäß dem IEEE 754-Gleitkommastandard, der von JavaScript verwendet wird, ist 'NaN' ungleich jedem Wert, einschließlich sich selbst. Daher wird 'NaN === NaN' (und 'NaN == NaN') als 'false' ausgewertet.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptzweck des primitiven Datentyps 'Symbol'? (ES6+)",
+    "options": [
+      "Um Ganzzahlen darzustellen, die größer als 2^53 - 1 sind.",
+      "Um eindeutige, unveränderliche Bezeichner zu erstellen, die als kollisionsfreie Objektschlüssel verwendet werden können.",
+      "Um unveränderliche Strings zu erstellen, die nicht modifiziert werden können.",
+      "Um als Hilfsmittel für die Garbage Collection zu dienen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Symbols sind ein primitiver Datentyp, der in ES6 eingeführt wurde. Jedes erstellte Symbol ist einzigartig, was sie ideal macht, um Objekten Eigenschaften hinzuzufügen, ohne Namenskollisionen mit anderen Eigenschaften oder Bibliotheks-Code zu riskieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Welches der folgenden ist die korrekte Syntax, um einen BigInt-Primitivwert zu deklarieren? (ES2020+)",
+    "options": [
+      "Durch Anhängen eines 'b' an eine Ganzzahl (z. B. 10b).",
+      "Durch Anhängen eines 'n' an eine Ganzzahl (z. B. 10n) oder durch Aufrufen der BigInt()-Funktion ohne das Schlüsselwort new.",
+      "Durch Voranstellen von '0b' vor eine Ganzzahl (z. B. 0b10).",
+      "Durch Aufrufen der Konstruktorfunktion 'new BigInt(10)'."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein BigInt-Primitivwert wird erstellt, indem der Buchstabe 'n' an ein Ganzzahlliteral angehängt wird oder indem der Funktions-Wrapper 'BigInt()' verwendet wird. Die Verwendung des Schlüsselworts 'new' mit BigInt löst einen TypeError aus, da es sich um einen Primitivwert und nicht um einen Konstruktor handelt.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Datentypen sind als Schlüssel für Eigenschaften in einem Standard-JavaScript-Objekt erlaubt?",
+    "options": [
+      "Nur Strings.",
+      "Strings und Symbols.",
+      "Strings, Symbols und Numbers.",
+      "Beliebige primitive Typen oder Objekttypen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Schlüssel für JavaScript-Objekteigenschaften können nur vom Typ String oder Symbol sein. Wenn ein anderer Typ (wie eine Zahl oder ein Objekt) als Eigenschaftsschlüssel verwendet wird, wandelt JavaScript ihn implizit in seine String-Repräsentation um.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist das Ergebnis der Ausdrücke 'true + false' und 'true / false' in JavaScript?",
+    "options": [
+      "1 beziehungsweise Infinity.",
+      "true beziehungsweise NaN.",
+      "1 beziehungsweise NaN.",
+      "TypeError für beide."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Bei arithmetischen Operationen werden boolesche Werte in Zahlen umgewandelt: 'true' wird zu '1' und 'false' wird zu '0'. Somit wird 'true + false' zu '1 + 0 = 1' und 'true / false' zu '1 / 0 = Infinity'. JavaScript erlaubt die Division durch Null und gibt 'Infinity' zurück, anstatt einen Fehler auszulösen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen der Ausführung von 'String(null)' und 'null.toString()'?",
+    "options": [
+      "Beide geben den String 'null' zurück.",
+      "'String(null)' gibt den String 'null' zurück, während 'null.toString()' einen TypeError auslöst.",
+      "Beide lösen einen TypeError aus, da null kein Objekt ist.",
+      "'String(null)' gibt einen leeren String zurück, während 'null.toString()' 'null' zurückgibt."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'String()' ist eine globale Funktion, die jeden Wert (einschließlich null und undefined) sicher in seine String-Repräsentation umwandelt. 'null.toString()' versucht jedoch, eine Methode auf 'null' aufzurufen. Da 'null' kein Objekt ist und keine Eigenschaften oder Prototypen besitzt, wird ein TypeError ausgelöst.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheidet sich der Null-Koaleszenz-Operator (??) vom logischen ODER-Operator (||)? (ES2020+)",
+    "options": [
+      "Der '??'-Operator gibt den rechten Operanden zurück, wenn der linke Operand ein beliebiger falsy Wert ist, während '||' nur auf null und undefined prüft.",
+      "Der '??'-Operator gibt den rechten Operanden nur dann zurück, wenn der linke Operand null oder undefined ist, während '||' den rechten Operanden zurückgibt, wenn der linke Operand ein beliebiger falsy Wert ist.",
+      "Der '??'-Operator funktioniert nur mit Objekttypen, während '||' nur mit Primitivwerten funktioniert.",
+      "Es gibt keinen Unterschied; '??' ist einfach ein Alias für '||'."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der logische ODER-Operator '||' gibt die rechte Seite zurück, wenn die linke Seite ein beliebiger falsy Wert ist (wie 0, '', false, NaN, null oder undefined). Der Null-Koaleszenz-Operator '??' prüft nur, ob die linke Seite strikt 'null' oder 'undefined' ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des Ausdrucks '\"a\" && \"b\" && \"c\"' in JavaScript?",
+    "options": [
+      "true",
+      "\"a\"",
+      "\"c\"",
+      "undefined"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Der logische UND-Operator '&&' wertet Ausdrücke von links nach rechts aus. Er gibt den ersten falsy Wert zurück, auf den er stößt. Wenn alle Werte truthy sind, gibt er den Wert des letzten Operanden zurück. Da '\"a\"' und '\"b\"' truthy sind, gibt der Ausdruck '\"c\"' zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum wird der Ausdruck '0.1 + 0.2 === 0.3' in JavaScript als false ausgewertet?",
+    "options": [
+      "Weil JavaScript standardmäßig lose Vergleiche verwendet.",
+      "Weil Zahlen in JavaScript als IEEE 754 Double-Precision Floats dargestellt werden, was zu geringfügigen binären Rundungsfehlern führt (0.30000000000000004).",
+      "Weil Dezimalzahlen automatisch in Strings umgewandelt werden.",
+      "Weil die Dezimaladdition ohne eine Bibliothek nicht unterstützt wird."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "JavaScript verwendet den IEEE 754-Standard für Zahlen. Im Binärsystem können Zahlen wie 0.1 und 0.2 nicht präzise dargestellt werden, was zu kleinen Rundungsdifferenzen führt. Ihre Summe ergibt '0.30000000000000004', was nicht strikt gleich '0.3' ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn Sie einer zuvor nicht deklarierten Variable im strikten Modus ('use strict') einen Wert zuweisen?",
+    "options": [
+      "Die Variable wird stillschweigend im globalen Gültigkeitsbereich erstellt.",
+      "Ein ReferenceError wird ausgelöst.",
+      "Ein TypeError wird ausgelöst.",
+      "Die Anweisung wird ignoriert."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Im nicht-strikten Modus erstellt die Zuweisung an eine nicht deklarierte Variable diese implizit als globale Variable. Im strikten Modus ist dieses Verhalten verboten, um eine versehentliche Verschmutzung des globalen Gültigkeitsbereichs zu verhindern, und es wird stattdessen ein ReferenceError ausgelöst.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheidet sich das Hoisting-Verhalten von mit 'var' deklarierten Variablen von denen, die mit 'let' und 'const' deklariert wurden? (ES6+)",
+    "options": [
+      "Mit 'var' deklarierte Variablen werden nicht hochgezogen (hoisted), während 'let' und 'const' hochgezogen werden.",
+      "Mit 'var' deklarierte Variablen werden hochgezogen und mit 'undefined' initialisiert, während 'let' und 'const' zwar hochgezogen werden, aber uninitialisiert bleiben, was zu einem ReferenceError führt, wenn vor der Deklaration darauf zugegriffen wird.",
+      "Alle Variablen werden hochgezogen und mit 'undefined' initialisiert, aber der Zugriff auf 'let' verursacht eine Konsolenwarnung.",
+      "Nur Funktionen werden hochgezogen; Variablen werden in JavaScript niemals hochgezogen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Alle Variablendeklarationen in JavaScript werden an den Anfang ihres Gültigkeitsbereichs hochgezogen (hoisted). Allerdings werden 'var'-Variablen sofort mit 'undefined' initialisiert. Mit 'let' und 'const' deklarierte Variablen werden zwar hochgezogen, aber nicht initialisiert, wodurch sie sich in der Temporal Dead Zone (TDZ) befinden. Ein Zugriff auf sie vor ihrer Deklarationszeile löst einen ReferenceError aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Optionen beschreibt die Gültigkeitsbereichsregeln (Scoping) von 'var' im Vergleich zu 'let' und 'const'? (ES6+)",
+    "options": [
+      "'var' ist block-scoped, während 'let' and 'const' function-scoped sind.",
+      "'var' ist function-scoped (oder global), während 'let' und 'const' block-scoped sind.",
+      "Alle drei Deklarationsschlüsselwörter sind block-scoped.",
+      "Alle drei Deklarationsschlüsselwörter sind ausschließlich global-scoped."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'var'-Variablen sind auf die nächste umschließende Funktion (oder den globalen Kontext) beschränkt. 'let'- und 'const'-Variablen sind auf den nächsten umschließenden Block beschränkt, der durch geschweifte Klammern '{}' definiert ist (wie if-Anweisungen, Schleifen oder Funktionen).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Temporal Dead Zone (TDZ) in JavaScript? (ES6+)",
+    "options": [
+      "Der Zustand während der Ausführung, in dem asynchrone Callbacks blockiert sind.",
+      "Der Zeitraum zwischen dem Eintritt in einen Block-Scope und der Codezeile, in der eine 'let'- oder 'const'-Variable deklariert wird, in dem der Zugriff auf die Variable einen ReferenceError auslöst.",
+      "Die Zeit, die der Garbage Collector benötigt, um ungenutzte Closures zu löschen.",
+      "Die Phase beim Laden der Seite, in der Skripte kompiliert werden."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die Temporal Dead Zone (TDZ) is der Zeitraum vom Beginn der Ausführung eines Blocks bis zur offiziellen Initialisierung der mit 'let' oder 'const' deklarierten Variable durch den Code. Der Zugriff auf oder die Änderung der Variable in diesem Zeitraum löst einen ReferenceError aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche(s) Variablendeklarations-Schlüsselwort(e) ermöglicht es Ihnen, eine Variable mit demselben Namen im selben Gültigkeitsbereich erneut zu deklarieren, ohne dass ein Fehler ausgelöst wird?",
+    "options": [
+      "Nur 'var'.",
+      "Nur 'let'.",
+      "Sowohl 'var' als auch 'let'.",
+      "Keines von ihnen; eine erneute Deklaration ist immer ein Fehler."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Das Schlüsselwort 'var' ermöglicht es Ihnen, dieselbe Variable mehrmals im selben Gültigkeitsbereich problemlos erneut zu deklarieren. Der Versuch, eine Variable mit demselben Namen im selben Gültigkeitsbereich mit 'let' oder 'const' erneut zu deklarieren, führt zu einem SyntaxError.",
+    "points": 10
+  },
+  {
+    "question_text": "Wenn ein Array mit 'const arr = [1, 2, 3];', welche der folgenden Operationen ist verboten? (ES6+)",
+    "options": [
+      "arr.push(4)",
+      "arr[0] = 99",
+      "arr = [5, 6, 7]",
+      "arr.length = 0"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Das Schlüsselwort 'const' verhindert die Neuzuweisung einer Variablenbindung. Sie können einer mit 'const' deklarierten Variable keinen neuen Wert oder keine neue Referenz zuweisen (dies löst einen TypeError aus). Der Wert selbst (wenn es sich um ein Array oder Objekt handelt) bleibt jedoch veränderbar (mutable), sodass seine Elemente oder Eigenschaften geändert werden können.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich 'var' im Vergleich zu 'let' und 'const', wenn es im globalen Gültigkeitsbereich deklariert wird? (ES6+)",
+    "options": [
+      "Alle erzeugen Eigenschaften auf dem globalen window-Objekt in Browsern.",
+      "Nur 'var'-Deklarationen erzeugen Eigenschaften auf dem globalen window-Objekt, während 'let'- und 'const'-Deklarationen dies nicht tun.",
+      "Keines von ihnen erzeugt Eigenschaften auf dem globalen window-Objekt.",
+      "Nur 'let' und 'const' erzeugen Eigenschaften auf dem globalen window-Objekt."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In einer Browser-Umgebung fügt die Deklaration einer Variablen mit 'var' im globalen Gültigkeitsbereich diese Variable als Eigenschaft an das globale 'window'-Objekt an. Globale Variablen, die mit 'let' oder 'const' deklariert wurden, werden nicht zu Eigenschaften des 'window'-Objekts.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist eine Closure in JavaScript?",
+    "options": [
+      "Eine Funktion, die ausgeführt wird und sich sofort selbst zerstört, um Speicher zu sparen.",
+      "Eine Funktion, die den Zugriff auf ihren lexikalischen Gültigkeitsbereich (äußere Variablen) behält, selbst wenn die Funktion außerhalb ihres ursprünglichen Gültigkeitsbereichs ausgeführt wird.",
+      "Ein Feature, das Standardfunktionen in statische Binärdateien kompiliert.",
+      "Die schließende Klammer einer Blockanweisung."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Eine Closure ist die Kombination einer Funktion, die mit Verweisen auf ihren umgebenden Zustand (die lexikalische Umgebung) gebündelt ist. Mit anderen Worten: Eine Closure gibt einer inneren Funktion Zugriff auf die Variablen der äußeren Funktion, selbst nachdem die äußere Funktion ihre Ausführung beendet hat.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES6+)\n```javascript\nfor (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 10);\n}\n```",
+    "options": [
+      "3 3 3",
+      "0 1 2",
+      "2 2 2",
+      "undefined undefined undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die Verwendung von 'let' im Schleifenkopf erzeugt für jede Iteration eine neue blockbezogene Bindung von 'i'. Jeder setTimeout-Callback schließt sich über seine eigene spezifische Iterationsbindung von 'i' und gibt '0 1 2' aus. Wäre 'var' verwendet worden, gäbe es eine einzige funktionbezogene Variable, was zu '3 3 3' führen würde.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie löst JavaScript variable Gültigkeitsbereiche während der Ausführung auf?",
+    "options": [
+      "Dynamisch, basierend darauf, wo die Funktion zur Laufzeit aufgerufen wird.",
+      "Lexikalisch, basierend darauf, wo Variablen und Blöcke physisch im Quellcode definiert sind.",
+      "Basierend auf der Reihenfolge der Funktionsaufrufe im Stack.",
+      "Zufällig, es sei denn, der strikte Modus ist aktiviert."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "JavaScript ist lexikalisch (statisch) gültigkeitsbezogen. Die Gültigkeitsbereiche werden durch die Schachtelung von Blöcken und Funktionen im geschriebenen Quellcode bestimmt, nicht durch die Struktur des Aufrufstapels (Call Stack) zur Laufzeit.",
+    "points": 10
+  },
+  {
+    "question_text": "Was war der Hauptgrund, warum Entwickler vor ES6 sofort aufgerufene Funktionsausdrücke (IIFEs) verwendeten?",
+    "options": [
+      "Um die Laufzeitausführung durch Umgehen der Kompilierung zu beschleunigen.",
+      "Um lokale Variablen zu erstellen und eine Verschmutzung des globalen Gültigkeitsbereichs zu verhindern, da es keinen Block-Scope gab.",
+      "Um Funktionen synchron zu machen.",
+      "Um den 'this'-Kontext lexikalisch zu binden."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Bevor ES6 'let' und 'const' einführte, gab es in JavaScript nur globale und Funktions-Gültigkeitsbereiche. Entwickler verwendeten IIFEs, um einen temporären Funktions-Gültigkeitsbereich zur Isolierung von Variablen zu erstellen, damit diese nicht in den globalen Gültigkeitsbereich gelangen und diesen verschmutzen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist Variablen-Shadowing in JavaScript?",
+    "options": [
+      "Wenn ein innerer Gültigkeitsbereich eine Variable mit demselben Namen wie eine Variable in einem äußeren Gültigkeitsbereich deklariert und die äußere Variable vorübergehend verdeckt.",
+      "Ein Fehler, bei dem eine Variable gelöscht wird, bevor auf sie zugegriffen wird.",
+      "Ein unbefugter Zugriff auf private Klassenfelder.",
+      "Eine Möglichkeit, Objekte mithilfe einer Referenzprüfung zu klonen."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Variablen-Shadowing tritt auf, wenn eine Variable, die in einem lokalen Gültigkeitsbereich (wie einem Block oder einer Funktion) deklariert ist, exakt denselben Namen hat wie eine Variable in einem äußeren Gültigkeitsbereich. Innerhalb dieses lokalen Gültigkeitsbereichs hat die lokale Variable Vorrang und überschattet die äußere Variable.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn Sie 'foo()' und 'bar()' vor ihren Definitionen im folgenden Code aufrufen?\n```javascript\nfoo();\nbar();\nfunction foo() {}\nvar bar = function() {};\n```",
+    "options": [
+      "Beide Aufrufe werden erfolgreich ausgeführt.",
+      "'foo()' wird erfolgreich ausgeführt, während 'bar()' einen TypeError auslöst.",
+      "'bar()' wird erfolgreich ausgeführt, während 'foo()' einen ReferenceError auslöst.",
+      "Beide lösen einen ReferenceError aus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Funktionsdeklarationen ('foo') werden vollständig hochgezogen, was bedeutet, dass ihr Bezeichner und ihre Definition verfügbar sind. Variablendeklarationen ('var bar') werden zwar hochgezogen, aber ihre Zuweisung nicht. Daher ist 'bar' beim Aufruf 'undefined', was zu einem 'TypeError: bar is not a function' führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES6+)\n```javascript\nif (true) {\n  var a = 5;\n  let b = 10;\n}\nconsole.log(a);\nconsole.log(b);\n```",
+    "options": [
+      "5 und 10",
+      "5, gefolgt von einem ReferenceError für b",
+      "Ein ReferenceError für a, gefolgt von 10",
+      "ReferenceError für beide Variablen"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'var a' ist function-scoped (oder hier global), sodass außerhalb des 'if'-Blocks darauf zugegriffen werden kann. 'let b' ist block-scoped und existiert nur innerhalb des 'if'-Blocks. Der Zugriff auf 'b' außerhalb des Blocks löst einen ReferenceError aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie können Closures potenziell Speicherlecks in JavaScript verursachen?",
+    "options": [
+      "Durch Duplizieren von Funktionsausführungskontexten auf dem Call Stack.",
+      "Durch Beibehalten von Verweisen auf Variablen des äußeren Gültigkeitsbereichs im Speicher, wodurch verhindert wird, dass diese Variablen vom Garbage Collector erfasst werden, solange auf die Closure verwiesen wird.",
+      "Durch Erzwingen einer zu häufigen Garbage Collection.",
+      "Durch Umwandeln lokaler Primitivwerte in globale Variablen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Eine Closure behält einen Verweis auf ihre lexikalische Umgebung. Wenn ein Verweis auf die innere Funktion erhalten bleibt (z. B. in einer globalen Variable oder einem Event-Listener), können die Variablen des äußeren Gültigkeitsbereichs nicht vom Garbage Collector freigegeben werden, selbst wenn sie vom Rest der Anwendung nicht mehr verwendet werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Kann eine äußere Funktion auf Variablen zugreifen, die innerhalb einer geschachtellten inneren Funktion deklariert wurden?",
+    "options": [
+      "Ja, Elternfunktionen haben vollen Zugriff auf Kindvariablen.",
+      "Nein, die Gültigkeitsbereichsauflösung ist einseitig: Innere Funktionen können auf äußere Variablen zugreifen, aber äußere Funktionen können nicht auf innere Variablen zugreifen.",
+      "Ja, aber nur, wenn die Variable mit 'var' in der inneren Funktion deklariert ist.",
+      "Ja, aber nur, wenn der strikte Modus deaktiviert ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Gültigkeitsbereichsgrenzen sind streng und einseitig. Geschachtelte innere Gültigkeitsbereiche können Variablen in übergeordneten Gültigkeitsbereichen nachschlagen, aber übergeordnete Gültigkeitsbereiche haben keinen Zugriff auf Variablen, die in inneren Gültigkeitsbereichen deklariert sind.",
+    "points": 10
+  },
+  {
+    "question_text": "Hat eine Arrow-Funktion (Pfeilfunktion) ihre eigene dynamische 'this'-Bindung? (ES6+)",
+    "options": [
+      "Ja, ihr 'this' wird dynamisch gebunden, je nachdem, wie die Funktion aufgerufen wird.",
+      "Nein, sie hat kein eigenes 'this'; sie erbt 'this' lexikalisch von ihrem umschließenden Ausführungskontext.",
+      "Ja, aber nur, wenn die Arrow-Funktion innerhalb eines Objektliterals deklariert ist.",
+      "Nein, 'this' ist innerhalb von Arrow-Funktionen überhaupt nicht verfügbar."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arrow-Funktionen haben keine eigene 'this'-Bindung. Der Wert von 'this' innerhalb einer Arrow-Funktion wird lexikalisch aufgelöst und erbt diesen aus dem umgebenden Gültigkeitsbereich, in dem die Funktion definiert wurde.",
+    "points": 10
+  },
+  {
+    "question_text": "Besitzen Arrow-Funktionen ihr eigenes 'arguments'-Objekt? (ES6+)",
+    "options": [
+      "Ja, sie verhalten sich identisch zu regulären Funktionen.",
+      "Nein, sie haben kein eigenes 'arguments'-Objekt; sie erben es aus dem umschließenden Gültigkeitsbereich der nächsten regulären Funktion.",
+      "Ja, aber nur im nicht-strikten Modus.",
+      "Nein, der Versuch, innerhalb von ihnen auf 'arguments' zu verweisen, löst einen SyntaxError aus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arrow-Funktionen haben keine eigene 'arguments'-Bindung. Jeder Verweis auf 'arguments' innerhalb einer Arrow-Funktion bezieht sich auf das 'arguments'-Objekt der nächsten umschließenden regulären Funktion.",
+    "points": 10
+  },
+  {
+    "question_text": "Können Arrow-Funktionen als Konstruktoren mit dem Schlüsselwort 'new' verwendet werden? (ES6+)",
+    "options": [
+      "Ja, sie können Objekte normal instanziieren.",
+      "Nein, ihnen fehlt eine 'prototype'-Eigenschaft und die interne construct-Methode, sodass ihr Aufruf mit 'new' einen TypeError auslöst.",
+      "Ja, aber nur, wenn sie explizit ein Objekt zurückgeben.",
+      "Ja, aber nur im strikten Modus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arrow-Funktionen sind nicht konstruierbar. Sie besitzen keine 'prototype'-Eigenschaft oder die internen construct-Fähigkeiten. Der Versuch, sie mit dem 'new'-Operator zu verwenden, löst einen TypeError aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptunterschied bei den Argument-Signaturen zwischen 'Function.prototype.call' und 'Function.prototype.apply'?",
+    "options": [
+      "'call' akzeptiert Argumente als kommagetrennte Liste, während 'apply' Argumente als einzelne array-ähnliche Struktur akzeptiert.",
+      "'call' akzeptiert Argumente als Array, während 'apply' sie einzeln akzeptiert.",
+      "'call' bindet den Kontext dauerhaft, während 'apply' ihn sofort ausführt.",
+      "Es gibt keinen Unterschied; sie sind völlig identisch."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Sowohl 'call' als auch 'apply' führen eine Funktion mit einem benutzerdefinierten 'this'-Kontext aus. Der Unterschied besteht darin, dass 'call' Parameter einzeln erwartet ('func.call(thisArg, arg1, arg2)'), während 'apply' sie als Array erwartet ('func.apply(thisArg, [arg1, arg2])').",
+    "points": 10
+  },
+  {
+    "question_text": "Was gibt 'Function.prototype.bind' zurück und führt es die Zielfunktion sofort aus?",
+    "options": [
+      "Es führt die Funktion sofort mit dem gebundenen Kontext aus und gibt das Ergebnis zurück.",
+      "Es gibt eine neue Kopie der Funktion mit einem gebundenen 'this'-Kontext zurück, ohne die Funktion sofort auszuführen.",
+      "Es gibt einen String zurück, der den Bytecode der Funktion darstellt.",
+      "Es löst die Funktion asynchron im nächsten Mikrotask auf."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'bind()' erstellt eine neue Funktion und gibt sie zurück. Wenn diese neue Funktion aufgerufen wird, ist ihr 'this' an das erste Argument gebunden, das an 'bind()' übergeben wurde. Sie führt die Funktion nicht sofort aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Optionen stellt die korrekte Syntax für einen sofort aufgerufenen Funktionsausdruck (IIFE) dar?",
+    "options": [
+      "function() {}()",
+      "(function() {})()",
+      "new function() {}",
+      "function() {} => ()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Um eine Funktion sofort aufzurufen, muss sie als Funktionsausdruck und nicht als Anweisung interpretiert werden. Das Umschließen der Funktionsdeklaration mit Gruppierungsklammern '(function() {})' macht sie zu einem Ausdruck, der dann sofort mit nachfolgenden Klammern '()' aufgerufen werden kann.",
+    "points": 10
+  },
+  {
+    "question_text": "Worauf zeigt das Schlüsselwort 'this' bei impliziter Bindung, wenn die Methode eines Objekts ausgeführt wird (z. B. 'user.getName()')?",
+    "options": [
+      "Das globale Objekt.",
+      "Das Objekt vor dem Punkt (in diesem Fall 'user').",
+      "Die Funktion 'getName' selbst.",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Wenn eine Funktion als Methode eines Objekts aufgerufen wird (unter Verwendung der Punkt- oder Klammerschreibweise), wird 'this' an das Objekt gebunden, das den Methodenaufruf 'empfangen' hat (das Objekt vor dem Punkt).",
+    "points": 10
+  },
+  {
+    "question_text": "Wozu wird das Schlüsselwort 'this' bei einem regulären Funktionsaufruf (z. B. 'foo()') im strikten Modus im Vergleich zum nicht-strikten Modus aufgelöst?",
+    "options": [
+      "'window' im strikten Modus und 'undefined' im nicht-strikten Modus.",
+      "'undefined' im strikten Modus und das globale Objekt (z. B. 'window') im nicht-strikten Modus.",
+      "Die Funktion selbst in beiden Modi.",
+      "null im strikten Modus und das globale Objekt im nicht-strikten Modus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Im nicht-strikten Modus gelten die Standardbindungsregeln, wenn ein Funktionsaufruf keinen expliziten Besitzer hat, und 'this' verweist standardmäßig auf das globale Objekt ('window' in Browsern). Im strikten Modus ist 'this' standardmäßig 'undefined'.",
+    "points": 10
+  },
+  {
+    "question_text": "Was wird ausgegeben, wenn 'obj.log()' im folgenden Code aufgerufen wird? (ES6+)\n```javascript\nconst obj = {\n  val: 42,\n  log: function() {\n    setTimeout(() => console.log(this.val), 10);\n  }\n};\n```",
+    "options": [
+      "undefined",
+      "42",
+      "ReferenceError",
+      "null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die äußere Funktion 'log' ist eine reguläre Funktion, daher ist ihr 'this' an 'obj' gebunden. Innerhalb von 'log' führt 'setTimeout' eine Arrow-Funktion aus. Da Arrow-Funktionen 'this' lexikalisch auflösen, erbt sie 'this' aus dem Gültigkeitsbereich der 'log'-Methode, welcher 'obj' ist. Daher gibt 'this.val' korrekt '42' aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist Currying in JavaScript?",
+    "options": [
+      "Der Prozess der parallelen Ausführung mehrerer Funktionen.",
+      "Ein Entwurfsmuster, bei dem eine Funktion, die mehrere Argumente entgegennimmt, in eine Reihe geschachtelter Funktionen zerlegt wird, die jeweils ein einzelnes Argument entgegennehmen.",
+      "Eine Methode zur Absicherung von Closures gegen Speicherlecks.",
+      "Die Übergabe einer Funktion als Konstruktorargument."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Currying ist eine funktionale Programmiertechnik, bei der eine Funktion mit mehreren Parametern in eine Kette von geschachtelten Funktionen umgewandelt wird, von denen jede ein einziges Argument akzeptiert. Zum Beispiel die Umwandlung von 'f(a, b)' in 'f(a)(b)'.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptvorteil von Rest-Parametern gegenüber dem 'arguments'-Objekt? (ES6+)",
+    "options": [
+      "Rest-Parameter sind eine echte Array-Instanz, was den direkten Zugriff auf Methoden wie map und filter ermöglicht, im Gegensatz zum array-ähnlichen 'arguments'-Objekt.",
+      "Rest-Parameter sind nur im nicht-strikten Modus verfügbar.",
+      "Rest-Parameter sind schneller, da sie keine benannten Argumente erfassen.",
+      "Es gibt keinen Unterschied; sie sind identisch."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Rest-Parameter ('...args') sammeln Argumente in einem echten Array an, was die sofortige Verwendung von Hilfsmethoden wie 'map', 'filter' oder 'reduce' ermöglicht. Dem 'arguments'-Objekt fehlen diese Methoden auf seinem Prototyp.",
+    "points": 10
+  },
+  {
+    "question_text": "Wenn eine Funktion Standardparameter besitzt, z. B. 'function greet(user = \"Guest\")', wie werden dann 'undefined'- und 'null'-Werte behandelt? (ES6+)",
+    "options": [
+      "Sowohl 'undefined' als auch 'null' lösen den Standardwert aus.",
+      "Nur 'undefined' löst den Standardwert aus, während 'null' unverändert übergeben wird.",
+      "Nur 'null' löst den Standardwert aus, während 'undefined' übergeben wird.",
+      "Keines von beiden löst den Standardwert aus; er wird nur ausgelöst, wenn überhaupt keine Argumente übergeben werden."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Standardparameter werden nur angewendet, wenn ein Argument fehlt oder explizit als 'undefined' übergeben wird. 'null' wird als gültiger, bewusster Wert angesehen, weshalb er nicht durch den Standardparameterwert überschrieben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was stellt die Eigenschaft 'length' eines Funktionsobjekts dar?",
+    "options": [
+      "Die Anzahl der Codezeilen innerhalb des Funktionskörpers.",
+      "Die Anzahl der von der Funktion erwarteten Parameter (ohne Rest-Parameter und Parameter mit Standardwerten).",
+      "Die Anzahl der zur Laufzeit an die Funktion übergebenen Argumente.",
+      "Die Größe des Funktionsobjekts in Bytes."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die 'length'-Eigenschaft einer Funktion gibt die Anzahl der formalen Parameter zurück, die in der Funktionssignatur definiert sind, ausgenommen Rest-Parameter und Parameter mit Standardwerten.",
+    "points": 10
+  },
+  {
+    "question_text": "Was unterscheidet eine Generatorfunktion von einer regulären Funktion in JavaScript? (ES6+)",
+    "options": [
+      "Sie wird asynchron in einem separaten Hintergrund-Thread des Browsers ausgeführt.",
+      "Sie kann ihre Ausführung mithilfe des Schlüsselworts 'yield' unterbrechen und später fortgesetzt werden, wobei sie ein iterator-ähnliches Generator-Objekt zurückgibt.",
+      "Sie unterstützt keine Konstruktorparameter.",
+      "Sie führt automatisch einen erneuten Versuch durch, wenn sie auf eine Laufzeitausnahme stößt."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Generatorfunktionen (deklariert als 'function*') geben ein Generator-Objekt zurück. Sie können ihren Ausführungszustand mit dem Schlüsselwort 'yield' anhalten und zu einem späteren Zeitpunkt durch Aufruf der Methode '.next()' fortgesetzt werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Hauptursache für einen 'RangeError: Maximum call stack size exceeded' in JavaScript?",
+    "options": [
+      "Die Zuweisung von zu viel Speicher auf dem Heap.",
+      "Die gleichzeitige Ausführung von zu vielen Event-Listenern.",
+      "Endlose oder sehr tief geschachtelte Rekursionen, welche die Kapazitätsgrenze des Call-Stacks der JS-Engine überschreiten.",
+      "Das Ausführen von zu vielen asynchronen Timern."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Der Call Stack (Aufrufstapel) verfolgt aktive Funktionsaufrufe. Wenn eine Funktion sich selbst rekursiv aufruft, ohne einen Abbruchfall zu erreichen, werden dem Stack unendlich viele Frames hinzugefügt, bis das Limit der Engine erreicht ist und ein RangeError ausgelöst wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie löst JavaScript eine Eigenschaftssuche (Property Lookup) bei einem Objekt auf?",
+    "options": [
+      "Es prüft nur das Objekt selbst; wird die Eigenschaft nicht gefunden, gibt es sofort undefined zurück.",
+      "Es prüft zuerst das Objekt, und wenn sie nicht gefunden wird, sucht es rekursiv in dessen Prototypenkette über '[[Prototype]]', bis es die Eigenschaft findet oder null erreicht.",
+      "Es sucht im globalen window-Objekt, bevor es den lokalen Prototyp prüft.",
+      "Es durchsucht alle in der Anwendung definierten Klassen in alphabetischer Reihenfolge."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Wenn Sie auf eine Eigenschaft eines Objekts zugreifen, prüft JavaScript, ob diese auf dem Objekt selbst existiert. Wenn nicht, sucht es im Prototyp des Objekts ('__proto__') und fährt mit der Suche in der Kette fort, bis die Eigenschaft gefunden oder das Ende der Kette ('null') erreicht ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich die Methode 'Object.create(proto)'?",
+    "options": [
+      "Sie erstellt eine tiefe Kopie des 'proto'-Objekts.",
+      "Sie erstellt ein neues Objekt, dessen Prototyp ('[[Prototype]]') auf das angegebene 'proto'-Objekt gesetzt ist.",
+      "Sie friert die Eigenschaften des 'proto'-Objekts ein.",
+      "Sie führt die Eigenschaften mehrerer Objekte in einem zusammen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'Object.create()' erstellt ein neues Objekt und verknüpft dessen internen Prototyp ('__proto__') direkt mit dem als Argument übergebenen Objekt, wodurch eine direkte prototypische Vererbung etabliert wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen der 'prototype'-Eigenschaft einer Funktion und dem internen '[[Prototype]]' einer Objektinstanz?",
+    "options": [
+      "Es gibt keinen Unterschied; es sind Aliase für dasselbe Objekt.",
+      "Die 'prototype'-Eigenschaft ist eine Eigenschaft auf Konstruktorfunktionen, mit der das '[[Prototype]]' (abgerufen über Object.getPrototypeOf) neuer, mit 'new' erstellter Instanzen festgelegt wird.",
+      "Die 'prototype'-Eigenschaft ist nur für primitive Datentypen verfügbar.",
+      "Das '[[Prototype]]' ist ein schreibgeschützter String, der den Klassennamen darstellt."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Eine Konstruktorfunktion hat eine 'prototype'-Eigenschaft. Wenn Sie diese mit 'new' instanziieren, erhält das neu erstellte Objekt einen internen '[[Prototype]]'-Link, der auf das 'prototype'-Objekt des Konstruktors verweist.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Aktionen wird vom 'new'-Operator beim Aufruf einer Konstruktorfunktion NICHT durchgeführt?",
+    "options": [
+      "Er erstellt ein neues, leeres JavaScript-Objekt.",
+      "Er verknüpft den Prototyp des neuen Objekts mit der prototype-Eigenschaft des Konstruktors.",
+      "Er bindet das neu erstellte Objekt als 'this'-Kontext für den Konstruktor.",
+      "Er konvertiert automatisch alle Konstruktorargumente in Strings."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Der 'new'-Operator erstellt ein neues Objekt, verknüpft dessen Prototyp mit dem Prototyp der Konstruktorfunktion, setzt 'this' auf das neue Objekt und gibt dieses zurück. Er konvertiert keine Argumente in Strings.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie hängt die ES6-Klassensyntax mit dem Vererbungssystem von JavaScript zusammen? (ES6+)",
+    "options": [
+      "Sie führt ein völlig neues, klassenbasiertes Vererbungsmodell ein, das Prototypen komplett ersetzt.",
+      "Sie ist syntaktischer Zucker (Syntactic Sugar) über dem bestehenden prototypbasierten Vererbungsmodell.",
+      "Sie bewirkt, dass Vererbung direkt in Maschinenbefehle kompiliert wird.",
+      "Sie deaktiviert die Prototypänderung global."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "ES6-Klassen ändern nichts an der zugrundeliegenden prototypbasierten Vererbung von JavaScript. Sie bieten eine sauberere, klassenähnliche Syntax zum Schreiben von Konstruktoren, Methoden und zum Einrichten von Vererbung, verwenden jedoch im Hintergrund weiterhin die Prototypenkette.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn ein Subklassen-Konstruktor bei der ES6-Vererbung den Aufruf von 'super()' versäumt? (ES6+)",
+    "options": [
+      "Der Konstruktor der Elternklasse wird implizit ohne Argumente aufgerufen.",
+      "Ein ReferenceError wird ausgelöst, wenn auf 'this' zugegriffen wird oder wenn der Konstruktor verlassen wird.",
+      "Die Klasse wird erstellt, erbt aber keine Methoden.",
+      "Der Konstruktor gibt undefined zurück."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In Konstruktoren von Subklassen müssen Sie 'super()' aufrufen, bevor Sie auf 'this' zugreifen oder Werte zurückgeben. Der Versuch, 'this' vor dem Aufruf von 'super()' zu verwenden, löst einen ReferenceError aus, da 'this' nicht initialisiert ist, bis der übergeordnete Konstruktor ausgeführt wurde.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Zweck der Deklaration einer Methode mit dem Schlüsselwort 'static' innerhalb einer ES6-Klasse? (ES6+)",
+    "options": [
+      "Es macht die Methode unveränderlich und verhindert Überschreibungen.",
+      "Es verknüpft die Methode mit dem Klassenkonstruktor selbst und nicht mit den Objektinstanzen der Klasse.",
+      "Es bewirkt, dass die Methode beim Skriptstart automatisch ausgeführt wird.",
+      "Es verbirgt die Methode vor der Untersuchung in der Konsole."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Statische Methoden werden direkt auf dem Klassenkonstruktor selbst definiert (z. B. 'Math.random()'), nicht auf Instanzen. Sie werden unter Verwendung des Klassennamens aufgerufen und haben keinen Zugriff auf instanzspezifische Eigenschaften über 'this'.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie werden private Eigenschaften und Methoden in modernen JavaScript-Klassen deklariert? (ES2022+)",
+    "options": [
+      "Durch Voranstellen des Schlüsselworts 'private'.",
+      "Durch Voranstellen eines Doppelkreuzsymbols '#' vor ihren Namen (z. B. '#count').",
+      "Durch Deklaration innerhalb eines Konstruktors mittels 'let' oder 'const'.",
+      "Durch Anhängen eines Unterstrichs an ihren Namen (z. B. 'count_')."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In ES2022 werden private Felder und Methoden mit dem Präfix '#' deklariert. Sie sind von außerhalb des Klassenkörpers unzugänglich, was eine echte Kapselung auf Sprachebene erzwingt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied im Verhalten zwischen 'Object.freeze(obj)' und 'Object.seal(obj)'?",
+    "options": [
+      "'Object.freeze' macht Eigenschaften schreibgeschützt, während 'Object.seal' das Ändern vorhandener Eigenschaften erlaubt, aber das Hinzufügen oder Löschen von Eigenschaften verhindert.",
+      "'Object.seal' macht Eigenschaften schreibgeschützt, während 'Object.freeze' das Hinzufügen neuer Eigenschaften erlaubt.",
+      "'Object.freeze' funktioniert nur bei Arrays, während 'Object.seal' nur bei Objekten funktioniert.",
+      "Es gibt keinen Unterschied; sie sind Aliase."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "'Object.freeze()' macht ein Objekt vollständig unveränderlich: Eigenschaften können weder hinzugefügt, gelöscht noch geändert werden. 'Object.seal()' verhindert das Hinzufügen oder Löschen von Eigenschaften, erlaubt jedoch die Änderung vorhandener beschreibbarer Eigenschaften.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie weisen Sie bei der Objektdestrukturierung einer Eigenschaft einen Standardwert zu, falls diese im Quellobjekt nicht existiert? (ES6+)",
+    "options": [
+      "Unter Verwendung des '||'-Operators: 'const { name || \"Guest\" } = obj;'",
+      "Unter Verwendung des '='-Operators: 'const { name = \"Guest\" } = obj;'",
+      "Unter Verwendung des ':'-Operators: 'const { name: \"Guest\" } = obj;'",
+      "Unter Verwendung des Schlüsselworts 'default': 'const { name default \"Guest\" } = obj;'"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Sie können bei der Destrukturierung einen Standardwert mit dem Zuweisungsoperator '=' angeben: 'const { name = \"Guest\" } = obj;'. Der Standardwert wird verwendet, wenn die Eigenschaft fehlt oder ihr Wert strikt 'undefined' ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie definieren Sie eine Getter-Eigenschaft auf einem einfachen JavaScript-Objektliteral?",
+    "options": [
+      "Durch Verwendung des Schlüsselworts 'get' gefolgt von einer Methodendeklaration: 'const obj = { get prop() { return value; } };'",
+      "Durch Definieren einer Funktion namens 'get_prop()'.",
+      "Ausschließlich durch Verwendung der Methode 'Object.defineProperty'; in Literalen wird dies nicht unterstützt.",
+      "Durch Setzen der Eigenschaft auf eine Funktion, die in einen 'getter'-Helper eingepackt ist."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Objektliterale unterstützen die direkte Definition von Gettern und Settern, indem der Eigenschaftsmethode die Schlüsselwörter 'get' oder 'set' vorangestellt werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was bestimmt das Attribut 'configurable' in Eigenschafts-Deskriptoren?",
+    "options": [
+      "Ob der Wert der Eigenschaft mit einem Zuweisungsoperator geändert werden kann.",
+      "Ob der Eigenschafts-Deskriptor geändert und ob die Eigenschaft vom Objekt gelöscht werden kann.",
+      "Ob auf die Eigenschaft mit der Klammerschreibweise zugegriffen werden kann.",
+      "Ob die Eigenschaft in Schleifen aufzählbar (enumerable) ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Das Attribut 'configurable' verhindert, wenn es 'false' ist, dass die Eigenschaft vom Objekt gelöscht wird und dass ihre Deskriptorattribute (wie enumerable oder configurable selbst) geändert werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen der Prüfung der Existenz einer Eigenschaft mit dem 'in'-Operator im Vergleich zur Methode 'hasOwnProperty'?",
+    "options": [
+      "Der 'in'-Operator prüft das Objekt und seine Prototypenkette, während 'hasOwnProperty' nur die eigenen Eigenschaften des Objekts prüft.",
+      "'hasOwnProperty' prüft die Prototypenkette, während 'in' nur die eigenen Eigenschaften des Objekts prüft.",
+      "Es gibt keinen Unterschied; sie verhalten sich identisch.",
+      "'in' funktioniert nur bei Arrays, während 'hasOwnProperty' nur bei Objekten funktioniert."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der 'in'-Operator gibt true zurück, wenn eine Eigenschaft auf dem Objekt selbst oder irgendwo in seiner Prototypenkette existiert. 'hasOwnProperty()' prüft nur auf Eigenschaften, die direkt auf dem Objekt definiert sind, und ignoriert vererbte.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Art von Kopie wird erstellt, wenn ein Objekt mit 'Object.assign()' oder dem Spread-Operator ('...') kopiert wird? (ES6+)",
+    "options": [
+      "Eine tiefe Kopie (Deep Copy) aller geschachtelten Objekte und Eigenschaften.",
+      "Eine flache Kopie (Shallow Copy), was bedeutet, dass geschachtelte Objekte/Arrays als Referenz kopiert und nicht geklont werden.",
+      "Eine unveränderliche Kopie, die das Zielobjekt einfreist.",
+      "Eine prototypisch verknüpfte Kopie, welche die Elternklassen beibehält."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Sowohl 'Object.assign()' als auch der Spread-Operator für Objekte führen eine flache Kopie durch. Sie kopieren Schlüssel der obersten Ebene als Wert, geschachtelte Objekte oder Arrays werden jedoch als Referenz kopiert, was bedeutet, dass sich Änderungen an einer geschachtelten Eigenschaft auch auf das Original auswirken.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie prüft der 'instanceof'-Operator, ob ein Objekt eine Instanz einer Klasse oder eines Konstruktors ist?",
+    "options": [
+      "Indem er prüft, ob der Konstruktorname als String mit dem Klassennamen übereinstimmt.",
+      "Indem er prüft, ob die 'prototype'-Eigenschaft der Konstruktorfunktion irgendwo in der Prototypenkette des Objekts existiert.",
+      "Durch Vergleichen der Speicheradressen des Objekts und des Konstruktors.",
+      "Durch Suchen nach einer Übereinstimmung in der globalen Symboltabelle."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der 'instanceof'-Operator prüft, ob die 'prototype'-Eigenschaft der Konstruktorfunktion irgendwo in der Prototypenkette des untersuchten Objekts existiert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Standardwert eines Klassenfelds, das ohne Initialisierer deklariert wurde (z. B. 'class User { name; }')? (ES2022+)",
+    "options": [
+      "null",
+      "undefined",
+      "NaN",
+      "Es wird ein Kompilierungsfehler ausgelöst."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Klassenfelder, die ohne Anfangswert deklariert werden, erhalten standardmäßig den Wert 'undefined'. Sie werden während der Konstruktion auf der Instanz erstellt.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie löst das Schlüsselwort 'super' seinen Kontext innerhalb einer Methode einer Subklasse auf? (ES6+)",
+    "options": [
+      "Es zeigt dynamisch auf das Objekt, welches die Methode zur Laufzeit aufgerufen hat.",
+      "Es verweist statisch auf den Prototyp der Klasse, in der die Methode definiert wurde.",
+      "Es ist ausschließlich ein Alias für die Konstruktorfunktion der Elternklasse.",
+      "Es zeigt auf den globalen Objektbereich."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In Methodendefinitionen ist 'super' statisch an das Heimatobjekt der Methode (die Klasse, in der sie definiert wurde) gebunden und verweist auf deren Prototyp. Dadurch funktioniert 'super.methodenName()' auch dann korrekt, wenn die Methode kopiert oder dynamisch anderen Objekten zugewiesen wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Methoden ruft NUR die eigenen Eigenschaften eines Objekts mit String-Schlüsseln ab, ausgenommen Prototyp-Eigenschaften und Eigenschaften mit Symbol-Schlüsseln?",
+    "options": [
+      "Object.keys(obj)",
+      "Object.getOwnPropertyNames(obj)",
+      "for...in Schleife",
+      "Reflect.ownKeys(obj)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "'Object.keys(obj)' gibt ein Array mit den eigenen aufzählbaren (enumerable) Eigenschaften des Objekts mit String-Schlüsseln zurück. 'Object.getOwnPropertyNames(obj)' schließt auch nicht-aufzählbare Eigenschaften ein. Die 'for...in'-Schleife schließt vererbte aufzählbare Eigenschaften ein. 'Reflect.ownKeys(obj)' schließt Symbole und nicht-aufzählbare Eigenschaften ein.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptunterschied zwischen einem Promise, das 'resolved' (aufgelöst) ist, und einem, das 'settled' (abgeschlossen) ist? (ES6+)",
+    "options": [
+      "Es gibt keinen Unterschied; sie sind gleichbedeutend.",
+      "'Resolved' bedeutet, dass das Promise erfolgreich erfüllt wurde; 'settled' bedeutet, dass es entweder erfolgreich erfüllt (fulfilled) oder abgelehnt (rejected) wurde.",
+      "'Settled' bedeutet, dass das Promise noch aussteht (pending).",
+      "'Resolved' bedeutet, dass der asynchrone Prozess noch nicht begonnen hat."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein Promise ist 'settled' (abgeschlossen), wenn es nicht mehr 'pending' (ausstehend) ist; es ist entweder 'fulfilled' (erfüllt) oder 'rejected' (abgelehnt). Ein Promise ist 'resolved' (aufgelöst), wenn es an den Zustand eines anderen Promises gebunden ist oder abgeschlossen ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie priorisiert die Event-Loop die Ausführung von Mikrotasks (z. B. Promise-Callbacks) im Vergleich zu Makrotasks (z. B. setTimeout-Callbacks)?",
+    "options": [
+      "Mikrotasks und Makrotasks werden abwechselnd eins zu eins ausgeführt.",
+      "Die Mikrotask-Queue wird nach dem aktuellen Task und vor dem nächsten Makrotask vollständig geleert, sodass Mikrotasks Vorrang vor Makrotasks haben.",
+      "Makrotasks haben immer Vorrang vor Mikrotasks.",
+      "Mikrotasks werden nur ausgeführt, wenn die Makrotask-Queue leer ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Am Ende jedes Makrotasks überprüft die Event-Loop die Mikrotask-Queue. Alle in dieser Queue anstehenden Mikrotasks werden nacheinander ausgeführt, bis die Queue vollständig leer ist, bevor die Event-Loop mit dem nächsten Makrotask (wie dem Rendern oder Timern) fortfährt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Promise-basierten Codes? (ES6+)\n```javascript\nconst promise = new Promise((resolve, reject) => {\n  console.log(1);\n  resolve(2);\n  console.log(3);\n});\npromise.then(val => console.log(val));\nconsole.log(4);\n```",
+    "options": [
+      "1 2 3 4",
+      "1 3 4 2",
+      "1 3 2 4",
+      "4 1 3 2"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die Konstruktorfunktion von 'Promise' wird sofort synchron ausgeführt. Daher werden 1 und 3 sofort ausgegeben. Das Aufrufen von 'resolve(2)' ändert den Zustand des Promises auf erfüllt und plant den '.then()'-Callback in der Mikrotask-Queue ein. Danach wird '4' synchron ausgegeben. Sobald der synchrone Code abgeschlossen ist, wird die Mikrotask-Queue abgearbeitet, wodurch '2' ausgegeben wird. Die Sequenz lautet daher '1 3 4 2'.",
+    "points": 10
+  },
+  {
+    "question_text": "Was macht die Methode 'Promise.all' und wie reagiert sie, wenn eines der übergebenen Promises abgelehnt (rejected) wird? (ES6+)",
+    "options": [
+      "Sie wartet, bis alle Promises abgeschlossen sind, unabhängig davon, ob sie erfüllt oder abgelehnt werden.",
+      "Sie wird sofort mit dem Fehler des ersten abgelehnten Promises abgelehnt (Short-Circuit-Verhalten).",
+      "Sie ignoriert abgelehnte Promises und gibt nur die erfolgreichen zurück.",
+      "Sie versucht automatisch, das abgelehnte Promise erneut auszuführen."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'Promise.all()' nimmt ein Iterierbares von Promises entgegen und gibt ein einzelnes Promise zurück, das zu einem Array von Ergebnissen aufgelöst wird. Wenn jedoch eines der Eingabe-Promises abgelehnt wird, wird das Gesamt-Promise sofort mit diesem Ablehnungsgrund abgelehnt, wobei alle anderen Promises ignoriert werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich die Methode 'Promise.race'? (ES6+)",
+    "options": [
+      "Sie wartet, bis alle Promises abgeschlossen sind, und gibt das schnellste Ergebnis zurück.",
+      "Sie wird aufgelöst oder abgelehnt, sobald das erste der übergebenen Promises aufgelöst oder abgelehnt wird (sich absetzt).",
+      "Sie führt die Promises nacheinander in der Reihenfolge ihrer Übergabe aus.",
+      "Sie gibt das Promise zurück, das die meisten Daten enthält."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'Promise.race()' gibt ein Promise zurück, das sich auflöst (resolved) oder ablehnt (rejected), sobald eines der übergebenen Promises abgeschlossen ist (settled), und übernimmt dessen Ergebnis oder Fehler.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheidet sich die Methode 'Promise.allSettled' von 'Promise.all'? (ES2020+)",
+    "options": [
+      "'Promise.allSettled' wird abgelehnt, wenn eines der Promises fehlschlägt, gibt aber detailliertere Fehlermeldungen aus.",
+      "'Promise.allSettled' wartet darauf, dass alle Eingabe-Promises abgeschlossen (settled) sind, und gibt ein Array von Objekten zurück, die das Ergebnis und den Status jedes Promises beschreiben, anstatt bei der ersten Ablehnung abzubrechen.",
+      "'Promise.allSettled' löst Promises in einer zufälligen Reihenfolge auf.",
+      "Es verhält sich identisch, führt die Aufgaben jedoch nacheinander anstatt parallel aus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Im Gegensatz zu 'Promise.all()', das bei der ersten Ablehnung sofort abbricht, wartet 'Promise.allSettled()' darauf, dass alle übergebenen Promises abgeschlossen sind (entweder erfolgreich oder fehlerhaft), und gibt ein Array von Objekten zurück, die den Status ('fulfilled' oder 'rejected') sowie den entsprechenden Wert oder Ablehnungsgrund enthalten.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich die Methode 'Promise.any'? (ES2021+)",
+    "options": [
+      "Sie wird aufgelöst, sobald eines der übergebenen Promises erfolgreich erfüllt wird, und wird nur mit einem AggregateError abgelehnt, wenn alle Eingabe-Promises abgelehnt werden.",
+      "Sie wird aufgelöst, wenn die Mehrheit der Promises erfolgreich erfüllt wird.",
+      "Sie verhält sich identisch zu 'Promise.race', ignoriert jedoch noch ausstehende (pending) Promises.",
+      "Sie gibt das erste abgeschlossene Promise zurück, unabhängig davon, ob es erfüllt oder abgelehnt wurde."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "'Promise.any()' wartet darauf, dass das erste Promise erfolgreich erfüllt (fulfilled) wird. Wenn ein Promise abgelehnt wird, wird es ignoriert, bis ein anderes erfolgreich ist. Wenn alle Eingabe-Promises fehlschlagen, wird es mit einem 'AggregateError' abgelehnt, der alle Ablehnungsgründe enthält.",
+    "points": 10
+  },
+  {
+    "question_text": "Was gibt eine 'async'-Funktion immer zurück? (ES8+)",
+    "options": [
+      "Ein Promise, das zu dem von der Funktion zurückgegebenen Wert aufgelöst wird oder bei einem nicht abgefangenen Fehler innerhalb der Funktion abgelehnt wird.",
+      "Den genauen zurückgegebenen Wert synchron, wenn kein await-Ausdruck vorhanden ist.",
+      "Ein Generator-Objekt.",
+      "undefined, es sei denn, eine return-Anweisung ist vorhanden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Eine 'async'-Funktion verpackt ihren Rückgabewert immer in ein Promise. Selbst wenn die Funktion einen Nicht-Promise-Wert (oder nichts) zurückgibt, wird dieser in ein aufgelöstes Promise eingepackt. Wenn eine Ausnahme ausgelöst wird, gibt sie ein abgelehntes Promise zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn Sie 'await' auf einen Wert anwenden, der kein Promise ist? (ES8+)",
+    "options": [
+      "Ein TypeError wird sofort ausgelöst.",
+      "Die Ausführung wird dauerhaft angehalten.",
+      "Der Wert wird in ein aufgelöstes Promise verpackt und die Ausführung wird fortgesetzt.",
+      "Die Engine konvertiert den Wert in eine Callback-Funktion."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Wenn Sie auf einen Wert 'await' anwenden, der kein Promise ist, verpackt JavaScript ihn automatisch mittels 'Promise.resolve(value)' und wartet darauf, wodurch die Ausführung normal fortgesetzt werden kann, ohne Fehler auszulösen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie sollten Fehler bei der Verwendung von 'async' und 'await' behandelt werden, um abgelehnte Promises abzufangen? (ES8+)",
+    "options": [
+      "Durch Anhängen eines '.catch()'-Blocks an das Ende der async-Funktionsdeklaration.",
+      "Durch Umschließen der erhofften (awaited) Anweisungen mit einem standardmäßigen 'try-catch'-Block.",
+      "Durch Registrieren eines Fehler-Listeners über den Handler 'window.onerror'.",
+      "Fehler werden automatisch abgefangen und geben null zurück."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Bei der Verwendung von 'async/await' werden Promise-Ablehnungen als normale Laufzeitfehler ausgelöst. Um diese Ablehnungen abzufangen, sollten Sie die 'await'-Anweisung in einen 'try...catch'-Block umschließen.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum ist die in 'setTimeout(callback, 1000)' angegebene Verzögerung keine Garantie für eine Ausführung nach exakt 1000 Millisekunden?",
+    "options": [
+      "Weil die setTimeout-Verzögerung vom OS-Scheduler leicht zufällig variiert wird.",
+      "Weil der Callback der Makrotask-Queue hinzugefügt wird und warten muss, bis laufende synchrone Ausführungen und anstehende Mikrotasks zuerst abgeschlossen sind.",
+      "Weil 'setTimeout' synchronen Code ausführt.",
+      "Weil der Timer erst startet, wenn die Seite vollständig geladen ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Die Verzögerung in 'setTimeout' gibt die Mindestzeit an, bevor der Callback der Makrotask-Queue hinzugefügt wird. Wenn der Aufrufstapel mit der Ausführung von synchronem Code beschäftigt ist oder wenn Mikrotasks ausstehen, muss der Callback warten, was seine Ausführung über die angeforderte Zeit hinaus verzögert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was wird bei einem '.then()'-Aufruf zurückgegeben, wenn die Callback-Funktion einen einfachen Wert anstelle eines Promises zurückgibt? (ES6+)",
+    "options": [
+      "Ein abgelehntes Promise.",
+      "Ein neues Promise, das mit diesem einfachen Wert aufgelöst wird.",
+      "Der einfache Wert selbst, synchron.",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein '.then()'-Aufruf gibt immer ein neues Promise zurück. Wenn der Callback einen primitiven Wert oder ein Objekt (kein Promise) zurückgibt, wird dieser in ein aufgelöstes Promise mit diesem Rückgabewert verpackt. Wenn der Callback ein Promise zurückgibt, wird die Auflösung/Ablehnung auf Basis dieses zurückgegebenen Promises durchgeführt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn ein Promise abgelehnt wird und kein '.catch()'-Handler oder Ablehnungs-Callback angehängt ist? (ES6+)",
+    "options": [
+      "Das Skript stoppt die Ausführung sofort mit einem fatalen SyntaxError.",
+      "Ein 'unhandledrejection'-Ereignis wird ausgelöst und eine Warnung in der Konsole ausgegeben, das Skript läuft jedoch weiter.",
+      "Das Promise wird nach 1 Sekunde automatisch erneut versucht.",
+      "Die Ablehnung wird stillschweigend in den aufgelösten Wert undefined umgewandelt."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Eine unbehandelte Promise-Ablehnung führt in Standard-Browser-Umgebungen nicht zum sofortigen Absturz des JS-Threads (obwohl dies in einigen Node.js-Konfigurationen der Fall sein kann). Stattdessen wird ein 'unhandledrejection'-Ereignis im globalen Gültigkeitsbereich ausgelöst und eine Warnung protokolliert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Zweck der Funktion 'queueMicrotask'? (ES2020+)",
+    "options": [
+      "Um eine Callback-Funktion asynchron im nächsten Event-Loop-Tick (Makrotask) auszuführen.",
+      "Um eine Callback-Funktion explizit in die Mikrotask-Queue einzureihen, sodass sie ausgeführt wird, bevor die Kontrolle wieder an die Event-Loop übergeben wird.",
+      "Um die Ausführung des aktuellen Threads anzuhalten.",
+      "Um CSS-Rendering-Animationen zu priorisieren."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'queueMicrotask()' ermöglicht es Entwicklern, einen Callback so zu planen, dass er am Ende des aktuellen Ausführungsblocks in der Mikrotask-Queue ausgeführt wird, ähnlich wie Promises aufgelöst werden, jedoch ohne den syntaktischen Overhead zur Erstellung eines Promises.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die korrekte Ausgabesequenz des folgenden Codes? (ES6+)\n```javascript\nconsole.log('1');\nsetTimeout(() => console.log('2'), 0);\nPromise.resolve().then(() => console.log('3'));\nconsole.log('4');\n```",
+    "options": [
+      "1 2 3 4",
+      "1 4 3 2",
+      "1 4 2 3",
+      "3 1 4 2"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "1 und 4 werden synchron ausgegeben. Der 'setTimeout'-Callback wird in die Makrotask-Queue verschoben. Der 'Promise.resolve().then()'-Callback wird in die Mikrotask-Queue verschoben. Wenn der synchrone Code beendet ist, wird die Mikrotask-Queue zuerst geprüft und geleert, wodurch 3 ausgegeben wird. Schließlich wird der nächste Makrotask verarbeitet, was 2 ausgibt. Somit lautet die Ausgabe '1 4 3 2'.",
+    "points": 10
+  },
+  {
+    "question_text": "Wann wird der '.finally()'-Block eines Promises ausgeführt? (ES8+)",
+    "options": [
+      "Nur wenn das Promise erfolgreich erfüllt wurde.",
+      "Nur wenn das Promise abgelehnt wurde.",
+      "Wenn das Promise abgeschlossen (settled) ist (entweder erfüllt oder abgelehnt).",
+      "Nur wenn das Promise länger als 1 Sekunde zur Auflösung benötigt."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Der '.finally()'-Handler wird ausgeführt, wenn das Promise abgeschlossen (settled) ist. Das bedeutet, dass er garantiert ausgeführt wird, unabhängig davon, ob das Promise erfolgreich war (fulfilled) oder fehlgeschlagen ist (rejected). Er wird typischerweise für Bereinigungsarbeiten verwendet.",
+    "points": 10
+  },
+  {
+    "question_text": "Mutiert die Methode 'Array.prototype.map' das ursprüngliche Array und was gibt sie zurück?",
+    "options": [
+      "Ja, sie modifiziert das ursprüngliche Array an Ort und Stelle und gibt das mutierte Array zurück.",
+      "Nein, sie mutiert das ursprüngliche Array nicht; sie gibt ein neues Array mit den transformierten Elementen zurück.",
+      "Nein, sie gibt einen booleschen Wert zurück, der angibt, ob die Transformationen erfolgreich waren.",
+      "Ja, sie konvertiert das Array in ein Objekt und gibt das Objekt zurück."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'map' ist eine nicht-mutierende Methode. Sie wendet eine Callback-Funktion auf jedes Element des ursprünglichen Arrays an und gibt ein völlig neues Array zurück, das die Ergebnisse enthält, während das ursprüngliche Array unverändert bleibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Array-Methoden führt eine Reduzierfunktion (Reducer) für jedes Element aus, was zu einem einzigen zusammenfassenden Ausgabewert führt?",
+    "options": [
+      "Array.prototype.map",
+      "Array.prototype.filter",
+      "Array.prototype.reduce",
+      "Array.prototype.some"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "'reduce' wendet eine Funktion (Akkumulator) auf jedes Element eines Arrays an, um das Array auf einen einzigen Wert (z. B. eine Summe, ein einzelnes Objekt oder einen String) zu reduzieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen 'Array.prototype.forEach' und 'Array.prototype.map'?",
+    "options": [
+      "'forEach' gibt ein neues Array zurück, während 'map' das ursprüngliche Array modifiziert.",
+      "'forEach' führt eine Callback-Funktion für jedes Element aus, gibt aber undefined zurück (für Seiteneffekte), während 'map' ein neues Array mit den Ergebnissen der Callbacks zurückgibt.",
+      "'forEach' arbeitet asynchron, während 'map' synchron arbeitet.",
+      "Es gibt keinen Unterschied; sie verhalten sich identisch."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'forEach' dient dazu, Seiteneffekte für jedes Element auszuführen und gibt immer 'undefined' zurück. 'map' dient dazu, ein Array in ein neues Array gleicher Länge zu transformieren, wobei jedes Element das Ergebnis des Callbacks ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was macht 'Array.prototype.filter', wenn die Callback-Funktion für ein Element einen truthy-Wert zurückgibt?",
+    "options": [
+      "Das Element wird in das neu zurückgegebene Array aufgenommen.",
+      "Das Element wird aus dem ursprünglichen Array gelöscht.",
+      "Die Ausführung wird sofort gestoppt und true zurückgegeben.",
+      "Das Element wird im ursprünglichen Array verdoppelt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "'filter' erstellt eine flache Kopie eines Teils des ursprünglichen Arrays, gefiltert nach den Elementen, die den Test der Callback-Funktion bestehen. Gibt der Callback einen truthy-Wert zurück, wird dieses Element in das neue Array aufgenommen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen 'Array.prototype.slice' und 'Array.prototype.splice'?",
+    "options": [
+      "'slice' mutiert das ursprüngliche Array, während 'splice' eine Kopie zurückgibt.",
+      "'slice' gibt einen flach kopierten Ausschnitt eines Arrays zurück und mutiert das Original nicht, während 'splice' Elemente aus dem ursprünglichen Array entfernt oder ersetzt und dieses mutiert.",
+      "Beide mutieren das Array, aber 'slice' funktioniert nur mit Strings.",
+      "Es gibt keinen Unterschied; sie sind Aliase."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'slice(start, end)' kopiert einen Teil des Arrays, ohne das Original zu verändern. 'splice(start, deleteCount, ...items)' ändert das Array direkt an Ort und Stelle, indem Elemente entfernt, ersetzt oder hinzugefügt werden, und gibt die gelöschten Elemente zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was sind die Merkmale eines Map-Objekts im Vergleich zu einem einfachen Object in JavaScript? (ES6+)",
+    "options": [
+      "Maps erlauben Schlüssel beliebigen Typs (einschließlich Objekte und Funktionen), bewahren die Einfügereihenfolge der Schlüssel und bieten eine einfache Größenabfrage über die size-Eigenschaft.",
+      "Objekte sind schneller und unterstützen standardmäßig Objekt-Schlüssel, während Maps nur Strings als Schlüssel unterstützen.",
+      "Maps können nicht iteriert werden, während Objekte mit for...of iteriert werden können.",
+      "Maps werden automatisch im lokalen Speicher (localStorage) serialisiert."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Gegensatz zu regulären Objekten, deren Schlüssel Strings oder Symbole sein müssen, können Maps beliebige Werte als Schlüssel verwenden. Maps bewahren die Einfügereihenfolge und bieten die Eigenschaft '.size', um die Anzahl der Einträge direkt abzufragen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich ein Set-Objekt in Bezug auf doppelte Werte? (ES6+)",
+    "options": [
+      "Es lässt Duplikate zu, ordnet sie jedoch am Ende des Sets ein.",
+      "Es lässt nur eindeutige Werte zu; jeder Versuch, einen bereits im Set vorhandenen Wert hinzuzufügen, wird ignoriert.",
+      "Es wirft einen Fehler aus, wenn ein doppelter Wert hinzugefügt wird.",
+      "Es ersetzt den vorherigen Wert durch eine referenzierte Kopie."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein 'Set' ist eine Sammlung von Werten, bei der jeder Wert nur einmal vorkommen darf. Das Hinzufügen eines bereits vorhandenen Elements hat keine Auswirkung.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptunterschied zwischen einer WeakMap und einer Map? (ES6+)",
+    "options": [
+      "In einer WeakMap müssen alle Schlüssel Objekte sein, und die Verweise auf diese Schlüssel-Objekte sind schwach, was eine Garbage Collection ermöglicht, wenn keine anderen Verweise existieren.",
+      "WeakMaps unterstützen keine Iteration und sind langsamer als Maps.",
+      "WeakMaps speichern Daten im Browser-Cache, während Maps sie im RAM speichern.",
+      "Es gibt keinen funktionalen Unterschied; WeakMap ist veraltet."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In einer 'WeakMap' müssen die Schlüssel Objekte (oder in neueren Versionen nicht-registrierte Symbole) sein. Die Verweise auf die Schlüssel-Objekte werden schwach gehalten. Wenn das Schlüssel-Objekt keine anderen Verweise mehr hat, kann es (und sein Wert) vom Garbage Collector freigegeben werden. WeakMaps sind nicht iterierbar.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Zweck der Methode 'Array.from'? (ES6+)",
+    "options": [
+      "Um ein Array in einen JSON-String umzuwandeln.",
+      "Um aus einem array-ähnlichen oder iterierbaren Objekt (wie NodeList, arguments oder Set) eine neue, flach kopierte Array-Instanz zu erstellen.",
+      "Um ein Array tief zu kopieren.",
+      "Um ein Array von Objekten in eine Map umzuwandeln."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'Array.from()' erstellt eine neue Array-Instanz aus einem array-ähnlichen Objekt (besitzt eine length-Eigenschaft und indizierte Elemente) oder einem iterierbaren Objekt.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Methode sollte verwendet werden, um zu prüfen, ob ein Wert ein echtes Array ist? (ES5+)",
+    "options": [
+      "typeof value === 'array'",
+      "value instanceof Array",
+      "Array.isArray(value)",
+      "Object.prototype.toString.call(value) === '[object Object]'"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "'Array.isArray()' ist der zuverlässigste Weg, um zu prüfen, ob ein Wert ein Array ist. Die Verwendung von 'typeof' gibt für Arrays 'object' zurück. 'instanceof' kann fehlschlagen, wenn das Array in einem anderen Ausführungskontext (z. B. einem iframe) erstellt wurde.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich 'Array.prototype.sort()', wenn keine Vergleichsfunktion (Compare Function) übergeben wird?",
+    "options": [
+      "Es sortiert die Elemente numerisch in aufsteigender Reihenfolge.",
+      "Es sortiert die Elemente standardmäßig, indem es sie in Strings konvertiert und deren UTF-16-Codepunkte vergleicht (lexikografisch).",
+      "Es sortiert die Elemente in einer zufälligen Reihenfolge.",
+      "Es wirft einen Fehler aus, da die Vergleichsfunktion obligatorisch ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Standardmäßig sortiert 'sort()' Elemente lexikografisch (wie Strings). Das bedeutet beispielsweise, dass '10' vor '2' sortiert wird, da das Zeichen '1' einen kleineren UTF-16-Wert als '2' hat. Für eine numerische Sortierung muss eine Vergleichsfunktion übergeben werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Wert von 'b' nach dem Ausführen von 'const [a, ...b] = [1, 2, 3];'? (ES6+)",
+    "options": [
+      "2",
+      "[2, 3]",
+      "3",
+      "[1, 2, 3]"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Bei der Array-Destrukturierung weist 'a' das erste Element ('1') zu, und der Rest-Operator ('...b') sammelt alle verbleibenden Elemente in einem neuen Array, sodass 'b' den Wert '[2, 3]' erhält.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Zweck des Datentyps 'Symbol' in JavaScript? (ES6+)",
+    "options": [
+      "Um eindeutige, anonyme Werte zu erzeugen, die als eindeutige Objektschlüssel verwendet werden können, ohne dass Kollisionen mit anderen Schlüsseln drohen.",
+      "Um reguläre Ausdrücke effizienter zu kompilieren.",
+      "Um globale Konstanten im window-Objekt zu deklarieren.",
+      "Um mathematische Symbole mit hoher Präzision darzustellen."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Symbole wurden eingeführt, um eindeutige Eigenschaftsschlüssel zu ermöglichen. Sie verhindern Namenskollisionen, wenn verschiedene Bibliotheken oder Codeteile Eigenschaften zu demselben Objekt hinzufügen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist eine wichtige Eigenschaft eines Symbol-Werts? (ES6+)",
+    "options": [
+      "Er wird bei jeder Ausführung automatisch inkrementiert.",
+      "Er ist garantiert eindeutig und unveränderlich.",
+      "Er wird automatisch in eine Zahl umgewandelt.",
+      "Er kann mit der JSON.stringify-Methode serialisiert werden."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Jeder mit 'Symbol()' erzeugte Wert ist garantiert absolut eindeutig, selbst wenn sie mit derselben Beschreibung erstellt wurden (z. B. 'Symbol('foo') !== Symbol('foo')'). Symbole sind außerdem primitive und unveränderliche Werte.",
+    "points": 10
+  },
+  {
+    "question_text": "Welcher der folgenden Werte ist in JavaScript NICHT falsy?",
+    "options": [
+      "0",
+      "'' (leerer String)",
+      "'0' (String, der eine Null enthält)",
+      "NaN"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Falsy-Werte in JavaScript sind: 'false', '0', '-0', '0n' (BigInt), '\"\"' (leerer String), 'null', 'undefined' und 'NaN'. Jeder andere Wert, einschließlich des nicht-leeren Strings '\"0\"', ist truthy.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen 'export default' und benannten Exports (Named Exports) in ES6-Modulen? (ES6+)",
+    "options": [
+      "Ein Modul kann mehrere Standard-Exports haben, aber nur einen benannten Export.",
+      "Ein Modul kann nur einen Standard-Export haben, der ohne geschweifte Klammern importiert wird, während benannte Exports geschweifte Klammern beim Import erfordern und namentlich übereinstimmen müssen.",
+      "Standard-Exports sind langsamer zu importieren als benannte Exports.",
+      "Benannte Exports können nur für Funktionen verwendet werden, während Standard-Exports nur für Objekte gelten."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein Modul kann nur einen Standard-Export ('export default') enthalten, der beim Importieren mit einem beliebigen Namen versehen werden kann. Benannte Exports ('export const ...') müssen beim Importieren in geschweiften Klammern angegeben werden und erfordern eine namentliche Übereinstimmung (sofern kein Alias mit 'as' verwendet wird).",
+    "points": 10
+  },
+  {
+    "question_text": "Unter welchen Umständen wird ein Modul mehrmals ausgeführt, wenn es in mehreren Dateien importiert wird? (ES6+)",
+    "options": [
+      "Jedes Mal, wenn eine neue Datei es importiert.",
+      "Niemals; ES6-Module sind Singletons und werden nur einmal ausgeführt (beim ersten Import), danach wird ihr exportiertes Objekt zwischengespeichert.",
+      "Nur wenn die importierenden Dateien asynchron geladen werden.",
+      "Nur wenn der strikte Modus in den importierenden Modulen deaktiviert ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "ES6-Module verhalten sich wie Singletons. Der Code innerhalb eines Moduls wird nur einmal ausgeführt, wenn das Modul zum ersten Mal geladen wird. Alle nachfolgenden Importe greifen auf dieselbe gecachte Modulinstanz und deren Exporte zu.",
+    "points": 10
+  },
+  {
+    "question_text": "Was gibt der 'typeof'-Operator für einen null-Wert ('typeof null') zurück?",
+    "options": [
+      "'null'",
+      "'undefined'",
+      "'object'",
+      "'function'"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Dies ist ein bekannter Fehler in der ursprünglichen JavaScript-Implementierung, der aus Gründen der Abwärtskompatibilität beibehalten wurde. Da Werte intern mit Typ-Tags dargestellt wurden und das Objekt-Tag '000' war, und 'null' als Null-Zeiger dargestellt wurde, ergab 'typeof null' fälschlicherweise 'object'.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Methode wird verwendet, um einen JSON-String in ein JavaScript-Objekt umzuwandeln? (ES5+)",
+    "options": [
+      "JSON.stringify()",
+      "JSON.parse()",
+      "JSON.toObject()",
+      "Object.fromJSON()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'JSON.parse()' analysiert einen gültigen JSON-String und erstellt das entsprechende JavaScript-Objekt oder -Wert. 'JSON.stringify()' macht das Gegenteil (konvertiert ein Objekt in einen JSON-String).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist das Ergebnis von 'JSON.stringify(obj)', wenn das Objekt eine zirkuläre Referenz enthält? (ES5+)",
+    "options": [
+      "Es gibt einen leeren String zurück.",
+      "Es löst einen TypeError aus (z. B. 'TypeError: Converting circular structure to JSON').",
+      "Es ignoriert die zirkuläre Referenz und setzt sie auf null.",
+      "Es führt zu einer unendlichen Schleife und stürzt ab."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "'JSON.stringify()' kann keine Objekte mit zirkulären Referenzen (Objekte, die direkt oder indirekt auf sich selbst verweisen) serialisieren. Der Versuch, dies zu tun, löst einen TypeError aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Zweck der 'use strict'-Direktive in JavaScript? (ES5+)",
+    "options": [
+      "Sie ermöglicht neue syntaktische Features, die in älteren JS-Versionen nicht verfügbar sind.",
+      "Sie versetzt die Engine in einen restriktiveren Modus, der Fehler früher aufdeckt, indem sie stille Fehler in laute Ausnahmen umwandelt und bestimmte unsichere Aktionen verbietet.",
+      "Sie komprimiert den Code zur Laufzeit, um die Ladezeit zu verbessern.",
+      "Sie aktiviert automatisch asynchrones Laden für alle Skripte auf der Seite."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der strikte Modus ('use strict') hilft dabei, saubereren Code zu schreiben, indem er bestimmte riskante oder fehleranfällige JS-Verhaltensweisen verbietet (z. B. die Verwendung nicht deklarierter Variablen) und unsichere, stille Fehler in echte Fehler verwandelt, die sofort abgefangen werden können.",
+    "points": 10
+  }
+]
