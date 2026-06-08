@@ -293,6 +293,8 @@ return [
         'label' => 'Cerca',
     ],
     'auth' => [
+        'or'             => 'o',
+        'google_btn'     => 'Continua con Google',
         'login_title'    => 'Accedi',
         'login_heading'  => 'Accedi',
         'login_sub'      => 'Accedi alla tua dashboard d\'autore',

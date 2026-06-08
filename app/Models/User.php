@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
     'is_public', 'is_approved', 'is_blocked', 'points',
     'intro', 'experience', 'job_status', 'is_anonymous', 'portfolio',
+    'google_id',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail

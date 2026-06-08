@@ -303,6 +303,8 @@ return [
     ],
 
     'auth' => [
+        'or'             => 'or',
+        'google_btn'     => 'Continue with Google',
         'login_title'    => 'Sign In',
         'login_heading'  => 'Sign In',
         'login_sub'      => 'Access your author dashboard',

@@ -293,6 +293,8 @@ return [
         'label' => 'Suche',
     ],
     'auth' => [
+        'or'             => 'oder',
+        'google_btn'     => 'Weiter mit Google',
         'login_title'    => 'Anmelden',
         'login_heading'  => 'Anmelden',
         'login_sub'      => 'Greifen Sie auf Ihr Autoren-Dashboard zu',

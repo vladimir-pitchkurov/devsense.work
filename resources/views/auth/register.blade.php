@@ -107,6 +107,20 @@
                 <button type="submit" class="auth-submit">{{ __('ui.auth.register_btn') }}</button>
             </form>
 
+            <div class="auth-divider">
+                <span>{{ __('ui.auth.or') }}</span>
+            </div>
+
+            <a href="{{ route('auth.google') }}" class="auth-google-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" class="google-icon" aria-hidden="true">
+                    <path fill="#EA4335" d="M12 5.04c1.78 0 3.37.61 4.63 1.81l3.46-3.46C17.99 1.19 15.22.4 12 .4 7.37.4 3.4 3.06 1.45 6.94l4.08 3.16c.96-2.87 3.66-5.06 6.47-5.06z"/>
+                    <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.44c-.28 1.48-1.11 2.73-2.37 3.58l3.68 2.85c2.15-1.98 3.74-4.89 3.74-8.67z"/>
+                    <path fill="#FBBC05" d="M5.53 14.9c-.24-.72-.38-1.49-.38-2.28 0-.79.14-1.56.38-2.28L1.45 7.18C.53 9.02 0 11.08 0 13.22c0 2.14.53 4.2 1.45 6.04l4.08-3.36z"/>
+                    <path fill="#34A853" d="M12 23.6c3.24 0 5.97-1.07 7.96-2.92l-3.68-2.85c-1.02.68-2.33 1.09-3.96 1.09-3.12 0-5.77-2.11-6.72-4.96L1.53 17.3c2.01 3.98 6.13 6.3 10.47 6.3z"/>
+                </svg>
+                <span>{{ __('ui.auth.google_btn') }}</span>
+            </a>
+
             <p class="auth-switch">
                 {{ __('ui.auth.has_account') }}
                 <a href="{{ route('login.locale', ['locale' => app()->getLocale()]) }}" class="auth-link">{{ __('ui.auth.login_link') }}</a>

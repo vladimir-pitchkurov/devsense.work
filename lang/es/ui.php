@@ -293,6 +293,8 @@ return [
         'label' => 'Buscar',
     ],
     'auth' => [
+        'or'             => 'o',
+        'google_btn'     => 'Continuar con Google',
         'login_title'    => 'Iniciar sesión',
         'login_heading'  => 'Iniciar sesión',
         'login_sub'      => 'Acceda a su panel de autor',

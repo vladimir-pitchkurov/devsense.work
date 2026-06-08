@@ -155,10 +155,15 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
+        $rules = [
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+
+        if ($user->password !== null) {
+            $rules['current_password'] = ['required', 'current_password'];
+        }
+
+        $request->validate($rules);
 
         $user->update([
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
