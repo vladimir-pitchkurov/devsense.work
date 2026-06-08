@@ -1,0 +1,1200 @@
+[
+  {
+    "question_text": "Qual è il comportamento delle dichiarazioni di tipo scalare in PHP quando un float viene passato a un parametro intero (integer) nella modalità coercitiva predefinita?",
+    "options": [
+      "Viene lanciato immediatamente un TypeError.",
+      "Il float viene forzato a intero troncando la sua parte frazionaria senza alcun avviso.",
+      "L'esecuzione dello script viene terminata con un errore fatale in fase di compilazione.",
+      "Il valore viene comunque convertito in un float, ignorando la dichiarazione di tipo."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In coercive mode (default), PHP will automatically coerce scalar types if possible. A float passed to an int parameter will be coerced to an integer by truncating the fractional part.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo la dichiarazione di tipi stretti tramite declare(strict_types=1); influisce sugli argomenti delle funzioni e sui tipi di ritorno? (PHP 7.0+)",
+    "options": [
+      "Disabilita qualsiasi coercizione di tipo, lanciando un TypeError per qualsiasi discrepanza tranne quando si passa un int a un parametro float.",
+      "Richiede che tutte le variabili nel file siano esplicitamente tipizzate al momento della dichiarazione.",
+      "Impedisce l'uso di variabili e proprietà dinamiche a livello globale.",
+      "Influisce solo sulle funzioni integrate di PHP, lasciando le funzioni definite dall'utente in modalità coercitiva."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Declaring strict_types=1 forces strict type checking for function arguments and return values. The only coercion allowed is passing an integer to a float parameter.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale dei seguenti è considerato un tipo scalare in PHP?",
+    "options": [
+      "array",
+      "object",
+      "float",
+      "resource"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP has four scalar types: boolean, integer, float (double), and string. Arrays, objects, resources, and null are not scalar types.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa accetta lo pseudo-tipo iterable quando viene utilizzato come dichiarazione di tipo? (PHP 7.1+)",
+    "options": [
+      "Solo array standard.",
+      "Qualsiasi array o oggetto che implementi l'interfaccia Traversable.",
+      "Solo oggetti che implementano l'interfaccia Iterator.",
+      "Qualsiasi variabile di cui sia possibile fare il casting ad array."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The iterable type hint matches both native arrays and objects implementing the Traversable interface, which can be looped over using foreach.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti dichiarazioni impone che una funzione non possa restituire alcun valore, incluso null? (PHP 7.1+)",
+    "options": [
+      "never",
+      "null",
+      "void",
+      "false"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "A return type of void indicates that the function does not return a value. Any return statement inside the function must either be empty (return;) or omitted entirely.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si comporta l'operatore di coalescenza null (??)? (PHP 7.0+)",
+    "options": [
+      "Restituisce il primo operando se è impostato e non è null; altrimenti, restituisce il secondo operando.",
+      "Restituisce il primo operando se si valuta come true; altrimenti, restituisce il secondo operando.",
+      "Lancia un'eccezione se il primo operando non è definito.",
+      "Si comporta esattamente come l'operatore ternario ?: senza controllare se la variabile è impostata."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The null coalescing operator ?? returns its first operand if it exists and is not null; otherwise, it falls back to the second operand, avoiding 'undefined variable' warnings.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è lo scopo principale dell'operatore di assegnazione di coalescenza null (??=)? (PHP 7.4+)",
+    "options": [
+      "Assegna l'operando di destra all'operando di sinistra se quest'ultimo è impostato e non è null.",
+      "Assegna l'operando di destra all'operando di sinistra solo se quest'ultimo è null o non definito.",
+      "Confronta due variabili e assegna el valore minore all'operando di sinistra.",
+      "Lancia un TypeError se l'operando di destra è null."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The null coalescing assignment operator ??= assigns the value of the right operand to the left operand if the left operand is null or does not exist.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa restituisce l'espressione gettype(3.14)?",
+    "options": [
+      "float",
+      "double",
+      "real",
+      "decimal"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "For historical reasons, gettype() returns 'double' for floats instead of 'float'.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale dei seguenti è un tipo composto in PHP?",
+    "options": [
+      "string",
+      "array",
+      "callable",
+      "null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Compound types in PHP include array and object. Scalar types include int, float, string, and bool. Special types include resource and null.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento del tipo di ritorno never in PHP? (PHP 8.1+)",
+    "options": [
+      "Indica che la funzione restituisce null o void.",
+      "Indica che la funzione non ritorna mai, il che significa che deve uscire (exit), lanciare un'eccezione o eseguire un ciclo infinito.",
+      "Indica che la funzione è deprecata e non dovrebbe mai essere chiamata.",
+      "È un alias per il tipo di ritorno void."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The never return type indicates that the function will never return a value or terminate normally, meaning it must call exit(), die(), throw an exception, or contain an infinite loop.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza fondamentale tra i Tipi Unione (Union Types) e i Tipi Intersezione (Intersection Types)? (PHP 8.1+)",
+    "options": [
+      "I Tipi Unione consentono a un valore di soddisfare uno qualsiasi dei tipi elencati, mentre i Tipi Intersezione richiedono che soddisfi tutti i tipi elencati.",
+      "I Tipi Unione sono usati per variabili scalari, mentre i Tipi Intersezione sono usati solo per le classi.",
+      "I Tipi Unione si dichiarano usando & e i Tipi Intersezione usando |.",
+      "Non c'è differenza; sono sintassi alternative per lo stesso controllo del tipo."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Union types (e.g., A|B) require a value to be an instance of A or B. Intersection types (e.g., A&B) require a value to be an instance of both A and B at the same time.",
+    "points": 10
+  },
+  {
+    "question_text": "È possibile utilizzare null como tipo di ritorno autonomo nella firma di una funzione? (PHP 8.2+)",
+    "options": [
+      "No, null può essere utilizzato solo in tipi unione come string|null.",
+      "Sì, null può essere dichiarato come tipo di ritorno autonomo.",
+      "No, null è rappresentato solo dal tipo di ritorno void.",
+      "Sì, ma richiede che la direttiva declare(strict_types=1) sia abilitata."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 8.2, null can be used as a standalone return type. A function declared with return type null must return null or have no return value (which defaults to null).",
+    "points": 10
+  },
+  {
+    "question_text": "In quale condizione l'accesso a una variabile non inizializzata causa un Errore Fatale (Fatal Error) invece di un Avviso/Notifica (Warning/Notice)? (PHP 8.0+)",
+    "options": [
+      "Quando sono abilitati i tipi stretti (strict types).",
+      "Quando la variabile ha una dichiarazione di tipo nel costruttore di una classe e vi si accede prima dell'inizializzazione.",
+      "Quando la variabile è una variabile globale.",
+      "Quando la variabile viene utilizzata all'interno di una stringa con doppi apici."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Accessing typed class properties before they are initialized throws an Error exception (Error: Typed property must not be accessed before initialization). Accessing normal uninitialized local variables only throws a Warning in PHP 8.0+.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale dichiarazione di tipo consente a un parametro di accettare un intero, un float o null? (PHP 8.0+)",
+    "options": [
+      "?int|float",
+      "int|float|null",
+      "number|null",
+      "numeric|null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.0+, union types allow explicit listing of types, such as int|float|null. The shorthand ?int|float is invalid syntax because ? can only prefix a single type.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento del tipo di ritorno quando una funzione è dichiarata per restituire false? (PHP 8.2+)",
+    "options": [
+      "È consentito solo come parte di un tipo unione come string|false.",
+      "Può essere utilizzato come tipo di ritorno autonomo.",
+      "Viene trattato come un tipo di ritorno booleano, il che significa che può restituire anche true.",
+      "Non è consentito e lancia un errore di compilazione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 8.2, false (and true) can be used as standalone types. Prior to that, false was only allowed in union types.",
+    "points": 10
+  },
+  {
+    "question_text": "Se una variabile $x contiene la stringa 'y' e la variabile $y contiene 'z', qual è l'output di echo $$x;?",
+    "options": [
+      "y",
+      "z",
+      "x",
+      "Viene generato un avviso di variabile non definita (undefined variable notice)."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "This is a variable variable. $$x evaluates to $y because $x holds the string 'y'. Since $y contains 'z', it prints 'z'.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali sono la durata e il comportamento di una variabile statica dichiarata all'interno di una funzione PHP?",
+    "options": [
+      "Viene inizializzata ad ogni chiamata di funzione e distrutta al ritorno della funzione.",
+      "Conserva il suo valore attraverso chiamate di funzione multiple e viene inizializzata una sola volta.",
+      "Viene condivisa globalmente tra tutte le funzioni e le classi nel runtime di esecuzione.",
+      "Provoca un errore di sintassi a meno que la funzione non sia un metodo statico di una classe."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Static variables inside functions exist only in the local function scope, but they retain their value between execution calls. The initialization expression is run only once, on the first call.",
+    "points": 10
+  },
+  {
+    "question_text": "Come può una funzione accedere a una variabile definita nell'ambito globale senza utilizzare la parola chiave global?",
+    "options": [
+      "Utilizzando l'array superglobale $GLOBALS.",
+      "Prefissando il nome della variabile con un trattino basso (underscore).",
+      "Importando la variabile con la parola chiave import.",
+      "Non è possibile accedere alle variabili globali senza la parola chiave global."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Global variables can be accessed anywhere in the script using the $GLOBALS superglobal associative array, e.g., $GLOBALS['varName'].",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo l'espressione match confronta i valori rispetto all'istruzione switch? (PHP 8.0+)",
+    "options": [
+      "L'espressione match utilizza il confronto stretto (===), mentre switch utilizza il confronto debole (==).",
+      "L'espressione match utilizza il confronto debole (==), mentre switch utilizza il confronto stretto (===).",
+      "Entrambi utilizzano il confronto debole, ma match restituisce un valore.",
+      "Entrambi utilizzano il confronto stretto, ma match richiede istruzioni break."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The match expression uses strict identity comparison (===) and returns a value, whereas the switch statement uses loose equality comparison (==). Additionally, match does not fall through and doesn't require break.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è un effetto collaterale pericoloso dell'uso di foreach ($array as &$value) se il riferimento non viene rimosso (unset) successivamente?",
+    "options": [
+      "L'array viene convertito in un oggetto di sola lettura.",
+      "L'ultimo elemento dell'array rimane referenziato e la successiva modifica di $value sovrascriverà l'ultimo elemento.",
+      "Il ciclo successivo su qualsiasi array lancerà un'eccezione di ricorsione di riferimento.",
+      "Provoca una perdita di memoria (memory leak) perché il garbage collector di PHP non può liberare le variabili referenziate."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When foreach ends, the variable $value remains as a reference to the last element of the array. If $value is modified later in the script, the last element of the array will be unexpectedly updated. It is best practice to unset($value) immediately after the loop.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza tra include e require quando il file di destinazione non viene trovato?",
+    "options": [
+      "include genera un avviso (warning) e interrompe l'esecuzione; require genera un avviso e continua.",
+      "include genera un avviso (warning) e continua; require genera un errore fatale e interrompe l'esecuzione.",
+      "Entrambi interrompono l'esecuzione dello script, ma require registra l'errore in un file.",
+      "include si usa per i file PHP; require si usa solo per i file di configurazione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "include emits an E_WARNING but allows the script to continue running. require emits an E_COMPILE_ERROR (fatal error) and stops script execution immediately.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti è una limitazione dell'istruzione goto in PHP?",
+    "options": [
+      "Non può saltare all'interno di cicli o istruzioni switch.",
+      "Può saltare solo a linee contrassegnate da un numero.",
+      "Può saltare tra file diversi.",
+      "Non può essere utilizzata all'interno delle funzioni."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The goto operator has restrictions: the target label must be within the same file and same function/method. You cannot jump into a loop, switch statement, or function, although you can jump out of them.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa restituisce l'operatore astronave (spaceship, <=>) quando confronta $a e $b? (PHP 7.0+)",
+    "options": [
+      "true se $a è maggiore, false altrimenti.",
+      "-1 se $a < $b, 0 se $a == $b e 1 se $a > $b.",
+      "La differenza tra i due valori come float.",
+      "Un booleano che indica se i due operandi sono dello stesso tipo."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The spaceship operator <=> returns -1 if the left operand is less than the right, 0 if they are equal, and 1 if the left operand is greater.",
+    "points": 10
+  },
+  {
+    "question_text": "In cosa differiscono le costanti definite con la parola chiave const da quelle definite con define()?",
+    "options": [
+      "Le costanti const sono definite in fase di compilazione e non possono essere inserite all'interno di strutture di controllo (como if), mentre le costanti define() sono definite a runtime.",
+      "Le costanti const possono essere ridefinite, mentre le costanti define() sono permanentes.",
+      "const si usa solo per le classi, mentre define() può essere usato solo a livello globale.",
+      "Non c'è differenza; sono completamente identiche."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The const keyword defines constants at compile time, which means they cannot be declared inside blocks like if, loops, or try-catch. define() defines constants at runtime and can be used anywhere.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento predefinito quando si utilizza un'istruzione switch senza istruzioni break?",
+    "options": [
+      "PHP genera un errore di sintassi.",
+      "L'istruzione switch esce automaticamente dopo aver eseguito il primo case corrispondente.",
+      "L'esecuzione prosegue nei blocchi case successivi, indipendentemente dal fatto che corrispondano o meno all'espressione switch.",
+      "PHP termina lo script con un avviso."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Without a break statement, execution will continue into the following cases (falling through) even if their conditions do not match, until a break or the end of the switch is reached.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede se un'espressione match non ha alcun case corrispondente e non definisce un ramo predefinito (default)? (PHP 8.0+)",
+    "options": [
+      "Restituisce null.",
+      "Lancia un UnhandledMatchError.",
+      "Esce dallo script con un errore di sintassi fatale.",
+      "Passa al blocco di funzione successivo."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A match expression must be exhaustive. If no condition matches and no default arm is provided, PHP throws an UnhandledMatchError exception.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP, le variabili definite all'interno di un ciclo possono essere lette al di fuori del corpo del ciclo?",
+    "options": [
+      "No, le variabili definite all'interno di un ciclo hanno un ambito di blocco e vengono distrutte all'uscita dal ciclo.",
+      "Sì, PHP non ha un ambito di blocco per i cicli; le variabili rimangono nell'ambito della funzione padre o nell'ambito globale.",
+      "Solo se sono dichiarate con la parola chiave public.",
+      "Solo se il ciclo è un ciclo foreach."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP does not have block scope for control structures like loops (for, foreach, while) or conditional statements (if). Variables defined inside them remain accessible outside them in the same function or global scope.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è l'ambito di una variabile definita all'interno di una funzione nidificata (una funzione dichiarata all'interno di un'altra funzione)?",
+    "options": [
+      "È locale alla funzione nidificata e non può essere letta dalla funzione esterna.",
+      "Viene condivisa automaticamente con l'ambito della funzione esterna.",
+      "Diventa automaticamente globale.",
+      "PHP non supporta la dichiarazione di funzioni nidificate."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Even if defined inside another function, a nested function has its own local scope. Variables inside the nested function are not accessible by the outer function.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede quando usi declare(ticks=1); in uno script PHP?",
+    "options": [
+      "Misura il tempo di esecuzione di ogni istruzione in tick.",
+      "Registra un listener di eventi che esegue un callback dopo un certo numero di tick di esecuzione di istruzioni a basso livello.",
+      "Forza lo script a fermarsi per 1 millisecondo tra le istruzioni.",
+      "Disabilita il garbage collector."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The ticks directive tells the parser to trigger an event after every N low-level statements. These events can be caught using register_tick_function() for profiling or signal handling.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è l'output del seguente codice?\n$a = 1;\nfunction test() { echo $a; }\ntest();",
+    "options": [
+      "1",
+      "Un avviso/notifica (Warning/Notice) per una variabile $a non definita e nessun valore stampato (o null).",
+      "Un errore fatale (Fatal Error) perché $a non è dichiarata all'interno di test().",
+      "0"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP, variables defined outside functions are in the global scope and are not automatically accessible inside functions. Attempting to access $a without the 'global' keyword or $GLOBALS results in an undefined variable warning.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti affermazioni è vera sulle superglobabili di PHP?",
+    "options": [
+      "Devono essere importate usando la parola chiave global all'interno delle funzioni.",
+      "Sono array integrati che sono sempre disponibili in tutti gli ambiti.",
+      "Possono essere lette solo all'interno dei metodi di classe.",
+      "Sono di sola lettura e non possono essere modificate dagli script utente."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Superglobals are built-in variables that are always available in all scopes without needing to use the global keyword.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il principale rischio per la sicurezza derivante dalla visualizzazione diretta di dati non filtrati provenienti da $_GET su una pagina web?",
+    "options": [
+      "SQL Injection",
+      "Cross-Site Scripting (XSS)",
+      "Cross-Site Request Forgery (CSRF)",
+      "Session Hijacking (Furto di sessione)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Displaying raw, unsanitized client input from $_GET or $_POST can execute malicious script tags in the user's browser, which is a Cross-Site Scripting (XSS) vulnerability.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale indice nell'array $_FILES['input_name'] contiene il percorso temporaneo in cui viene memorizzato il file caricato sul server?",
+    "options": [
+      "$_FILES['input_name']['path']",
+      "$_FILES['input_name']['tmp_name']",
+      "$_FILES['input_name']['file']",
+      "$_FILES['input_name']['location']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The temporary upload file path is stored in $_FILES['input_name']['tmp_name'].",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza tra $_SERVER['REQUEST_URI'] e $_SERVER['SCRIPT_NAME']?",
+    "options": [
+      "REQUEST_URI contiene il percorso URI e la query string richiesti dal client, mentre SCRIPT_NAME contiene il percorso dello script corrente.",
+      "SCRIPT_NAME è impostato dal browser, mentre REQUEST_URI è impostato dal server.",
+      "REQUEST_URI contiene il dominio del server, mentre SCRIPT_NAME contiene il percorso relativo.",
+      "Non c'è differenza; sono alias."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "REQUEST_URI includes the path and parameters sent by the client (e.g., /index.php?id=5). SCRIPT_NAME only contains the path to the script being executed (e.g., /index.php).",
+    "points": 10
+  },
+  {
+    "question_text": "Perché è necessario chiamare session_start() prima di accedere o modificare $_SESSION?",
+    "options": [
+      "Importa l'array $_SESSION nello spazio dei nomi locale.",
+      "Inizializza o riprende una sessione e popola la superglobale $_SESSION.",
+      "Crittografa l'array $_SESSION.",
+      "Elimina i vecchi dati di sessione per risparmiare memoria."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "session_start() starts a new session or resumes an existing one, reading session data from storage and populating the $_SESSION superglobal array.",
+    "points": 10
+  },
+  {
+    "question_text": "Da dove recupera i suoi dati la superglobale $_COOKIE?",
+    "options": [
+      "Direttamente da un database sul server.",
+      "Dalle intestazioni HTTP della richiesta inviate dal browser del client.",
+      "Da un file locale sul disco rigido del server.",
+      "Da un cookie di sessione generato da session_start()."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Cookies are sent by the client's browser to the server within the HTTP Cookie request header. PHP parses these headers and populates the $_COOKIE array.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale direttiva del php.ini controlla l'ordine e la disponibilità degli array superglobali EGPCS (Environment, Get, Post, Cookie, Server)?",
+    "options": [
+      "request_order",
+      "variables_order",
+      "superglobals_order",
+      "register_globals"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The variables_order directive sets the order in which PHP parses environment, get, post, cookie, and server variables. If a letter is missing (e.g. 'E' for Environment), the corresponding superglobal (like $_ENV) will be empty.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale cambiamento importante è stato introdotto in PHP 8.1 riguardo al modo in cui la superglobale $GLOBALS può essere modificata nel suo insieme? (PHP 8.1+)",
+    "options": [
+      "L'array $GLOBALS è completamente in sola lettura e non può essere modificato in alcun modo.",
+      "La scrittura in $GLOBALS nel suo insieme (es. $GLOBALS = $newArray;) o la modifica per riferimento non è più supportata e lancia un errore di compilazione o errore fatale.",
+      "Le modifiche a singole chiavi in $GLOBALS (es. $GLOBALS['key'] = 'val';) sono deprecate.",
+      "L'array $GLOBALS è stato rimosso e sostituito da una funzione global()."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.1+, modifying the entire $GLOBALS array at once or by reference is disallowed. Accessing $GLOBALS as a whole now returns a read-only copy of the global symbol table. However, modifying individual keys (like $GLOBALS['var'] = 1) is still supported and works as before.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa contiene la superglobale $_REQUEST per impostazione predefinita?",
+    "options": [
+      "I contenuti di $_GET, $_POST e $_FILES.",
+      "I contenuti di $_GET, $_POST e $_COOKIE.",
+      "Solo i dati inviati tramite richieste HTTP PUT e DELETE.",
+      "Tutte le variabili da $_SERVER e $_ENV."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_REQUEST is an associative array that contains the contents of $_GET, $_POST, and $_COOKIE. The php.ini directive 'request_order' can override this behavior.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la sequenza corretta di azioni per distruggere completamente e in sicurezza una sessione in PHP?",
+    "options": [
+      "Chiamare session_destroy() e annullare la variabile $_SESSION direttamente.",
+      "Svuotare $_SESSION, eliminare il cookie di sessione dal client e chiamare session_destroy().",
+      "Chiamare session_write_close() seguito da session_unset().",
+      "Chiudere semplicemente la finestra del browser."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To completely destroy a session, you should clear the $_SESSION array, expire the session cookie on the client (using setcookie), and call session_destroy() to delete the session data on the server.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale chiave di $_SERVER viene utilizzata per determinar el metodo HTTP utilizzato per la richiesta?",
+    "options": [
+      "$_SERVER['HTTP_METHOD']",
+      "$_SERVER['REQUEST_METHOD']",
+      "$_SERVER['SERVER_PROTOCOL']",
+      "$_SERVER['ACTION_METHOD']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_SERVER['REQUEST_METHOD'] contains the request method (e.g., 'GET', 'POST', 'PUT', 'DELETE').",
+    "points": 10
+  },
+  {
+    "question_text": "Perché non è sicuro affidarsi a $_SERVER['HTTP_REFERER'] per la validazione di sicurezza?",
+    "options": [
+      "È crittografato sul server.",
+      "Viene inviato dal browser del client e può essere facilmente falsificato, modificato o del tutto omesso.",
+      "Funziona solo per le richieste HTTPS.",
+      "Cambia dinamicamente ad ogni caricamento di pagina."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "HTTP_REFERER is a client-provided request header. A client can easily forge this header to bypass referer-based security checks.",
+    "points": 10
+  },
+  {
+    "question_text": "Quando si caricano più file con un input chiamato files[], come è strutturato $_FILES['files'] in PHP?",
+    "options": [
+      "Un array di array, in cui ogni sottoarray contiene i metadati di un singolo file.",
+      "Un array in cui ogni attributo (name, type, tmp_name, error, size) è a sua volta un array di valori corrispondenti ai file.",
+      "Una stringa separata da virgole contenente i percorsi dei file.",
+      "Viene memorizzato solo il primo file; i file rimanenti vengono ignorati."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP organizes multiple file uploads under the same name by turning each property (name, type, tmp_name, error, size) into an array index of files, rather than grouping each file into its own array.",
+    "points": 10
+  },
+  {
+    "question_text": "Quando vengono scritte le modifiche apportate a $_SESSION nel database delle sessioni persistenti?",
+    "options": [
+      "Istantaneamente all'assegnazione di qualsiasi chiave.",
+      "Solo quando viene chiamato manualmente session_commit() o session_write_close().",
+      "Automaticamente al termine dell'esecuzione dello script o quando viene chiamato session_write_close().",
+      "Ogni 5 minuti tramite un processo cron in background."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP automatically serializes and saves the contents of $_SESSION to the session storage handler when the script ends or when session_write_close() is explicitly called.",
+    "points": 10
+  },
+  {
+    "question_text": "Se si ha la necessità di recuperare l'indirizzo IP del client, quale variabile $_SERVER viene comunemente controllata per prima (ignorando i proxy)?",
+    "options": [
+      "$_SERVER['HTTP_CLIENT_IP']",
+      "$_SERVER['REMOTE_ADDR']",
+      "$_SERVER['REMOTE_HOST']",
+      "$_SERVER['SERVER_ADDR']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_SERVER['REMOTE_ADDR'] represents the IP address of the client that opened the connection to the web server.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la visibilità di un metodo di classe se non viene dichiarato esplicitamente alcun modificatore di visibilità?",
+    "options": [
+      "public",
+      "protected",
+      "private",
+      "Provoca un errore di compilazione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Class methods in PHP default to public visibility if no modifier (public, protected, or private) is provided.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale parola chiave viene utilizzata per ereditare da una classe genitore in PHP e quante classi genitore può estendere una singola classe?",
+    "options": [
+      "implements, e classi genitore multiple.",
+      "extends, e solo una classe genitore.",
+      "extends, e classi genitore multiple.",
+      "implements, e solo una classe genitore."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP uses the extends keyword for class inheritance and only supports single inheritance (a class can inherit from only one parent class).",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti è una differenza chiave tra una classe astratta e un'interfaccia?",
+    "options": [
+      "Le interfacce possono definire proprietà, mentre le classi astratte no.",
+      "Le classi astratte possono avere implementazioni concrete di metodi e stato (proprietà), mentre le interfacce possono avere solo firme di metodi e costanti.",
+      "Una classe può ereditare da classi astratte multiple, ma implementare solo un'interfaccia.",
+      "Le classi astratte possono essere istanziate direttamente, mentre le interfacce no."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Abstract classes can define instance variables and concrete methods. Interfaces are pure contracts and cannot contain instance properties or method bodies (except for constants and public signatures).",
+    "points": 10
+  },
+  {
+    "question_text": "Cos'è un Trait in PHP?",
+    "options": [
+      "Una sottoclasse que può sovrascrivere le proprietà private del suo genitore.",
+      "Un meccanismo per il riutilizzo del codice in linguaggi a ereditarietà singola, che consente di iniettare metodi nelle classi.",
+      "Un'alternativa alle interfacce che consente di istanziare classi senza costruttori.",
+      "Un tipo di classe che può contenere solo metodi statici."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A Trait is a mechanism for code reuse designed to reduce the limitations of single inheritance. It allows developers to reuse sets of methods freely in several independent classes.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento di una classe anonima in PHP? (PHP 7.0+)",
+    "options": [
+      "È una classe che può essere definita inline, istanziata immediatamente e non ha un identificatore di nome.",
+      "È una classe i cui metodi possono essere chiamati solo staticamente senza istanziazione.",
+      "È una classe che non supporta costruttori o distruttori.",
+      "È una classe che eredita automaticamente da stdClass."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Anonymous classes are useful for simple, one-off objects. They can be declared and instantiated inline, support interfaces, inheritance, constructors, and traits, but have no developer-defined class name.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti regole si applica alle proprietà in sola lettura (readonly) in PHP? (PHP 8.1+)",
+    "options": [
+      "Possono essere modificate in qualsiasi momento dall'interno dell'ambito della classe.",
+      "Possono essere inizializzate solo una volta (solitamente nel costruttore) e non possono essere modificate o rimosse (unset) dopo l'inizializzazione.",
+      "Non possono avere una dichiarazione di tipo.",
+      "Devono avere un valore predefinito dichiarato nella definizione della classe."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Readonly properties can only be written to once and must have a type declaration. Once initialized, their value cannot be changed or unset, and they cannot have a default value directly assigned in the property declaration.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è l'effetto della dichiarazione di una classe come readonly? (PHP 8.2+)",
+    "options": [
+      "La classe non può essere estesa.",
+      "Tutte le proprietà della classe sono contrassegnate implicitamente come readonly e le proprietà dinamiche sono vietate.",
+      "Tutti i metodi della classe sono automaticamente statici.",
+      "La classe non può definire un costruttore."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Declaring a class as readonly automatically makes all of its properties readonly and prevents dynamic properties from being added.",
+    "points": 10
+  },
+  {
+    "question_text": "Come funziona la visibilità asimmetrica per le proprietà di classe? (PHP 8.4+)",
+    "options": [
+      "Consente a una proprietà di definire modificatori di visibilità separati per la lettura (get) e la scrittura (set) (ad esempio, lettura pubblica, scrittura privata).",
+      "Consente alle proprietà di essere pubbliche nella classe genitore ma private nella classe figlia.",
+      "Limita l'accesso alle proprietà a seconda che la classe sia astratta o concreta.",
+      "Consente di accedere alle proprietà di classe senza utilizzare la parola chiave $this."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Asymmetric visibility in PHP 8.4 allows properties to define separate visibility levels for reading (get) and writing (set), such as public private(set) string $name;.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la conseguenza del contrassegnare un metodo di classe come final?",
+    "options": [
+      "Il metodo non può essere chiamato dall'esterno della classe.",
+      "Il metodo non può essere sovrascritto dalle implementazioni delle sottoclassi.",
+      "Il metodo deve essere implementato da qualsiasi classe che estende questa classe.",
+      "Il metodo non può contenere argomenti."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The final keyword prevents child classes from overriding a method definition.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si comporta l'early static binding o il late static binding quando si usa self:: rispetto a static::? (PHP 5.3+)",
+    "options": [
+      "self:: si riferisce alla classe in cui il metodo è stato definito; static:: si riferisce alla classe effettivamente chiamata a runtime.",
+      "self:: si riferisce alla classe chiamata a runtime; static:: si riferisce alla classe genitore.",
+      "self:: funziona solo nei metodi non statici, mentre static:: funziona solo nei metodi statici.",
+      "Non c'è differenza; sono alias."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "self:: references the class in which the code is written, while static:: utilizes Late Static Binding to resolve to the class that was actually called at runtime.",
+    "points": 10
+  },
+  {
+    "question_text": "Una classe implementatrice può sovrascrivere una costante definita in un'interfaccia? (PHP 8.3+)",
+    "options": [
+      "No, le costanti delle interfacce sono sempre finali e non possono essere sovrascritte.",
+      "Sì, a partire da PHP 8.3, le classi possono sovrascrivere le costanti delle interfacce, a condizione che la sovrascrittura sia compatibile.",
+      "Sì, ma solo se la costante dell'interfaccia è dichiarata utilizzando define() anziché const.",
+      "Sì, ma solo se la costante dell'interfaccia è dichiarata come private."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Beginning in PHP 8.3, classes implementing an interface (or interfaces extending another interface) can override constants defined in those interfaces, provided their visibility and values are compatible.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale parola chiave viene utilizzata per risolvere i conflitti di denominazione quando due trait dichiarano un metodo con lo stesso nome in una classe?",
+    "options": [
+      "overrides",
+      "insteadof",
+      "as",
+      "use"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The insteadof operator is used to resolve method name conflicts between traits. It allows specifying which trait's method should be used.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la visibilità predefinita delle proprietà di classe se vengono dichiarate utilizzando la parola chiave var?",
+    "options": [
+      "public",
+      "protected",
+      "private",
+      "Lancia un errore di sintassi in PHP 8."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The var keyword is a legacy synonym for public. Declaring a property with var defaults its visibility to public.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede se una classe implementa due interfacce che definiscono un metodo con lo stesso nome e la stessa firma?",
+    "options": [
+      "Provoca un errore di compilazione a causa della definizione duplicata del metodo.",
+      "La classe implementa il metodo una sola volta, soddisfacendo entrambe le interfacce.",
+      "La classe deve implementare il metodo due volte, anteponendo al nome del metodo il nome dell'interfaccia.",
+      "La classe deve ereditare da una classe genitore comune."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If the signatures of the duplicate methods are identical, implementing the method once in the concrete class satisfies both interfaces without any errors.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si accede a una proprietà statica o si chiama un metodo statico all'interno della definizione della classe?",
+    "options": [
+      "Usando $this->nomeProprieta o $this->nomeMetodo()",
+      "Usando self::$nomeProprieta o self::nomeMetodo()",
+      "Usando parent->$nomeProprieta o parent->nomeMetodo()",
+      "Usando static->$nomeProprieta o static->nomeMetodo()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Static properties and methods are accessed using scope resolution operators (::) with self or static, rather than object operator -> on $this.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede se si tenta di istanziare una classe astratta?",
+    "options": [
+      "Viene creato un oggetto di tipo stdClass.",
+      "Viene lanciato un errore fatale poiché le classi astratte non possono essere istanziate direttamente.",
+      "PHP crea automaticamente una sottoclasse e la istanzia.",
+      "Funziona normalmente, ma tutti i metodi restituiranno null."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Abstract classes cannot be instantiated. They are designed to serve as blueprints for child classes.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza tra i metodi di un'interfaccia e i metodi di una classe astratta?",
+    "options": [
+      "I metodi dell'interfaccia devono essere sempre pubblici; i metodi della classe astratta possono essere pubblici o protetti.",
+      "I metodi dell'interfaccia possono avere un corpo; i metodi della classe astratta no.",
+      "I metodi dell'interfaccia possono essere privati; i metodi della classe astratta no.",
+      "Non c'è differenza nelle regole di visibilità."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "All methods defined in an interface must be public. Methods in an abstract class can be public or protected, but not private (since child classes must be able to override or implement them).",
+    "points": 10
+  },
+  {
+    "question_text": "A cosa servono gli hook di proprietà (Property Hooks) in PHP? (PHP 8.4+)",
+    "options": [
+      "Per associare automaticamente query di database a proprietà di classe.",
+      "Per definire comportamenti di lettura (get) e/o scrittura (set) personalizzati direttamente nelle dichiarazioni delle proprietà.",
+      "Per rendere le proprietà di sola lettura dopo essere state serializzate.",
+      "Per associare proprietà a variabili globali."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Property hooks in PHP 8.4 allow developers to define custom logic for reading (get) or writing (set) a property directly within its declaration, eliminating standard getter/setter method boilerplates.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti affermazioni è vera sulle proprietà statiche nei trait?",
+    "options": [
+      "I trait non possono definire proprietà statiche.",
+      "Le proprietà statiche nei trait sono condivise tra tutte le classi che utilizzano il trait.",
+      "Ogni classe che utilizza un trait ottiene un'istanza indipendente delle proprietà statiche del trait.",
+      "Le proprietà statiche nei trait possono essere lette solo usando la parola chiave parent."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "When a trait defines static properties, each class that uses the trait will have its own separate instance of those static properties, meaning modifying it in one class does not affect the other.",
+    "points": 10
+  },
+  {
+    "question_text": "Una classe può estendere un'altra classe e implementare più interfacce contemporaneamente?",
+    "options": [
+      "No, PHP consente solo di estendere una classe o implementare interfacce.",
+      "Sì, usando la sintassi: class A extends B implements C, D.",
+      "Sì, ma deve utilizzare i trait invece delle interfacce.",
+      "No, perché PHP non supporta l'implementazione di più interfacce."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A class can inherit from a single parent class (using extends) and implement multiple interfaces (separated by commas using implements) at the same time.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo la promozione delle proprietà del costruttore (Constructor Property Promotion) semplifica le definizioni delle classi? (PHP 8.0+)",
+    "options": [
+      "Consente di definire, tipizzare e inizializzare le proprietà direttamente nei parametri del costruttore, evitando dichiarazioni di proprietà separate e assegnazioni manuali.",
+      "Genera automaticamente metodi getter e setter per tutte le proprietà.",
+      "Promuove gli argomenti privati del costruttore a variabili ad ambito globale.",
+      "Consente di compilare classi senza usare la parola chiave new."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Constructor property promotion combines property declaration, visibility modifier, type hint, and parameter assignment into a single constructor signature, e.g., public function __construct(public string $name) {}.",
+    "points": 10
+  },
+  {
+    "question_text": "Quando viene chiamato il metodo magico __destruct su un oggetto?",
+    "options": [
+      "Quando il garbage collector viene richiamato manualmente usando gc_collect_cycles().",
+      "Quando non ci sono più riferimenti all'oggetto o durante lo spegnimento dello script.",
+      "Solo quando la funzione unset() viene chiamata sul riferimento dell'oggetto.",
+      "Quando l'oggetto lancia un'eccezione non catturata."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The destructor method is called as soon as there are no references to a particular object, or during the script shutdown sequence.",
+    "points": 10
+  },
+  {
+    "question_text": "In quale condizione vengono attivati i metodi magici __get e __set?",
+    "options": [
+      "Quando si legge o si scrive su proprietà che non sono dichiarate o non sono accessibili (come protected/private) nell'ambito corrente.",
+      "Quando si chiamano metodi statici non dichiarati o inaccessibili in una classe.",
+      "Ogni volta che si legge o si scrive su qualsiasi proprietà, indipendentemente dalla sua visibilità.",
+      "Quando un oggetto viene serializzato usando serialize()."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "__get() is utilized for reading data from inaccessible (protected or private) or non-existing properties. __set() is run when writing data to inaccessible or non-existing properties.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali chiamate a funzioni PHP attiveranno il metodo magico __isset su un oggetto con proprietà inaccessibili?",
+    "options": [
+      "is_null() ed empty()",
+      "isset() ed empty()",
+      "isset() ed array_key_exists()",
+      "solo isset()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "__isset() is triggered by calling isset() or empty() on inaccessible or non-existing properties.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza tra i metodi magici __call e __callStatic?",
+    "options": [
+      "__call viene attivato quando si invocano metodi non statici inaccessibili; __callStatic viene attivato quando si invocano metodi statici inaccessibili.",
+      "__call viene attivato quando si invocano metodi statici; __callStatic viene attivato quando si invocano metodi non statici.",
+      "__callStatic deve essere un metodo non statico, mentre __call deve essere statico.",
+      "Non c'è differenza; entrambi gestiscono l'invocazione dinamica dei metodi in modo identico."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "__call() is triggered when invoking inaccessible methods in an object context. __callStatic() is triggered when invoking inaccessible methods in a static context.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale requisito deve soddisfare il metodo magico __toString?",
+    "options": [
+      "Deve accettare un argomento booleano che indica le preferenze di formattazione.",
+      "Deve restituire un valore stringa; altrimenti viene lanciato un errore fatale.",
+      "Deve stampare la stringa direttamente nel buffer di output invece di restituirla.",
+      "Deve essere dichiarato come metodo statico."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __toString() method must return a string value. Returning any other type will result in a TypeError (or Fatal Error in older PHP versions).",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa consente di fare a un oggetto il metodo magico __invoke?",
+    "options": [
+      "Consente a un oggetto di essere istanziato senza la parola chiave new.",
+      "Consente a un'istanza di oggetto di essere chiamata direttamente come se fosse una funzione.",
+      "Consente di richiamare metodi privati dall'ambito globale.",
+      "Viene eseguito automaticamente quando una classe viene importata."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __invoke() magic method is called when a script tries to call an object instance as a function (e.g., $obj()).",
+    "points": 10
+  },
+  {
+    "question_text": "Come viene utilizzato il metodo magico __clone durante la clonazione di un oggetto?",
+    "options": [
+      "Viene chiamato sull'oggetto originale prima che venga copiato.",
+      "Viene chiamato sulla copia dell'oggetto appena creata dopo il completamento della clonazione, consentendo la copia profonda (deep copy) di eventuali oggetti nidificati.",
+      "Sostituisce completamente la parola chiave clone.",
+      "Impedisce la clonazione dell'oggetto se lancia un'eccezione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When an object is cloned (using the clone keyword), PHP creates a shallow copy. If the class defines __clone(), it is called on the newly created copy, allowing developers to perform deep copies of any internal object references.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali sono i ruoli dei metodi magici __serialize e __unserialize? (PHP 7.4+)",
+    "options": [
+      "Restituiscono e ricevono una stringa contenente dati in formato JSON.",
+      "Restituiscono e ricevono un array associativo che rappresenta lo stato serializzato dell'oggetto, sostituendo la vecchia interfaccia __sleep/__wakeup."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Introduced in PHP 7.4, __serialize() must return an array representing the serialized state. __unserialize() receives this array and restores the object properties, providing a more robust serialization mechanism than __sleep() and __wakeup().",
+    "points": 10
+  },
+  {
+    "question_text": "Se una classe implementa sia il metodo legacy __sleep() sia il nuovo metodo __serialize(), quale eseguirà PHP? (PHP 7.4+)",
+    "options": [
+      "Entrambi verranno eseguiti in sequenza.",
+      "PHP eseguirà __serialize() e ignorerà completamente __sleep().",
+      "PHP eseguirà __sleep() e ignorerà __serialize().",
+      "Verrà lanciato un errore fatale di collisione in fase di compilazione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "For backward compatibility and smooth migration, if a class implements both __serialize() and __sleep(), PHP will prefer and execute __serialize() and completely ignore __sleep().",
+    "points": 10
+  },
+  {
+    "question_text": "In quale condizione viene chiamato il metodo magico statico __set_state?",
+    "options": [
+      "Quando l'oggetto viene esportato usando var_export().",
+      "Quando l'oggetto viene serializzato usando serialize().",
+      "Quando le proprietà della classe vengono modificate dinamicamente.",
+      "Quando il garbage collector di PHP avvia un ciclo di pulizia."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The __set_state() magic method is a static method called for classes exported by var_export() when importing/re-evaluating the generated code.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è lo scopo del metodo magico __debugInfo?",
+    "options": [
+      "Stampa i dettagli di debug direttamente sulla console durante l'esecuzione dello script.",
+      "Viene chiamato da var_dump() durante il debug di un oggetto per ottenere le proprietà che devono essere mostrate.",
+      "Disabilita la segnalazione degli errori all'interno dei metodi di classe.",
+      "Registra i log nel syslog di sistema."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "This method is called by var_dump() when dumping an object. It should return an array containing the property-value pairs that should be shown in the dump, allowing developers to hide sensitive information.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali parametri accetta il metodo magico __call?",
+    "options": [
+      "Un singolo parametro stringa che rappresenta il nome del metodo.",
+      "Una stringa che rappresenta il nome del metodo e un array contenente gli argomenti passati al metodo.",
+      "Un array di argomenti e un callback.",
+      "Non accetta parametri."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __call() method must accept exactly two arguments: the name of the method being called (string) and the arguments passed to that method (array).",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede se si tenta di chiamare unset() su una proprietà inaccessibile di un oggetto e la classe non definisce il metodo __unset?",
+    "options": [
+      "Non succede nulla e l'operazione viene ignorata silenziosamente.",
+      "Viene lanciato un errore fatale di tipo TypeError.",
+      "PHP lancia un avviso (Notice) e la proprietà rimane invariata.",
+      "Viene lanciata un'eccezione Error o un Errore Fatale a causa della mancanza di accesso."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Attempting to unset an inaccessible property from outside the class context (such as a protected or private property) will trigger an Error exception (Cannot access protected/private property).",
+    "points": 10
+  },
+  {
+    "question_text": "Un metodo magico può essere dichiarato come private o protected?",
+    "options": [
+      "Sì, i metodi magici possono avere qualsiasi modificatore di visibilità.",
+      "No, tutti i metodi magici devono essere dichiarati come pubblici (ad eccezione di __construct, che può essere privato/protetto per pattern come il Singleton).",
+      "No, i metodi magici devono essere sempre privati per impedirne l'invocazione manuale.",
+      "Solo __toString può essere protetto; tutti gli altri devono essere privati."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP highly recommends and checks that magic methods have public visibility (with the exception of the constructor, which can be private or protected, e.g., in Singleton or Factory patterns). Defining other magic methods as private or protected generates a warning in modern PHP versions.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo le Closure standard in PHP importano le variabili dall'ambito genitore (esterno)?",
+    "options": [
+      "Le importano automaticamente per riferimento.",
+      "Devono importarle esplicitamente utilizzando la parola chiave use (ad esempio, function() use ($var) {}).",
+      "Le importano usando la parola chiave global.",
+      "Possono importare solo variabili statiche."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In standard PHP closures (anonymous functions), parent scope variables must be explicitly imported into the function's local scope using the 'use' keyword.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento di cattura delle variabili delle funzioni freccia (Arrow Functions)? (PHP 7.4+)",
+    "options": [
+      "Catturano automaticamente le variabili dall'ambito genitore per valore.",
+      "Catturano automaticamente le variabili dall'ambito genitore per riferimento.",
+      "Richiedono la parola chiave use per catturare qualsiasi variabile esterna.",
+      "Non possono catturare alcuna variabile dall'ambito esterno."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Arrow functions automatically capture parent scope variables by-value (using shallow copy). Modifying a captured variable inside the arrow function does not affect the outer scope variable.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la sintassi First-Class Callable in PHP? (PHP 8.1+)",
+    "options": [
+      "Un modo per creare closure richiamabili usando la sintassi ... (ad esempio, strlen(...)).",
+      "Un modo per eseguire callable utilizzando la parola chiave dedicata invoke.",
+      "Un'ottimizzazione che converte tutte le closure in funzioni statiche.",
+      "Una sintassi per dichiarare funzioni che possono accettare solo argomenti di tipo callable."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "First-class callable syntax (e.g., strlen(...)) creates a Closure object from a named function or method in a clean, type-safe, and performant manner, replacing arrays like ['Class', 'method'] or strings.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è una differenza fondamentale nell'ordine degli argomenti tra array_map e array_filter?",
+    "options": [
+      "array_map accetta prima la funzione callback, mentre array_filter accetta prima l'array.",
+      "array_map accetta prima l'array, mentre array_filter accetta prima la funzione callback.",
+      "Entrambi accettano prima la funzione callback.",
+      "Entrambi accettano prima l'array."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "array_map(callable $callback, array $array, ...) takes the callback function as the first argument, whereas array_filter(array $array, callable $callback = null, ...) takes the array as the first argument.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa restituisce array_reduce se l'array di input è vuoto e non viene fornito alcun valore iniziale?",
+    "options": [
+      "null",
+      "false",
+      "0",
+      "Un array vuoto"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "If the array is empty and the initial value is not passed, array_reduce() returns null.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa restituisce la funzione array_find? (PHP 8.4+)",
+    "options": [
+      "Un array con tutti gli elementi che corrispondono alla condizione del callback.",
+      "Il valore del primo elemento che soddisfa la condizione del callback, oppure null se nessun elemento corrisponde.",
+      "La chiave del primo elemento che corrisponde alla condizione.",
+      "Un valore booleano che indica se l'elemento è stato trovato."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "array_find() returns the value of the first element that satisfies the predicate callback. If no elements match, it returns null.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si comporta array_any? (PHP 8.4+)",
+    "options": [
+      "Restituisce true se almeno un elemento dell'array soddisfa la condizione del callback; altrimenti restituisce false.",
+      "Restituisce il valore di un elemento casuale che soddisfa la condizione.",
+      "Restituisce true solo si tutti gli elementi dell'array soddisfano la condizione del callback.",
+      "Lancia un'eccezione se nessun elemento corrisponde."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "array_any() returns true if the callback returns true for at least one element in the array. Otherwise, it returns false.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si comporta array_all? (PHP 8.4+)",
+    "options": [
+      "Restituisce true se almeno un elemento dell'array soddisfa la condizione del callback.",
+      "Restituisce true se e solo se tutti gli elementi dell'array soddisfano la condizione del callback; altrimenti restituisce false.",
+      "Restituisce un array contenente tutti gli elementi che corrispondono alla condizione.",
+      "Restituisce true solo se l'array non contiene elementi null."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "array_all() returns true if the callback returns true for every single element in the array. If any element fails the check, it returns false. If the array is empty, it returns true.",
+    "points": 10
+  },
+  {
+    "question_text": "Una funzione freccia può contenere più istruzioni o un'istruzione return? (PHP 7.4+)",
+    "options": [
+      "Sì, le funzioni freccia possono contenere più istruzioni separate da punto e virgola e devono includere un'istruzione return.",
+      "No, le funzioni freccia possono contenere solo una singola espressione e il risultato di tale espressione viene restituito automaticamente senza la parola chiave return.",
+      "Sì, ma solo se sono dichiarate come statiche.",
+      "No, non possono restituire alcun valore; sono sempre di tipo void."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arrow functions in PHP are limited to a single expression. They do not use the return keyword; the value of the expression is returned automatically.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede quando si dichiara una closure come statica (ad esempio, static function() {})?",
+    "options": [
+      "Impedisce alla closure di associarsi a $this, risparmiando memoria e prevenendo l'accesso accidentale allo stato dell'oggetto.",
+      "Consente alla closure di essere chiamata senza istanziazione.",
+      "Rende statiche tutte le variabili all'interno della closure.",
+      "Provoca un errore di compilazione poiché le closure non possono essere statiche."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Static closures cannot bind the current object context ($this). This prevents memory leaks and ensures that the closure does not access or modify the object's internal state.",
+    "points": 10
+  },
+  {
+    "question_text": "Cos'è l'interfaccia Throwable in PHP? (PHP 7.0+)",
+    "options": [
+      "Una interfaccia implementata sia dalla classe Exception sia dalla classe Error, che funge da base per tutti gli oggetti che possono essere catturati.",
+      "Un'interfaccia utilizzata solo per eccezioni utente personalizzate, esclusi gli errori interni di PHP.",
+      "Un'interfaccia che converte automaticamente tutti gli avvertimenti in eccezioni catturabili.",
+      "Una classe che ha sostituito la classe base Exception."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Throwable is the base interface for any object that can be thrown via a throw statement in PHP. Both Exception and Error implement Throwable, enabling catch blocks to handle both types.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo l'introduzione della classe Error ha cambiato la gestione degli errori in PHP? (PHP 7.0+)",
+    "options": [
+      "Ha reso obsoleta la classe Exception.",
+      "Ha permesso a molti errori fatali interni di PHP (come TypeError o ParseError) di essere catturati usando blocchi try-catch invece di arrestare immediatamente lo script.",
+      "Ha imposto che tutti gli avvisi vengano gestiti tramite gestori di eccezioni.",
+      "Ha eliminato la necessità dei blocchi try-catch standard."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Prior to PHP 7, fatal errors halted script execution instantly. Starting in PHP 7, many internal errors implement Throwable (under the Error class), meaning they can be caught and handled gracefully.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la sintassi corretta per catturare più eccezioni in un singolo blocco catch? (PHP 7.1+)",
+    "options": [
+      "catch (ExceptionA, ExceptionB $e)",
+      "catch (ExceptionA | ExceptionB $e)",
+      "catch (ExceptionA & ExceptionB $e)",
+      "catch (ExceptionA or ExceptionB $e)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 7.1, multiple exception types can be caught in a single catch block by separating them with a pipe symbol (|), e.g., catch (ExceptionA | ExceptionB $e).",
+    "points": 10
+  },
+  {
+    "question_text": "Quando viene eseguito il blocco finally in una struttura try-catch-finally?",
+    "options": [
+      "Solo quando non vengono lanciate eccezioni nel blocco try.",
+      "Solo quando un'eccezione viene catturata con successo da un blocco catch.",
+      "Sempre, dopo i blocchi try (e catch), indipendentemente dal fatto che sia stata lanciata o catturata un'eccezione, o che sia stata eseguita un'istruzione return.",
+      "Solo se l'esecuzione dello script viene terminata utilizzando exit()."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The finally block always executes after the try and catch blocks, even if an exception is uncaught or if a return statement is executed within those blocks.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa consente di fare la funzionalità 'throw come espressione'? (PHP 8.0+)",
+    "options": [
+      "Consente di utilizzare la parola chiave throw in contesti in cui sono consentite solo espressioni, come funzioni freccia, operatori ternari o l'operatore di coalescenza null.",
+      "Consente di lanciare messaggi stringa grezzi senza istanziare una classe di eccezione.",
+      "Converte automaticamente gli errori stringa standard in espressioni.",
+      "Consente di lanciare eccezioni senza utilizzare un blocco try-catch."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PHP 8.0+, throw was changed from a statement to an expression. This allows throw to be used in arrow functions (which only allow a single expression), ternary operators ($x ? throw : $y), or null coalescing operators ($val ?? throw).",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede a un'eccezione precedentemente lanciata se un'altra eccezione viene lanciata all'interno di un blocco finally?",
+    "options": [
+      "Entrambe le eccezioni vengono catturate dallo stesso blocco catch come un array.",
+      "La nuova eccezione del blocco finally sovrascrive l'eccezione precedente, che va persa.",
+      "Viene lanciato un errore di runtime fatale poiché le eccezioni nidificate sono vietate.",
+      "La prima eccezione viene aggiunta alla catena getPrevious() della seconda eccezione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If an exception is thrown inside a finally block, any exception that was previously thrown in the try or catch block is discarded and replaced by the new exception.",
+    "points": 10
+  },
+  {
+    "question_text": "In quale condizione viene lanciato un ArgumentCountError? (PHP 7.0+)",
+    "options": [
+      "Quando a una funzione vengono passati troppi argomenti.",
+      "Quando una funzione definita dall'utente viene chiamata con meno argomenti rispetto a quelli dichiarati.",
+      "Quando una funzione restituisce più valori del previsto.",
+      "Quando una funzione viene chiamata con una lista di argomenti variabili (variadic)."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "ArgumentCountError is thrown when a user-defined function or method is called with too few arguments.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è lo scopo della funzione set_exception_handler()?",
+    "options": [
+      "Registra una funzione di callback per intercettare e gestire qualsiasi eccezione non catturata da un blocco try-catch prima che lo script termini.",
+      "Abilita il controllo rigoroso dei tipi per le eccezioni.",
+      "Forza tutti gli avvisi PHP a lanciare eccezioni.",
+      "Registra una classe che gestisce la serializzazione delle eccezioni."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "set_exception_handler() registers a default exception handler callback. This handler is invoked when an exception is not caught anywhere else, allowing for custom error page rendering or logging before the script exits.",
+    "points": 10
+  },
+  {
+    "question_text": "È possibile lanciare un'istanza di una classe che non implementa l'interfaccia Throwable? (PHP 7.0+)",
+    "options": [
+      "Sì, può essere lanciato qualsiasi oggetto.",
+      "No, solo le classi che implementano Throwable (come Exception ed Error) possono essere lanciate; in caso contrario, viene generato un TypeError.",
+      "Sì, ma solo se la classe estende stdClass.",
+      "Sì, ma verrà convertita automaticamente in una Exception di base."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Only objects that implement the Throwable interface can be thrown. Attempting to throw an object that does not implement Throwable will cause a TypeError.",
+    "points": 10
+  },
+  {
+    "question_text": "L'operatore di controllo degli errori (@) impedisce il lancio delle eccezioni?",
+    "options": [
+      "Sì, sopprime sia gli errori PHP standard sia le eccezioni lanciate.",
+      "No, sopprime solo gli errori tradizionali di PHP (como Notice e Warning) ma non sopprime le eccezioni o gli oggetti Error.",
+      "Sì, ma solo se strict_types è disabilitato.",
+      "No, non ha alcun effetto su errori o eccezioni nelle versioni moderne di PHP."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The @ operator suppresses traditional PHP error messages (notices, warnings, etc.) for a specific expression, but it does not intercept or suppress exceptions or Fatal/TypeError Error objects.",
+    "points": 10
+  }
+]

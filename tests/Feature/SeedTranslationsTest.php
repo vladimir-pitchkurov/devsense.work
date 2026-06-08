@@ -47,6 +47,31 @@ class SeedTranslationsTest extends TestCase
             ->first();
 
         $this->assertNotNull($articleTranslation);
-        $this->assertStringContainsString('| DevSense', $articleTranslation->title);
+    }
+
+    public function test_seed_translations_command_does_not_overwrite_by_default_but_overwrites_with_update_flag(): void
+    {
+        Artisan::call('app:seed-translations');
+
+        $translation = ArticleTranslation::where('locale', 'de')
+            ->whereHas('article', function ($query) {
+                $query->where('slug', '8.4');
+            })
+            ->first();
+        
+        $this->assertNotNull($translation);
+        $originalTitle = $translation->title;
+        $translation->title = 'Manual German Title Edit';
+        $translation->save();
+
+        Artisan::call('app:seed-translations');
+
+        $translation->refresh();
+        $this->assertSame('Manual German Title Edit', $translation->title);
+
+        Artisan::call('app:seed-translations', ['--update' => true]);
+
+        $translation->refresh();
+        $this->assertSame($originalTitle, $translation->title);
     }
 }

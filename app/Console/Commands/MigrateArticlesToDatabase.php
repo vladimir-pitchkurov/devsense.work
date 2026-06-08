@@ -20,7 +20,7 @@ class MigrateArticlesToDatabase extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'app:migrate-articles-to-database';
+    protected $signature = 'app:migrate-articles-to-database {--update : Update existing database translations if they differ from files}';
 
     /**
      * The console command description.
@@ -132,6 +132,30 @@ class MigrateArticlesToDatabase extends Command
                         // Sync pivot tag
                         $article->tags()->syncWithoutDetaching([$tag->id]);
 
+                        // Check if translation already exists
+                        $existingTranslation = ArticleTranslation::where('article_id', $article->id)
+                            ->where('locale', $locale)
+                            ->first();
+
+                        if ($existingTranslation) {
+                            if (!$this->option('update')) {
+                                continue;
+                            }
+
+                            // Normalise line endings for comparison
+                            $normalizedNewContent = trim(str_replace("\r\n", "\n", $contentMarkdown));
+                            $normalizedOldContent = trim(str_replace("\r\n", "\n", $existingTranslation->content));
+
+                            $hasChanged = $existingTranslation->title !== $title
+                                || $existingTranslation->description !== $description
+                                || $normalizedOldContent !== $normalizedNewContent
+                                || json_encode($existingTranslation->faq) !== json_encode($faq);
+
+                            if (!$hasChanged) {
+                                continue;
+                            }
+                        }
+
                         // Create or update Translation
                         ArticleTranslation::updateOrCreate([
                             'article_id' => $article->id,
@@ -149,7 +173,7 @@ class MigrateArticlesToDatabase extends Command
             }
         });
 
-        $this->info("Successfully migrated {$count} article translations to the database!");
+        $this->info("Successfully migrated {$count} new or updated article translations to the database!");
         return 0;
     }
 }

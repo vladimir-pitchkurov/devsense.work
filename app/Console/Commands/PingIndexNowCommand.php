@@ -27,7 +27,9 @@ class PingIndexNowCommand extends Command
      */
     public function handle(PublicContentApiService $apiService, IndexNowService $indexNowService): int
     {
-        $lastRun = $this->option('force') ? 0 : (int) Cache::get('seo.indexnow.last_run_timestamp', 0);
+        $flagPath = storage_path('app/.indexnow_last_run');
+        $lastRun = $this->option('force') ? 0 : (file_exists($flagPath) ? filemtime($flagPath) : 0);
+        
         $entries = $apiService->scanIndex();
         $urls = [];
         $modifiedCount = 0;
@@ -51,7 +53,12 @@ class PingIndexNowCommand extends Command
         
         if ($indexNowService->pingIndexNow($urls)) {
             $this->info('IndexNow API ping completed successfully.');
-            Cache::put('seo.indexnow.last_run_timestamp', time());
+            
+            $dir = dirname($flagPath);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            touch($flagPath);
         } else {
             $this->warn('IndexNow API submission completed with warnings (ensure key matches config and indexnow_enabled is set in .env).');
         }

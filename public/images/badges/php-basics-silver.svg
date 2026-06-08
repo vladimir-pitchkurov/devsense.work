@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6E6E6" />
+      <stop offset="50%" stop-color="#AEAEAE" />
+      <stop offset="100%" stop-color="#707070" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer circle with gradient border -->
+  <circle cx="50" cy="50" r="46" fill="#1e1e2f" stroke="url(#silverGrad)" stroke-width="3" filter="url(#shadow)" />
+  
+  <!-- Inner decorative elements -->
+  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#silverGrad)" stroke-width="1" stroke-dasharray="4,2" opacity="0.6"/>
+  
+  <!-- Central Shield or Badge Icon -->
+  <path d="M50,22 L68,34 L68,58 L50,78 L32,58 L32,34 Z" fill="url(#silverGrad)" />
+  
+  <!-- Two Stars in Center -->
+  <g fill="#1e1e2f">
+    <polygon points="43,45 45,50 51,50 46,54 48,60 43,56 38,60 40,54 35,50 41,50" />
+    <polygon points="57,45 59,50 65,50 60,54 62,60 57,56 52,60 54,54 49,50 55,50" />
+  </g>
+  
+  <!-- Ribbon or Text Support -->
+  <rect x="25" y="66" width="50" height="10" rx="3" fill="#1e1e2f" stroke="url(#silverGrad)" stroke-width="1.5" />
+  <text x="50" y="73" font-family="'Outfit', 'Inter', sans-serif" font-size="6" font-weight="bold" fill="url(#silverGrad)" text-anchor="middle" letter-spacing="1">SILVER</text>
+  
+  <!-- Shiny reflection overlay -->
+  <path d="M6,50 A44,44 0 0,1 94,50 A44,44 0 0,0 6,50 Z" fill="url(#glowGrad)" pointer-events="none" />
+</svg>
