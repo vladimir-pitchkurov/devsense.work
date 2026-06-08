@@ -67,6 +67,33 @@ class PublicContentApiService
             // Safe fallback during migrations / testing
         }
 
+        // 1.5. Fetch quizzes from database
+        try {
+            $dbQuizzes = \App\Models\Quiz::with('translations')->get();
+            foreach ($dbQuizzes as $quiz) {
+                foreach ($quiz->translations as $translation) {
+                    if (!in_array($translation->locale, self::SUPPORTED_LOCALES, true)) {
+                        continue;
+                    }
+
+                    $modified = max(
+                        $quiz->updated_at?->timestamp ?? 0,
+                        $translation->updated_at?->timestamp ?? 0
+                    );
+
+                    $entries[] = [
+                        'locale' => $translation->locale,
+                        'category' => 'quizzes',
+                        'slug' => $quiz->slug,
+                        'modified' => $modified,
+                        'path' => 'db://quizzes/' . $quiz->slug . '/' . $translation->locale,
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {
+            // Safe fallback during migrations
+        }
+
         // 2. Fetch fallback markdown files from filesystem
         foreach (self::SUPPORTED_LOCALES as $locale) {
             foreach (self::SUPPORTED_CATEGORIES as $category) {
@@ -344,6 +371,7 @@ class PublicContentApiService
                 : "{$base}/{$locale}/microservices/{$slug}",
             'architecture' => "{$base}/{$locale}/architecture/{$slug}",
             'jobs' => "{$base}/{$locale}/jobs/{$slug}",
+            'quizzes' => "{$base}/{$locale}/quizzes/{$slug}",
             default => "{$base}/{$locale}",
         };
     }

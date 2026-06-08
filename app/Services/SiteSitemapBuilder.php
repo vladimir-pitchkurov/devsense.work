@@ -272,6 +272,39 @@ class SiteSitemapBuilder
             // Ignore database errors during setup
         }
 
+        // 5. Quizzes Index
+        $this->addLocalizedCluster(
+            $sitemap,
+            $root,
+            fn (string $locale): string => route('quizzes.index', ['locale' => $locale], false),
+            null,
+            $locales,
+            $hreflangMap,
+            $canonical,
+            $xDefault,
+            0.75,
+        );
+
+        // 6. Quizzes Show Pages
+        try {
+            $quizzes = \App\Models\Quiz::all();
+            foreach ($quizzes as $quiz) {
+                $this->addLocalizedCluster(
+                    $sitemap,
+                    $root,
+                    fn (string $locale): string => route('quizzes.show', ['locale' => $locale, 'slug' => $quiz->slug], false),
+                    $quiz->updated_at,
+                    $locales,
+                    $hreflangMap,
+                    $canonical,
+                    $xDefault,
+                    0.75,
+                );
+            }
+        } catch (\Throwable $e) {
+            // Ignore during setup/testing
+        }
+
         return $sitemap;
     }
 }
