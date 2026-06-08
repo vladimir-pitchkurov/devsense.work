@@ -169,6 +169,70 @@ class QuizSeeder extends Seeder
                     'es' => ['title' => 'Experto en Fundamentos de PHP', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista sobre fundamentos de PHP.'],
                     'it' => ['title' => 'Esperto in Fondamenti di PHP', 'description' => 'Ottenuto il 100% nel quiz di intervista sui fondamenti di PHP.'],
                 ]
+            ],
+            [
+                'slug' => 'js-basics-bronze',
+                'quiz_slug' => 'javascript-basics-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/js-basics-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Basics Bronze', 'description' => 'Scored 50% or more on the JavaScript Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: Основы JS', 'description' => 'Набрано 50% или более правильных ответов в квизе по основам JavaScript.'],
+                    'ua' => ['title' => 'Бронза: Основи JS', 'description' => 'Набрано 50% або більше правильних відповідей у квізі з основ JavaScript.'],
+                    'bg' => ['title' => 'Бронз: Основи на JS', 'description' => 'Резултат от 50% или повече на теста за основи на JS.'],
+                    'de' => ['title' => 'JS-Grundlagen Bronze', 'description' => 'Erreichte 50% oder mehr im JavaScript-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Bronze de base JS', 'description' => 'Obtenu 50% ou plus au quiz d\'entretien sur les bases de JS.'],
+                    'es' => ['title' => 'Bronce en Fundamentos de JS', 'description' => 'Obtuvo un 50% o más en el cuestionario de entrevista sobre fundamentos de JS.'],
+                    'it' => ['title' => 'Bronzo in Fondamenti di JS', 'description' => 'Ottenuto il 50% o più nel quiz di intervista sui fondamenti di JS.'],
+                ]
+            ],
+            [
+                'slug' => 'js-basics-silver',
+                'quiz_slug' => 'javascript-basics-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/js-basics-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Basics Silver', 'description' => 'Scored 70% or more on the JavaScript Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: Основы JS', 'description' => 'Набрано 70% или более правильных ответов в квизе по основам JavaScript.'],
+                    'ua' => ['title' => 'Срібло: Основи JS', 'description' => 'Набрано 70% або більше правильних відповідей у квізі з основ JavaScript.'],
+                    'bg' => ['title' => 'Сребро: Основи на JS', 'description' => 'Резултат от 70% или повече на теста за основи на JS.'],
+                    'de' => ['title' => 'JS-Grundlagen Silber', 'description' => 'Erreichte 70% oder mehr im JavaScript-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Argent de base JS', 'description' => 'Obtenu 70% ou plus au quiz d\'entretien sur les bases de JS.'],
+                    'es' => ['title' => 'Plata en Fundamentos de JS', 'description' => 'Obtuvo un 70% o más en el cuestionario de entrevista sobre fundamentos de JS.'],
+                    'it' => ['title' => 'Argento in Fondamenti di JS', 'description' => 'Ottenuto il 70% o più nel quiz di intervista sui fondamenti di JS.'],
+                ]
+            ],
+            [
+                'slug' => 'js-basics-gold',
+                'quiz_slug' => 'javascript-basics-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/js-basics-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Basics Gold', 'description' => 'Scored 85% or more on the JavaScript Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: Основы JS', 'description' => 'Набрано 85% или более правильных ответов в квизе по основам JavaScript.'],
+                    'ua' => ['title' => 'Золото: Основы JS', 'description' => 'Набрано 85% або більше правильних відповідей у квізі з основ JavaScript.'],
+                    'bg' => ['title' => 'Злато: Основи на JS', 'description' => 'Резултат от 85% или повече на теста за основи на JS.'],
+                    'de' => ['title' => 'JS-Grundlagen Gold', 'description' => 'Erreichte 85% oder mehr im JavaScript-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Or de base JS', 'description' => 'Obtenu 85% ou plus au quiz d\'entretien sur les bases de JS.'],
+                    'es' => ['title' => 'Oro en Fundamentos de JS', 'description' => 'Obtuvo un 85% o más en el cuestionario de entrevista sobre fundamentos de JS.'],
+                    'it' => ['title' => 'Oro in Fondamenti di JS', 'description' => 'Ottenuto l\'85% o più nel quiz di intervista sui fondamenti di JS.'],
+                ]
+            ],
+            [
+                'slug' => 'js-basics-expert',
+                'quiz_slug' => 'javascript-basics-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/js-basics-expert.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Basics Expert', 'description' => 'Scored 100% on the JavaScript Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Эксперт: Основы JS', 'description' => 'Набрано 100% правильных ответов в квизе по основам JavaScript.'],
+                    'ua' => ['title' => 'Експерт: Основи JS', 'description' => 'Набрано 100% правильних відповідей у квізі з основ JavaScript.'],
+                    'bg' => ['title' => 'Експерт: Основи на JS', 'description' => 'Резултат от 100% на теста за основи на JS.'],
+                    'de' => ['title' => 'JS-Grundlagen Experte', 'description' => 'Erreichte 100% im JavaScript-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Expert de base JS', 'description' => 'Obtenu 100% au quiz d\'entretien sur les bases de JS.'],
+                    'es' => ['title' => 'Experto en Fundamentos de JS', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista sobre fundamentos de JS.'],
+                    'it' => ['title' => 'Esperto in Fondamenti di JS', 'description' => 'Ottenuto il 100% nel quiz di intervista sui fondamenti di JS.'],
+                ]
             ]
         ];
 
@@ -195,13 +259,8 @@ class QuizSeeder extends Seeder
             }
         }
 
-        // 3. Seed Quiz: PHP Basics Interview
-        $quiz = Quiz::updateOrCreate(
-            ['slug' => 'php-basics-interview'],
-            ['points' => 1000]
-        );
-
-        $quizTrans = [
+        // 3. Seed Quizzes
+        $phpQuizTrans = [
             'en' => ['title' => 'PHP Basics Interview', 'description' => 'A comprehensive test of 100 questions covering core PHP concepts, scope, OOP, magic methods, and functional PHP.'],
             'ru' => ['title' => 'Собеседование по основам PHP', 'description' => 'Комплексный тест из 100 вопросов, охватывающий основные концепции PHP, области видимости, ООП, магические методы и функциональный PHP.'],
             'ua' => ['title' => 'Співбесіда з основ PHP', 'description' => 'Комплексний тест із 100 питань, що охоплює основні концепції PHP, області видимости, ООП, магічні методи та функціональний PHP.'],
@@ -211,8 +270,29 @@ class QuizSeeder extends Seeder
             'es' => ['title' => 'Entrevista de Fundamentos de PHP', 'description' => 'Un examen exhaustivo de 100 preguntas que abarca conceptos básicos de PHP, ámbitos, POO, métodos mágicos y PHP funcional.'],
             'it' => ['title' => 'Colloquio sui Fondamenti di PHP', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di PHP, ambito, OOP, metodi magici e PHP funzionale.'],
         ];
+        $this->seedQuiz('php-basics-interview', 1000, $phpQuizTrans, 'php-basics-interview');
 
-        foreach ($quizTrans as $locale => $tData) {
+        $jsQuizTrans = [
+            'en' => ['title' => 'JavaScript Basics Interview', 'description' => 'A comprehensive test of 100 questions covering core JavaScript concepts, scopes, closures, prototypes, async programming, arrays, and modules.'],
+            'ru' => ['title' => 'Собеседование по основам JavaScript', 'description' => 'Комплексный тест из 100 вопросов, охватывающий основные концепции JavaScript, области видимости, замыкания, прототипы, асинхронное программирование, массивы и модули.'],
+            'ua' => ['title' => 'Співбесіда з основ JavaScript', 'description' => 'Комплексний тест із 100 питань, що охоплює основні концепции JavaScript, області видимости, замикання, прототипи, асинхронне програмування, масиви та модулі.'],
+            'bg' => ['title' => 'Интервю за основи на JavaScript', 'description' => 'Изчерпателен тест от 100 въпроса, обхващащ основни концепции на JavaScript, области на видимост, затваряния, прототипи, асинхронно програмиране, масиви и модули.'],
+            'de' => ['title' => 'JavaScript-Grundlagen Interview', 'description' => 'Ein umfassender Test mit 100 Fragen zu den Kernkonzepten von JavaScript, Gültigkeitsbereichen, Closures, Prototypen, asynchroner Programmierung, Arrays und Modulen.'],
+            'fr' => ['title' => 'Entretien sur les bases de JavaScript', 'description' => 'Un test complet de 100 questions couvrant les concepts fondamentaux de JavaScript, les portées, les fermetures, les prototypes, la programmation asynchrone, les tableaux et les modules.'],
+            'es' => ['title' => 'Entrevista de Fundamentos de JavaScript', 'description' => 'Un examen exhaustivo de 100 preguntas que abarca conceptos básicos de JavaScript, ámbitos, closures, prototipos, programación asíncrona, arrays y módulos.'],
+            'it' => ['title' => 'Colloquio sui Fondamenti di JavaScript', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di JavaScript, ambiti, closure, prototipi, programmazione asincrona, array e moduli.'],
+        ];
+        $this->seedQuiz('javascript-basics-interview', 1000, $jsQuizTrans, 'javascript-basics-interview');
+    }
+
+    private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir): void
+    {
+        $quiz = Quiz::updateOrCreate(
+            ['slug' => $slug],
+            ['points' => $points]
+        );
+
+        foreach ($translations as $locale => $tData) {
             $quiz->translations()->updateOrCreate(
                 ['locale' => $locale],
                 [
@@ -225,11 +305,11 @@ class QuizSeeder extends Seeder
         // Delete existing questions for this quiz to prevent duplicates/accumulation, then recreate
         $quiz->questions()->delete();
 
-        // 4. Load Quiz Questions from localized JSON files
+        // Load Quiz Questions from localized JSON files
         $locales = ['en', 'ru', 'ua', 'bg', 'de', 'fr', 'es', 'it'];
         $quizData = [];
         foreach ($locales as $locale) {
-            $path = resource_path("quizzes/php-basics-interview/{$locale}.json");
+            $path = resource_path("quizzes/{$resourceSubdir}/{$locale}.json");
             if (file_exists($path)) {
                 $quizData[$locale] = json_decode(file_get_contents($path), true);
             } else {

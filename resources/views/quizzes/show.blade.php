@@ -327,6 +327,80 @@
             });
         }
 
+        function triggerConfetti(element) {
+            if (!element) return;
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = '99999';
+            document.body.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            const rect = element.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#f97316'];
+            const particles = [];
+
+            for (let i = 0; i < 60; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 8 + 4;
+                particles.push({
+                    x: startX,
+                    y: startY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    radius: Math.random() * 4 + 3,
+                    alpha: 1,
+                    decay: Math.random() * 0.015 + 0.01
+                });
+            }
+
+            function animate() {
+                let alive = false;
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach(p => {
+                    if (p.alpha > 0) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.22;
+                        p.vx *= 0.98;
+                        p.alpha -= p.decay;
+
+                        ctx.save();
+                        ctx.globalAlpha = p.alpha;
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+
+                        if (p.alpha > 0) {
+                            alive = true;
+                        }
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(animate);
+                } else {
+                    canvas.remove();
+                }
+            }
+
+            animate();
+        }
+
         function checkCurrentAnswer() {
             const question = quizData.questions[currentQuestionIndex];
             const cards = choicesGrid.querySelectorAll('.choice-card');
@@ -341,9 +415,14 @@
                 showRevealButton();
             } else {
                 const isCorrect = (selectedOptionIndex === question.correctIndex);
-                cards[question.correctIndex]?.classList.add('choice-correct');
+                const correctCard = cards[question.correctIndex];
+                if (correctCard) {
+                    correctCard.classList.add('choice-correct');
+                }
                 if (!isCorrect) {
                     cards[selectedOptionIndex]?.classList.add('choice-incorrect');
+                } else {
+                    triggerConfetti(correctCard);
                 }
                 if (question.explanation) {
                     showExplanation(question.explanation);
