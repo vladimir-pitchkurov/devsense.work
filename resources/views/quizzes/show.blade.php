@@ -132,7 +132,7 @@
                 @endphp
                 {
                     id: {{ $question->id }},
-                    text: "{!! addslashes($qTrans?->question_text) !!}",
+                    text: {!! json_encode($qTrans?->question_text ?? '') !!},
                     options: {!! json_encode($qTrans?->options) !!},
                     points: {{ $question->points }}
                 },
