@@ -198,6 +198,7 @@
                     @csrf
                     @method('PUT')
                     
+                    @if ($user->password !== null)
                     <div class="form-group">
                         <label for="current_password" class="form-label">{{ __('ui.auth.password_reset.current_password') }}</label>
                         <div class="auth-input-row">
@@ -214,6 +215,7 @@
                             </button>
                         </div>
                     </div>
+                    @endif
 
                     <div class="form-group">
                         <label for="change_password" class="form-label">{{ __('ui.auth.password_reset.new_password') }}</label>

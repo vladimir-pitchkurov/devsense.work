@@ -299,6 +299,8 @@ return [
     ],
 
     'auth' => [
+        'or'               => 'або',
+        'google_btn'       => 'Продовжити через Google',
         'login_title'      => 'Вхід',
         'login_heading'    => 'Увійти',
         'login_sub'        => 'Доступ до панелі автора',

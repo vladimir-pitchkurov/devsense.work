@@ -29,7 +29,7 @@ php artisan optimize
 php artisan migrate --force
 
 # Сидирование квизов и ачивок (безопасно для пользовательского прогресса)
-php artisan db:seed --class=QuizSeeder --force
+php artisan db:seed --class=--classQuizSeeder --force
 
 # Импорт статей из Markdown-файлов в базу данных (для админки)
 #php artisan app:migrate-articles-to-database

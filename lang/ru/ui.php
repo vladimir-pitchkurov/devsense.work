@@ -303,6 +303,8 @@ return [
     ],
 
     'auth' => [
+        'or'               => 'или',
+        'google_btn'       => 'Продолжить через Google',
         'login_title'      => 'Вход',
         'login_heading'    => 'Войти',
         'login_sub'        => 'Доступ к панели автора',

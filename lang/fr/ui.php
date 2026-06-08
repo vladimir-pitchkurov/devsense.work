@@ -293,6 +293,8 @@ return [
         'label' => 'Recherche',
     ],
     'auth' => [
+        'or'             => 'ou',
+        'google_btn'     => 'Continuer avec Google',
         'login_title'    => 'Connexion',
         'login_heading'  => 'Connexion',
         'login_sub'      => 'Accédez à votre tableau de bord d\'auteur',
