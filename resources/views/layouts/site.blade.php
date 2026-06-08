@@ -3,42 +3,15 @@
 <head>
     @production
         @if (filled(config('services.gtm.container_id')))
-            @php
-                $partytownPublic = public_path('~partytown/partytown.js');
-                $partytownQuery = is_file($partytownPublic) ? '?v='.filemtime($partytownPublic) : '';
-            @endphp
-            <!-- Partytown + GTM: forward dataLayer.push + gtag so main-thread events reach the worker (GA4 / custom tags). -->
-            <link rel="preload" href="/~partytown/partytown.js{{ $partytownQuery }}" as="script" fetchpriority="high">
+            <!-- Google Tag Manager -->
             <script>
-                window.dataLayer = window.dataLayer || [];
-                window.gtag = function gtag() { window.dataLayer.push(arguments); };
-                window.partytown = {
-                    forward: ['dataLayer.push', 'gtag'],
-                    resolveUrl: function (url, location, type) {
-                        if (type === 'script') {
-                            var hostname = url.hostname;
-                            if (hostname === 'www.googletagmanager.com' ||
-                                hostname === 'googletagmanager.com' ||
-                                hostname === 'www.google-analytics.com' ||
-                                hostname === 'google-analytics.com' ||
-                                hostname === 'region1.google-analytics.com') {
-                                var proxyUrl = new URL('/partytown-proxy', location.origin);
-                                proxyUrl.searchParams.append('url', url.href);
-                                return proxyUrl;
-                            }
-                        }
-                        return url;
-                    }
-                };
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','{{ rawurlencode(config('services.gtm.container_id')) }}');
             </script>
-            <script src="/~partytown/partytown.js{{ $partytownQuery }}"></script>
-            <script>
-                window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-            </script>
-            <script
-                type="text/partytown"
-                src="https://www.googletagmanager.com/gtm.js?id={{ rawurlencode(config('services.gtm.container_id')) }}"
-            ></script>
+            <!-- End Google Tag Manager -->
         @endif
     @endproduction
     <meta charset="UTF-8">

@@ -74,6 +74,15 @@ This command cleans up outdated quiz data/badges and imports the quiz, all trans
 
 To deploy the application to production or run maintenance tasks, use the `deploy.sh` script or run the required maintenance commands manually.
 
+> [!WARNING]
+> **Environment Variables & Caching**:
+> If you add, modify, or delete environment variables in `.env` on the production server, you **must** clear the configuration cache and reload PHP-FPM (or restart the PHP service) for the changes to take effect:
+> ```bash
+> php artisan optimize:clear
+> sudo systemctl reload php8.5-fpm # adjust version if necessary
+> ```
+> This is because OPcache in PHP-FPM caches compiled configuration files (like `bootstrap/cache/config.php`) in memory, causing changes in `.env` to be ignored until reloaded.
+
 ### Automated Production Deployment
 Deployments are automated via:
 ```bash
