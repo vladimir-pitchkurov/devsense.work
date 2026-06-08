@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Badge;
 use App\Models\Quiz;
 use App\Models\UserQuiz;
+use App\Models\QuizInProgress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,6 +70,19 @@ class PublicQuizController extends Controller
             }
         }
 
+        $inProgressData = null;
+        if ($user && !$lastCompletedTimestamp) {
+            $inProgress = QuizInProgress::where('user_id', $user->id)
+                ->where('quiz_id', $quiz->id)
+                ->first();
+            if ($inProgress) {
+                $inProgressData = [
+                    'question_index' => $inProgress->question_index,
+                    'answers' => $inProgress->answers ?? (object)[],
+                ];
+            }
+        }
+
         $showResultsData = null;
         if ($user && session('quiz_completed_from_guest') === $quiz->slug) {
             $answers = session('quiz_user_answers', []);
@@ -100,7 +114,7 @@ class PublicQuizController extends Controller
             ];
         }
 
-        return view('quizzes.show', compact('quiz', 'lastCompletedTimestamp', 'showResultsData'));
+        return view('quizzes.show', compact('quiz', 'lastCompletedTimestamp', 'showResultsData', 'inProgressData'));
     }
 
     /**
@@ -146,6 +160,11 @@ class PublicQuizController extends Controller
                 'points_scored' => $pointsScored,
             ]);
         }
+
+        // Delete in-progress state since quiz is completed
+        QuizInProgress::where('user_id', $user->id)
+            ->where('quiz_id', $quiz->id)
+            ->delete();
 
         // Determine point diff for UserQuiz pivot and User points
         $existingRecord = $user->quizzes()->where('quiz_id', $quiz->id)->first();
@@ -197,5 +216,34 @@ class PublicQuizController extends Controller
             'explanations' => $explanations,
             'new_badges' => $unlockedBadges,
         ]);
+    }
+
+    /**
+     * Save quiz progress in DB for authenticated users.
+     */
+    public function saveProgress(Request $request, string $slug): JsonResponse
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $quiz = Quiz::where('slug', $slug)->firstOrFail();
+
+        $validated = $request->validate([
+            'question_index' => 'required|integer|min:0',
+            'answers' => 'present|array',
+        ]);
+
+        QuizInProgress::updateOrCreate(
+            ['user_id' => $user->id, 'quiz_id' => $quiz->id],
+            [
+                'question_index' => $validated['question_index'],
+                'answers' => $validated['answers'],
+                'saved_at' => now(),
+            ]
+        );
+
+        return response()->json(['success' => true]);
     }
 }

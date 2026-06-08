@@ -940,3 +940,92 @@
         color: #f87171;
     }
 }
+
+/* Checked Answer Feedback Classes */
+.choice-card.checked-disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.choice-card.choice-correct {
+    border-color: #22c55e !important;
+    background: rgba(34, 197, 94, 0.08) !important;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2) !important;
+    
+    .choice-marker {
+        background: #22c55e !important;
+        border-color: #22c55e !important;
+        color: #ffffff !important;
+    }
+}
+
+.choice-card.choice-incorrect {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.06) !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+    
+    .choice-marker {
+        background: #ef4444 !important;
+        border-color: #ef4444 !important;
+        color: #ffffff !important;
+    }
+}
+
+.choice-card.choice-selected-checked {
+    border-color: var(--primary-color) !important;
+    background: var(--primary-glow) !important;
+    box-shadow: 0 0 0 2px var(--primary-glow) !important;
+}
+
+.quiz-login-cta {
+    padding: 1rem 1.25rem;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 0.5rem;
+    
+    p {
+        margin: 0 0 0.75rem 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .quiz-cta-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+}
+
+.quiz-explanation {
+    margin-top: 0.5rem;
+    padding: 0.875rem 1rem;
+    background: rgba(99, 102, 241, 0.06);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: left;
+}
+
+.btn-reveal-answer {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Outfit', sans-serif;
+
+    &:hover {
+        background: var(--primary-glow);
+        color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+}

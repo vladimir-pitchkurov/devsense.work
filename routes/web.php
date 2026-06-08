@@ -222,6 +222,7 @@ Route::prefix('{locale}')
             Route::get('/', [\App\Http\Controllers\PublicQuizController::class, 'index'])->name('quizzes.index');
             Route::get('/{slug}', [\App\Http\Controllers\PublicQuizController::class, 'show'])->name('quizzes.show');
             Route::post('/{slug}/complete', [\App\Http\Controllers\PublicQuizController::class, 'complete'])->name('quizzes.complete');
+            Route::post('/{slug}/progress', [\App\Http\Controllers\PublicQuizController::class, 'saveProgress'])->name('quizzes.progress')->middleware('auth');
         });
 
         Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');

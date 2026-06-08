@@ -134,7 +134,11 @@
                     id: {{ $question->id }},
                     text: {!! json_encode($qTrans?->question_text ?? '') !!},
                     options: {!! json_encode($qTrans?->options) !!},
-                    points: {{ $question->points }}
+                    points: {{ $question->points }},
+                    @auth
+                    correctIndex: {{ $question->correct_answer_index }},
+                    explanation: {!! json_encode($question->explanation ?? '') !!}
+                    @endauth
                 },
                 @endforeach
             ]
@@ -177,13 +181,91 @@
 
         if (retakeBtn) {
             retakeBtn.addEventListener('click', function () {
+                clearProgress();
                 window.location.reload();
             });
         }
 
+        const isLoggedIn = @json(auth()->check());
+        const loginUrl = "{{ route('login.locale') }}";
+        const registerUrl = "{{ route('register.locale') }}";
+        const PROGRESS_KEY = `quiz_progress_${quizData.slug}`;
+        const PROGRESS_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+        function saveProgressToLocalStorage(index, answers) {
+            try {
+                localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+                    questionIndex: index,
+                    answers: answers,
+                    savedAt: Date.now()
+                }));
+            } catch (e) {
+                console.error('Failed to save progress to localStorage', e);
+            }
+        }
+
+        function loadProgressFromLocalStorage() {
+            try {
+                const raw = localStorage.getItem(PROGRESS_KEY);
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                if (Date.now() - data.savedAt > PROGRESS_TTL) {
+                    localStorage.removeItem(PROGRESS_KEY);
+                    return null;
+                }
+                return data;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function clearProgress() {
+            try {
+                localStorage.removeItem(PROGRESS_KEY);
+            } catch (e) {}
+        }
+
         let currentQuestionIndex = 0;
+        let userAnswers = {};
+
+        const serverProgress = @json($inProgressData);
+        const localProgress = loadProgressFromLocalStorage();
+
+        if (isLoggedIn) {
+            if (localProgress && (!serverProgress || localProgress.questionIndex > serverProgress.question_index)) {
+                currentQuestionIndex = localProgress.questionIndex;
+                userAnswers = localProgress.answers || {};
+                
+                fetch("{{ route('quizzes.progress', ['slug' => $quiz->slug]) }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        question_index: currentQuestionIndex,
+                        answers: userAnswers
+                    })
+                }).catch(err => console.error("Failed to sync progress on load", err));
+            } else if (serverProgress) {
+                currentQuestionIndex = serverProgress.question_index;
+                userAnswers = serverProgress.answers || {};
+            }
+            clearProgress();
+        } else {
+            if (localProgress) {
+                currentQuestionIndex = localProgress.questionIndex;
+                userAnswers = localProgress.answers || {};
+            }
+        }
+
+        if (currentQuestionIndex >= quizData.questions.length) {
+            currentQuestionIndex = 0;
+            userAnswers = {};
+        }
+
         let selectedOptionIndex = null;
-        let userAnswers = @json(session('quiz_user_answers') ?? (object)[]); // questionId: selectedIndex
+        let isChecked = false;
 
         const questionProgress = document.getElementById('question-progress');
         const quizStepFill = document.getElementById('quiz-step-fill');
@@ -195,15 +277,13 @@
 
         function loadQuestion() {
             selectedOptionIndex = null;
+            isChecked = false;
             feedbackHint.style.display = 'none';
             feedbackHint.className = 'feedback-hint';
             feedbackHint.innerHTML = '';
             
             footerActionBtn.disabled = true;
-            const isLast = (currentQuestionIndex === quizData.questions.length - 1);
-            footerActionBtn.innerHTML = isLast 
-                ? "{{ app()->getLocale() === 'ru' ? 'Показать результаты' : 'Finish Quiz' }}"
-                : "{{ app()->getLocale() === 'ru' ? 'Дальше' : 'Next Question' }}";
+            footerActionBtn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Проверить' : 'Check Answer' }}";
 
             const question = quizData.questions[currentQuestionIndex];
             
@@ -233,6 +313,7 @@
         }
 
         function selectOption(index) {
+            if (isChecked) return;
             selectedOptionIndex = index;
             footerActionBtn.disabled = false;
 
@@ -246,14 +327,104 @@
             });
         }
 
-        footerActionBtn.addEventListener('click', function () {
-            userAnswers[quizData.questions[currentQuestionIndex].id] = selectedOptionIndex;
+        function checkCurrentAnswer() {
+            const question = quizData.questions[currentQuestionIndex];
+            const cards = choicesGrid.querySelectorAll('.choice-card');
+            
+            cards.forEach(card => {
+                card.disabled = true;
+                card.classList.add('checked-disabled');
+            });
 
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData.questions.length) {
-                loadQuestion();
+            if (question.correctIndex === undefined) {
+                cards[selectedOptionIndex]?.classList.add('choice-selected-checked');
+                showRevealButton();
             } else {
-                submitQuiz();
+                const isCorrect = (selectedOptionIndex === question.correctIndex);
+                cards[question.correctIndex]?.classList.add('choice-correct');
+                if (!isCorrect) {
+                    cards[selectedOptionIndex]?.classList.add('choice-incorrect');
+                }
+                if (question.explanation) {
+                    showExplanation(question.explanation);
+                }
+            }
+        }
+
+        function showRevealButton() {
+            feedbackHint.innerHTML = '';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn-reveal-answer';
+            btn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Показать правильный ответ' : 'Show Correct Answer' }}";
+            btn.addEventListener('click', showLoginCTA);
+            feedbackHint.appendChild(btn);
+            feedbackHint.style.display = 'block';
+        }
+
+        function showLoginCTA() {
+            const isRu = "{{ app()->getLocale() === 'ru' }}";
+            feedbackHint.innerHTML = `
+                <div class="quiz-login-cta">
+                    <p>🔒 ${isRu ? 'Войдите, чтобы видеть правильные ответы и подробные объяснения' : 'Sign in to see correct answers and detailed explanations'}</p>
+                    <div class="quiz-cta-actions">
+                        <a href="${loginUrl}" class="admin-btn admin-btn--primary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; border-radius: 6px; font-family: 'Outfit', sans-serif;">
+                            ${isRu ? 'Войти' : 'Sign in'}
+                        </a>
+                        <a href="${registerUrl}" class="admin-btn admin-btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; border-radius: 6px; font-family: 'Outfit', sans-serif;">
+                            ${isRu ? 'Регистрация' : 'Register'}
+                        </a>
+                    </div>
+                </div>
+            `;
+            feedbackHint.style.display = 'block';
+        }
+
+        function showExplanation(text) {
+            const isRu = "{{ app()->getLocale() === 'ru' }}";
+            feedbackHint.innerHTML = `
+                <div class="quiz-explanation">
+                    <strong>${isRu ? 'Объяснение:' : 'Explanation:'}</strong> ${text}
+                </div>
+            `;
+            feedbackHint.style.display = 'block';
+        }
+
+        footerActionBtn.addEventListener('click', function () {
+            if (!isChecked) {
+                isChecked = true;
+                userAnswers[quizData.questions[currentQuestionIndex].id] = selectedOptionIndex;
+                
+                checkCurrentAnswer();
+
+                const isLast = (currentQuestionIndex === quizData.questions.length - 1);
+                footerActionBtn.innerHTML = isLast 
+                    ? "{{ app()->getLocale() === 'ru' ? 'Показать результаты' : 'Finish Quiz' }}"
+                    : "{{ app()->getLocale() === 'ru' ? 'Дальше' : 'Next Question' }}";
+
+                const nextIndex = currentQuestionIndex + 1;
+                if (isLoggedIn) {
+                    fetch("{{ route('quizzes.progress', ['slug' => $quiz->slug]) }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            question_index: nextIndex,
+                            answers: userAnswers
+                        })
+                    }).catch(err => console.error("Failed to save progress", err));
+                } else {
+                    saveProgressToLocalStorage(nextIndex, userAnswers);
+                }
+            } else {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.questions.length) {
+                    loadQuestion();
+                } else {
+                    submitQuiz();
+                }
             }
         });
 
@@ -264,6 +435,8 @@
             choicesGrid.innerHTML = '';
             questionText.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Пожалуйста, подождите...' : 'Processing answers...' }}";
             footerActionBtn.style.display = 'none';
+
+            clearProgress();
 
             fetch("{{ route('quizzes.complete', ['slug' => $quiz->slug]) }}", {
                 method: "POST",
