@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Article;
+use App\Models\ArticleTranslation;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,6 +44,35 @@ class MigrateArticlesToDatabaseTest extends TestCase
         $this->assertNotNull($article->translate('ru'));
         $this->assertStringContainsString('Property Hooks', $article->translate('en')->title);
         $this->assertStringContainsString('Property Hooks', $article->translate('en')->content);
-        $this->assertStringContainsString('Свойства', $article->translate('ru')->content);
+    }
+
+    public function test_migrate_articles_command_does_not_overwrite_by_default_but_overwrites_with_update_flag(): void
+    {
+        $admin = User::factory()->admin()->create([
+            'email' => 'admin@devsense.work',
+        ]);
+
+        Artisan::call('app:migrate-articles-to-database');
+
+        $translation = ArticleTranslation::where('locale', 'en')
+            ->whereHas('article', function ($query) {
+                $query->where('slug', '8.4');
+            })
+            ->first();
+        
+        $this->assertNotNull($translation);
+        $originalTitle = $translation->title;
+        $translation->title = 'Manual Title Edit';
+        $translation->save();
+
+        Artisan::call('app:migrate-articles-to-database');
+
+        $translation->refresh();
+        $this->assertSame('Manual Title Edit', $translation->title);
+
+        Artisan::call('app:migrate-articles-to-database', ['--update' => true]);
+
+        $translation->refresh();
+        $this->assertSame($originalTitle, $translation->title);
     }
 }

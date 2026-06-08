@@ -21,7 +21,7 @@ class SeedTranslations extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'app:seed-translations';
+    protected $signature = 'app:seed-translations {--update : Update existing database translations if they differ from files}';
 
     /**
      * The console command description.
@@ -164,6 +164,30 @@ class SeedTranslations extends Command
                         // Sync pivot tag
                         $article->tags()->syncWithoutDetaching([$tag->id]);
 
+                        // Check if translation already exists
+                        $existingTranslation = ArticleTranslation::where('article_id', $article->id)
+                            ->where('locale', $locale)
+                            ->first();
+
+                        if ($existingTranslation) {
+                            if (!$this->option('update')) {
+                                continue;
+                            }
+
+                            // Normalise line endings for comparison
+                            $normalizedNewContent = trim(str_replace("\r\n", "\n", $contentMarkdown));
+                            $normalizedOldContent = trim(str_replace("\r\n", "\n", $existingTranslation->content));
+
+                            $hasChanged = $existingTranslation->title !== $title
+                                || $existingTranslation->description !== $description
+                                || $normalizedOldContent !== $normalizedNewContent
+                                || json_encode($existingTranslation->faq) !== json_encode($faq);
+
+                            if (!$hasChanged) {
+                                continue;
+                            }
+                        }
+
                         // Create or update Translation
                         ArticleTranslation::updateOrCreate([
                             'article_id' => $article->id,
@@ -181,16 +205,16 @@ class SeedTranslations extends Command
             }
         });
 
-        $this->info("Successfully seeded {$count} translated articles to the database!");
+        $this->info("Successfully seeded {$count} new or updated translated articles to the database!");
 
         // 2. Re-generate sitemap
         $this->info('Regenerating sitemap...');
         Artisan::call('sitemap:write');
         $this->info('Sitemap successfully regenerated.');
 
-        // 3. Ping search engines via IndexNow
+        // 3. Ping search engines via IndexNow (only new/modified)
         $this->info('Pinging IndexNow API...');
-        Artisan::call('seo:ping-indexnow', ['--force' => true]);
+        Artisan::call('seo:ping-indexnow');
         $this->info('IndexNow API ping completed.');
 
         return 0;
