@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Какво е поведението на декларациите на скаларни типове в PHP, когато плаваща единица се предава на целочислен параметър в принудителния режим по подразбиране?",
+    "options": [
+      "Веднага се хвърля TypeError.",
+      "Плаващото число се принуждава до цяло число чрез съкращаване на дробната му част без никакво предупреждение.",
+      "Изпълнението на скрипта е прекратено с фатална грешка по време на компилиране.",
+      "Стойността така или иначе се прехвърля към float, като се игнорира декларацията на типа."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In coercive mode (default), PHP will automatically coerce scalar types if possible. A float passed to an int parameter will be coerced to an integer by truncating the fractional part.",
+    "points": 10
+  },
+  {
+    "question_text": "Как декларирането на строги типове чрез declare(strict_types=1); засяга аргументите и върнатите типове на функциите? (PHP 7.0+)",
+    "options": [
+      "Деактивира всички принудителни типове, хвърляйки TypeError за всяко несъответствие, освен когато предава int към плаващ параметър.",
+      "Изисква всички променливи във файла да бъдат изрично въведени при декларацията.",
+      "Предотвратява използването на динамични променливи и свойства глобално.",
+      "Засяга само вградените PHP функции, оставяйки дефинираните от потребителя функции в принудителен режим."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Declaring strict_types=1 forces strict type checking for function arguments and return values. The only coercion allowed is passing an integer to a float parameter.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните се счита за скаларен тип в PHP?",
+    "options": [
+      "array",
+      "object",
+      "float",
+      "resource"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP has four scalar types: boolean, integer, float (double), and string. Arrays, objects, resources, and null are not scalar types.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво приема псевдотипът iterable, когато се използва като декларация на тип? (PHP 7.1+)",
+    "options": [
+      "Само стандартни масиви.",
+      "Всеки масив или обект, който имплементира интерфейса Traversable.",
+      "Само обекти, които имплементират интерфейса на Iterator.",
+      "Всяка променлива, която може да бъде преобразувана в масив."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The iterable type hint matches both native arrays and objects implementing the Traversable interface, which can be looped over using foreach.",
+    "points": 10
+  },
+  {
+    "question_text": "Коя от следните декларации налага, че дадена функция не може да върне никаква стойност, включително null? (PHP 7.1+)",
+    "options": [
+      "never",
+      "null",
+      "void",
+      "false"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "A return type of void indicates that the function does not return a value. Any return statement inside the function must either be empty (return;) or omitted entirely.",
+    "points": 10
+  },
+  {
+    "question_text": "Как се държи операторът за обединяване (??) null? (PHP 7.0+)",
+    "options": [
+      "Връща първия операнд, ако е зададен, а не null; в противен случай връща втория операнд.",
+      "Връща първия операнд, ако се изчисли на true; в противен случай връща втория операнд.",
+      "Хвърля изключение, ако първият операнд не е дефиниран.",
+      "Той се държи точно като троичния оператор?: без да проверява дали променливата е зададена."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The null coalescing operator ?? returns its first operand if it exists and is not null; otherwise, it falls back to the second operand, avoiding 'undefined variable' warnings.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е основната цел на оператора за обединяване на присвояване null (??=)? (PHP 7.4+)",
+    "options": [
+      "Присвоява десния операнд на левия операнд, ако левият операнд е зададен, а не null.",
+      "Присвоява десния операнд на левия само ако левият операнд е null или недефиниран.",
+      "Той сравнява две променливи и присвоява по-малката стойност на левия операнд.",
+      "Той хвърля TypeError, ако десният операнд е null."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The null coalescing assignment operator ??= assigns the value of the right operand to the left operand if the left operand is null or does not exist.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се връща от израза gettype (3.14)?",
+    "options": [
+      "float",
+      "double",
+      "real",
+      "decimal"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "For historical reasons, gettype() returns 'double' for floats instead of 'float'.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните е съставен тип в PHP?",
+    "options": [
+      "string",
+      "array",
+      "callable",
+      "null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Compound types in PHP include array and object. Scalar types include int, float, string, and bool. Special types include resource and null.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението на върнатия тип never в PHP? (PHP 8.1+)",
+    "options": [
+      "Показва, че функцията връща null или void.",
+      "Показва, че функцията never се връща, което означава, че трябва да излезе, да хвърли изключение или да зацикли безкрайно.",
+      "Показва, че функцията е остаряла и трябва да се извика never.",
+      "Това е псевдоним за върнатия тип void."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The never return type indicates that the function will never return a value or terminate normally, meaning it must call exit(), die(), throw an exception, or contain an infinite loop.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е ключовата разлика между типовете съюз и типовете пресичане? (PHP 8.1+)",
+    "options": [
+      "Типовете обединение позволяват дадена стойност да удовлетворява всеки от изброените типове, докато типовете пресичане изискват тя да удовлетворява всички изброени типове.",
+      "Обединените типове се използват за скаларни променливи, докато пресечните типове се използват само за класове.",
+      "Типовете съюз се декларират с помощта на &, а типовете пресичане се декларират с помощта на |.",
+      "Няма разлика; те са алтернативен синтаксис за проверка на същия тип."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Union types (e.g., A|B) require a value to be an instance of A or B. Intersection types (e.g., A&B) require a value to be an instance of both A and B at the same time.",
+    "points": 10
+  },
+  {
+    "question_text": "Може ли null да се използва като самостоятелен тип връщане в сигнатура на функция? (PHP 8.2+)",
+    "options": [
+      "Не, null може да се използва само в обединени типове като низ | null.",
+      "Да, null може да се декларира като самостоятелен тип връщане.",
+      "Не, null се представя само от върнатия тип void.",
+      "Да, но изисква директивата declare (strict_types =1) да бъде активирана."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 8.2, null can be used as a standalone return type. A function declared with return type null must return null or have no return value (which defaults to null).",
+    "points": 10
+  },
+  {
+    "question_text": "При какви условия достъпът до променлива, която не е инициализирана, ще доведе до фатално Error вместо предупреждение/известие? (PHP 8.0+)",
+    "options": [
+      "Когато са активирани стриктни типове.",
+      "Когато променливата има декларация за тип в class конструктор и е достъпна преди инициализация.",
+      "Когато променливата е глобална променлива.",
+      "Когато променливата се използва в двуцитиран низ."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Accessing typed class properties before they are initialized throws an Error exception (Error: Typed property must not be accessed before initialization). Accessing normal uninitialized local variables only throws a Warning in PHP 8.0+.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква декларация за тип позволява на параметър да приема цяло число, плаващо число или null? (PHP 8.0+)",
+    "options": [
+      "?int|float",
+      "int|float|null",
+      "number|null",
+      "numeric|null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.0+, union types allow explicit listing of types, such as int|float|null. The shorthand ?int|float is invalid syntax because ? can only prefix a single type.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението на връщания тип, когато дадена функция е декларирана да връща false? (PHP 8.2+)",
+    "options": [
+      "Разрешено е само като част от тип обединение като низ | false.",
+      "Може да се използва като самостоятелен тип връщане.",
+      "Третира се като булев тип връщане, което означава, че може да върне и true.",
+      "Не е разрешено и извежда грешка при компилиране."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 8.2, false (and true) can be used as standalone types. Prior to that, false was only allowed in union types.",
+    "points": 10
+  },
+  {
+    "question_text": "Ако променлива $x съдържа низа 'y', а променлива $y съдържа 'z', какъв е резултатът от echo $ $x;?",
+    "options": [
+      "y",
+      "z",
+      "x",
+      "Хвърля се известие за недефинирана променлива."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "This is a variable variable. $$x evaluates to $y because $x holds the string 'y'. Since $y contains 'z', it prints 'z'.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е животът и поведението на променлива static, декларирана в PHP функция?",
+    "options": [
+      "Той се инициализира при всяко извикване на функция и се унищожава, когато функцията се върне.",
+      "Запазва стойността си при множество извиквания на функции и се инициализира само веднъж.",
+      "Той се споделя глобално във всички функции и класове в средата за изпълнение.",
+      "Причинява синтактична грешка, освен ако функцията не е static class метод."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Static variables inside functions exist only in the local function scope, but they retain their value between execution calls. The initialization expression is run only once, on the first call.",
+    "points": 10
+  },
+  {
+    "question_text": "Как една функция може да има достъп до променлива, дефинирана в глобалния обхват, без да използва ключовата дума global?",
+    "options": [
+      "Чрез използване на суперглобалния масив $GLOBALS.",
+      "Като поставите пред името на променливата долна черта.",
+      "Като импортирате променливата с ключовата дума import.",
+      "Не е възможно достъп до глобални променливи без ключовата дума global."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Global variables can be accessed anywhere in the script using the $GLOBALS superglobal associative array, e.g., $GLOBALS['varName'].",
+    "points": 10
+  },
+  {
+    "question_text": "Как изразът match сравнява стойностите в сравнение с израза switch? (PHP 8.0+)",
+    "options": [
+      "Изразът match използва строго сравнение (===), докато switch използва свободно сравнение (==).",
+      "Изразът match използва свободно сравнение (==), докато switch използва строго сравнение (===).",
+      "И двете използват свободно сравнение, но match връща стойност.",
+      "И двете използват стриктно сравнение, но match изисква оператори за прекъсване."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The match expression uses strict identity comparison (===) and returns a value, whereas the switch statement uses loose equality comparison (==). Additionally, match does not fall through and doesn't require break.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е опасният страничен ефект от използването на foreach ($array като & $value), ако след това препратката не бъде отменена?",
+    "options": [
+      "Масивът се преобразува в обект само за четене.",
+      "Последният елемент от масива остава споменат и модифицирането на $value по-късно ще презапише последния елемент.",
+      "Следващият цикъл върху който и да е масив ще хвърли изключение на рекурсивна справка.",
+      "Причинява изтичане на памет, защото колекторът за боклук на PHP не може да освободи реферираните променливи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When foreach ends, the variable $value remains as a reference to the last element of the array. If $value is modified later in the script, the last element of the array will be unexpectedly updated. It is best practice to unset($value) immediately after the loop.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е разликата между include и require, когато целевият файл не е намерен?",
+    "options": [
+      "include издава предупреждение и спира изпълнението; require издава предупреждение и продължава.",
+      "include издава предупреждение и продължава; require издава фатална грешка и спира изпълнението.",
+      "И двете спират изпълнението на скрипта, но require записва грешката във файл.",
+      "include се използва за PHP файлове; require се използва само за конфигурационни файлове."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "include emits an E_WARNING but allows the script to continue running. require emits an E_COMPILE_ERROR (fatal error) and stops script execution immediately.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните е ограничение на израза goto в PHP?",
+    "options": [
+      "Не може да прескача в цикли или изрази switch.",
+      "Може да прескача само към редове, които са маркирани с число.",
+      "Може да прескача между различни файлове.",
+      "Не може да се използва във функции."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The goto operator has restrictions: the target label must be within the same file and same function/method. You cannot jump into a loop, switch statement, or function, although you can jump out of them.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво връща операторът на космически кораб (<=>), когато сравнява $a и $b? (PHP 7.0+)",
+    "options": [
+      "true, ако $a е по-голям, false в противен случай.",
+      "-1 ако $a < $b, 0 ако $a == $b и 1 ако $a > $b.",
+      "Разликата между двете стойности като float.",
+      "Булева стойност, представяща дали двата операнда са от един и същи тип."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The spaceship operator <=> returns -1 if the left operand is less than the right, 0 if they are equal, and 1 if the left operand is greater.",
+    "points": 10
+  },
+  {
+    "question_text": "Как се различават константите, дефинирани с ключовата дума const, от тези, дефинирани с define()?",
+    "options": [
+      "Константите const се дефинират по време на компилиране и не могат да бъдат поставени в контролни структури (като if), докато константите define() се дефинират по време на изпълнение.",
+      "Константите const могат да бъдат предефинирани, докато константите define() са постоянни.",
+      "const се използва само за класове, докато define() може да се използва само глобално.",
+      "Няма разлика; те са напълно идентични."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The const keyword defines constants at compile time, which means they cannot be declared inside blocks like if, loops, or try-catch. define() defines constants at runtime and can be used anywhere.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението по подразбиране при използване на оператор switch без изрази за прекъсване?",
+    "options": [
+      "PHP извежда синтактична грешка.",
+      "Операторът switch излиза автоматично след изпълнение на първия съвпадащ случай.",
+      "Изпълнението преминава към следващите case блокове, независимо дали те съвпадат с израза в switch.",
+      "PHP прекратява скрипта с предупреждение."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Without a break statement, execution will continue into the following cases (falling through) even if their conditions do not match, until a break or the end of the switch is reached.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, ако израз match няма съответстващо рамо и не е дефинирано рамо по подразбиране? (PHP 8.0+)",
+    "options": [
+      "Връща null.",
+      "Извежда UnhandledMatchError.",
+      "Излиза от скрипта с фатална синтактична грешка.",
+      "Преминава към следващия функционален блок."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A match expression must be exhaustive. If no condition matches and no default arm is provided, PHP throws an UnhandledMatchError exception.",
+    "points": 10
+  },
+  {
+    "question_text": "Могат ли променливите, дефинирани вътре в цикъл, да бъдат достъпни извън тялото на цикъла в PHP?",
+    "options": [
+      "Не, променливите, дефинирани вътре в цикъл, са с блоков обхват и се унищожават, когато цикълът излезе.",
+      "Да, PHP няма блоков обхват за цикли; променливите остават във функцията parent или глобалния обхват.",
+      "Само ако са декларирани с ключовата дума public.",
+      "Само ако цикълът е foreach цикъл."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP does not have block scope for control structures like loops (for, foreach, while) or conditional statements (if). Variables defined inside them remain accessible outside them in the same function or global scope.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е обхватът на променлива, дефинирана във вложена функция (функция, декларирана в друга функция)?",
+    "options": [
+      "Той е локален за вложената функция и не може да бъде достъпен от външната функция.",
+      "Автоматично се споделя с обхвата на външната функция.",
+      "Става глобален автоматично.",
+      "PHP не поддържа декларации на вложени функции."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Even if defined inside another function, a nested function has its own local scope. Variables inside the nested function are not accessible by the outer function.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, когато използвате declare (отметки=1); в PHP скрипт?",
+    "options": [
+      "Той измерва времето за изпълнение на всеки оператор в тикове.",
+      "Той регистрира слушател на събития, който изпълнява обратно извикване след определен брой отметки за изпълнение на израз на ниско ниво.",
+      "Принуждава скрипта да заспи за 1 милисекунда между изразите.",
+      "Деактивира събирача на отпадъци."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The ticks directive tells the parser to trigger an event after every N low-level statements. These events can be caught using register_tick_function() for profiling or signal handling.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? $a = 1; функция test() {echo $a;} test();",
+    "options": [
+      "1",
+      "Предупреждение/известие за недефинирана променлива $a и без отпечатана стойност (или null).",
+      "A Фатално Error, защото $a не е декларирано в test().",
+      "0"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP, variables defined outside functions are in the global scope and are not automatically accessible inside functions. Attempting to access $a without the 'global' keyword or $GLOBALS results in an undefined variable warning.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните е true за PHP superglobals?",
+    "options": [
+      "Те трябва да бъдат импортирани чрез глобалната ключова дума във функциите.",
+      "Те са вградени масиви, които са винаги налични във всички обхвати.",
+      "Те могат да бъдат достъпни само в class методи.",
+      "Те са само за четене и не могат да се променят от потребителски скриптове."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Superglobals are built-in variables that are always available in all scopes without needing to use the global keyword.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е основният риск за сигурността при показване на необработени данни от $_GET директно на уеб страница?",
+    "options": [
+      "SQL инжектиране",
+      "Cross-Site Scripting (XSS)",
+      "Cross-Site Request Forgery (CSRF)",
+      "Отвличане на сесии"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Displaying raw, unsanitized client input from $_GET or $_POST can execute malicious script tags in the user's browser, which is a Cross-Site Scripting (XSS) vulnerability.",
+    "points": 10
+  },
+  {
+    "question_text": "Кой индекс в масива $_FILES['input_name'] съдържа временния път, където каченият файл се съхранява на сървъра?",
+    "options": [
+      "$_FILES['input_name']['path']",
+      "$_FILES['input_name']['tmp_name']",
+      "$_FILES['input_name']['file']",
+      "$_FILES['input_name']['location']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The temporary upload file path is stored in $_FILES['input_name']['tmp_name'].",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е разликата между $_SERVER['REQUEST_URI'] и $_SERVER['SCRIPT_NAME']?",
+    "options": [
+      "REQUEST_URI съдържа пътя на URI и низа на заявката, поискани от клиента, докато SCRIPT_NAME съдържа пътя на текущия скрипт.",
+      "SCRIPT_NAME се задава от браузъра, докато REQUEST_URI се задава от сървъра.",
+      "REQUEST_URI съдържа домейна на сървъра, докато SCRIPT_NAME съдържа относителния път.",
+      "Няма разлика; те са псевдоними."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "REQUEST_URI includes the path and parameters sent by the client (e.g., /index.php?id=5). SCRIPT_NAME only contains the path to the script being executed (e.g., /index.php).",
+    "points": 10
+  },
+  {
+    "question_text": "Защо трябва да се извика session_start() преди достъп или промяна на $_SESSION?",
+    "options": [
+      "Импортира масива $_SESSION в локалното пространство от имена.",
+      "Той инициализира или възобновява сесия и попълва $_SESSION superglobal.",
+      "Той криптира масива $_SESSION.",
+      "Изтрива старите данни за сесията, за да спести памет."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "session_start() starts a new session or resumes an existing one, reading session data from storage and populating the $_SESSION superglobal array.",
+    "points": 10
+  },
+  {
+    "question_text": "Откъде $_COOKIE superglobal извлича данните си?",
+    "options": [
+      "Директно от база данни на сървъра.",
+      "От заглавките на HTTP заявката, изпратени от браузъра на клиента.",
+      "От локален файл на твърдия диск на сървъра.",
+      "От сесийна бисквитка, генерирана от session_start()."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Cookies are sent by the client's browser to the server within the HTTP Cookie request header. PHP parses these headers and populates the $_COOKIE array.",
+    "points": 10
+  },
+  {
+    "question_text": "Коя директива на php.ini контролира реда и наличността на суперглобалните масиви EGPCS (Environment, Get, Post, Cookie, Server)?",
+    "options": [
+      "request_order",
+      "variables_order",
+      "superglobals_order",
+      "register_globals"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The variables_order directive sets the order in which PHP parses environment, get, post, cookie, and server variables. If a letter is missing (e.g. 'E' for Environment), the corresponding superglobal (like $_ENV) will be empty.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква основна промяна беше въведена в PHP 8.1 по отношение на това как $GLOBALS superglobal може да бъде модифициран като цяло? (PHP 8.1+)",
+    "options": [
+      "Масивът $GLOBALS е изцяло само за четене и изобщо не може да се променя.",
+      "Записването в $GLOBALS като цяло (напр. $GLOBALS = $newArray;) или модификация чрез препратка вече не се поддържа и предизвиква компилиране Error или фатален Error.",
+      "Модификациите на отделни ключове в $GLOBALS (напр. $GLOBALS['key'] = 'val';) са отхвърлени.",
+      "Масивът $GLOBALS беше премахнат и заменен от функция global()."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.1+, modifying the entire $GLOBALS array at once or by reference is disallowed. Accessing $GLOBALS as a whole now returns a read-only copy of the global symbol table. However, modifying individual keys (like $GLOBALS['var'] = 1) is still supported and works as before.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво съдържа суперглобалното $_REQUEST по подразбиране?",
+    "options": [
+      "Съдържанието на $_GET, $_POST и $_FILES.",
+      "Съдържанието на $_GET, $_POST и $_COOKIE.",
+      "Само данни, изпратени чрез HTTP PUT и DELETE заявки.",
+      "Всички променливи от $_SERVER и $_ENV."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_REQUEST is an associative array that contains the contents of $_GET, $_POST, and $_COOKIE. The php.ini directive 'request_order' can override this behavior.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е правилната последователност от действия за пълно и сигурно унищожаване на сесия в PHP?",
+    "options": [
+      "Извикване на session_destroy() и премахване на променливата $_SESSION директно.",
+      "Изчистете $_SESSION, изтрийте сесийната бисквитка от клиента и извикайте session_destroy().",
+      "Извикайте session_write_close(), последвано от session_unset().",
+      "Просто затворете прозореца на браузъра."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To completely destroy a session, you should clear the $_SESSION array, expire the session cookie on the client (using setcookie), and call session_destroy() to delete the session data on the server.",
+    "points": 10
+  },
+  {
+    "question_text": "Кой ключ $_SERVER се използва за определяне на HTTP метода, използван за заявката?",
+    "options": [
+      "$_SERVER['HTTP_METHOD']",
+      "$_SERVER['REQUEST_METHOD']",
+      "$_SERVER['SERVER_PROTOCOL']",
+      "$_SERVER['ACTION_METHOD']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_SERVER['REQUEST_METHOD'] contains the request method (e.g., 'GET', 'POST', 'PUT', 'DELETE').",
+    "points": 10
+  },
+  {
+    "question_text": "Защо не е безопасно да се разчита на $_SERVER['HTTP_REFERER'] за проверка на сигурността?",
+    "options": [
+      "Той е криптиран на сървъра.",
+      "Изпраща се от браузъра на клиента и може лесно да бъде подправен, модифициран или напълно пропуснат.",
+      "Работи само за HTTPS заявки.",
+      "Променя се при всяко динамично презареждане на страница."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "HTTP_REFERER is a client-provided request header. A client can easily forge this header to bypass referer-based security checks.",
+    "points": 10
+  },
+  {
+    "question_text": "Когато качвате няколко файла с вход с име files[], как е $_FILES['files'] структуриран в PHP?",
+    "options": [
+      "Масив от масиви, където всеки подмасив съдържа метаданните на един файл.",
+      "Масив, където всеки атрибут (име, тип, tmp_name, грешка, размер) сам по себе си е масив от стойности, съответстващи на файловете.",
+      "Низ, разделен със запетаи, съдържащ пътища до файловете.",
+      "Само първият файл се съхранява; останалите файлове се игнорират."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP organizes multiple file uploads under the same name by turning each property (name, type, tmp_name, error, size) into an array index of files, rather than grouping each file into its own array.",
+    "points": 10
+  },
+  {
+    "question_text": "Кога се правят модификации на сесията на $_SESSION, записани в постоянното хранилище на сесията?",
+    "options": [
+      "Незабавно при задаване на произволен ключ.",
+      "Само когато session_commit() или session_write_close() се извикат ръчно.",
+      "Автоматично, когато скриптът завърши изпълнението или когато се извика session_write_close().",
+      "На всеки 5 минути чрез фоново задание на cron."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP automatically serializes and saves the contents of $_SESSION to the session storage handler when the script ends or when session_write_close() is explicitly called.",
+    "points": 10
+  },
+  {
+    "question_text": "Ако трябва да извлечете IP адреса на клиента, коя променлива $_SERVER обикновено се проверява първо (игнорирайки проксита)?",
+    "options": [
+      "$_SERVER['HTTP_CLIENT_IP']",
+      "$_SERVER['REMOTE_ADDR']",
+      "$_SERVER['REMOTE_HOST']",
+      "$_SERVER['SERVER_ADDR']"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "$_SERVER['REMOTE_ADDR'] represents the IP address of the client that opened the connection to the web server.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е видимостта на метод class, ако изрично не е деклариран модификатор на видимост?",
+    "options": [
+      "public",
+      "protected",
+      "private",
+      "Причинява грешка при компилиране."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Class methods in PHP default to public visibility if no modifier (public, protected, or private) is provided.",
+    "points": 10
+  },
+  {
+    "question_text": "Коя ключова дума се използва за наследяване от parent class в PHP и колко parent класа може да разшири един class?",
+    "options": [
+      "имплементира и множество parent класове.",
+      "се разширява и само един parent class.",
+      "разширява и множество parent класове.",
+      "внедрява и само един parent class."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP uses the extends keyword for class inheritance and only supports single inheritance (a class can inherit from only one parent class).",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от изброеното е ключова разлика между абстрактен class и интерфейс?",
+    "options": [
+      "Интерфейсите могат да имат дефиниции на свойства, докато абстрактните класове не могат.",
+      "Абстрактните класове могат да имат конкретни реализации на метод и състояние (свойства), докато интерфейсите могат да имат само сигнатури на метод и константи.",
+      "class може да наследи от множество абстрактни класове, но да реализира само един интерфейс.",
+      "Абстрактните класове могат да бъдат създадени директно, но интерфейсите не могат."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Abstract classes can define instance variables and concrete methods. Interfaces are pure contracts and cannot contain instance properties or method bodies (except for constants and public signatures).",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е черта в PHP?",
+    "options": [
+      "Подклас, който може да замени свойствата private на своя parent.",
+      "Механизъм за повторно използване на код в езици с единично наследяване, позволяващ методите да бъдат инжектирани в класове.",
+      "Алтернатива на интерфейсите, която позволява инстанциране на класове без конструктори.",
+      "Тип class, който може да съдържа само static методи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A Trait is a mechanism for code reuse designed to reduce the limitations of single inheritance. It allows developers to reuse sets of methods freely in several independent classes.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението на анонимен class в PHP? (PHP 7.0+)",
+    "options": [
+      "Това е class, който може да бъде дефиниран на линия, инстанциран веднага и няма именуван идентификатор.",
+      "Това е class, чиито методи могат да се извикват само статично без инстанциране.",
+      "Това е class, който не поддържа конструктори или деструктори.",
+      "Това е class, който автоматично наследява от базовия stdClass."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Anonymous classes are useful for simple, one-off objects. They can be declared and instantiated inline, support interfaces, inheritance, constructors, and traits, but have no developer-defined class name.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните правила е приложимо за свойства readonly в PHP? (PHP 8.1+)",
+    "options": [
+      "Те могат да бъдат модифицирани по всяко време от обхвата на class.",
+      "Те могат да бъдат инициализирани само веднъж (обикновено в конструктора) и не могат да бъдат модифицирани или деактивирани след инициализацията.",
+      "Те не могат да имат декларация за тип.",
+      "Те трябва да имат стойност по подразбиране, декларирана в дефиницията class."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Readonly properties can only be written to once and must have a type declaration. Once initialized, their value cannot be changed or unset, and they cannot have a default value directly assigned in the property declaration.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е ефектът от декларирането на class като readonly? (PHP 8.2+)",
+    "options": [
+      "class не може да бъде разширен.",
+      "Всички свойства на class са имплицитно маркирани като readonly, а динамичните свойства са забранени.",
+      "Всички методи на class автоматично са static.",
+      "Класът не може да дефинира конструктор."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Declaring a class as readonly automatically makes all of its properties readonly and prevents dynamic properties from being added.",
+    "points": 10
+  },
+  {
+    "question_text": "Как работи асиметричната видимост за свойства на class? (PHP 8.4+)",
+    "options": [
+      "Позволява дадено свойство да има различни модификатори на видимост за четене и писане (напр. public четене, private писане).",
+      "Позволява свойствата да бъдат public в parent class, но private в дъщерния class.",
+      "Ограничава достъпа до собственост въз основа на това дали class е абстрактен или конкретен.",
+      "Позволява достъп до свойствата на class без ключовата дума $this."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Asymmetric visibility in PHP 8.4 allows properties to define separate visibility levels for reading (get) and writing (set), such as public private(set) string $name;.",
+    "points": 10
+  },
+  {
+    "question_text": "Какви са последствията от маркирането на метод class като окончателен?",
+    "options": [
+      "Методът не може да бъде извикан извън class.",
+      "Методът не може да бъде заменен от реализации на подклас.",
+      "Методът трябва да бъде имплементиран от всеки class, разширяващ този class.",
+      "Методът не може да съдържа никакви аргументи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The final keyword prevents child classes from overriding a method definition.",
+    "points": 10
+  },
+  {
+    "question_text": "Как се държи късното static свързване, когато self:: се използва срещу static::? (PHP 5.3+)",
+    "options": [
+      "self:: препраща към class, където е дефиниран методът; static:: се отнася до class, който е извикан по време на изпълнение.",
+      "self:: се отнася до class, извикан по време на изпълнение; static:: се отнася за parent class.",
+      "self:: работи само в методи извън static, докато static:: работи само в методи static.",
+      "Няма разлика; те са псевдоними."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "self:: references the class in which the code is written, while static:: utilizes Late Static Binding to resolve to the class that was actually called at runtime.",
+    "points": 10
+  },
+  {
+    "question_text": "Може ли внедряване на class да замени константа, дефинирана в интерфейс? (PHP 8.3+)",
+    "options": [
+      "Не, интерфейсните константи са винаги окончателни и не могат да бъдат заменени.",
+      "Да, започвайки от PHP 8.3, класовете могат да заменят константите на интерфейса, при условие че замяната е съвместима.",
+      "Да, но само ако интерфейсната константа е декларирана с помощта на define() вместо const.",
+      "Да, но само ако интерфейсната константа е декларирана като private."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Beginning in PHP 8.3, classes implementing an interface (or interfaces extending another interface) can override constants defined in those interfaces, provided their visibility and values are compatible.",
+    "points": 10
+  },
+  {
+    "question_text": "Коя ключова дума се използва за разрешаване на конфликти при именуване, когато два трейта декларират метод с едно и също име в клас?",
+    "options": [
+      "overrides",
+      "insteadof",
+      "as",
+      "use"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The insteadof operator is used to resolve method name conflicts between traits. It allows specifying which trait's method should be used.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е видимостта по подразбиране на свойствата class, ако са декларирани с помощта на ключовата дума var?",
+    "options": [
+      "public",
+      "protected",
+      "private",
+      "Извежда синтактична грешка в PHP 8."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The var keyword is a legacy synonym for public. Declaring a property with var defaults its visibility to public.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, ако клас внедри два интерфейса, които дефинират метод със същото име и сигнатура?",
+    "options": [
+      "Причинява грешка при компилиране поради дублираща се дефиниция на метод.",
+      "class имплементира метода веднъж, удовлетворявайки и двата интерфейса.",
+      "class трябва да имплементира метода два пъти, поставяйки префикс името на метода с името на интерфейса.",
+      "class трябва да наследява от общ parent class."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If the signatures of the duplicate methods are identical, implementing the method once in the concrete class satisfies both interfaces without any errors.",
+    "points": 10
+  },
+  {
+    "question_text": "Как осъществявате достъп до свойство static или извиквате метод static в дефиницията на class?",
+    "options": [
+      "Използване на $this ->propertyName или $this -> methodName()",
+      "Използване на self:: $propertyName или self:: methodName()",
+      "Използване на parent -> $propertyName или parent -> methodName()",
+      "Използване на static -> $propertyName или static -> methodName()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Static properties and methods are accessed using scope resolution operators (::) with self or static, rather than object operator -> on $this.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, ако се опитате да създадете абстракт class?",
+    "options": [
+      "Създава се обект от тип stdClass.",
+      "Възниква фатална грешка, защото абстрактните класове не могат да бъдат създадени директно.",
+      "PHP автоматично създава подклас и го инстанцира.",
+      "Работи нормално, но всички методи ще върнат null."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Abstract classes cannot be instantiated. They are designed to serve as blueprints for child classes.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е разликата между интерфейсните методи и абстрактните class методи?",
+    "options": [
+      "Интерфейсните методи винаги трябва да бъдат public; абстрактните class методи могат да бъдат public или protected.",
+      "Интерфейсните методи могат да имат тела на метода; абстрактните class методи не могат.",
+      "Интерфейсните методи могат да бъдат private; абстрактните class методи не могат.",
+      "Няма разлика в правилата за видимост."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "All methods defined in an interface must be public. Methods in an abstract class can be public or protected, but not private (since child classes must be able to override or implement them).",
+    "points": 10
+  },
+  {
+    "question_text": "За какво се използват куките за свойства (property hooks) в PHP? (PHP 8.4+)",
+    "options": [
+      "За автоматично прикачване на заявки към базата данни към class свойства.",
+      "За дефиниране на персонализирано поведение за вземане (get) и/или задаване (set) директно в декларациите за свойства.",
+      "За да направите свойствата само за четене, след като бъдат сериализирани.",
+      "За да закачите свойства към глобални променливи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Property hooks in PHP 8.4 allow developers to define custom logic for reading (get) or writing (set) a property directly within its declaration, eliminating standard getter/setter method boilerplates.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните е true за static свойства в признаци?",
+    "options": [
+      "Трейтовете не могат да дефинират статични свойства.",
+      "Статичните свойства в трейтовете се споделят във всички класове, които използват трейта.",
+      "Всеки клас, използващ трейт, получава отделно копие на статичните свойства на трейта.",
+      "Статичните свойства в трейтовете могат да бъдат достъпни само чрез ключовата дума parent."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "When a trait defines static properties, each class that uses the trait will have its own separate instance of those static properties, meaning modifying it in one class does not affect the other.",
+    "points": 10
+  },
+  {
+    "question_text": "Може ли class да разшири друг class и да внедри няколко интерфейса едновременно?",
+    "options": [
+      "Не, PHP позволява само разширяване на class или внедряване на интерфейси.",
+      "Да, използвайки синтаксиса: class A разширява B внедрява C, D.",
+      "Да, но трябва да използва черти вместо интерфейси.",
+      "Не, защото PHP не поддържа реализация на множество интерфейси."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A class can inherit from a single parent class (using extends) and implement multiple interfaces (separated by commas using implements) at the same time.",
+    "points": 10
+  },
+  {
+    "question_text": "Как Constructor Property Promotion опростява дефинициите на class? (PHP 8.0+)",
+    "options": [
+      "Позволява свойствата да бъдат дефинирани, въведени и инициализирани директно в параметрите на конструктора, като се избягват отделни декларации на свойства class и ръчни присвоявания.",
+      "Автоматично генерира getter и setter методи за всички свойства.",
+      "Повишава аргументите на конструктора private към променливи с глобален обхват.",
+      "Позволява да се конструират класове без използване на ключовата дума new."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Constructor property promotion combines property declaration, visibility modifier, type hint, and parameter assignment into a single constructor signature, e.g., public function __construct(public string $name) {}.",
+    "points": 10
+  },
+  {
+    "question_text": "Кога магическият метод __destruct се извиква на обект?",
+    "options": [
+      "Когато събирачът на отпадъци се извика ръчно с помощта на gc_collect_cycles().",
+      "Когато няма останали препратки към обекта или по време на изключване на скрипта.",
+      "Само когато функцията unset() е извикана върху препратката към обекта.",
+      "Когато обектът хвърля неуловено изключение."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The destructor method is called as soon as there are no references to a particular object, or during the script shutdown sequence.",
+    "points": 10
+  },
+  {
+    "question_text": "При какви условия се задействат магическите методи __get и __set?",
+    "options": [
+      "Когато четете или пишете на имоти, които не са декларирани или са недостъпни (като protected/private) в текущия обхват.",
+      "Когато се обаждате на неопределени или недостъпни static методи НА class.",
+      "Всеки път, когато някое свойство се чете или записва, независимо от видимостта.",
+      "Когато даден обект е сериализиран с помощта НА serialize()."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "__get() is utilized for reading data from inaccessible (protected or private) or non-existing properties. __set() is run when writing data to inaccessible or non-existing properties.",
+    "points": 10
+  },
+  {
+    "question_text": "Кои извиквания на PHP функция ще задействат магическия метод __isset на обект с недостъпни свойства?",
+    "options": [
+      "is_null() и empty()",
+      "isset() и empty()",
+      "isset() и array_key_exists()",
+      "само isset()"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "__isset() is triggered by calling isset() or empty() on inaccessible or non-existing properties.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е разликата между магическите методи __call и __callStatic?",
+    "options": [
+      "__call is triggered when invoking inaccessible non-static methods; __callStatic is triggered when invoking inaccessible static methods.",
+      "__call is triggered when invoking static methods; __callStatic is triggered when invoking non-static methods.",
+      "__callStatic must be a non-static method, while __call must be static.",
+      "Няма разлика; и двете се справят с изпращането на динамичен метод идентично."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "__call() is triggered when invoking inaccessible methods in an object context. __callStatic() is triggered when invoking inaccessible methods in a static context.",
+    "points": 10
+  },
+  {
+    "question_text": "На какво изискване трябва да отговаря магическият метод __toString?",
+    "options": [
+      "Трябва да приема булев аргумент, указващ предпочитанията за форматиране.",
+      "Трябва да върне низова стойност; в противен случай се хвърля фатален Error.",
+      "Трябва да отпечата низа директно в изходния буфер, вместо да го върне.",
+      "Трябва да се декларира като static метод."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __toString() method must return a string value. Returning any other type will result in a TypeError (or Fatal Error in older PHP versions).",
+    "points": 10
+  },
+  {
+    "question_text": "Какво позволява магическият метод __invoke на даден обект?",
+    "options": [
+      "Позволява обект да бъде създаден без ключовата дума new.",
+      "Позволява директно извикване на екземпляр на обект, сякаш е функция.",
+      "Позволява извикване на private методи от глобалния обхват.",
+      "Той се изпълнява автоматично, когато се импортира class."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __invoke() magic method is called when a script tries to call an object instance as a function (e.g., $obj()).",
+    "points": 10
+  },
+  {
+    "question_text": "Как се използва магическият метод __clone по време на клонирането на обект?",
+    "options": [
+      "Извиква се на оригиналния обект, преди да бъде копиран.",
+      "Извиква се на новосъздаденото копие на обект след завършване на клонирането, което позволява дълбоко копиране на вложени обекти.",
+      "Заменя изцяло ключовата дума clone.",
+      "Предотвратява обекта да бъде клониран, ако хвърли изключение."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When an object is cloned (using the clone keyword), PHP creates a shallow copy. If the class defines __clone(), it is called on the newly created copy, allowing developers to perform deep copies of any internal object references.",
+    "points": 10
+  },
+  {
+    "question_text": "Какви са ролите на __serialize и __unserialize магически методи? (PHP 7.4+)",
+    "options": [
+      "Връщат се и получават низ, съдържащ JSON - форматирани данни.",
+      "Те се връщат и получават асоциативен масив, представящ сериализираното състояние на обекта, заменяйки по - СТАРИЯ __sleep/__wakeup интерфейс.",
+      "Те се изпълняват автоматично всеки път, когато се задейства кука на имот.",
+      "Те се използват за компресиране на структурите на обектите при съхраняването им в сесията."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Introduced in PHP 7.4, __serialize() must return an array representing the serialized state. __unserialize() receives this array and restores the object properties, providing a more robust serialization mechanism than __sleep() and __wakeup().",
+    "points": 10
+  },
+  {
+    "question_text": "Ако class имплементира както наследения метод __sleep(), така и по-новия метод __serialize(), кой ще изпълни PHP? (PHP 7.4+)",
+    "options": [
+      "И двете ще бъдат изпълнени последователно.",
+      "PHP ще изпълни __serialize() и ще игнорира изцяло __sleep().",
+      "PHP ще изпълни __sleep() и ще игнорира __serialize().",
+      "Ще бъде изведена фатална грешка при сблъсък по време на компилация."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "For backward compatibility and smooth migration, if a class implements both __serialize() and __sleep(), PHP will prefer and execute __serialize() and completely ignore __sleep().",
+    "points": 10
+  },
+  {
+    "question_text": "При какво условие се извиква магическият метод static __set_state?",
+    "options": [
+      "Когато обектът е изхвърлен чрез var_export().",
+      "Когато обектът е сериализиран с помощта на serialize().",
+      "Когато свойствата на class се променят динамично.",
+      "Когато събирачът на отпадъци на PHP стартира цикъл на почистване."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The __set_state() magic method is a static method called for classes exported by var_export() when importing/re-evaluating the generated code.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е целта на магическия метод __debugInfo?",
+    "options": [
+      "Отпечатва подробности за отстраняване на грешки директно в конзолата по време на изпълнение.",
+      "Извиква се от var_dump() при изхвърляне на обект, за да получи свойствата, които трябва да бъдат показани.",
+      "Деактивира отчитането на грешки в методите class.",
+      "Регистрира изрази за проследяване в системния системен журнал."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "This method is called by var_dump() when dumping an object. It should return an array containing the property-value pairs that should be shown in the dump, allowing developers to hide sensitive information.",
+    "points": 10
+  },
+  {
+    "question_text": "Какви параметри приема магическият метод __call?",
+    "options": [
+      "Единичен низов параметър, представляващ името на метода.",
+      "Низ, представляващ името на метода, и масив, съдържащ аргументите, предадени на метода.",
+      "Масив от аргументи и функция за обратно извикване.",
+      "Не се приемат параметри."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The __call() method must accept exactly two arguments: the name of the method being called (string) and the arguments passed to that method (array).",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, ако се опитате да извикате unset() на недостъпно свойство на обект и класът не дефинира __unset?",
+    "options": [
+      "Нищо не се случва и операцията се игнорира тихо.",
+      "Хвърля се фатален TypeError.",
+      "PHP хвърля известие и свойството остава непроменено.",
+      "Фатално изключение Error или Error се хвърля поради липса на достъп."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Attempting to unset an inaccessible property from outside the class context (such as a protected or private property) will trigger an Error exception (Cannot access protected/private property).",
+    "points": 10
+  },
+  {
+    "question_text": "Може ли магически метод да бъде деклариран като private или protected?",
+    "options": [
+      "Да, магическите методи могат да имат всякакъв модификатор на видимостта.",
+      "Не, всички магически методи трябва да бъдат декларирани като public (с изключение на __construct, което може да бъде private/protected за модели като Singleton).",
+      "Не, магическите методи трябва винаги да са private, за да се предотврати ръчно извикване.",
+      "Само __toString може да бъде protected; всички останали трябва да бъдат private."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP highly recommends and checks that magic methods have public visibility (with the exception of the constructor, which can be private or protected, e.g., in Singleton or Factory patterns). Defining other magic methods as private or protected generates a warning in modern PHP versions.",
+    "points": 10
+  },
+  {
+    "question_text": "Как стандартните затваряния в PHP импортират променливи от parent (външен) обхват?",
+    "options": [
+      "Те ги импортират автоматично чрез препратка.",
+      "Те трябва изрично да ги импортират, като използват ключовата дума use (напр. function() use ($var) {}).",
+      "Импортират ги с ключовата дума global.",
+      "Те могат да импортират само static променливи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In standard PHP closures (anonymous functions), parent scope variables must be explicitly imported into the function's local scope using the 'use' keyword.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението при улавяне на променливи на функциите със стрелки? (PHP 7.4+)",
+    "options": [
+      "Те автоматично улавят променливи от обхвата parent по стойност.",
+      "Те автоматично улавят променливи от обхвата parent по препратка.",
+      "Те изискват ключовата дума \"use\" за улавяне на външни променливи.",
+      "Те не могат да прихванат променливи от външен обхват."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Arrow functions automatically capture parent scope variables by-value (using shallow copy). Modifying a captured variable inside the arrow function does not affect the outer scope variable.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е синтаксисът за първокласно извикване в PHP? (PHP 8.1+)",
+    "options": [
+      "Начин за писане на извикваеми затваряния, използвайки... синтаксиса (напр. strlen(...)).",
+      "Начин за изпълнение на callables с помощта на специална ключова дума invoke.",
+      "Оптимизация, която преобразува всички затваряния в static функции.",
+      "Синтаксис за деклариране на функции, които могат да приемат само извикваеми аргументи."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "First-class callable syntax (e.g., strlen(...)) creates a Closure object from a named function or method in a clean, type-safe, and performant manner, replacing arrays like ['Class', 'method'] or strings.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е основната разлика в реда на аргументите между array_map и array_filter?",
+    "options": [
+      "array_map първо приема обратното извикване, докато array_filter първо взема масива.",
+      "array_map първо взема масива, докато array_filter първо взема обратното извикване.",
+      "И двамата първи приемат обратното повикване.",
+      "И двете вземат първо масива."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "array_map(callable $callback, array $array, ...) takes the callback function as the first argument, whereas array_filter(array $array, callable $callback = null, ...) takes the array as the first argument.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво връща array_reduce, ако входният масив е празен и не е предоставена първоначална стойност?",
+    "options": [
+      "null",
+      "false",
+      "0",
+      "Празен масив"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "If the array is empty and the initial value is not passed, array_reduce() returns null.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво връща функцията array_find? (PHP 8.4+)",
+    "options": [
+      "Масив от всички елементи, които отговарят на условието на обратното извикване.",
+      "Стойността на първия елемент, който удовлетворява условието за обратно извикване, или null, ако няма съответстващ елемент.",
+      "Ключът на първия елемент, който отговаря на условието.",
+      "Булева стойност, показваща дали елементът е намерен."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "array_find() returns the value of the first element that satisfies the predicate callback. If no elements match, it returns null.",
+    "points": 10
+  },
+  {
+    "question_text": "Как се държи array_any? (PHP 8.4+)",
+    "options": [
+      "Връща true, ако поне един елемент в масива удовлетворява условието за обратно извикване; в противен случай връща false.",
+      "Връща стойността на произволен елемент, отговарящ на условието.",
+      "Връща true само ако всички елементи в масива отговарят на условието за обратно извикване.",
+      "Извежда изключение, ако няма съвпадащи елементи."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "array_any() returns true if the callback returns true for at least one element in the array. Otherwise, it returns false.",
+    "points": 10
+  },
+  {
+    "question_text": "Как се държи array_all? (PHP 8.4+)",
+    "options": [
+      "Връща true, ако поне един елемент в масива удовлетворява условието за обратно извикване.",
+      "Връща true ако и само ако всички елементи в масива отговарят на условието за обратно извикване; в противен случай връща false.",
+      "Връща масив, съдържащ всички елементи, които отговарят на условието.",
+      "Връща true само ако масивът не съдържа null елементи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "array_all() returns true if the callback returns true for every single element in the array. If any element fails the check, it returns false. If the array is empty, it returns true.",
+    "points": 10
+  },
+  {
+    "question_text": "Може ли функция със стрелка да съдържа множество изрази или израз за връщане? (PHP 7.4+)",
+    "options": [
+      "Да, функциите със стрелки могат да съдържат множество изрази, разделени с точка и запетая, и трябва да include оператор за връщане.",
+      "Не, функциите със стрелки могат да съдържат само един израз и резултатът от този израз се връща автоматично без ключова дума за връщане.",
+      "Да, но само ако са декларирани като static.",
+      "Не, те не могат да върнат никаква стойност; те винаги са void."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arrow functions in PHP are limited to a single expression. They do not use the return keyword; the value of the expression is returned automatically.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, когато декларирате затваряне като static (напр. static function() {})?",
+    "options": [
+      "Предотвратява затварянето да обвърже $this, спестявайки памет и предотвратявайки случаен достъп до състоянието class.",
+      "Позволява затварянето да бъде извикано без инстанциране.",
+      "Прави всички променливи вътре в затварянето static.",
+      "Причинява грешка при компилиране, защото затварянията не могат да бъдат static."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Static closures cannot bind the current object context ($this). This prevents memory leaks and ensures that the closure does not access or modify the object's internal state.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво представлява интерфейсът Throwable в PHP? (PHP 7.0+)",
+    "options": [
+      "Интерфейс, реализиран от класовете Exception и Error, служещ като основа за всички обекти, които могат да бъдат уловени.",
+      "Интерфейс, използван само за потребителски изключения, с изключение на вътрешни PHP грешки.",
+      "Интерфейс, който автоматично преобразува всички предупреждения в уловими изключения.",
+      "class, който замени основата Exception class."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Throwable is the base interface for any object that can be thrown via a throw statement in PHP. Both Exception and Error implement Throwable, enabling catch blocks to handle both types.",
+    "points": 10
+  },
+  {
+    "question_text": "Как въвеждането на Error class промени обработката на грешки в PHP? (PHP 7.0+)",
+    "options": [
+      "Отмени Exception class.",
+      "Позволява много вътрешни PHP фатални грешки (като TypeError или ParseError) да бъдат уловени с помощта на блокове try-catch, вместо незабавно спиране на скрипта.",
+      "Той принуди всички предупреждения да се обработват чрез манипулатори на изключения.",
+      "Елиминира необходимостта от стандартни блокове try-catch."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Prior to PHP 7, fatal errors halted script execution instantly. Starting in PHP 7, many internal errors implement Throwable (under the Error class), meaning they can be caught and handled gracefully.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е правилният синтаксис за улавяне на множество изключения в един catch блок? (PHP 7.1+)",
+    "options": [
+      "catch (ExceptionA, ExceptionB $e)",
+      "catch (ExceptionA | ExceptionB $e)",
+      "catch (ExceptionA & ExceptionB $e)",
+      "catch (ExceptionA или ExceptionB $e)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Starting in PHP 7.1, multiple exception types can be caught in a single catch block by separating them with a pipe symbol (|), e.g., catch (ExceptionA | ExceptionB $e).",
+    "points": 10
+  },
+  {
+    "question_text": "Кога се изпълнява блокът finally в структура try-catch-finally?",
+    "options": [
+      "Само когато не са хвърлени изключения в блока try.",
+      "Само когато изключение е успешно уловено от catch блок.",
+      "Винаги, след блоковете try (и всеки catch), независимо дали е хвърлено изключение, уловено или дали е изпълнен оператор за връщане.",
+      "Само ако изпълнението на скрипта е прекратено чрез exit()."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The finally block always executes after the try and catch blocks, even if an exception is uncaught or if a return statement is executed within those blocks.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво ви позволява да правите способността „хвърляне като израз“? (PHP 8.0+)",
+    "options": [
+      "Позволява използването на ключовата дума throw на места, където са разрешени само изрази, като например функции със стрелки, троични оператори или null обединяващи оператори.",
+      "Позволява хвърляне на необработени низови съобщения без инстанциране на изключение class.",
+      "Той автоматично преобразува стандартните грешки в низове в изрази.",
+      "Позволява хвърляне на изключения без използване на блок try-catch."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PHP 8.0+, throw was changed from a statement to an expression. This allows throw to be used in arrow functions (which only allow a single expression), ternary operators ($x ? throw : $y), or null coalescing operators ($val ?? throw).",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва с хвърлено преди това изключение, ако друго изключение бъде хвърлено вътре в блок finally?",
+    "options": [
+      "И двете изключения се улавят от един и същ catch блок като масив.",
+      "Новото изключение от блока finally заменя предишното изключение, което се губи.",
+      "Възниква фатална грешка по време на изпълнение, защото вложените изключения са забранени.",
+      "Първото изключение се добавя към веригата getPrevious() на второто изключение."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If an exception is thrown inside a finally block, any exception that was previously thrown in the try or catch block is discarded and replaced by the new exception.",
+    "points": 10
+  },
+  {
+    "question_text": "При какви условия се хвърля ArgumentCountError? (PHP 7.0+)",
+    "options": [
+      "Когато функция получи твърде много аргументи.",
+      "Когато дефинирана от потребителя функция се извиква с по-малко аргументи от декларираните.",
+      "Когато функция върне повече стойности от очакваните.",
+      "Когато функция се извиква със списък с променливи аргументи."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "ArgumentCountError is thrown when a user-defined function or method is called with too few arguments.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е целта на функцията set_exception_handler()?",
+    "options": [
+      "Регистрира обратно извикване за прихващане и обработка на всяко изключение, което не е уловено от блок try-catch преди прекратяването на скрипта.",
+      "Позволява стриктна проверка на типа за изключения.",
+      "Принуждава всички PHP предупреждения да хвърлят изключения.",
+      "Той регистрира class, който обработва сериализацията на изключение."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "set_exception_handler() registers a default exception handler callback. This handler is invoked when an exception is not caught anywhere else, allowing for custom error page rendering or logging before the script exits.",
+    "points": 10
+  },
+  {
+    "question_text": "Можете ли да хвърлите екземпляр на class, който не имплементира интерфейса Throwable? (PHP 7.0+)",
+    "options": [
+      "Да, всеки обект може да бъде хвърлен.",
+      "Не, могат да бъдат хвърляни само класове, които имплементират Throwable (като Exception и Error); опитът по друг начин води до TypeError.",
+      "Да, но само ако class разширява stdClass.",
+      "Да, но ще бъде автоматично преобразуван в основен Exception."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Only objects that implement the Throwable interface can be thrown. Attempting to throw an object that does not implement Throwable will cause a TypeError.",
+    "points": 10
+  },
+  {
+    "question_text": "Операторът за контрол на грешки (@) предотвратява ли хвърлянето на изключения?",
+    "options": [
+      "Да, потиска както стандартните PHP грешки, така и хвърлените изключения.",
+      "Не, потиска само традиционните PHP грешки (като известия и предупреждения), но не потиска изключения или Error обекти.",
+      "Да, но само ако strict_types е деактивиран.",
+      "Не, няма ефект върху грешки или изключения в съвременните PHP версии."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The @ operator suppresses traditional PHP error messages (notices, warnings, etc.) for a specific expression, but it does not intercept or suppress exceptions or Fatal/TypeError Error objects.",
+    "points": 10
+  }
+]

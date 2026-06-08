@@ -11,21 +11,29 @@ class QuizSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Seed Badges
+        // 1. Clean up old quizzes and badges to prevent duplicates
+        Quiz::whereIn('slug', ['php-8-4-hooks', 'laravel-security', 'php-basics-interview'])->delete();
+        Badge::whereIn('slug', [
+            'php-novice', 'laravel-defender', 'tech-lead',
+            'writer-novice', 'writer-prolific', 'writer-master',
+            'php-basics-bronze', 'php-basics-silver', 'php-basics-gold', 'php-basics-expert'
+        ])->delete();
+
+        // 2. Seed Badges
         $badgesData = [
             [
                 'slug' => 'php-novice',
                 'points_required' => 50,
                 'image_path' => '/images/badges/php-novice.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'PHP Novice',
-                        'description' => 'Scored 50+ total points in quizzes.'
-                    ],
-                    'ru' => [
-                        'title' => 'PHP Новичок',
-                        'description' => 'Набрано более 50 очков в квизах.'
-                    ]
+                    'en' => ['title' => 'PHP Novice', 'description' => 'Scored 50+ total points in quizzes.'],
+                    'ru' => ['title' => 'PHP Новичок', 'description' => 'Набрано более 50 очков в квизах.'],
+                    'ua' => ['title' => 'PHP Новачок', 'description' => 'Набрано більше 50 очок у квізах.'],
+                    'bg' => ['title' => 'PHP Новак', 'description' => 'Набрани 50+ общо точки в тестове.'],
+                    'de' => ['title' => 'PHP-Anfänger', 'description' => 'Erreichte 50+ Gesamtpunkte in Quizzes.'],
+                    'fr' => ['title' => 'Novice PHP', 'description' => 'Obtenu 50+ points au total dans les quiz.'],
+                    'es' => ['title' => 'Novato de PHP', 'description' => 'Obtuvo más de 50 puntos en total en cuestionarios.'],
+                    'it' => ['title' => 'Novizio PHP', 'description' => 'Ottenuto 50+ punti totali nei quiz.'],
                 ]
             ],
             [
@@ -33,14 +41,14 @@ class QuizSeeder extends Seeder
                 'points_required' => 100,
                 'image_path' => '/images/badges/laravel-defender.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'Laravel Defender',
-                        'description' => 'Scored 100+ total points in quizzes.'
-                    ],
-                    'ru' => [
-                        'title' => 'Защитник Laravel',
-                        'description' => 'Набрано более 100 очков в квизах.'
-                    ]
+                    'en' => ['title' => 'Laravel Defender', 'description' => 'Scored 100+ total points in quizzes.'],
+                    'ru' => ['title' => 'Защитник Laravel', 'description' => 'Набрано более 100 очков в квизах.'],
+                    'ua' => ['title' => 'Захисник Laravel', 'description' => 'Набрано більше 100 очок у квізах.'],
+                    'bg' => ['title' => 'Защитник на Laravel', 'description' => 'Набрани 100+ общо точки в тестове.'],
+                    'de' => ['title' => 'Laravel-Verteidiger', 'description' => 'Erreichte 100+ Gesamtpunkte in Quizzes.'],
+                    'fr' => ['title' => 'Défenseur Laravel', 'description' => 'Obtenu 100+ points au total dans les quiz.'],
+                    'es' => ['title' => 'Defensor de Laravel', 'description' => 'Obtuvo más de 100 puntos en total en cuestionarios.'],
+                    'it' => ['title' => 'Difensore Laravel', 'description' => 'Ottenuto 100+ punti totali nei quiz.'],
                 ]
             ],
             [
@@ -48,14 +56,14 @@ class QuizSeeder extends Seeder
                 'points_required' => 200,
                 'image_path' => '/images/badges/tech-lead.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'Technical Lead',
-                        'description' => 'Scored 200+ total points in quizzes.'
-                    ],
-                    'ru' => [
-                        'title' => 'Технический Лид',
-                        'description' => 'Набрано более 200 очков в квизах.'
-                    ]
+                    'en' => ['title' => 'Technical Lead', 'description' => 'Scored 200+ total points in quizzes.'],
+                    'ru' => ['title' => 'Технический Лид', 'description' => 'Набрано более 200 очков в квизах.'],
+                    'ua' => ['title' => 'Технічний Лід', 'description' => 'Набрано більше 200 очок у квізах.'],
+                    'bg' => ['title' => 'Технически лидер', 'description' => 'Набрани 200+ общо точки в тестове.'],
+                    'de' => ['title' => 'Technical Lead', 'description' => 'Erreichte 200+ Gesamtpunkte in Quizzes.'],
+                    'fr' => ['title' => 'Directeur Technique', 'description' => 'Obtenu 200+ points au total dans les quiz.'],
+                    'es' => ['title' => 'Líder Técnico', 'description' => 'Obtuvo más de 200 puntos en total en cuestionarios.'],
+                    'it' => ['title' => 'Leader Tecnico', 'description' => 'Ottenuto 200+ punti totali nei quiz.'],
                 ]
             ],
             [
@@ -63,14 +71,14 @@ class QuizSeeder extends Seeder
                 'articles_required' => 1,
                 'image_path' => '/images/badges/writer-novice.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'Novice Writer',
-                        'description' => 'Published your first article.'
-                    ],
-                    'ru' => [
-                        'title' => 'Начинающий писатель',
-                        'description' => 'Опубликована первая статья.'
-                    ]
+                    'en' => ['title' => 'Novice Writer', 'description' => 'Published your first article.'],
+                    'ru' => ['title' => 'Начинающий писатель', 'description' => 'Опубликована первая статья.'],
+                    'ua' => ['title' => 'Письменник-початківець', 'description' => 'Опубліковано першу статтю.'],
+                    'bg' => ['title' => 'Начинаещ писател', 'description' => 'Публикува първата си статия.'],
+                    'de' => ['title' => 'Nachwuchsautor', 'description' => 'Ersten Artikel veröffentlicht.'],
+                    'fr' => ['title' => 'Écrivain Novice', 'description' => 'Publié votre premier article.'],
+                    'es' => ['title' => 'Escritor Novato', 'description' => 'Publicó su primer artículo.'],
+                    'it' => ['title' => 'Scrittore Novello', 'description' => 'Pubblicato il tuo primo articolo.'],
                 ]
             ],
             [
@@ -78,14 +86,14 @@ class QuizSeeder extends Seeder
                 'articles_required' => 5,
                 'image_path' => '/images/badges/writer-prolific.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'Prolific Writer',
-                        'description' => 'Published 5 articles.'
-                    ],
-                    'ru' => [
-                        'title' => 'Плодовитый писатель',
-                        'description' => 'Опубликовано 5 статей.'
-                    ]
+                    'en' => ['title' => 'Prolific Writer', 'description' => 'Published 5 articles.'],
+                    'ru' => ['title' => 'Плодовитый писатель', 'description' => 'Опубликовано 5 статей.'],
+                    'ua' => ['title' => 'Продуктивний письменник', 'description' => 'Опубліковано 5 статей.'],
+                    'bg' => ['title' => 'Продуктивен писател', 'description' => 'Публикува 5 статии.'],
+                    'de' => ['title' => 'Produktiver Autor', 'description' => '5 Artikel veröffentlicht.'],
+                    'fr' => ['title' => 'Écrivain Prolifique', 'description' => 'Publié 5 articles.'],
+                    'es' => ['title' => 'Escritor Prolífico', 'description' => 'Publicó 5 artículos.'],
+                    'it' => ['title' => 'Scrittore Prolifico', 'description' => 'Pubblicato 5 articoli.'],
                 ]
             ],
             [
@@ -93,14 +101,78 @@ class QuizSeeder extends Seeder
                 'articles_required' => 10,
                 'image_path' => '/images/badges/writer-master.svg',
                 'translations' => [
-                    'en' => [
-                        'title' => 'Master Writer',
-                        'description' => 'Published 10 articles.'
-                    ],
-                    'ru' => [
-                        'title' => 'Мастер пера',
-                        'description' => 'Опубликовано 10 статей.'
-                    ]
+                    'en' => ['title' => 'Master Writer', 'description' => 'Published 10 articles.'],
+                    'ru' => ['title' => 'Мастер пера', 'description' => 'Опубликовано 10 статей.'],
+                    'ua' => ['title' => 'Майстер пера', 'description' => 'Опубліковано 10 статей.'],
+                    'bg' => ['title' => 'Майстор писател', 'description' => 'Публикува 10 статии.'],
+                    'de' => ['title' => 'Meisterautor', 'description' => '10 Artikel veröffentlicht.'],
+                    'fr' => ['title' => 'Maître Écrivain', 'description' => 'Publié 10 articles.'],
+                    'es' => ['title' => 'Escritor Maestro', 'description' => 'Publicó 10 artículos.'],
+                    'it' => ['title' => 'Scrittore Maestro', 'description' => 'Pubblicato 10 articoli.'],
+                ]
+            ],
+            [
+                'slug' => 'php-basics-bronze',
+                'quiz_slug' => 'php-basics-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/php-basics-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Basics Bronze', 'description' => 'Scored 50% or more on the PHP Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: Основы PHP', 'description' => 'Набрано 50% или более правильных ответов в квизе по основам PHP.'],
+                    'ua' => ['title' => 'Бронза: Основи PHP', 'description' => 'Набрано 50% або більше правильних відповідей у квізі з основ PHP.'],
+                    'bg' => ['title' => 'Бронз: Основи на PHP', 'description' => 'Резултат от 50% или повече на теста за основи на PHP.'],
+                    'de' => ['title' => 'PHP-Grundlagen Bronze', 'description' => 'Erreichte 50% oder mehr im PHP-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Bronze de base PHP', 'description' => 'Obtenu 50% ou plus au quiz d\'entretien sur les bases de PHP.'],
+                    'es' => ['title' => 'Bronce en Fundamentos de PHP', 'description' => 'Obtuvo un 50% o más en el cuestionario de entrevista sobre fundamentos de PHP.'],
+                    'it' => ['title' => 'Bronzo in Fondamenti di PHP', 'description' => 'Ottenuto il 50% o più nel quiz di intervista sui fondamenti di PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-basics-silver',
+                'quiz_slug' => 'php-basics-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/php-basics-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Basics Silver', 'description' => 'Scored 70% or more on the PHP Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: Основы PHP', 'description' => 'Набрано 70% или более правильных ответов в квизе по основам PHP.'],
+                    'ua' => ['title' => 'Срібло: Основи PHP', 'description' => 'Набрано 70% або більше правильних відповідей у квізі з основ PHP.'],
+                    'bg' => ['title' => 'Сребро: Основи на PHP', 'description' => 'Резултат от 70% или повече на теста за основи на PHP.'],
+                    'de' => ['title' => 'PHP-Grundlagen Silber', 'description' => 'Erreichte 70% oder mehr im PHP-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Argent de base PHP', 'description' => 'Obtenu 70% ou plus au quiz d\'entretien sur les bases de PHP.'],
+                    'es' => ['title' => 'Plata en Fundamentos de PHP', 'description' => 'Obtuvo un 70% o más en el cuestionario de entrevista sobre fundamentos de PHP.'],
+                    'it' => ['title' => 'Argento in Fondamenti di PHP', 'description' => 'Ottenuto il 70% o più nel quiz di intervista sui fondamenti di PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-basics-gold',
+                'quiz_slug' => 'php-basics-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/php-basics-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Basics Gold', 'description' => 'Scored 85% or more on the PHP Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: Основы PHP', 'description' => 'Набрано 85% или более правильных ответов в квизе по основам PHP.'],
+                    'ua' => ['title' => 'Золото: Основи PHP', 'description' => 'Набрано 85% або більше правильних відповідей у квізі з основ PHP.'],
+                    'bg' => ['title' => 'Злато: Основи на PHP', 'description' => 'Резултат от 85% или повече на теста за основи на PHP.'],
+                    'de' => ['title' => 'PHP-Grundlagen Gold', 'description' => 'Erreichte 85% oder mehr im PHP-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Or de base PHP', 'description' => 'Obtenu 85% ou plus au quiz d\'entretien sur les bases de PHP.'],
+                    'es' => ['title' => 'Oro en Fundamentos de PHP', 'description' => 'Obtuvo un 85% o más en el cuestionario de entrevista sobre fundamentos de PHP.'],
+                    'it' => ['title' => 'Oro in Fondamenti di PHP', 'description' => 'Ottenuto l\'85% o più nel quiz di intervista sui fondamenti di PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-basics-expert',
+                'quiz_slug' => 'php-basics-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/php-basics-expert.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Basics Expert', 'description' => 'Scored 100% on the PHP Basics Interview Quiz.'],
+                    'ru' => ['title' => 'Эксперт: Основы PHP', 'description' => 'Набрано 100% правильных ответов в квизе по основам PHP.'],
+                    'ua' => ['title' => 'Експерт: Основи PHP', 'description' => 'Набрано 100% правильних відповідей у квізі з основ PHP.'],
+                    'bg' => ['title' => 'Експерт: Основи на PHP', 'description' => 'Резултат от 100% на теста за основи на PHP.'],
+                    'de' => ['title' => 'PHP-Grundlagen Experte', 'description' => 'Erreichte 100% im PHP-Grundlagen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Expert de base PHP', 'description' => 'Obtenu 100% au quiz d\'entretien sur les bases de PHP.'],
+                    'es' => ['title' => 'Experto en Fundamentos de PHP', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista sobre fundamentos de PHP.'],
+                    'it' => ['title' => 'Esperto in Fondamenti di PHP', 'description' => 'Ottenuto il 100% nel quiz di intervista sui fondamenti di PHP.'],
                 ]
             ]
         ];
@@ -111,6 +183,8 @@ class QuizSeeder extends Seeder
                 'points_required' => $data['points_required'] ?? null,
                 'articles_required' => $data['articles_required'] ?? null,
                 'image_path' => $data['image_path'],
+                'quiz_slug' => $data['quiz_slug'] ?? null,
+                'min_percentage' => $data['min_percentage'] ?? null,
             ]);
 
             foreach ($data['translations'] as $locale => $tData) {
@@ -122,116 +196,61 @@ class QuizSeeder extends Seeder
             }
         }
 
-        // 2. Seed Quiz: PHP 8.4
-        $quiz1 = Quiz::create([
-            'slug' => 'php-8-4-hooks',
-            'points' => 50,
+        // 3. Seed Quiz: PHP Basics Interview
+        $quiz = Quiz::create([
+            'slug' => 'php-basics-interview',
+            'points' => 1000,
         ]);
 
-        $quiz1->translations()->createMany([
-            [
-                'locale' => 'en',
-                'title' => 'PHP 8.4 Properties & Hooks',
-                'description' => 'Test your knowledge of the new property hooks feature introduced in PHP 8.4.',
-            ],
-            [
-                'locale' => 'ru',
-                'title' => 'Свойства и хуки PHP 8.4',
-                'description' => 'Проверьте свои знания о новой функциональности хуков свойств в PHP 8.4.',
-            ]
-        ]);
+        $quizTrans = [
+            'en' => ['title' => 'PHP Basics Interview', 'description' => 'A comprehensive test of 100 questions covering core PHP concepts, scope, OOP, magic methods, and functional PHP.'],
+            'ru' => ['title' => 'Собеседование по основам PHP', 'description' => 'Комплексный тест из 100 вопросов, охватывающий основные концепции PHP, области видимости, ООП, магические методы и функциональный PHP.'],
+            'ua' => ['title' => 'Співбесіда з основ PHP', 'description' => 'Комплексний тест із 100 питань, що охоплює основні концепції PHP, області видимости, ООП, магічні методи та функціональний PHP.'],
+            'bg' => ['title' => 'Интервю за основи на PHP', 'description' => 'Изчерпателен тест от 100 въпроса, обхващащ основни концепции на PHP, области на видимост, ООП, магически методи и функционален PHP.'],
+            'de' => ['title' => 'PHP-Grundlagen Interview', 'description' => 'Ein umfassender Test mit 100 Fragen zu den Kernkonzepten von PHP, Gültigkeitsbereichen, OOP, magischen Methoden und funktionellem PHP.'],
+            'fr' => ['title' => 'Entretien sur les bases de PHP', 'description' => 'Un test complet de 100 questions couvrant les concepts fondamentaux de PHP, la portée, la POO, les méthodes magiques et le PHP fonctionnel.'],
+            'es' => ['title' => 'Entrevista de Fundamentos de PHP', 'description' => 'Un examen exhaustivo de 100 preguntas que abarca conceptos básicos de PHP, ámbitos, POO, métodos mágicos y PHP funcional.'],
+            'it' => ['title' => 'Colloquio sui Fondamenti di PHP', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di PHP, ambito, OOP, metodi magici e PHP funzionale.'],
+        ];
 
-        // Quiz 1 Questions
-        $q1_1 = QuizQuestion::create([
-            'quiz_id' => $quiz1->id,
-            'type' => 'multiple_choice',
-            'points' => 25,
-            'correct_answer_index' => 1,
-            'explanation' => 'Property hooks cannot be defined on readonly properties.',
-        ]);
-        $q1_1->translations()->create([
-            'locale' => 'en',
-            'question_text' => 'Do property hooks work with readonly properties?',
-            'options' => ['Yes', 'No', 'Only if private'],
-        ]);
-        $q1_1->translations()->create([
-            'locale' => 'ru',
-            'question_text' => 'Работают ли хуки свойств с readonly свойствами?',
-            'options' => ['Да', 'Нет', 'Только если они приватные'],
-        ]);
+        foreach ($quizTrans as $locale => $tData) {
+            $quiz->translations()->create([
+                'locale' => $locale,
+                'title' => $tData['title'],
+                'description' => $tData['description'],
+            ]);
+        }
 
-        $q1_2 = QuizQuestion::create([
-            'quiz_id' => $quiz1->id,
-            'type' => 'multiple_choice',
-            'points' => 25,
-            'correct_answer_index' => 2,
-            'explanation' => 'The variable $value is automatically provided to set hooks.',
-        ]);
-        $q1_2->translations()->create([
-            'locale' => 'en',
-            'question_text' => 'Which variable name represents the new value in a set hook?',
-            'options' => ['$this', '$val', '$value'],
-        ]);
-        $q1_2->translations()->create([
-            'locale' => 'ru',
-            'question_text' => 'Какая переменная представляет новое значение в хуке set?',
-            'options' => ['$this', '$val', '$value'],
-        ]);
+        // 4. Load Quiz Questions from localized JSON files
+        $locales = ['en', 'ru', 'ua', 'bg', 'de', 'fr', 'es', 'it'];
+        $quizData = [];
+        foreach ($locales as $locale) {
+            $path = resource_path("quizzes/php-basics-interview/{$locale}.json");
+            if (file_exists($path)) {
+                $quizData[$locale] = json_decode(file_get_contents($path), true);
+            } else {
+                $quizData[$locale] = [];
+            }
+        }
 
-        // 3. Seed Quiz: Laravel Security
-        $quiz2 = Quiz::create([
-            'slug' => 'laravel-security',
-            'points' => 50,
-        ]);
+        $enQuestions = $quizData['en'] ?? [];
+        foreach ($enQuestions as $index => $enQ) {
+            $question = QuizQuestion::create([
+                'quiz_id' => $quiz->id,
+                'type' => 'multiple_choice',
+                'points' => $enQ['points'] ?? 10,
+                'correct_answer_index' => $enQ['correct_answer_index'],
+                'explanation' => $enQ['explanation'],
+            ]);
 
-        $quiz2->translations()->createMany([
-            [
-                'locale' => 'en',
-                'title' => 'Laravel Security Best Practices',
-                'description' => 'Test your understanding of securing Laravel web applications.',
-            ],
-            [
-                'locale' => 'ru',
-                'title' => 'Безопасность в Laravel',
-                'description' => 'Проверьте понимание методов обеспечения безопасности веб-приложений на Laravel.',
-            ]
-        ]);
-
-        // Quiz 2 Questions
-        $q2_1 = QuizQuestion::create([
-            'quiz_id' => $quiz2->id,
-            'type' => 'multiple_choice',
-            'points' => 25,
-            'correct_answer_index' => 0,
-            'explanation' => 'The @csrf directive renders a hidden input containing the CSRF token.',
-        ]);
-        $q2_1->translations()->create([
-            'locale' => 'en',
-            'question_text' => 'What directive is used in Blade templates to prevent Cross-Site Request Forgery?',
-            'options' => ['@csrf', '@csrf_token', '@token'],
-        ]);
-        $q2_1->translations()->create([
-            'locale' => 'ru',
-            'question_text' => 'Какая директива используется в Blade-шаблонах для защиты от CSRF?',
-            'options' => ['@csrf', '@csrf_token', '@token'],
-        ]);
-
-        $q2_2 = QuizQuestion::create([
-            'quiz_id' => $quiz2->id,
-            'type' => 'multiple_choice',
-            'points' => 25,
-            'correct_answer_index' => 1,
-            'explanation' => 'whereRaw() does not sanitize raw inputs; you should use bindings instead.',
-        ]);
-        $q2_2->translations()->create([
-            'locale' => 'en',
-            'question_text' => 'Does the Eloquent Query Builder automatically sanitize inputs passed to whereRaw()?',
-            'options' => ['Yes', 'No', 'Only on Postgres'],
-        ]);
-        $q2_2->translations()->create([
-            'locale' => 'ru',
-            'question_text' => 'Автоматически ли Eloquent Query Builder санитаризирует входные данные, переданные в whereRaw()?',
-            'options' => ['Да', 'Нет', 'Только на Postgres'],
-        ]);
+            foreach ($locales as $locale) {
+                $locQ = $quizData[$locale][$index] ?? $enQ;
+                $question->translations()->create([
+                    'locale' => $locale,
+                    'question_text' => $locQ['question_text'] ?? $enQ['question_text'],
+                    'options' => $locQ['options'] ?? $enQ['options'],
+                ]);
+            }
+        }
     }
 }

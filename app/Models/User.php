@@ -209,6 +209,29 @@ class User extends Authenticatable implements MustVerifyEmail
         // Merge qualified badges
         $qualifiedBadges = $pointsBadges->merge($articlesBadges);
 
+        // 3. Quiz-percentage-based badges
+        $userQuizzes = \DB::table('user_quizzes')
+            ->where('user_id', $this->id)
+            ->get();
+
+        foreach ($userQuizzes as $uq) {
+            $quiz = Quiz::find($uq->quiz_id);
+            if (!$quiz) {
+                continue;
+            }
+
+            $totalPoints = $quiz->questions()->sum('points');
+            $score = $uq->score;
+
+            $percentage = $totalPoints > 0 ? ($score / $totalPoints) * 100 : 0;
+
+            $percentageBadges = Badge::where('quiz_slug', $quiz->slug)
+                ->where('min_percentage', '<=', $percentage)
+                ->get();
+
+            $qualifiedBadges = $qualifiedBadges->merge($percentageBadges);
+        }
+
         foreach ($qualifiedBadges as $badge) {
             if (!in_array($badge->id, $currentBadgeIds, true)) {
                 $this->badges()->attach($badge->id, ['unlocked_at' => now()]);

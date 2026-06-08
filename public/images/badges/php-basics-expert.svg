@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="expertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA" />
+      <stop offset="30%" stop-color="#8B5CF6" />
+      <stop offset="70%" stop-color="#6D28D9" />
+      <stop offset="100%" stop-color="#4C1D95" />
+    </linearGradient>
+    <linearGradient id="goldGlint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#8B5CF6" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer circle with gradient border and shadow -->
+  <circle cx="50" cy="50" r="46" fill="#0f0f1b" stroke="url(#expertGrad)" stroke-width="4.5" filter="url(#shadow)" />
+  
+  <!-- Inner decorative elements -->
+  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#expertGrad)" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.85"/>
+  
+  <!-- Central Shield or Badge Icon with Crown -->
+  <path d="M50,26 L68,36 L68,58 L50,78 L32,58 L32,36 Z" fill="url(#expertGrad)" stroke="url(#goldGlint)" stroke-width="1.5" />
+  
+  <!-- Crown Icon in Center -->
+  <path d="M40,54 L42,42 L46,47 L50,40 L54,47 L58,42 L60,54 Z" fill="url(#goldGlint)" />
+  <circle cx="42" cy="41" r="1.2" fill="#ffffff" />
+  <circle cx="50" cy="39" r="1.5" fill="#ffffff" />
+  <circle cx="58" cy="41" r="1.2" fill="#ffffff" />
+  
+  <!-- Ribbon or Text Support -->
+  <rect x="22" y="66" width="56" height="11" rx="4" fill="#0f0f1b" stroke="url(#goldGlint)" stroke-width="1.5" />
+  <text x="50" y="74" font-family="'Outfit', 'Inter', sans-serif" font-size="7" font-weight="bold" fill="url(#goldGlint)" text-anchor="middle" letter-spacing="1.5">EXPERT</text>
+  
+  <!-- Shiny reflection overlay -->
+  <path d="M6,50 A44,44 0 0,1 94,50 A44,44 0 0,0 6,50 Z" fill="url(#glowGrad)" pointer-events="none" />
+</svg>
