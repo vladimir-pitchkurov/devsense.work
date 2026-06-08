@@ -12,9 +12,48 @@ use Illuminate\View\View;
 class HomeController extends Controller
 {
     /**
+     * Display the homepage landing layout.
+     */
+    public function index(): View
+    {
+        $locale = app()->getLocale();
+
+        // Latest 3 articles
+        $latestArticles = Article::where('is_published', true)
+            ->where('is_approved', true)
+            ->whereHas('author', function ($q) {
+                $q->where('is_approved', true)->where('is_blocked', false);
+            })
+            ->with([
+                'categories.translations', 
+                'author', 
+                'translations' => function ($q) use ($locale) {
+                    $q->where('locale', $locale);
+                }
+            ])
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+
+        // Latest 3 quizzes
+        $latestQuizzes = \App\Models\Quiz::with(['translations'])
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        // Latest 3 suggestions
+        $latestSuggestions = \App\Models\ArticleSuggestion::with(['user', 'article'])
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        return view('welcome', compact('latestArticles', 'latestQuizzes', 'latestSuggestions'));
+    }
+
+    /**
      * Display a listing of the articles with search, filtering, and sorting.
      */
-    public function index(Request $request): View
+    public function catalog(Request $request): View
     {
         $locale = app()->getLocale();
         
@@ -87,10 +126,10 @@ class HomeController extends Controller
             $query->orderByRaw("CASE articles.slug " . implode(' ', $orderCases) . " ELSE 999 END ASC");
         } elseif ($categorySlug === 'php' && $sort === 'oldest') {
             $orderCases = [];
-            foreach (array_reverse(\App\Http\Controllers\PhpVersionController::PHP_VERSION_ORDER) as $index => $version) {
+            foreach (\App\Http\Controllers\PhpVersionController::PHP_VERSION_ORDER as $index => $version) {
                 $orderCases[] = "WHEN '" . addslashes($version) . "' THEN " . ($index + 1);
             }
-            $query->orderByRaw("CASE articles.slug " . implode(' ', $orderCases) . " ELSE 999 END ASC");
+            $query->orderByRaw("CASE articles.slug " . implode(' ', $orderCases) . " ELSE 999 END DESC");
         } elseif ($sort === 'oldest') {
             $query->orderBy('published_at', 'asc');
         } elseif ($sort === 'alphabetical') {
@@ -124,7 +163,7 @@ class HomeController extends Controller
                 $q->where('is_published', true)->where('is_approved', true);
             })->get();
 
-        return view('welcome', [
+        return view('catalog', [
             'articles' => $articles,
             'categories' => $categories,
             'tags' => $tags,

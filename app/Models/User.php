@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
     'slug', 'job_title', 'bio', 'avatar_path',
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
     'is_public', 'is_approved', 'is_blocked', 'points',
+    'intro', 'experience', 'job_status', 'is_anonymous', 'portfolio',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
@@ -121,7 +122,25 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_public'         => 'boolean',
             'is_approved'       => 'boolean',
             'is_blocked'        => 'boolean',
+            'is_anonymous'      => 'boolean',
+            'portfolio'         => 'array',
         ];
+    }
+
+    /**
+     * Absolute public URL for a portfolio project image.
+     */
+    public function getPortfolioImageUrl(string $path): string
+    {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+            return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+        }
+
+        return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
     }
 
     /**

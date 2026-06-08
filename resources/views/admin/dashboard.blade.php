@@ -396,7 +396,16 @@
                                                     <span style="color: #ef4444; font-style: italic;">Deleted Content (ID: {{ $report->reportable_id }})</span>
                                                 @endif
                                             </td>
-                                            <td><span style="font-weight: 500;">{{ $report->reason }}</span></td>
+                                            <td>
+                                                <span style="font-weight: 500;">{{ $report->reason }}</span>
+                                                @if($report->screenshot_path)
+                                                    <div style="margin-top: 0.25rem;">
+                                                        <a href="{{ $report->screenshotUrl() }}" target="_blank" style="font-size: 0.8rem; color: var(--primary-color); text-decoration: underline;">
+                                                            🖼️ View Screenshot
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($report->user)
                                                     {{ $report->user->name }} (<code>{{ $report->user->email }}</code>)

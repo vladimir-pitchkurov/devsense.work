@@ -67,7 +67,7 @@ class SearchAndFilterTest extends TestCase
 
     public function test_homepage_lists_all_published_articles(): void
     {
-        $response = $this->get('/en');
+        $response = $this->get('/en/search');
 
         $response->assertStatus(200);
         $response->assertSee('PHP 8.4 New Features');
@@ -77,13 +77,13 @@ class SearchAndFilterTest extends TestCase
     public function test_filtering_by_category(): void
     {
         // Query Category PHP
-        $response = $this->get('/en?category=php');
+        $response = $this->get('/en/search?category=php');
         $response->assertStatus(200);
         $response->assertSee('PHP 8.4 New Features');
         $response->assertDontSee('Database Indexes Deep Dive');
 
         // Query Category Architecture
-        $response = $this->get('/en?category=architecture');
+        $response = $this->get('/en/search?category=architecture');
         $response->assertStatus(200);
         $response->assertSee('Database Indexes Deep Dive');
         $response->assertDontSee('PHP 8.4 New Features');
@@ -92,13 +92,13 @@ class SearchAndFilterTest extends TestCase
     public function test_searching_by_query_string(): void
     {
         // Search "hooks"
-        $response = $this->get('/en?q=hooks');
+        $response = $this->get('/en/search?q=hooks');
         $response->assertStatus(200);
         $response->assertSee('PHP 8.4 New Features');
         $response->assertDontSee('Database Indexes Deep Dive');
 
         // Search "Indexes"
-        $response = $this->get('/en?q=Indexes');
+        $response = $this->get('/en/search?q=Indexes');
         $response->assertStatus(200);
         $response->assertSee('Database Indexes Deep Dive');
         $response->assertDontSee('PHP 8.4 New Features');
@@ -106,7 +106,7 @@ class SearchAndFilterTest extends TestCase
 
     public function test_filtering_by_tag(): void
     {
-        $response = $this->get('/en?tag=oop');
+        $response = $this->get('/en/search?tag=oop');
         $response->assertStatus(200);
         $response->assertSee('PHP 8.4 New Features');
         $response->assertDontSee('Database Indexes Deep Dive');
@@ -115,7 +115,7 @@ class SearchAndFilterTest extends TestCase
     public function test_sorting_by_date(): void
     {
         // Latest (default): Indexes (now) then PHP 8.4 (2 days ago)
-        $response = $this->get('/en?sort=latest');
+        $response = $this->get('/en/search?sort=latest');
         $response->assertStatus(200);
         $html = $response->getContent();
         $idxPos = strpos($html, 'Database Indexes Deep Dive');
@@ -123,7 +123,7 @@ class SearchAndFilterTest extends TestCase
         $this->assertTrue($idxPos < $phpPos);
 
         // Oldest: PHP 8.4 then Indexes
-        $response = $this->get('/en?sort=oldest');
+        $response = $this->get('/en/search?sort=oldest');
         $response->assertStatus(200);
         $html = $response->getContent();
         $idxPos = strpos($html, 'Database Indexes Deep Dive');

@@ -163,11 +163,9 @@
             @endauth
 
             <nav class="header__nav">
-                <a href="{{ route('php.index') }}" class="nav__link">{{ __('ui.nav.php_guides') }}</a>
-                <a href="{{ route('tools.index') }}" class="nav__link">{{ __('ui.nav.tools') }}</a>
-                <a href="{{ route('microservices.index') }}" class="nav__link">{{ __('ui.nav.microservices') }}</a>
-                <a href="{{ route('architecture.index') }}" class="nav__link">{{ __('ui.nav.architecture') }}</a>
+                <a href="{{ route('search') }}" class="nav__link">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</a>
                 <a href="{{ route('quizzes.index') }}" class="nav__link">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
+                <a href="{{ route('suggestions.index') }}" class="nav__link">{{ app()->getLocale() === 'ru' ? 'Предложения' : 'Suggestions' }}</a>
             </nav>
         </div>
     </div>
@@ -186,8 +184,8 @@
         <span class="mobile-nav__label">{{ __('ui.nav.home') }}</span>
     </a>
 
-    {{-- Browse (articles / categories) --}}
-    <a href="{{ route('home') }}#categories" class="mobile-nav__item {{ Route::is('php.*') || Route::is('tools.*') || Route::is('microservices.*') || Route::is('architecture.*') ? 'active' : '' }}" aria-label="{{ __('ui.nav.browse') ?? 'Browse' }}">
+    {{-- Catalog --}}
+    <a href="{{ route('search') }}" class="mobile-nav__item {{ Route::is('search') ? 'active' : '' }}" aria-label="Catalog">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -196,18 +194,19 @@
                 <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ __('ui.nav.browse') ?? 'Browse' }}</span>
+        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</span>
     </a>
 
-    {{-- Search --}}
-    <a href="{{ route('home') }}?focus=search" class="mobile-nav__item" id="mobile-search-tab" aria-label="{{ __('ui.search.placeholder') ?? 'Search' }}">
+    {{-- Quizzes --}}
+    <a href="{{ route('quizzes.index') }}" class="mobile-nav__item {{ Route::is('quizzes.*') ? 'active' : '' }}" aria-label="Quizzes">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="M21 21l-4.35-4.35"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <circle cx="12" cy="12" r="10"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ __('ui.search.label') ?? 'Search' }}</span>
+        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</span>
     </a>
 
     {{-- Cabinet / Admin --}}
@@ -257,16 +256,13 @@
                     <a href="{{ route('home') }}" class="footer__nav-link">{{ __('ui.nav.home') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('php.index') }}" class="footer__nav-link">{{ __('ui.nav.php_guides') }}</a>
+                    <a href="{{ route('search') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('tools.index') }}" class="footer__nav-link">{{ __('ui.nav.tools') }}</a>
+                    <a href="{{ route('quizzes.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('microservices.index') }}" class="footer__nav-link">{{ __('ui.nav.microservices') }}</a>
-                </li>
-                <li class="footer__nav-item">
-                    <a href="{{ route('architecture.index') }}" class="footer__nav-link">{{ __('ui.nav.architecture') }}</a>
+                    <a href="{{ route('suggestions.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Предложения' : 'Suggestions' }}</a>
                 </li>
                 <li class="footer__nav-item">
                     <a href="{{ route('terms') }}" class="footer__nav-link">{{ __('ui.footer.terms') }}</a>

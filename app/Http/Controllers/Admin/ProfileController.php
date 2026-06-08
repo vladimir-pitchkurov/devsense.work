@@ -44,11 +44,23 @@ class ProfileController extends Controller
             'twitter_url' => ['nullable', 'url', 'max:255'],
             'website_url' => ['nullable', 'url', 'max:255'],
             'is_public' => ['nullable', 'boolean'],
+            'intro' => ['nullable', 'string'],
+            'experience' => ['nullable', 'string'],
+            'job_status' => ['nullable', 'string', 'in:seeking,passively_seeking,not_looking'],
+            'is_anonymous' => ['nullable', 'boolean'],
+            'portfolio' => ['nullable', 'array'],
+            'portfolio.*.title' => ['required', 'string', 'max:255'],
+            'portfolio.*.description' => ['nullable', 'string'],
+            'portfolio.*.existing_images' => ['nullable', 'array'],
+            'portfolio.*.existing_images.*' => ['string'],
+            'portfolio.*.new_images' => ['nullable', 'array', 'max:3'],
+            'portfolio.*.new_images.*' => ['file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
         ], [
             'slug.regex' => 'The slug must be a valid URL-friendly string (e.g. jane-doe).',
         ]);
 
         $validated['is_public'] = (bool) $request->input('is_public', false);
+        $validated['is_anonymous'] = (bool) $request->input('is_anonymous', false);
 
         if ($request->hasFile('avatar')) {
             try {
@@ -60,6 +72,42 @@ class ProfileController extends Controller
                     ->withErrors(['avatar' => 'Failed to process avatar: ' . $e->getMessage()]);
             }
         }
+
+        // Process portfolio projects and strip EXIF
+        $portfolioData = [];
+        if ($request->has('portfolio')) {
+            foreach ($request->input('portfolio') as $index => $project) {
+                $projectImages = [];
+
+                if (isset($project['existing_images'])) {
+                    foreach ($project['existing_images'] as $img) {
+                        $projectImages[] = $img;
+                    }
+                }
+
+                $newFiles = $request->file("portfolio.{$index}.new_images") ?: [];
+                $remainingSlots = max(0, 3 - count($projectImages));
+                $newFiles = array_slice($newFiles, 0, $remainingSlots);
+
+                foreach ($newFiles as $file) {
+                    try {
+                        [$imgUrl, $imgPath] = $uploadService->uploadAndStrip($file);
+                        $projectImages[] = $imgPath;
+                    } catch (\Exception $e) {
+                        return back()
+                            ->withInput()
+                            ->withErrors(["portfolio.{$index}.new_images" => 'Failed to process portfolio image: ' . $e->getMessage()]);
+                    }
+                }
+
+                $portfolioData[] = [
+                    'title' => $project['title'],
+                    'description' => $project['description'] ?? '',
+                    'images' => $projectImages,
+                ];
+            }
+        }
+        $validated['portfolio'] = $portfolioData;
 
         // Remove avatar key if present so it doesn't try to save it to users table directly
         unset($validated['avatar']);
@@ -78,6 +126,11 @@ class ProfileController extends Controller
                 'linkedin_url' => $validated['linkedin_url'] ?? null,
                 'twitter_url' => $validated['twitter_url'] ?? null,
                 'website_url' => $validated['website_url'] ?? null,
+                'intro' => $validated['intro'] ?? null,
+                'experience' => $validated['experience'] ?? null,
+                'job_status' => $validated['job_status'] ?? null,
+                'is_anonymous' => $validated['is_anonymous'],
+                'portfolio' => $validated['portfolio'],
             ]);
 
             // Allow toggling public visibility directly on the live profile

@@ -33,4 +33,26 @@ class Report extends Model
     {
         return $this->morphTo();
     }
+
+    /**
+     * Get the absolute URL of the screenshot.
+     */
+    public function screenshotUrl(): ?string
+    {
+        if (!$this->screenshot_path) {
+            return null;
+        }
+
+        $path = $this->screenshot_path;
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+            return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+    }
 }

@@ -55,6 +55,11 @@ class AdminModerationController extends Controller
             'linkedin_url' => $pendingUserProfile->linkedin_url,
             'twitter_url' => $pendingUserProfile->twitter_url,
             'website_url' => $pendingUserProfile->website_url,
+            'intro' => $pendingUserProfile->intro,
+            'experience' => $pendingUserProfile->experience,
+            'job_status' => $pendingUserProfile->job_status,
+            'is_anonymous' => $pendingUserProfile->is_anonymous,
+            'portfolio' => $pendingUserProfile->portfolio,
         ]);
 
         $pendingUserProfile->delete();

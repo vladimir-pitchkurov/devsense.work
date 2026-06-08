@@ -99,7 +99,6 @@ class DashboardController extends Controller
 
         if (auth()->user()->isAdmin()) {
             $pendingAuthors = \App\Models\User::where('is_approved', false)
-                ->where('role', \App\Models\User::ROLE_AUTHOR)
                 ->get();
             $pendingProfiles = \App\Models\PendingUserProfile::with('user')->get();
             $pendingArticles = \App\Models\PendingArticleTranslation::with(['article', 'article.author'])->get();

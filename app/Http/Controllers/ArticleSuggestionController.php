@@ -9,6 +9,39 @@ use Illuminate\Http\Request;
 class ArticleSuggestionController extends Controller
 {
     /**
+     * Display a global list of suggestions.
+     */
+    public function index()
+    {
+        $suggestions = ArticleSuggestion::with(['user', 'article'])
+            ->withCount('votes')
+            ->orderByDesc('votes_count')
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return view('suggestions.index', compact('suggestions'));
+    }
+
+    /**
+     * Store a general/site suggestion (without a specific article).
+     */
+    public function storeGeneral(Request $request)
+    {
+        $request->validate([
+            'content' => ['required', 'string', 'min:10', 'max:2000'],
+        ]);
+
+        ArticleSuggestion::create([
+            'article_id' => null,
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+            'status'  => 'pending',
+        ]);
+
+        return back()->with('success', __('ui.suggestions.created_success') ?: 'Your suggestion has been submitted successfully.');
+    }
+
+    /**
      * Store a new suggestion for the article.
      */
     public function store(Request $request, Article $article)

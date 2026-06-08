@@ -25,7 +25,7 @@ class ArticleSuggestion extends Model
 
     public function article(): BelongsTo
     {
-        return $this->belongsTo(Article::class);
+        return $this->belongsTo(Article::class)->withDefault();
     }
 
     public function votes(): HasMany

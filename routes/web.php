@@ -92,6 +92,9 @@ Route::prefix('{locale}')
     ->group(function () {
 
         Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::get('/search', [HomeController::class, 'catalog'])->name('search');
+        Route::get('/suggestions', [\App\Http\Controllers\ArticleSuggestionController::class, 'index'])->name('suggestions.index');
+        Route::post('/suggestions', [\App\Http\Controllers\ArticleSuggestionController::class, 'storeGeneral'])->name('suggestions.storeGeneral')->middleware('auth');
 
         // Auth routes (localized)
         Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login.locale');
@@ -171,28 +174,28 @@ Route::prefix('{locale}')
         });
 
         Route::prefix('php')->group(function () {
-            Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'php')->name('php.index');
+            Route::get('/', [HomeController::class, 'catalog'])->defaults('category_slug', 'php')->name('php.index');
             Route::get('/{version}', [PhpVersionController::class, 'show'])
                 ->name('php.show')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('tools')->group(function () {
-            Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'tools')->name('tools.index');
+            Route::get('/', [HomeController::class, 'catalog'])->defaults('category_slug', 'tools')->name('tools.index');
             Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'tools')
                 ->name('tools.show')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('microservices')->group(function () {
-            Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'microservices')->name('microservices.index');
+            Route::get('/', [HomeController::class, 'catalog'])->defaults('category_slug', 'microservices')->name('microservices.index');
             Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'microservices')
                 ->name('microservices.show')
                 ->middleware('llm.friendly');
         });
 
         Route::prefix('architecture')->group(function () {
-            Route::get('/', [HomeController::class, 'index'])->defaults('category_slug', 'architecture')->name('architecture.index');
+            Route::get('/', [HomeController::class, 'catalog'])->defaults('category_slug', 'architecture')->name('architecture.index');
             Route::get('/{slug}', [PublicArticleController::class, 'show'])->defaults('category_slug', 'architecture')
                 ->name('architecture.show')
                 ->middleware('llm.friendly');

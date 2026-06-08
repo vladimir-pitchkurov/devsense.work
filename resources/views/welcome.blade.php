@@ -1,172 +1,168 @@
-<x-layout :title="__('ui.welcome.title')" :description="__('ui.welcome.description')">
-    <div class="search-layout">
-        <!-- Sidebar filters -->
-        <aside class="search-sidebar" id="search-sidebar">
-            <div class="search-sidebar__inner">
-                <button class="mobile-filter-close" onclick="document.getElementById('search-sidebar').classList.remove('open')">
-                    &times;
-                </button>
-                <form action="{{ route(request()->route()->getName()) }}" method="GET" class="search-form" id="search-form">
-                    <!-- Search input -->
-                    <div class="search-group">
-                        <label for="search-input" class="search-label">{{ __('ui.search.placeholder') }}</label>
-                        <div class="search-input-wrapper">
-                            <input 
-                                type="text" 
-                                name="q" 
-                                id="search-input" 
-                                class="search-input" 
-                                placeholder="{{ __('ui.search.placeholder') }}" 
-                                value="{{ $search }}"
-                                autocomplete="off"
-                            >
-                            @if($search)
-                                <a href="{{ route(request()->route()->getName(), array_merge(request()->route('category_slug') ? ['locale' => app()->getLocale()] : [], request()->except('q', 'page'))) }}" class="search-clear" title="{{ __('ui.search.clear_filters') }}">&times;</a>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Category Selector (only show if not pre-filtered by route parameter) -->
-                    @if(!request()->route('category_slug'))
-                        <div class="search-group">
-                            <span class="search-label">{{ __('ui.search.categories') }}</span>
-                            <div class="search-options">
-                                <a href="{{ route('home', array_filter(request()->except('category', 'page'))) }}" class="search-option {{ !$selectedCategory ? 'active' : '' }}">
-                                    {{ __('ui.search.all_categories') }}
-                                </a>
-                                @foreach($categories as $cat)
-                                    @php
-                                        $catName = $cat->translate()?->name ?? $cat->slug;
-                                    @endphp
-                                    <a href="{{ route('home', array_merge(request()->except('page'), ['category' => $cat->slug])) }}" class="search-option {{ $selectedCategory && $selectedCategory->id === $cat->id ? 'active' : '' }}">
-                                        {{ $catName }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <input type="hidden" name="category" value="{{ request()->route('category_slug') }}">
-                    @endif
-
-                    <!-- Tag Selector -->
-                    @if($tags->isNotEmpty())
-                        <div class="search-group">
-                            <span class="search-label">{{ __('ui.search.tags') }}</span>
-                            <div class="tag-cloud">
-                                @foreach($tags as $t)
-                                    @php
-                                        $tagName = $t->translate()?->name ?? $t->slug;
-                                    @endphp
-                                    <a href="{{ route(request()->route()->getName(), array_merge(request()->route('category_slug') ? ['locale' => app()->getLocale()] : [], request()->except('page'), ['tag' => $t->slug])) }}" class="tag-pill {{ $selectedTag && $selectedTag->id === $t->id ? 'active' : '' }}">
-                                        #{{ $tagName }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Author Selector -->
-                    @if($authors->isNotEmpty())
-                        <div class="search-group">
-                            <span class="search-label">{{ __('ui.search.authors') }}</span>
-                            <div class="search-options">
-                                @foreach($authors as $auth)
-                                    <a href="{{ route(request()->route()->getName(), array_merge(request()->route('category_slug') ? ['locale' => app()->getLocale()] : [], request()->except('page'), ['author' => $auth->slug])) }}" class="search-option {{ $selectedAuthor && $selectedAuthor->id === $auth->id ? 'active' : '' }}">
-                                        {{ $auth->name }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Sort -->
-                    <div class="search-group">
-                        <label for="sort-select" class="search-label">{{ __('ui.search.sort_by') }}</label>
-                        <select name="sort" id="sort-select" class="search-select" onchange="this.form.submit()">
-                            <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>{{ __('ui.search.latest') }}</option>
-                            <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>{{ __('ui.search.oldest') }}</option>
-                            <option value="alphabetical" {{ $sort === 'alphabetical' ? 'selected' : '' }}>{{ __('ui.search.alphabetical') }}</option>
-                        </select>
-                    </div>
-
-                    <!-- Reset filters if any active -->
-                    @if($search || $selectedCategory || $selectedTag || $selectedAuthor || $sort !== 'latest')
-                        <a href="{{ route(request()->route()->getName(), request()->route('category_slug') ? ['locale' => app()->getLocale()] : []) }}" class="search-reset-btn">
-                            {{ __('ui.search.clear_filters') }}
-                        </a>
-                    @endif
-                </form>
-            </div>
-        </aside>
-
-        <!-- Main Articles Grid -->
-        <main class="search-results">
-            <!-- Filter toggle for mobile -->
-            <div class="mobile-filter-bar">
-                <button type="button" class="mobile-filter-toggle" onclick="document.getElementById('search-sidebar').classList.add('open')">
-                    🔍 {{ __('ui.search.categories') }} & {{ __('ui.search.sort_by') }}
-                </button>
-            </div>
-
-            @if($articles->isEmpty())
-                <div class="search-empty">
-                    <p class="search-empty__text">{{ __('ui.search.no_results') }}</p>
-                    <a href="{{ route(request()->route()->getName(), request()->route('category_slug') ? ['locale' => app()->getLocale()] : []) }}" class="search-empty__btn">
-                        {{ __('ui.search.clear_filters') }}
+<x-layout :title="app()->getLocale() === 'ru' ? 'Главная' : 'Home'" :description="app()->getLocale() === 'ru' ? 'Полезные гайды по PHP и веб-разработке' : 'Useful guides for PHP and web development'">
+    <div class="space-y-16 py-8" style="display: flex; flex-direction: column; gap: 4rem;">
+        <!-- Hero section -->
+        <section class="relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-20 text-center shadow-2xl dark:bg-black/40 border border-slate-800" style="position: relative; border-radius: 1.5rem; background: var(--card-bg); padding: 5rem 1.5rem; text-align: center; border: 1px solid var(--border-color); overflow: hidden;">
+            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 60%); z-index: 1; pointer-events: none;"></div>
+            <div class="relative max-w-3xl mx-auto space-y-6" style="position: relative; z-index: 2; max-width: 48rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background: rgba(99, 102, 241, 0.1); color: var(--primary-color); border: 1px solid rgba(99, 102, 241, 0.2);">
+                        🚀 {{ app()->getLocale() === 'ru' ? 'Новое поколение DevSense' : 'Next-gen DevSense Platform' }}
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white font-outfit" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; color: var(--text-color); margin: 0; line-height: 1.1;">
+                    DevSense<span style="color: var(--primary-color);">.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed" style="font-size: 1.125rem; color: var(--text-muted); line-height: 1.6; max-width: 42rem; margin: 0 auto;">
+                    {{ app()->getLocale() === 'ru' 
+                        ? 'Единая экосистема для PHP и Backend разработчиков. Читайте технические руководства, проверяйте знания на квизах и предлагайте улучшения.' 
+                        : 'A complete ecosystem for PHP and Backend developers. Read deep-dive guides, test your knowledge in quizzes, and suggest site improvements.' }}
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 pt-4" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding-top: 1rem;">
+                    <a href="{{ route('search') }}" class="btn-primary glow-button" style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+                        {{ app()->getLocale() === 'ru' ? 'Перейти в каталог' : 'Browse Catalog' }}
+                    </a>
+                    <a href="{{ route('quizzes.index') }}" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+                        {{ app()->getLocale() === 'ru' ? 'Пройти квиз' : 'Try Quizzes' }}
                     </a>
                 </div>
-            @else
-                <div class="guides">
-                    <ul class="guides__list">
-                        @foreach ($articles as $article)
-                            @php
-                                $translation = $article->translate();
-                                $categoryName = $article->category?->translate()?->name ?? $article->category?->slug;
-                            @endphp
-                            <li class="guides__item">
-                                <article class="card">
-                                    <header class="card__header">
-                                        <div class="card__meta-top">
-                                            <span class="card__category card__category--{{ $article->category?->slug }}">
-                                                {{ $categoryName }}
-                                            </span>
-                                            <span class="card__date">
-                                                {{ $article->published_at ? $article->published_at->format('M d, Y') : '' }}
-                                            </span>
-                                        </div>
-                                        <h2 class="card__title">
-                                            <a href="{{ $article->url() }}" class="card__title-link">
-                                                {{ $translation?->title ?? $article->slug }}
-                                            </a>
-                                        </h2>
-                                    </header>
-                                    <div class="card__body">
-                                        <p class="card__excerpt">{{ $translation?->description }}</p>
-                                    </div>
-                                    <footer class="card__footer">
-                                        <!-- Author Row -->
-                                        @if($article->author)
-                                            <div class="card__author">
-                                                <div class="card__author-avatar" title="{{ $article->author->name }}">
-                                                    {{ substr($article->author->name, 0, 1) }}
-                                                </div>
-                                                <span class="card__author-name">{{ $article->author->name }}</span>
-                                            </div>
-                                        @endif
-                                        <a href="{{ $article->url() }}" class="card__link" aria-label="{{ $translation?->title }}">
-                                            Read
-                                        </a>
-                                    </footer>
-                                </article>
-                            </li>
+            </div>
+        </section>
+
+        <!-- Three main sections: Articles, Quizzes, Suggestions -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Articles Block -->
+            <section class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color); transition: all 0.3s ease;">
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div style="width: 3rem; height: 3rem; border-radius: 1rem; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📚
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                            {{ app()->getLocale() === 'ru' ? 'Гайды' : 'Guides' }}
+                        </span>
+                    </div>
+                    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Технические статьи' : 'Technical Articles' }}
+                    </h2>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Актуальные статьи и руководства по PHP, базам данных и архитектуре высоконагруженных систем.' : 'Fresh guides on PHP runtime, databases, microservices, and high-load architecture.' }}
+                    </p>
+
+                    <!-- Latest Articles List -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        @foreach($latestArticles as $article)
+                            @php $trans = $article->translate(); @endphp
+                            <a href="{{ $article->url() }}" class="article-item-link" style="display: block; padding: 1rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); text-decoration: none; transition: all 0.2s ease;">
+                                <span style="font-size: 0.65rem; color: var(--primary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
+                                    {{ $article->category?->translate()?->name ?? $article->category?->slug }}
+                                </span>
+                                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-color); margin: 0; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $trans?->title ?? $article->slug }}
+                                </h3>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.25rem 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
+                                    {{ $trans?->description }}
+                                </p>
+                            </a>
                         @endforeach
-                    </ul>
+                    </div>
                 </div>
 
-                <div class="search-pagination">
-                    {{ $articles->links('partials.pagination') }}
+                <a href="{{ route('search') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                    {{ app()->getLocale() === 'ru' ? 'Все статьи' : 'All Articles' }} &rarr;
+                </a>
+            </section>
+
+            <!-- Quizzes Block -->
+            <section class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color); transition: all 0.3s ease;">
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div style="width: 3rem; height: 3rem; border-radius: 1rem; background: rgba(168, 85, 247, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🎮
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                            {{ app()->getLocale() === 'ru' ? 'Тесты' : 'Quizzes' }}
+                        </span>
+                    </div>
+                    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Интервью Квизы' : 'Interview Quizzes' }}
+                    </h2>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Проверьте себя, зарабатывайте очки опыта (XP) и соревнуйтесь в таблице лидеров.' : 'Check your readiness for interview questions, gain XP, and unlock rare badges.' }}
+                    </p>
+
+                    <!-- Latest Quizzes List -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        @foreach($latestQuizzes as $quiz)
+                            @php $qTrans = $quiz->translate(); @endphp
+                            <a href="{{ route('quizzes.show', ['slug' => $quiz->slug]) }}" class="article-item-link" style="display: block; padding: 1rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); text-decoration: none; transition: all 0.2s ease;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span style="font-size: 0.65rem; color: #a855f7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                                        +{{ $quiz->points }} XP
+                                    </span>
+                                </div>
+                                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-color); margin: 0; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $qTrans?->title ?? 'Technical Quiz' }}
+                                </h3>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.25rem 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
+                                    {{ $qTrans?->description }}
+                                </p>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
-            @endif
-        </main>
+
+                <a href="{{ route('quizzes.index') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                    {{ app()->getLocale() === 'ru' ? 'Все квизы' : 'All Quizzes' }} &rarr;
+                </a>
+            </section>
+
+            <!-- Suggestions Block -->
+            <section class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color); transition: all 0.3s ease;">
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div style="width: 3rem; height: 3rem; border-radius: 1rem; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            💡
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                            {{ app()->getLocale() === 'ru' ? 'Идеи' : 'Suggestions' }}
+                        </span>
+                    </div>
+                    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Предложения' : 'Community Board' }}
+                    </h2>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
+                        {{ app()->getLocale() === 'ru' ? 'Предлагайте темы статей и функции платформы. Поддерживайте чужие идеи голосами.' : 'Suggest topics and vote on feature ideas submitted by other developers.' }}
+                    </p>
+
+                    <!-- Latest Suggestions List -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        @foreach($latestSuggestions as $suggestion)
+                            <div style="padding: 1rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.5rem;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem;">
+                                    <span style="font-weight: 600; color: var(--text-color);">{{ $suggestion->user?->name ?? 'Guest' }}</span>
+                                    <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.15rem 0.5rem; border-radius: 9999px; font-weight: 700; font-size: 0.65rem;">
+                                        {{ $suggestion->votes()->count() }} {{ app()->getLocale() === 'ru' ? 'голосов' : 'votes' }}
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
+                                    {{ $suggestion->content }}
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <a href="{{ route('suggestions.index') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                    {{ app()->getLocale() === 'ru' ? 'Все предложения' : 'View Suggestions' }} &rarr;
+                </a>
+            </section>
+        </div>
     </div>
+
+    <style>
+        .article-item-link:hover {
+            border-color: var(--primary-color) !important;
+            background: rgba(99, 102, 241, 0.04) !important;
+        }
+    </style>
 </x-layout>

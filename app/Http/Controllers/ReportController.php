@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
@@ -41,7 +42,32 @@ class ReportController extends Controller
 
         $screenshotPath = null;
         if ($request->hasFile('screenshot')) {
-            $screenshotPath = $request->file('screenshot')->store('reports_screenshots', 'public');
+            $file = $request->file('screenshot');
+            $originalName = $file->getClientOriginalName();
+            if (substr_count($originalName, '.') > 1) {
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => 'Double extensions or multiple dots are not allowed in filenames.'], 422);
+                }
+                return back()->withErrors(['screenshot' => 'Double extensions or multiple dots are not allowed in filenames.']);
+            }
+
+            $extension = strtolower($file->getClientOriginalExtension());
+            $filename = Str::uuid() . '.' . $extension;
+            
+            $environment = app()->environment();
+            $envPrefix = in_array($environment, ['local', 'testing', 'dev', 'development'], true) ? 'dev' : 'prod';
+            $path = "reports_screenshots/{$envPrefix}/{$filename}";
+
+            if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
+                \Illuminate\Support\Facades\Storage::disk('s3')->put(
+                    $path,
+                    file_get_contents($file->getRealPath()),
+                    'public'
+                );
+                $screenshotPath = $path;
+            } else {
+                $screenshotPath = $file->storeAs("reports_screenshots/{$envPrefix}", $filename, 'public');
+            }
         }
 
         // Create report
