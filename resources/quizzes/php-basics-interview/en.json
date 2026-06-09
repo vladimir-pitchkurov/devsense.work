@@ -1,9 +1,9 @@
 [
   {
-    "question_text": "What is the behavior of scalar type declarations in PHP when a float is passed to an integer parameter under the default coercive mode?",
+    "question_text": "Given the following function under the default coercive mode, what is the behavior when a float is passed to the integer parameter?\n\n```php\nfunction setAge(int $age) {\n    return $age;\n}\nsetAge(25.8);\n```",
     "options": [
       "A TypeError is immediately thrown.",
-      "The float is coerced to an integer by truncating its fractional part without any warning.",
+      "The float is coerced to the integer 25 by truncating its fractional part without warning.",
       "The script execution is terminated with a fatal compile-time error.",
       "The value is cast to a float anyway, ignoring the type declaration."
     ],
@@ -12,7 +12,7 @@
     "points": 10
   },
   {
-    "question_text": "How does declaring strict types using declare(strict_types=1); affect function arguments and return types? (PHP 7.0+)",
+    "question_text": "Given the following code:\n\n```php\ndeclare(strict_types=1);\nfunction add(int $a, int $b): int {\n    return $a + $b;\n}\n```\n\nHow does the `declare(strict_types=1);` directive affect function argument and return type validation in this script? (PHP 7.0+)",
     "options": [
       "It disables all type coercion, throwing a TypeError for any mismatch except when passing an int to a float parameter.",
       "It requires all variables in the file to be explicitly typed upon declaration.",
@@ -36,7 +36,7 @@
     "points": 10
   },
   {
-    "question_text": "What does the iterable pseudo-type accept when used as a type declaration? (PHP 7.1+)",
+    "question_text": "What arguments can be passed to the parameter in the following function declaration? (PHP 7.1+)\n\n```php\nfunction process(iterable $items) {\n    foreach ($items as $item) {\n        // ...\n    }\n}\n```",
     "options": [
       "Only standard arrays.",
       "Any array or object that implements the Traversable interface.",
@@ -48,7 +48,7 @@
     "points": 10
   },
   {
-    "question_text": "Which of the following declarations enforces that a function cannot return any value, including null? (PHP 7.1+)",
+    "question_text": "Which return type declaration in the following function enforces that the function cannot return any value, not even null? (PHP 7.1+)\n\n```php\nfunction logMessage(string $msg): void {\n    echo $msg;\n}\n```",
     "options": [
       "never",
       "null",
@@ -60,7 +60,7 @@
     "points": 10
   },
   {
-    "question_text": "How does the null coalescing operator (??) behave? (PHP 7.0+)",
+    "question_text": "What is the behavior of the null coalescing operator (??) in the following expression? (PHP 7.0+)\n\n```php\n$username = $_GET['user'] ?? 'anonymous';\n```",
     "options": [
       "It returns the first operand if it is set and not null; otherwise, it returns the second operand.",
       "It returns the first operand if it evaluates to true; otherwise, it returns the second operand.",
@@ -72,7 +72,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the primary purpose of the null coalescing assignment operator (??=)? (PHP 7.4+)",
+    "question_text": "Given the following code snippet, what is the behavior of the null coalescing assignment operator (??=)? (PHP 7.4+)\n\n```php\n$config['timeout'] ??= 30;\n```",
     "options": [
       "It assigns the right operand to the left operand if the left operand is set and not null.",
       "It assigns the right operand to the left operand only if the left operand is null or undefined.",
@@ -108,7 +108,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the behavior of the never return type in PHP? (PHP 8.1+)",
+    "question_text": "What is the behavior of the `never` return type in the following function declaration? (PHP 8.1+)\n\n```php\nfunction redirect(string $url): never {\n    header(\"Location: $url\");\n    exit;\n}\n```",
     "options": [
       "It indicates that the function returns null or void.",
       "It indicates that the function never returns, meaning it must exit, throw an exception, or loop infinitely.",
@@ -120,7 +120,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the key difference between Union Types and Intersection Types? (PHP 8.1+)",
+    "question_text": "Given the following code declarations, what is the difference between Union Types (used in `accept`) and Intersection Types (used in `process`)? (PHP 8.1+)\n\n```php\nfunction accept(HTMLRequest|APIRequest $request) {}\nfunction process(Logger&Serializable $object) {}\n```",
     "options": [
       "Union Types allow a value to satisfy any of the listed types, while Intersection Types require it to satisfy all listed types.",
       "Union Types are used for scalar variables, while Intersection Types are used only for classes.",
@@ -132,7 +132,7 @@
     "points": 10
   },
   {
-    "question_text": "Can null be used as a standalone return type in a function signature? (PHP 8.2+)",
+    "question_text": "Is the following function declaration with a standalone `null` return type valid in PHP? (PHP 8.2+)\n\n```php\nfunction getNothing(): null {\n    return null;\n}\n```",
     "options": [
       "No, null can only be used in union types like string|null.",
       "Yes, null can be declared as a standalone return type.",
@@ -144,19 +144,19 @@
     "points": 10
   },
   {
-    "question_text": "Under what condition will accessing a variable that has not been initialized cause a Fatal Error instead of a Warning/Notice? (PHP 8.0+)",
+    "question_text": "Under what condition will accessing the uninitialized variable in a context like this cause a Fatal Error (Error exception) instead of a Warning/Notice? (PHP 8.0+)\n\n```php\nclass Profile {\n    public string $bio;\n}\n$profile = new Profile();\necho $profile->bio;\n```",
     "options": [
       "When strict types are enabled.",
-      "When the variable has a type declaration in a class constructor and is accessed before initialization.",
+      "When the variable is a typed property of a class and is accessed before initialization.",
       "When the variable is a global variable.",
       "When the variable is used in a double-quoted string."
     ],
     "correct_answer_index": 1,
-    "explanation": "Accessing typed class properties before they are initialized throws an Error exception (Error: Typed property must not be accessed before initialization). Accessing normal uninitialized local variables only throws a Warning in PHP 8.0+.",
+    "explanation": "Accessing typed class properties before they are initialized throws an Error exception (Error: Typed property must not be accessed before initialization). Accessing normal uninitialized local variables only throws a Warning/Notice in PHP 8.0+.",
     "points": 10
   },
   {
-    "question_text": "What type declaration allows a parameter to accept either an integer, a float, or null? (PHP 8.0+)",
+    "question_text": "Given the function signature below, which type declaration is valid and allows the parameter to accept either an integer, a float, or null? (PHP 8.0+)\n\n```php\nfunction process(??? $value) {}\n```",
     "options": [
       "?int|float",
       "int|float|null",
@@ -168,7 +168,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the return type behavior when a function is declared to return false? (PHP 8.2+)",
+    "question_text": "Given the following function definition, what is the return type behavior when a function is declared to return `false`? (PHP 8.2+)\n\n```php\nfunction getStatus(): false {\n    return false;\n}\n```",
     "options": [
       "It is only allowed as part of a union type like string|false.",
       "It can be used as a standalone return type.",
@@ -180,7 +180,7 @@
     "points": 10
   },
   {
-    "question_text": "If a variable $x contains the string 'y', and variable $y contains 'z', what is the output of echo $$x;?",
+    "question_text": "What is the output of the following code snippet?\n\n```php\n$x = 'y';\n$y = 'z';\necho $$x;\n```",
     "options": [
       "y",
       "z",
@@ -192,7 +192,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the lifetime and behavior of a static variable declared inside a PHP function?",
+    "question_text": "Given the following code snippet, what is the behavior and lifetime of the static variable `$count`?\n\n```php\nfunction counter() {\n    static $count = 0;\n    $count++;\n    return $count;\n}\n```",
     "options": [
       "It is initialized on every function call and destroyed when the function returns.",
       "It retains its value across multiple function calls and is initialized only once.",
@@ -204,7 +204,7 @@
     "points": 10
   },
   {
-    "question_text": "How can a function access a variable defined in the global scope without using the global keyword?",
+    "question_text": "Given the following code, how can the function `printGlobal()` access the variable `$globalVar` without using the `global` keyword?\n\n```php\n$globalVar = \"Hello World\";\nfunction printGlobal() {\n    // Access $globalVar here\n}\n```",
     "options": [
       "By using the $GLOBALS superglobal array.",
       "By prefixing the variable name with an underscore.",
@@ -216,7 +216,7 @@
     "points": 10
   },
   {
-    "question_text": "How does the match expression compare values compared to the switch statement? (PHP 8.0+)",
+    "question_text": "Given the two blocks of code below, how do their comparison behaviors differ? (PHP 8.0+)\n\n```php\n// Block A (switch)\nswitch ($value) {\n    case '1': echo 'string'; break;\n}\n\n// Block B (match)\nmatch ($value) {\n    '1' => 'string',\n};\n```",
     "options": [
       "The match expression uses strict comparison (===), whereas switch uses loose comparison (==).",
       "The match expression uses loose comparison (==), whereas switch uses strict comparison (===).",
@@ -228,7 +228,7 @@
     "points": 10
   },
   {
-    "question_text": "What is a dangerous side effect of using foreach ($array as &$value) if the reference is not unset afterwards?",
+    "question_text": "What is a dangerous side effect of using the reference in the first loop in this code?\n\n```php\n$array = [1, 2, 3];\nforeach ($array as &$value) {\n    // do nothing\n}\n// $value is not unset\n```",
     "options": [
       "The array is converted into a read-only object.",
       "The last element of the array remains referenced, and modifying $value later will overwrite the last element.",
@@ -236,11 +236,11 @@
       "It causes a memory leak because PHP's garbage collector cannot free referenced variables."
     ],
     "correct_answer_index": 1,
-    "explanation": "When foreach ends, the variable $value remains as a reference to the last element of the array. If $value is modified later in the script, the last element of the array will be unexpectedly updated. It is best practice to unset($value) immediately after the loop.",
+    "explanation": "When foreach ends, the variable $value remains as a reference to the last element of the array. If $value is modified later in the script (like in another loop), the last element of the array will be unexpectedly updated. It is best practice to unset($value) immediately after the loop.",
     "points": 10
   },
   {
-    "question_text": "What is the difference between include and require when the targeted file is not found?",
+    "question_text": "Given the following statements, what is the difference in error behavior if the file `missing.php` does not exist?\n\n```php\n// Statement A\ninclude 'missing.php';\n\n// Statement B\nrequire 'missing.php';\n```",
     "options": [
       "include issues a warning and stops execution; require issues a warning and continues.",
       "include issues a warning and continues; require issues a fatal error and stops execution.",
@@ -252,7 +252,7 @@
     "points": 10
   },
   {
-    "question_text": "Which of the following is a limitation of the goto statement in PHP?",
+    "question_text": "Based on the restrictions of the `goto` statement in PHP, why is a jump like the one in Block B invalid?\n\n```php\n// Block A (Valid)\ngoto end;\nend:\n\n// Block B (Invalid)\ngoto loop_body;\nfor ($i = 0; $i < 10; $i++) {\n    loop_body:\n}\n```",
     "options": [
       "It cannot jump into loops or switch statements.",
       "It can only jump to lines that are marked with a number.",
@@ -264,7 +264,7 @@
     "points": 10
   },
   {
-    "question_text": "What does the spaceship operator (<=>) return when comparing $a and $b? (PHP 7.0+)",
+    "question_text": "What does the spaceship operator (<=>) return when comparing `$a` and `$b` in this expression? (PHP 7.0+)\n\n```php\n$result = $a <=> $b;\n```",
     "options": [
       "true if $a is greater, false otherwise.",
       "-1 if $a < $b, 0 if $a == $b, and 1 if $a > $b.",
@@ -276,7 +276,7 @@
     "points": 10
   },
   {
-    "question_text": "How do constants defined using the const keyword differ from those defined with define()?",
+    "question_text": "Given the two ways of defining constants below, how do they differ under the hood?\n\n```php\n// Method A\nconst MAX_LIMIT = 100;\n\n// Method B\ndefine('MIN_LIMIT', 10);\n```",
     "options": [
       "const constants are defined at compile time and cannot be placed inside control structures (like if), whereas define() constants are defined at runtime.",
       "const constants can be redefined, whereas define() constants are permanent.",
@@ -288,11 +288,11 @@
     "points": 10
   },
   {
-    "question_text": "What is the default behavior when using a switch statement without break statements?",
+    "question_text": "What is the output of the following code snippet without break statements?\n\n```php\n$value = 1;\nswitch ($value) {\n    case 1:\n        echo \"One \";\n    case 2:\n        echo \"Two \";\n    default:\n        echo \"Default\";\n}\n```",
     "options": [
       "PHP throws a syntax error.",
       "The switch statement exits automatically after executing the first matching case.",
-      "Execution falls through to the next case blocks regardless of whether they match the switch expression.",
+      "Execution falls through to the next case blocks, outputting 'One Two Default'.",
       "PHP terminates the script with a warning."
     ],
     "correct_answer_index": 2,
@@ -300,7 +300,7 @@
     "points": 10
   },
   {
-    "question_text": "What happens if a match expression has no matching case and does not define a default arm? (PHP 8.0+)",
+    "question_text": "What happens when the following match expression is executed? (PHP 8.0+)\n\n```php\n$value = 3;\n$result = match ($value) {\n    1 => 'One',\n    2 => 'Two',\n};\n```",
     "options": [
       "It returns null.",
       "It throws an UnhandledMatchError.",
@@ -312,10 +312,10 @@
     "points": 10
   },
   {
-    "question_text": "Can variables defined inside a loop be accessed outside the loop body in PHP?",
+    "question_text": "What is the behavior when accessing `$result` after the loop exits in the code below?\n\n```php\nfor ($i = 0; $i < 3; $i++) {\n    $result = $i * 2;\n}\necho $result;\n```",
     "options": [
-      "No, variables defined inside a loop are block-scoped and destroyed when the loop exits.",
-      "Yes, PHP does not have block scope for loops; variables remain in the parent function or global scope.",
+      "No, variables defined inside a loop are block-scoped and destroyed when the loop exits, so this throws a Fatal Error.",
+      "Yes, PHP does not have block scope for loops; the variable remains accessible and prints 4.",
       "Only if they are declared with the public keyword.",
       "Only if the loop is a foreach loop."
     ],
@@ -324,9 +324,9 @@
     "points": 10
   },
   {
-    "question_text": "What is the scope of a variable defined inside a nested function (a function declared inside another function)?",
+    "question_text": "Given the following code, what is the scope of the variable `$innerVar` defined inside the nested function?\n\n```php\nfunction outer() {\n    function inner() {\n        $innerVar = \"nested\";\n    }\n}\n```",
     "options": [
-      "It is local to the nested function and cannot be accessed by the outer function.",
+      "It is local to the nested function `inner()` and cannot be accessed by the outer function `outer()`.",
       "It is automatically shared with the outer function's scope.",
       "It becomes global automatically.",
       "PHP does not support nested function declarations."
@@ -348,7 +348,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the output of the following code?\n$a = 1;\nfunction test() { echo $a; }\ntest();",
+    "question_text": "What is the output of the following code?\n\n```php\n$a = 1;\nfunction test() {\n    echo $a;\n}\ntest();\n```",
     "options": [
       "1",
       "A Warning/Notice about an undefined variable $a, and no value printed (or null).",
@@ -540,7 +540,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the visibility of a class method if no visibility modifier is explicitly declared?",
+    "question_text": "Given the following class definition, what is the default visibility of `getName()`?\n\n```php\nclass User {\n    function getName() {\n        return \"John\";\n    }\n}\n```",
     "options": [
       "public",
       "protected",
@@ -552,7 +552,7 @@
     "points": 10
   },
   {
-    "question_text": "Which keyword is used to inherit from a parent class in PHP, and how many parent classes can a single class extend?",
+    "question_text": "Given the following code skeleton, which keyword must replace the placeholder, and how many parent classes can the child class inherit from?\n\n```php\nclass Animal {}\nclass Dog ??? Animal {}\n```",
     "options": [
       "implements, and multiple parent classes.",
       "extends, and only one parent class.",
@@ -564,7 +564,7 @@
     "points": 10
   },
   {
-    "question_text": "Which of the following is a key difference between an abstract class and an interface?",
+    "question_text": "Consider the following definitions:\n\n```php\nabstract class BaseController {\n    public string $theme = 'default';\n    public function render() { /* concrete implementation */ }\n}\n\ninterface Loggable {\n    public function log(string $message);\n}\n```\n\nBased on this, what is a key difference between abstract classes and interfaces?",
     "options": [
       "Interfaces can have property definitions, whereas abstract classes cannot.",
       "Abstract classes can have concrete method implementations and state (properties), whereas interfaces can only have method signatures and constants.",
@@ -576,7 +576,7 @@
     "points": 10
   },
   {
-    "question_text": "What is a Trait in PHP?",
+    "question_text": "Given the following usage of a Trait, what is its primary purpose?\n\n```php\ntrait Shareable {\n    public function share($item) { /* code */ }\n}\n\nclass Post {\n    use Shareable;\n}\n```",
     "options": [
       "A subclass that can override private properties of its parent.",
       "A mechanism for code reuse in single inheritance languages, allowing methods to be injected into classes.",
@@ -588,7 +588,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the behavior of an anonymous class in PHP? (PHP 7.0+)",
+    "question_text": "What is the behavior of the anonymous class in the following instantiation? (PHP 7.0+)\n\n```php\n$logger = new class {\n    public function log($msg) {\n        echo $msg;\n    }\n};\n```",
     "options": [
       "It is a class that can be defined inline, instantiated immediately, and has no named identifier.",
       "It is a class whose methods can only be called statically without instantiation.",
@@ -600,7 +600,7 @@
     "points": 10
   },
   {
-    "question_text": "Which of the following rules applies to readonly properties in PHP? (PHP 8.1+)",
+    "question_text": "Given the following class definition with a readonly property, which of the rules applies? (PHP 8.1+)\n\n```php\nclass User {\n    public readonly string $username;\n    public function __construct(string $username) {\n        $this->username = $username;\n    }\n}\n```",
     "options": [
       "They can be modified at any time from within the class scope.",
       "They can only be initialized once (usually in the constructor) and cannot be modified or unset after initialization.",
@@ -612,7 +612,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the effect of declaring a class as readonly? (PHP 8.2+)",
+    "question_text": "What is the effect of declaring the class as readonly in the following example? (PHP 8.2+)\n\n```php\nreadonly class Post {\n    public string $title;\n    public string $content;\n}\n```",
     "options": [
       "The class cannot be extended.",
       "All properties of the class are implicitly marked as readonly, and dynamic properties are forbidden.",
@@ -624,7 +624,7 @@
     "points": 10
   },
   {
-    "question_text": "How does asymmetric visibility work for class properties? (PHP 8.4+)",
+    "question_text": "Given the following declaration in PHP 8.4, how does the asymmetric visibility of the property behave?\n\n```php\nclass Book {\n    public private(set) string $title;\n}\n```",
     "options": [
       "It allows a property to have different visibility modifiers for reading and writing (e.g., public read, private write).",
       "It allows properties to be public in the parent class but private in the child class.",
@@ -636,7 +636,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the consequence of marking a class method as final?",
+    "question_text": "Given the following parent class, what is the consequence of marking the method as final?\n\n```php\nclass Base {\n    final public function execute() {\n        // ...\n    }\n}\n```",
     "options": [
       "The method cannot be called from outside the class.",
       "The method cannot be overridden by subclass implementations.",
@@ -648,22 +648,22 @@
     "points": 10
   },
   {
-    "question_text": "How does late static binding behave when self:: is used versus static::? (PHP 5.3+)",
+    "question_text": "What will the call to `ChildClass::test()` print, illustrating late static binding? (PHP 5.3+)\n\n```php\nclass ParentClass {\n    public static function getClassName() { return 'ParentClass'; }\n    public static function test() {\n        echo self::getClassName() . ' ' . static::getClassName();\n    }\n}\nclass ChildClass extends ParentClass {\n    public static function getClassName() { return 'ChildClass'; }\n}\n```",
     "options": [
-      "self:: refers to the class where the method was defined; static:: refers to the class that was called at runtime.",
-      "self:: refers to the class called at runtime; static:: refers to the parent class.",
-      "self:: only works in non-static methods, while static:: only works in static methods.",
-      "There is no difference; they are aliases."
+      "It outputs 'ParentClass ChildClass' because self:: refers to the class where the method was defined, while static:: refers to the class that was called at runtime.",
+      "It outputs 'ChildClass ParentClass' because self:: resolves at runtime and static:: is compile-time.",
+      "It outputs 'ParentClass ParentClass' because both operators resolve to the class where the method was defined.",
+      "It outputs 'ChildClass ChildClass' because both operators resolve to the class called at runtime."
     ],
     "correct_answer_index": 0,
     "explanation": "self:: references the class in which the code is written, while static:: utilizes Late Static Binding to resolve to the class that was actually called at runtime.",
     "points": 10
   },
   {
-    "question_text": "Can an implementing class override a constant defined in an interface? (PHP 8.3+)",
+    "question_text": "Is the following override of an interface constant valid in a class? (PHP 8.3+)\n\n```php\ninterface MyInterface {\n    const VERSION = '1.0';\n}\nclass MyClass implements MyInterface {\n    public const VERSION = '2.0';\n}\n```",
     "options": [
       "No, interface constants are always final and cannot be overridden.",
-      "Yes, starting in PHP 8.3, classes can override interface constants, provided the override is compatible.",
+      "Yes, starting in PHP 8.3, classes can override interface constants, provided the override is compatible (same visibility and value type).",
       "Yes, but only if the interface constant is declared using define() instead of const.",
       "Yes, but only if the interface constant is declared as private."
     ],
@@ -672,7 +672,7 @@
     "points": 10
   },
   {
-    "question_text": "Which keyword is used to resolve naming conflicts when two traits declare a method with the same name in a class?",
+    "question_text": "Given the following code, which operator/keyword must replace the placeholder to resolve the conflict between the two traits?\n\n```php\ntrait A { public function talk() { echo 'A'; } }\ntrait B { public function talk() { echo 'B'; } }\nclass Talker {\n    use A, B {\n        A::talk ??? B;\n    }\n}\n```",
     "options": [
       "overrides",
       "insteadof",
@@ -684,7 +684,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the default visibility of class properties if they are declared using the var keyword?",
+    "question_text": "Given the following class definition, what is the default visibility of `$value`?\n\n```php\nclass Container {\n    var $value = 10;\n}\n```",
     "options": [
       "public",
       "protected",
@@ -696,7 +696,7 @@
     "points": 10
   },
   {
-    "question_text": "What happens if a class implements two interfaces that define a method with the same name and signature?",
+    "question_text": "What is the behavior of the following class when implementing two interfaces that declare the same method?\n\n```php\ninterface Reader { public function read(): string; }\ninterface Scanner { public function read(): string; }\nclass Device implements Reader, Scanner {\n    public function read(): string {\n        return \"data\";\n    }\n}\n```",
     "options": [
       "It causes a compilation error because of a duplicate method definition.",
       "The class implements the method once, satisfying both interfaces.",
@@ -708,19 +708,19 @@
     "points": 10
   },
   {
-    "question_text": "How do you access a static property or call a static method inside the class definition?",
+    "question_text": "Given the following code snippet, which operator and keywords are used to access the static property `$count`?\n\n```php\nclass Tracker {\n    public static int $count = 0;\n    public static function increment() {\n        self::$count++;\n    }\n}\n```",
     "options": [
-      "Using $this->propertyName or $this->methodName()",
-      "Using self::$propertyName or self::methodName()",
-      "Using parent->$propertyName or parent->methodName()",
-      "Using static->$propertyName or static->methodName()"
+      "Using `$this->propertyName` or `$this->methodName()`",
+      "Using `self::$propertyName` or `self::methodName()` (or static equivalents)",
+      "Using `parent->$propertyName` or `parent->methodName()`",
+      "Using `static->$propertyName` or `static->methodName()`"
     ],
     "correct_answer_index": 1,
     "explanation": "Static properties and methods are accessed using scope resolution operators (::) with self or static, rather than object operator -> on $this.",
     "points": 10
   },
   {
-    "question_text": "What happens if you try to instantiate an abstract class?",
+    "question_text": "What is the result of executing the following instantiation?\n\n```php\nabstract class Shape {\n    abstract public function getArea(): float;\n}\n$shape = new Shape();\n```",
     "options": [
       "An object of type stdClass is created.",
       "A fatal error is thrown because abstract classes cannot be instantiated directly.",
@@ -732,7 +732,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the difference between interface methods and abstract class methods?",
+    "question_text": "Given the two definitions below, what difference in method visibility rules applies?\n\n```php\ninterface Logger {\n    public function log(string $msg);\n}\n\nabstract class BaseLogger {\n    abstract protected function write(string $msg);\n}\n```",
     "options": [
       "Interface methods must always be public; abstract class methods can be public or protected.",
       "Interface methods can have method bodies; abstract class methods cannot.",
@@ -744,10 +744,10 @@
     "points": 10
   },
   {
-    "question_text": "What are Property Hooks used for in PHP? (PHP 8.4+)",
+    "question_text": "Given the following code snippet using PHP 8.4 features, what feature is being demonstrated and what is its purpose?\n\n```php\nclass User {\n    public string $name {\n        set => trim($value);\n        get => ucfirst($this->name);\n    }\n}\n```",
     "options": [
       "To automatically hook database queries to class properties.",
-      "To define custom get and/or set behavior directly on property declarations.",
+      "Property Hooks, to define custom get and/or set behavior directly on property declarations.",
       "To make properties read-only after they are serialized.",
       "To hook properties to global variables."
     ],
@@ -756,11 +756,11 @@
     "points": 10
   },
   {
-    "question_text": "Which of the following is true about static properties in traits?",
+    "question_text": "Given the following code snippet, if trait `$count` is incremented in class `A`, what is true about static properties in traits?\n\n```php\ntrait Counter {\n    public static int $count = 0;\n}\nclass A { use Counter; }\nclass B { use Counter; }\n```",
     "options": [
       "Traits cannot define static properties.",
-      "Static properties in traits are shared across all classes that use the trait.",
-      "Each class using a trait gets a separate instance of the trait's static properties.",
+      "Static properties in traits are shared across all classes that use the trait (modifying it in A also changes it in B).",
+      "Each class using a trait gets a separate instance of the trait's static properties (modifying it in A does not affect B).",
       "Static properties in traits can only be accessed using the parent keyword."
     ],
     "correct_answer_index": 2,
@@ -768,10 +768,10 @@
     "points": 10
   },
   {
-    "question_text": "Can a class extend another class and implement multiple interfaces at the same time?",
+    "question_text": "Is the declaration syntax in the following code block valid in PHP?\n\n```php\ninterface Runnable {}\ninterface Loggable {}\nclass Task {}\n\nclass Worker extends Task implements Runnable, Loggable {}\n```",
     "options": [
       "No, PHP only allows either extending a class or implementing interfaces.",
-      "Yes, using the syntax: class A extends B implements C, D.",
+      "Yes, a class can inherit from one class and implement multiple interfaces at the same time.",
       "Yes, but it must use traits instead of interfaces.",
       "No, because PHP does not support multiple interface implementation."
     ],
@@ -780,7 +780,7 @@
     "points": 10
   },
   {
-    "question_text": "How does Constructor Property Promotion simplify class definitions? (PHP 8.0+)",
+    "question_text": "What properties and assignment operations are implicitly generated by the following constructor property promotion? (PHP 8.0+)\n\n```php\nclass User {\n    public function __construct(\n        public string $name,\n        protected int $age\n    ) {}\n}\n```",
     "options": [
       "It allows properties to be defined, typed, and initialized directly in the constructor parameters, avoiding separate class property declarations and manual assignments.",
       "It automatically generates getter and setter methods for all properties.",
@@ -792,7 +792,7 @@
     "points": 10
   },
   {
-    "question_text": "When is the __destruct magic method called on an object?",
+    "question_text": "Given the class below, under what condition will the `__destruct` magic method be called?\n\n```php\nclass Session {\n    public function __destruct() {\n        // clean up resource\n    }\n}\n```",
     "options": [
       "When the garbage collector is manually invoked using gc_collect_cycles().",
       "When there are no remaining references to the object, or during script shutdown.",
@@ -804,7 +804,7 @@
     "points": 10
   },
   {
-    "question_text": "Under what condition are the __get and __set magic methods triggered?",
+    "question_text": "In the following class, under what condition are the `__get` and `__set` magic methods triggered?\n\n```php\nclass Registry {\n    private array $data = [];\n    public function __get($name) { return $this->data[$name] ?? null; }\n    public function __set($name, $value) { $this->data[$name] = $value; }\n}\n```",
     "options": [
       "When reading from or writing to properties that are not declared or are inaccessible (like protected/private) in the current scope.",
       "When calling undefined or inaccessible static methods on a class.",
@@ -816,7 +816,7 @@
     "points": 10
   },
   {
-    "question_text": "Which PHP function calls will trigger the __isset magic method on an object with inaccessible properties?",
+    "question_text": "Given the class below, which calls on `$user` will trigger the `__isset` magic method?\n\n```php\nclass User {\n    private array $properties = ['email' => 'test@example.com'];\n    public function __isset($name) {\n        return isset($this->properties[$name]);\n    }\n}\n$user = new User();\n```",
     "options": [
       "is_null() and empty()",
       "isset() and empty()",
@@ -828,7 +828,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the difference between the __call and __callStatic magic methods?",
+    "question_text": "Given the following class declaration, when are `__call` and `__callStatic` triggered?\n\n```php\nclass Proxy {\n    public function __call($name, $arguments) {}\n    public static function __callStatic($name, $arguments) {}\n}\n```",
     "options": [
       "__call is triggered when invoking inaccessible non-static methods; __callStatic is triggered when invoking inaccessible static methods.",
       "__call is triggered when invoking static methods; __callStatic is triggered when invoking non-static methods.",
@@ -840,10 +840,10 @@
     "points": 10
   },
   {
-    "question_text": "What requirement must the __toString magic method satisfy?",
+    "question_text": "What requirement must the `__toString` magic method satisfy in the class below to avoid a TypeError?\n\n```php\nclass Document {\n    public function __toString() {\n        return 'document content';\n    }\n}\n```",
     "options": [
       "It must accept a boolean argument indicating formatting preferences.",
-      "It must return a string value; otherwise, a Fatal Error is thrown.",
+      "It must return a string value; otherwise, a TypeError is thrown.",
       "It must print the string directly to the output buffer instead of returning it.",
       "It must be declared as a static method."
     ],
@@ -852,10 +852,10 @@
     "points": 10
   },
   {
-    "question_text": "What does the __invoke magic method allow an object to do?",
+    "question_text": "Given the class below, what does the implementation of the `__invoke` magic method allow you to do with an instance of `Calculator`?\n\n```php\nclass Calculator {\n    public function __invoke($a, $b) {\n        return $a + $b;\n    }\n}\n```",
     "options": [
       "It allows an object to be instantiated without the new keyword.",
-      "It allows an object instance to be called directly as if it were a function.",
+      "It allows an object instance to be called directly as if it were a function (e.g., `$calc(5, 10)`).",
       "It allows invoking private methods from the global scope.",
       "It automatically runs when a class is imported."
     ],
@@ -864,7 +864,7 @@
     "points": 10
   },
   {
-    "question_text": "How is the __clone magic method utilized during object cloning?",
+    "question_text": "Given the code below, how is the `__clone` magic method utilized?\n\n```php\nclass Profile {\n    public string $name;\n    public function __clone() {\n        // custom clone logic\n    }\n}\n$p1 = new Profile();\n$p2 = clone $p1;\n```",
     "options": [
       "It is called on the original object before it is copied.",
       "It is called on the newly created object copy after cloning is complete, allowing deep copying of nested objects.",
@@ -876,7 +876,7 @@
     "points": 10
   },
   {
-    "question_text": "What are the roles of __serialize and __unserialize magic methods? (PHP 7.4+)",
+    "question_text": "What are the roles of the `__serialize` and `__unserialize` magic methods in the class below? (PHP 7.4+)\n\n```php\nclass Settings {\n    private array $data;\n    public function __serialize(): array { return $this->data; }\n    public function __unserialize(array $data): void { $this->data = $data; }\n}\n```",
     "options": [
       "They return and receive a string containing JSON-formatted data.",
       "They return and receive an associative array representing the serialized state of the object, replacing the older __sleep/__wakeup interface.",
@@ -888,7 +888,7 @@
     "points": 10
   },
   {
-    "question_text": "If a class implements both the legacy __sleep() method and the newer __serialize() method, which one will PHP execute? (PHP 7.4+)",
+    "question_text": "Given the following class declaration, which method will PHP execute when calling `serialize()` on an instance? (PHP 7.4+)\n\n```php\nclass Migration {\n    public function __sleep() { return ['legacy']; }\n    public function __serialize() { return ['modern']; }\n}\n```",
     "options": [
       "Both will be executed sequentially.",
       "PHP will execute __serialize() and ignore __sleep() entirely.",
@@ -900,7 +900,7 @@
     "points": 10
   },
   {
-    "question_text": "Under what condition is the static __set_state magic method called?",
+    "question_text": "Under what condition is the static `__set_state` magic method called in the class below?\n\n```php\nclass Config {\n    public static function __set_state($array) {\n        // ...\n    }\n}\n```",
     "options": [
       "When the object is dumped using var_export().",
       "When the object is serialized using serialize().",
@@ -912,7 +912,7 @@
     "points": 10
   },
   {
-    "question_text": "What is the purpose of the __debugInfo magic method?",
+    "question_text": "What is the purpose of the `__debugInfo` magic method in the following class?\n\n```php\nclass Secrets {\n    private string $password = 'secret';\n    public function __debugInfo() {\n        return ['password' => '***'];\n    }\n}\n```",
     "options": [
       "It prints debugging details directly to the console during execution.",
       "It is called by var_dump() when dumping an object to get the properties that should be shown.",
@@ -924,7 +924,7 @@
     "points": 10
   },
   {
-    "question_text": "What parameters does the __call magic method accept?",
+    "question_text": "Which parameters must the `__call` magic method accept?\n\n```php\nclass Dynamic {\n    public function __call(string $name, array $arguments) {\n        // ...\n    }\n}\n```",
     "options": [
       "A single string parameter representing the method name.",
       "A string representing the method name, and an array containing the arguments passed to the method.",
@@ -936,7 +936,7 @@
     "points": 10
   },
   {
-    "question_text": "What happens if you try to call unset() on an inaccessible object property, and the class does not define __unset?",
+    "question_text": "What happens if you try to execute the code below when `__unset` is not defined?\n\n```php\nclass User {\n    protected string $email = 'test@example.com';\n}\n$user = new User();\nunset($user->email);\n```",
     "options": [
       "Nothing happens, and the operation is silently ignored.",
       "A fatal TypeError is thrown.",
@@ -948,7 +948,7 @@
     "points": 10
   },
   {
-    "question_text": "Can a magic method be declared as private or protected?",
+    "question_text": "Is the following declaration of `__get` valid and free from warnings in modern PHP?\n\n```php\nclass Config {\n    private function __get($name) {\n        // ...\n    }\n}\n```",
     "options": [
       "Yes, magic methods can have any visibility modifier.",
       "No, all magic methods must be declared as public (except __construct, which can be private/protected for patterns like Singleton).",
@@ -960,7 +960,7 @@
     "points": 10
   },
   {
-    "question_text": "How do standard Closures in PHP import variables from the parent (outer) scope?",
+    "question_text": "Given the following code skeleton, how do standard Closures in PHP import variables from the parent (outer) scope?\n\n```php\n$message = \"hello\";\n$greet = function() use ($message) {\n    echo $message;\n};\n```",
     "options": [
       "They import them automatically by reference.",
       "They must explicitly import them using the use keyword (e.g., function() use ($var) {}).",
@@ -972,31 +972,31 @@
     "points": 10
   },
   {
-    "question_text": "What is the variable capturing behavior of Arrow Functions? (PHP 7.4+)",
+    "question_text": "What is the output of the code below, demonstrating the variable capturing behavior of Arrow Functions? (PHP 7.4+)\n\n```php\n$factor = 10;\n$multiplier = fn($num) => $num * $factor;\n$factor = 20;\necho $multiplier(2);\n```",
     "options": [
-      "They automatically capture variables from the parent scope by-value.",
-      "They automatically capture variables from the parent scope by-reference.",
-      "They require the use keyword to capture any outer variables.",
-      "They cannot capture any outer scope variables."
+      "20 (Arrow functions capture variables from the parent scope by-value at declaration).",
+      "40 (Arrow functions capture variables by-reference, reflecting outer modifications).",
+      "It throws an Undefined Variable error because $factor is not imported via 'use'.",
+      "0"
     ],
     "correct_answer_index": 0,
-    "explanation": "Arrow functions automatically capture parent scope variables by-value (using shallow copy). Modifying a captured variable inside the arrow function does not affect the outer scope variable.",
+    "explanation": "Arrow functions automatically capture parent scope variables by-value (using shallow copy). Modifying a captured variable inside the arrow function does not affect the outer scope variable. In this example, the multiplier uses the captured factor of 10, resulting in 20.",
     "points": 10
   },
   {
-    "question_text": "What is the First-Class Callable Syntax in PHP? (PHP 8.1+)",
+    "question_text": "What is the behavior of the following expression using the First-Class Callable Syntax? (PHP 8.1+)\n\n```php\n$func = strlen(...);\n```",
     "options": [
-      "A way to write callable closures using the ... syntax (e.g., strlen(...)).",
-      "A way to run callables using a dedicated invoke keyword.",
-      "An optimization that converts all closures to static functions.",
-      "A syntax to declare functions that can only accept callable arguments."
+      "It creates a Closure object from the named function using the ... syntax (e.g., strlen(...)).",
+      "It calls the function immediately with variadic arguments.",
+      "It is an optimization that converts all closures to static functions.",
+      "It declares a function that can only accept callable arguments."
     ],
     "correct_answer_index": 0,
     "explanation": "First-class callable syntax (e.g., strlen(...)) creates a Closure object from a named function or method in a clean, type-safe, and performant manner, replacing arrays like ['Class', 'method'] or strings.",
     "points": 10
   },
   {
-    "question_text": "What is a key difference in argument order between array_map and array_filter?",
+    "question_text": "Given the signatures of these two array functions, what is the argument order difference?\n\n```php\narray_map(callable $callback, array $array, ...$arrays);\narray_filter(array $array, callable $callback);\n```",
     "options": [
       "array_map takes the callback first, while array_filter takes the array first.",
       "array_map takes the array first, while array_filter takes the callback first.",
@@ -1008,7 +1008,7 @@
     "points": 10
   },
   {
-    "question_text": "What does array_reduce return if the input array is empty and no initial value is provided?",
+    "question_text": "What is the output/return value of the following array_reduce call?\n\n```php\n$result = array_reduce([], function($carry, $item) {\n    return $carry + $item;\n});\nvar_dump($result);\n```",
     "options": [
       "null",
       "false",
@@ -1020,10 +1020,10 @@
     "points": 10
   },
   {
-    "question_text": "What does the array_find function return? (PHP 8.4+)",
+    "question_text": "Given the following array find call, what does it return? (PHP 8.4+)\n\n```php\n$array = [10, 20, 30, 40];\n$result = array_find($array, fn($val) => $val > 25);\n```",
     "options": [
       "An array of all elements that match the callback condition.",
-      "The value of the first element that satisfies the callback condition, or null if no element matches.",
+      "The value of the first element that satisfies the callback condition (30), or null if no element matches.",
       "The key of the first element that matches the condition.",
       "A boolean indicating if the element was found."
     ],
@@ -1032,11 +1032,11 @@
     "points": 10
   },
   {
-    "question_text": "How does array_any behave? (PHP 8.4+)",
+    "question_text": "What does the following array_any expression evaluate to? (PHP 8.4+)\n\n```php\n$array = [2, 4, 6, 7];\n$result = array_any($array, fn($val) => $val % 2 !== 0);\n```",
     "options": [
-      "It returns true if at least one element in the array satisfies the callback condition; otherwise, it returns false.",
+      "true (it returns true if at least one element satisfies the callback condition).",
       "It returns the value of any random element matching the condition.",
-      "It returns true only if all elements in the array satisfy the callback condition.",
+      "false (it only returns true if all elements satisfy the callback condition).",
       "It throws an exception if no elements match."
     ],
     "correct_answer_index": 0,
@@ -1044,10 +1044,10 @@
     "points": 10
   },
   {
-    "question_text": "How does array_all behave? (PHP 8.4+)",
+    "question_text": "What does the following array_all expression evaluate to? (PHP 8.4+)\n\n```php\n$array = [2, 4, 6, 8];\n$result = array_all($array, fn($val) => $val % 2 === 0);\n```",
     "options": [
       "It returns true if at least one element in the array satisfies the callback condition.",
-      "It returns true if and only if all elements in the array satisfy the callback condition; otherwise, it returns false.",
+      "true (it returns true if and only if all elements in the array satisfy the callback condition; otherwise, it returns false).",
       "It returns an array containing all elements that match the condition.",
       "It returns true only if the array contains no null elements."
     ],
@@ -1056,12 +1056,12 @@
     "points": 10
   },
   {
-    "question_text": "Can an arrow function contain multiple statements or a return statement? (PHP 7.4+)",
+    "question_text": "Which of the following fn statements is a valid arrow function syntax in PHP? (PHP 7.4+)\n\n```php\n// Option A\n$fn = fn($x) => $x * 2;\n\n// Option B\n$fn = fn($x) => {\n    $val = $x * 2;\n    return $val;\n};\n```",
     "options": [
-      "Yes, arrow functions can contain multiple statements separated by semicolons and must include a return statement.",
-      "No, arrow functions can only contain a single expression, and the result of that expression is automatically returned without a return keyword.",
-      "Yes, but only if they are declared as static.",
-      "No, they cannot return any value; they are always void."
+      "Both Option A and Option B are valid.",
+      "Only Option A is valid (arrow functions can only contain a single expression and no block or return keyword).",
+      "Only Option B is valid.",
+      "Neither is valid."
     ],
     "correct_answer_index": 1,
     "explanation": "Arrow functions in PHP are limited to a single expression. They do not use the return keyword; the value of the expression is returned automatically.",
@@ -1104,19 +1104,19 @@
     "points": 10
   },
   {
-    "question_text": "What is the correct syntax for catching multiple exceptions in a single catch block? (PHP 7.1+)",
+    "question_text": "Which catch block syntax is correct for catching multiple exceptions in a single block? (PHP 7.1+)\n\n```php\ntry {\n    processData();\n} catch (??? $e) {\n    logError($e);\n}\n```",
     "options": [
-      "catch (ExceptionA, ExceptionB $e)",
-      "catch (ExceptionA | ExceptionB $e)",
-      "catch (ExceptionA & ExceptionB $e)",
-      "catch (ExceptionA or ExceptionB $e)"
+      "ExceptionA, ExceptionB",
+      "ExceptionA | ExceptionB",
+      "ExceptionA & ExceptionB",
+      "ExceptionA or ExceptionB"
     ],
     "correct_answer_index": 1,
     "explanation": "Starting in PHP 7.1, multiple exception types can be caught in a single catch block by separating them with a pipe symbol (|), e.g., catch (ExceptionA | ExceptionB $e).",
     "points": 10
   },
   {
-    "question_text": "When is the finally block in a try-catch-finally structure executed?",
+    "question_text": "When is the `finally` block executed in the following structure?\n\n```php\ntry {\n    doSomething();\n    return true;\n} catch (Exception $e) {\n    logError($e);\n} finally {\n    cleanup();\n}\n```",
     "options": [
       "Only when no exceptions are thrown in the try block.",
       "Only when an exception is successfully caught by a catch block.",
@@ -1128,7 +1128,7 @@
     "points": 10
   },
   {
-    "question_text": "What does the capability 'throw as expression' allow you to do? (PHP 8.0+)",
+    "question_text": "Which of the following usages is allowed because `throw` is an expression in PHP 8.0+?\n\n```php\n// Usage A\n$name = $input ?? throw new InvalidArgumentException(\"Name required\");\n\n// Usage B\n$fn = fn() => throw new Exception(\"Error\");\n```",
     "options": [
       "It allows using the throw keyword in places where only expressions are allowed, such as arrow functions, ternary operators, or null coalescing operators.",
       "It allows throwing raw string messages without instantiating an exception class.",
@@ -1140,10 +1140,10 @@
     "points": 10
   },
   {
-    "question_text": "What happens to a previously thrown exception if another exception is thrown inside a finally block?",
+    "question_text": "What happens to the first exception if a second exception is thrown inside the `finally` block in this code?\n\n```php\ntry {\n    throw new Exception(\"First\");\n} finally {\n    throw new Exception(\"Second\");\n}\n```",
     "options": [
       "Both exceptions are caught by the same catch block as an array.",
-      "The new exception from the finally block overrides the previous exception, which is lost.",
+      "The new exception from the finally block (\"Second\") overrides the previous exception (\"First\"), which is lost.",
       "A fatal runtime error is thrown because nested exceptions are forbidden.",
       "The first exception is appended to the second exception's getPrevious() chain."
     ],
@@ -1152,7 +1152,7 @@
     "points": 10
   },
   {
-    "question_text": "Under what condition is an ArgumentCountError thrown? (PHP 7.0+)",
+    "question_text": "Under what condition is an ArgumentCountError thrown in the following code context? (PHP 7.0+)\n\n```php\nfunction greet(string $name, string $greeting) {\n    return \"$greeting, $name\";\n}\ngreet(\"Alice\");\n```",
     "options": [
       "When a function receives too many arguments.",
       "When a user-defined function is called with fewer arguments than declared.",
@@ -1176,7 +1176,7 @@
     "points": 10
   },
   {
-    "question_text": "Can you throw an instance of a class that does not implement the Throwable interface? (PHP 7.0+)",
+    "question_text": "Can you throw an instance of a class that does not implement the Throwable interface, as shown in this code? (PHP 7.0+)\n\n```php\nclass CustomObject {}\nthrow new CustomObject();\n```",
     "options": [
       "Yes, any object can be thrown.",
       "No, only classes that implement Throwable (such as Exception and Error) can be thrown; attempting otherwise results in a TypeError.",

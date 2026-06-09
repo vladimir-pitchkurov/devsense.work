@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Какъв е резултатът от следния код в строг режим (strict mode)?\n```javascript\n'use strict';\nfunction test() {\n  console.log(typeof foo);\n  if (true) {\n    function foo() { return 1; }\n  }\n  console.log(typeof foo);\n}\ntest();\n```",
+    "options": [
+      "\"undefined\" и \"undefined\"",
+      "\"function\" и \"function\"",
+      "\"undefined\" и \"function\"",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В строг режим (strict mode) на ES6 дефинициите на функции (function declarations) вътре в блокове имат блокова област на видимост (block scope). Те се издигат (hoisted) в рамките на тяхната блокова лексикална среда, но не са видими във външната област на видимост на функцията. Следователно `typeof foo` е \"undefined\" както преди, така и след блока.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet x = 1;\nfunction outer() {\n  let x = 2;\n  function inner() {\n    console.log(x);\n  }\n  x = 3;\n  return inner;\n}\nconst fn = outer();\nfn();\n```",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Затварянията (closures) в JavaScript улавят променливите по референция, а не по стойност. Затварянето `inner` запазва референция към външната променлива `x` (от променливата среда на `outer`). Когато `fn` се изпълни, стойността на `x` вече е актуализирана на 3, така че се отпечатва 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst arr = [];\nfor (var i = 0; i < 3; i++) {\n  arr.push(() => i);\n}\nconst arr2 = [];\nfor (let j = 0; j < 3; j++) {\n  arr2.push(() => j);\n}\nconsole.log(arr[1](), arr2[1]());\n```",
+    "options": [
+      "1 1",
+      "3 1",
+      "3 3",
+      "1 3"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Променливите, декларирани с `var`, са с област на видимост на функцията (function-scoped), което означава, че има само едно споделено свързване (binding) за `i` във всички итерации на цикъла. Крайната му стойност е 3. Променливите, декларирани с `let` в заглавката на цикъл, създават нова лексикална среда за всяка итерация с ново свързване за `j`. Поради това затварянето в първия масив връща 3, а във втория масив връща 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nvar x = 10;\nfunction test() {\n  console.log(x);\n  if (false) {\n    var x = 20;\n  }\n}\ntest();\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Променливите, декларирани с `var`, се издигат (hoisted) до върха на областта на видимост на съдържащата ги функция по време на фазата на създаване на контекста на изпълнение (execution context), независимо дали клонът се изпълнява. Поради това `var x` се издига вътре в `test()`, засенчвайки глобалната променлива `x`, и се инициализира като `undefined` преди присвояването.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nvar x = 1;\n{\n  var x = 2;\n  let y = 3;\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "2 и \"undefined\"",
+      "1 и \"number\"",
+      "2 и \"number\"",
+      "1 и \"undefined\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Променливата `x` е декларирана с помощта на `var`, която не зачита блоковата област на видимост. Повторното присвояване `var x = 2` презаписва глобалното `x`. Променливата `y` е декларирана с `let`, която е с блокова област на видимост (block-scoped), така че е недостъпна извън блока, което кара `typeof y` да върне \"undefined\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet x = 10;\n{\n  console.log(x);\n  let x = 20;\n}\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 3,
+    "explanation": "В рамките на даден блок, променливите с блокова област на видимост (`let` и `const`) са в 'Временна мъртва зона' (Temporal Dead Zone - TDZ) от началото на блока до обработването на декларацията им. Достъпът до `x` вътре в блока преди неговата локална декларация хвърля ReferenceError, въпреки съществуването на външната променлива `x`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\n(function() {\n  var a = b = 3;\n})();\nconsole.log(typeof a);\nconsole.log(typeof b);\n```",
+    "options": [
+      "\"undefined\" и \"number\"",
+      "\"number\" и \"undefined\"",
+      "\"undefined\" и \"undefined\"",
+      "\"number\" и \"number\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Изразът `var a = b = 3;` се оценява от дясно на ляво. Първо се изпълнява `b = 3`. Тъй като `b` не е декларирано, в нестрог режим то създава свойство (property) в глобалния обект. След това `var a` декларира локална променлива `a` вътре в IIFE. Отвън `a` не е дефинирано (typeof \"undefined\"), но `b` е глобално (typeof \"number\").",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nvar x = 1;\nfunction test(x = x) {\n  console.log(x);\n}\ntest();\n```",
+    "options": [
+      "1",
+      "undefined",
+      "Хвърля ReferenceError",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Стойностите по подразбиране на параметрите се оценяват в тяхна собствена междинна област на видимост. Изразът `x = x` се опитва да прочете параметъра `x`, за да се инициализира. Тъй като параметърът `x` е в TDZ по време на собствената си инициализация, той хвърля ReferenceError.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst f = function g() {\n  console.log(typeof g);\n};\nf();\nconsole.log(typeof g);\n```",
+    "options": [
+      "\"function\" и \"undefined\"",
+      "\"undefined\" и \"function\"",
+      "\"function\" и \"function\"",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В именуван функционален израз (Named Function Expression - NFE), името на функцията (тук `g`) е свързано само в рамките на самата функция. То не е достъпно във външната област на видимост, където `typeof g` връща \"undefined\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction test(a, b = 2) {\n  a = 10;\n  console.log(arguments[0]);\n}\ntest(1);\n```",
+    "options": [
+      "1",
+      "10",
+      "undefined",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES6, ако дадена функция съдържа стойности по подразбиране, rest параметри или деструктурирани параметри, обектът `arguments` не се съпоставя (поведение, подобно на строгия режим). Промяната на параметъра `a` вътре във функцията не променя съответната стойност в `arguments[0]`, която запазва първоначалната стойност на аргумента `1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nvar x = 1;\nlet y = 2;\nconsole.log(globalThis.hasOwnProperty('x'));\nconsole.log(globalThis.hasOwnProperty('y'));\n```",
+    "options": [
+      "true и false",
+      "false и true",
+      "true и true",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В глобалната област на видимост, променливите, декларирани с `var`, или дефинициите на функции се създават като свойства на глобалния обект. Променливите, декларирани с `let`, `const` или `class`, се свързват в глобалната лексикална среда и не стават свойства на глобалния коефициент.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\n'use strict';\nlet x = 1;\nfunction test() {\n  eval('var x = 2; console.log(x);');\n}\ntest();\nconsole.log(x);\n```",
+    "options": [
+      "2 и 1",
+      "2 и 2",
+      "Хвърля SyntaxError",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В строг режим `eval` има своя собствена частна лексикална среда. Променливите, декларирани с `var` вътре в `eval`, не изтичат в заобикалящата област на видимост на функцията или глобалната област. Логът вътре в `eval` отпечатва 2, докато глобалното `x` остава 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet a = 1;\n{\n  let a = 2;\n  function f() {\n    console.log(a);\n  }\n}\nf();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Въпреки че дефинициите на функции вътре в блокове са с блокова област на видимост, в нестроги среди те се издигат (hoisted) извън блока. От решаващо значение е, че затварянето улавя лексикалната среда (Lexical Environment), в която е било декларирано. Функция `f` е декларирана в блоковата област на видимост, където е свързано `let a = 2`, така че изпълнението на `f()` регистрира 2.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\ntry {\n  throw new Error('fail');\n} catch (x) {\n  var x = 1;\n  let y = 2;\n  console.log(x);\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "1, 1, \"undefined\"",
+      "1, undefined, \"undefined\"",
+      "Error: fail, undefined, \"number\"",
+      "Хвърля SyntaxError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Параметърът `x` на блока `catch` е с блокова област на видимост за самия блок `catch`. Въпреки това `var x` се издига до функцията или глобалната област на видимост. В рамките на блока `catch` параметърът `x` засенчва издигнатата променлива `x`. Присвояването `x = 1` актуализира локалния параметър `x` на `catch`. След блока външното издигнато `x` остава `undefined` (тъй като е било засенчено вътре в блока `catch`). Променливата `y` е с блокова област на видимост и е недостъпна отвън.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction test() {\n  const arr = [];\n  for (let i = 0; i < 3; i++) {\n    arr.push(() => {\n      console.log(i);\n    });\n  }\n  return arr;\n}\nconst funcs = test();\nfuncs[0]();\nfuncs[1]();\n```",
+    "options": [
+      "0 и 1",
+      "3 и 3",
+      "0 и 0",
+      "undefined и undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Използването на `let` в заглавката на цикъла `for` инструктира енджина да създаде нова лексикална среда за всяка итерация, свързвайки текущата стойност на `i` с тази итерация. Всяко затваряне на функция улавя своята собствена отделна променлива `i`, което води до правилни последователни индекси при извикване.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst obj = {};\nObject.defineProperty(obj, 'x', {\n  value: 42,\n  writable: true,\n  configurable: false,\n  enumerable: true\n});\nObject.defineProperty(obj, 'x', {\n  writable: false\n});\nconsole.log(obj.x);\nObject.defineProperty(obj, 'x', {\n  value: 99\n});\n```",
+    "options": [
+      "42, след което хвърля TypeError",
+      "99, след което регистрира 99",
+      "42, след което регистрира 99",
+      "Хвърля TypeError при първата дефиниция на свойството"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ако дадено свойство не е конфигурируемо (`configurable: false`), неговите дескриптори не могат да бъдат променяни, с едно изключение: `writable` може да бъде превключено от `true` на `false`. Въпреки това, след като `writable` е false, то не може да бъде променено обратно на `true` и стойността `value` повече не може да бъде модифицирана. Поради това опитът за промяна на `value: 99` хвърля TypeError.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst proto = {\n  set value(val) {\n    this._val = val * 2;\n  }\n};\nconst obj = Object.create(proto);\nobj.value = 10;\nconsole.log(obj.value, obj._val);\n```",
+    "options": [
+      "undefined и 20",
+      "10 и undefined",
+      "20 и 20",
+      "10 и 20"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "При присвояване на свойство на `obj` (т.е. `obj.value = 10`), JS претърсва веригата от прототипи. Тъй като сетер с име `value` съществува в `proto`, JS извиква сетера с `this`, обвързан с получателя `obj`. Сетерът присвоява `this._val = 20`, създавайки `_val` в `obj`. Гетерът за `value` не е дефиниран нито в `proto`, нито в `obj`, така че `obj.value` връща `undefined`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst obj = Object.create(null);\ntry {\n  console.log(obj.hasOwnProperty('x'));\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "false",
+      "error",
+      "undefined",
+      "true"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Object.create(null)` създава обект с прототип `null`. Този обект не наследява от `Object.prototype`, което означава, че методи като `hasOwnProperty`, `toString` и т.н. са недостъпни. Извикването на `obj.hasOwnProperty` хвърля TypeError, задействайки блока `catch`, който отпечатва 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nclass Parent {\n  constructor() {\n    console.log(new.target.name);\n  }\n}\nclass Child extends Parent {\n  constructor() {\n    super();\n  }\n}\nnew Child();\n```",
+    "options": [
+      "\"Parent\"",
+      "\"Child\"",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Стойността на `new.target` вътре в конструктор сочи към конструктора на класа, който е бил извикан от оператора `new`. Дори при изпълнение на код в конструктора на `Parent` чрез `super()`, `new.target` остава обвързан с производния клас `Child`, така че `new.target.name` отпечатва \"Child\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2022+)\n```javascript\nclass Validator {\n  #value;\n  constructor(val) {\n    this.#value = val;\n  }\n  static check(obj) {\n    return #value in obj;\n  }\n}\nconst v = new Validator(10);\nconsole.log(Validator.check(v));\nconsole.log(Validator.check({}));\n```",
+    "options": [
+      "true и false",
+      "true и хвърля TypeError",
+      "хвърля SyntaxError",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2022 въведе проверка за частна марка (private brand check) с помощта на оператора `in` върху частни полета (`#field in object`). Той връща `true`, ако обектът има инсталирано частно поле в него (което се случва по време на конструирането на инстанцията на този клас), и `false` в противен случай, без да хвърля грешка.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните описва въздействието от изпълнението на `Object.setPrototypeOf` върху обект?\n```javascript\nconst a = { x: 1 };\nconst b = { y: 2 };\nObject.setPrototypeOf(a, b);\n```",
+    "options": [
+      "Това прави обекта `a` неизменяем",
+      "Това анулира оптимизациите на ниво енджин (скрити класове/Inline Caches) за `a` и неговите наследници",
+      "Това компилира `a` в нативен WebAssembly модул",
+      "Това няма никакво влияние върху производителността при модерните версии на V8 енджина"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Динамичната промяна на прототипа на даден обект чрез `Object.setPrototypeOf` е изключително бавна операция в JS енджините. Енджини като V8 оптимизират достъпа до свойства въз основа на 'скрити класове' (Shapes) и Inline Caches (IC). Промяната на прототипа анулира тези оптимизации, принуждавайки целия последващ код, който търси свойства в засегнатите обекти, да премине към по-бавен път на изпълнение.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst proto = { x: 10 };\nconst obj = Object.create(proto);\nObject.freeze(obj);\nobj.x = 20;\nconsole.log(obj.x);\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.freeze` предотвратява добавянето на нови свойства, премахването на съществуващи свойства и промяната на конфигурациите на дескрипторите на целевия обект. Той НЕ замразява рекурсивно обектите прототипи. Въпреки това, тъй като `obj` е замразен, присвояването `obj.x = 20` се проваля мълчаливо (в sloppy mode), тъй като самият `obj` не може да има дефинирани нови свойства в него, оставяйки наследената стойност на `proto.x` от 10.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2022+)\n```javascript\nclass Test {\n  static count = 0;\n  static {\n    this.count = 5;\n  }\n  static {\n    this.count += 10;\n  }\n}\nconsole.log(Test.count);\n```",
+    "options": [
+      "15",
+      "0",
+      "5",
+      "Хвърля SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Статичните блокове на класове в ES2022 позволяват инициализация на статични свойства. Те се изпълняват в реда, в който са дефинирани в дефиницията на класа, в контекста на неговия конструктор. Тук първият статичен блок задава `count` да бъде 5, а Вторият блок добавя 10, което води до 15.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst Mixin = (Base) => class extends Base {\n  greet() { return 'Hello'; }\n};\nclass BaseClass {}\nclass ChildClass extends Mixin(BaseClass) {}\nconst inst = new ChildClass();\nconsole.log(inst instanceof BaseClass);\nconsole.log(inst instanceof ChildClass);\n```",
+    "options": [
+      "true и true",
+      "false и true",
+      "true и false",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Миксините (mixins) се имплементират с помощта на класови изрази (class expressions), които разширяват базов клас. `Mixin(BaseClass)` връща нов клас, който разширява `BaseClass`. Следователно `ChildClass` наследява от този междинен клас, който от своя страна наследява от `BaseClass`. По този начин веригата от прототипи съдържа както `ChildClass`, така и `BaseClass`, което прави двете проверки `instanceof` да се оценят като `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nclass Custom {\n  static [Symbol.hasInstance](instance) {\n    return 'special' in instance;\n  }\n}\nconsole.log({} instanceof Custom);\nconsole.log({ special: true } instanceof Custom);\n```",
+    "options": [
+      "false и true",
+      "true и false",
+      "true и true",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Статичният метод `Symbol.hasInstance` позволява персонализиране на поведението на оператора `instanceof`. Тук `instanceof Custom` проверява дали операндът има свойството `'special'`, което води до `false` за `{}` и `true` за `{ special: true }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nclass Parent {\n  static getValue() {\n    return this.val;\n  }\n}\nParent.val = 100;\nclass Child extends Parent {}\nChild.val = 200;\nconsole.log(Child.getValue());\n```",
+    "options": [
+      "200",
+      "100",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "При наследяването на класове в JavaScript статичните свойства и методи се наследяват. Конструкторната функция `Child` има своя прототип (`[[Prototype]]`), свързан с конструктора на `Parent`. Когато се извика `Child.getValue()`, `getValue` се намира в `Parent`, но се изпълнява с `this`, рефериращо към `Child`. Следователно `this.val` се оценява като `Child.val`, което е 200.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst proto = {};\nObject.defineProperty(proto, 'x', {\n  value: 42,\n  writable: false\n});\nconst obj = Object.create(proto);\nobj.x = 99;\nconsole.log(obj.x);\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Хвърля TypeError в нестрог режим (non-strict mode)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ако наследено свойство е незаписваемо (`writable: false`), не можете да го засенчите (shadow) чрез просто присвояване (`obj.x = 99`). Присвояването се проваля мълчаливо в sloppy режим (и хвърля грешка в строг режим). За да засенчите незаписваемо наследено свойство, трябва да дефинирате свойството директно върху обекта наследник, като използвате `Object.defineProperty`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nclass Example {\n  x = 1;\n  constructor() {\n    this.x = 2;\n  }\n}\nExample.prototype.x = 3;\nconst e = new Example();\nconsole.log(e.x);\n```",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Полетата на класа (като `x = 1`) се инициализират върху инстанцията по време на конструирането, преди да се изпълни кодът на конструктора. Вътре в конструктора `this.x = 2` презаписва инициализацията на полето. Прототипното свойство `Example.prototype.x = 3` се игнорира, тъй като свойствата на инстанцията имат предимство пред свойствата във веригата от прототипи.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2022+)\n```javascript\nclass Tester {\n  #val = 42;\n  compare(other) {\n    return other.#val;\n  }\n}\nconst t1 = new Tester();\nconst t2 = new Tester();\nconsole.log(t1.compare(t2));\n```",
+    "options": [
+      "42",
+      "Хвърля TypeError",
+      "undefined",
+      "Хвърля SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "JavaScript позволява на инстанции от един и същи клас да имат достъп до частни свойства на други инстанции от същия клас. Тъй като `t2` също е инстанция на `Tester`, `other.#val` е валидно и успешно осъществява достъп до частното поле на `t2`, връщайки 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction Base() {\n  this.x = 1;\n}\nfunction Custom() {}\nconst obj = Reflect.construct(Base, [], Custom);\nconsole.log(obj.x);\nconsole.log(Object.getPrototypeOf(obj) === Custom.prototype);\n```",
+    "options": [
+      "1 и true",
+      "undefined и true",
+      "1 и false",
+      "undefined и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Reflect.construct(target, argumentsList, newTarget)` извиква конструктора `target` (Base), но използва `newTarget` (Custom) като прототипен шаблон. Върнатият обект ще има своята връзка `[[Prototype]]` насочена към `Custom.prototype`, но все пак ще изпълни конструктора `Base`, задавайки `this.x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst obj = {\n  x: 42,\n  getX() {\n    const inner = () => this.x;\n    return inner;\n  }\n};\nconst detached = obj.getX();\nconsole.log(detached.call({ x: 99 }));\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Стрелковите функции (arrow functions) улавят стойността на `this` лексикално от техния обкръжаващ контекст в момента на създаването им. В този случай `inner` улавя `this` от `getX()`, където `this` реферира към `obj`. Свързванията на `this` при стрелковите функции са постоянни и не могат да бъдат променяни чрез `call()`, `apply()` или `bind()`, така че се връща 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction test() {\n  console.log(this.val);\n}\nconst bound = test.bind({ val: 1 }).bind({ val: 2 });\nbound();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Извикването на `bind()` връща нова обвиваща функция (wrapper function), която задава `this` към предоставения обект по време на извикването. Ако свържете дадена функция няколко пъти (напр. `f.bind(obj1).bind(obj2)`), само първото свързване е ефективно. Последващите свързвания само обвиват вече обвързаната функция, но не могат да променят уловения `this` контекст.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction curried(a) {\n  const fn = (b) => curried(a + b);\n  fn.toString = () => a;\n  fn.valueOf = () => a;\n  return fn;\n}\nconsole.log(Number(curried(1)(2)(3)));\n```",
+    "options": [
+      "6",
+      "1",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Веригата от къринг (currying chain) връща функции, които акумулират аргументите. Чрез презаписване на прототипните методи `valueOf` и `toString` на върнатата функция, ние дефинираме как JavaScript преобразува функцията в примитив. Когато е обвита в `Number(...)`, JS извиква `valueOf()`, който връща натрупаната стойност (1 + 2 + 3 = 6).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код в нестрог режим (non-strict mode)?\n```javascript\nfunction test() {\n  return this;\n}\nconsole.log(test.call(undefined) === globalThis);\nconsole.log(test.call(42) instanceof Number);\n```",
+    "options": [
+      "true и true",
+      "false и false",
+      "true и false",
+      "false и true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В нестрог режим, ако `null` или `undefined` бъде подаден като аргумент `this` на `call` или `apply`, енджинът го преобразува в глобалния обект. По същия начин, примитивни стойности като `42` се обвиват (boxed) в техните обекти обвивки (напр. `Number(42)`), което прави двете условия да се оценят като `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction* genA() {\n  yield 1;\n  return 'doneA';\n}\nfunction* genB() {\n  const val = yield* genA();\n  yield val;\n}\nconst it = genB();\nconsole.log(it.next().value);\n```",
+    "options": [
+      "1",
+      "\"doneA\"",
+      "undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Операторът `yield*` делегира итераторни операции. От решаващо значение е, че той се оценява до върнатата стойност на делегирания генератор. По този начин `genA` връща (yields) `1` и след това завършва с `return 'doneA'`. Тази върната стойност се улавя от `val` в `genB`, която след това се връща (yielded). Последното извикване на `it.next()` проверява дали генераторът е приключил, което е `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst myAsyncIterable = {\n  [Symbol.asyncIterator]() {\n    let count = 0;\n    return {\n      async next() {\n        if (count < 2) {\n          return { value: count++, done: false };\n        }\n        return { value: undefined, done: true };\n      }\n    };\n  }\n};\n(async () => {\n  let res = '';\n  for await (const x of myAsyncIterable) {\n    res += x;\n  }\n  console.log(res);\n})();\n```",
+    "options": [
+      "\"01\"",
+      "\"012\"",
+      "\"12\"",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "За да се създаде валиден персонализиран асинхронен итератор, обектът трябва да имплементира `[Symbol.asyncIterator]`, връщащ итераторен обект с метод `next()`, който връща Promise, разрешаващ се до обект с резултат от итератора. Цикълът се изпълнява за `x = 0` и `x = 1`, отпечатвайки \"01\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst slice = Function.prototype.call.bind(Array.prototype.slice);\nconst result = slice({ 0: 'a', 1: 'b', length: 2 });\nconsole.log(Array.isArray(result));\nconsole.log(result[1]);\n```",
+    "options": [
+      "true и \"b\"",
+      "false и \"b\"",
+      "true и undefined",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Function.prototype.call.bind(method)` обвързва общия метод `call` с целевия метод. Извикването на `slice(arrayLike)` е еквивалентно на извикването на `Array.prototype.slice.call(arrayLike)`. Тъй като входният обект е масивоподобен (array-like, т.е. има индексирани свойства и дължина length), slice го преобразува в истински масив, връщайки `['a', 'b']`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } catch (err) {\n    yield err;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.throw('error').value);\n```",
+    "options": [
+      "1 и \"error\"",
+      "1 и хвърля 'error'",
+      "undefined и \"error\"",
+      "1 и undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Методът `.throw(err)` на генератора възобновява изпълнението и хвърля грешка на мястото на текущо спрения израз `yield`. В този генератор изразът `yield 1` е обвит в try-catch. Когато се извика `.throw('error')`, блокът catch се изпълнява и връща (yields) низа на грешката обратно към извикващия.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst partial = (fn, ...args) => (...rest) => fn(...args.map(x => x === '_' ? rest.shift() : x).concat(rest));\nconst greet = (g, name) => `${g}, ${name}!`;\nconst greetHello = partial(greet, 'Hello', '_');\nconsole.log(greetHello('Alice'));\n```",
+    "options": [
+      "Hello, Alice!",
+      "Hello, _!",
+      "Alice, Hello!",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Тази имплементация на частична функция (partial function) обработва запазени параметри-заместители (`'_'`). Когато се извика `greetHello('Alice')`, заместителят се заменя с `'Alice'`, генерирайки крайния масив от аргументи `['Hello', 'Alice']`, подаден на `greet`, което дава \"Hello, Alice!\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet x = 1;\nfunction test(a = x, b = () => x) {\n  let x = 2;\n  console.log(a);\n  console.log(b());\n}\ntest();\n```",
+    "options": [
+      "1 и 1",
+      "1 и 2",
+      "2 и 2",
+      "Хвърля ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Изразите за параметри по подразбиране имат своя собствена лексикална област на видимост, съдържаща параметрите. Променливите, декларирани в тялото на функцията (`let x = 2`), не могат да повлияят на разрешаването на параметрите по подразбиране, които улавят променливите от външната област на видимост. Следователно и `a`, и затварянето `b` се разрешават до външното `x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\n'use strict';\nconst test = () => {\n  return arguments;\n};\ntry {\n  test(1, 2);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "Обект arguments",
+      "undefined",
+      "Хвърля SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Стрелковите функции не притежават свой собствен обект `arguments`. Вместо това те улавят обекта `arguments` на техния обкръжаващ лексикален контекст. В този случай `test` е дефинирана в глобалната област на видимост, където в строгите ES модули не съществува свързване за `arguments`, хвърляйки ReferenceError.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } finally {\n    yield 2;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.return(3).value);\nconsole.log(g.next().value);\n```",
+    "options": [
+      "1, 2, 3",
+      "1, 3, undefined",
+      "1, 2, undefined",
+      "1, undefined, undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Методът `.return(val)` прекратява изпълнението на генератора и връща `val`. Въпреки това, ако генераторът в момента е спрян в блок `try`, който има блок `finally`, енджинът гарантира първо изпълнението на блока `finally`. Върнатата стойност от блока `finally` (`2`) се връща и след това следващо извикване на `.next()` връща крайната върната стойност (`3`).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst f1 = (a, b = 1, ...c) => {};\nconst f2 = (a, b, c) => {};\nconsole.log(f1.length, f2.length);\n```",
+    "options": [
+      "1 и 3",
+      "2 и 3",
+      "3 и 3",
+      "1 и 2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Свойството `length` на функция връща броя на очакваните аргументи. То изключва rest параметрите и всеки параметър със стойност по подразбиране, както и всички последващи параметри след първия параметър със стойност по подразбиране. За `f1` само `a` отговаря на условията, така че е 1. За `f2` и трите отговарят на условията, така че е 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Валиден итерируем обект (iterable) ли е следният обект съгласно протоколите за итерация на ECMAScript?\n```javascript\nconst obj = {\n  next() {\n    return { value: 42, done: false };\n  }\n};\n```",
+    "options": [
+      "Не, той е итератор (iterator), но му липсва обвивката на прототипа на итератора с [Symbol.iterator]",
+      "Да, той удовлетворява както протоколите за итератор, така и за итерируем обект",
+      "Не, защото методът next не връща Promise",
+      "Да, защото всеки обект с метод next автоматично е итерируем"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "За да удовлетвори протокола за итерируем обект (iterable protocol), обектът трябва да има свойство `[Symbol.iterator]`, което връща итератор. Обект, който има само метод `next`, е 'итератор' (iterator), но не и 'итерируем обект' (iterable). За да се направи итерируем, той трябва да имплементира `[Symbol.iterator]() { return this; }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  const f = new Function('console.log(x);');\n  return f;\n}\nouter()();\n```",
+    "options": [
+      "10",
+      "20",
+      "Хвърля ReferenceError",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Функциите, създадени с помощта на конструктора `new Function`, не наследяват лексикалната среда на областта, в която са създадени. Вместо това те винаги се създават в глобалната област на видимост (обхващаща само глобалната среда). По този начин създадената функция осъществява достъп до глобалното `x` (10), а не до локалното `x` (20).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst p = new Promise((resolve, reject) => {\n  reject('fail');\n});\np.then(null, err => {\n  return 'recovered';\n}).then(val => {\n  console.log(val);\n});\n```",
+    "options": [
+      "\"recovered\"",
+      "Не логва нищо",
+      "Хвърля unhandled promise rejection",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Когато даден Promise бъде отхвърлен, той преминава към най-близкия манипулатор за отхвърляне (`onRejected`). Тъй като вторият аргумент на `p.then` улавя отхвърлянето, той връща `'recovered'`. Тъй като този манипулатор за отхвърляне се изпълнява нормално (без да хвърля грешка или да връща отхвърлен Promise), върнатият Promise се разрешава с `'recovered'`, задействайки следващия `onFulfilled` манипулатор.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconsole.log('start');\nsetTimeout(() => console.log('timeout'), 0);\nPromise.resolve().then(() => console.log('promise'));\nqueueMicrotask(() => console.log('microtask'));\nconsole.log('end');\n```",
+    "options": [
+      "start -> end -> promise -> microtask -> timeout",
+      "start -> end -> timeout -> promise -> microtask",
+      "start -> promise -> microtask -> timeout -> end",
+      "start -> end -> promise -> timeout -> microtask"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Синхронният код се изпълнява пръв. Когато стекът се изпразни, опашката от микрозадачи (microtask queue) се изчерпва преди да се изпълнят каквито и да било макрозадачи (като `setTimeout`). Както `Promise.then`, така и `queueMicrotask` добавят задачи към опашката от микрозадачи. Те се изпълняват по реда на вмъкване, последвани от задачата на таймера.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nPromise.resolve().then(() => {\n  console.log('A');\n  queueMicrotask(() => console.log('B'));\n});\nqueueMicrotask(() => {\n  console.log('C');\n});\n```",
+    "options": [
+      "A -> C -> B",
+      "A -> B -> C",
+      "C -> A -> B",
+      "A -> C"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Микрозадачите се изпълняват последователно, докато опашката от микрозадачи се изпразни напълно. Първоначално на опашката са поставени две микрозадачи: манипулаторът на `Promise` и задачата `C`. По време на изпълнението на първата се добавя нова микрозадача `B`. След логването на `A`, енджинът обработва следващата микрозадача в опашката `C` и след това обработва `B`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nPromise.all([1, Promise.reject('error'), 3])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "\"rejected error\"",
+      "\"resolved [1, undefined, 3]\"",
+      "Не логва нищо",
+      "\"rejected [undefined, 'error', undefined]\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.all` се отхвърля незабавно, ако някой от подадените Promise обекти в масива се отхвърли (поведение с бърз отказ - fail-fast). Дори ако в списъка има стойности, които не са Promise, или разрешени Promise обекти, цялото изпълнение се прекъсва при отхвърляне, прехвърляйки контрола към най-близкия `.catch` манипулатор със съответната грешка.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2021+)\n```javascript\nPromise.any([])\n  .then(() => console.log('resolved'))\n  .catch(err => console.log(err.name));\n```",
+    "options": [
+      "\"AggregateError\"",
+      "\"TypeError\"",
+      "Увисва безкрайно (Hangs indefinitely)",
+      "\"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.any` връща Promise, който се разрешава веднага щом един от подадените Promise обекти се разреши. Ако подаденият масив/итерируем обект е празен, той се отхвърля незабавно с `AggregateError`, съдържащ празен масив от грешки, тъй като няма Promise обекти, които да могат да бъдат разрешени.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nasync function test() {\n  console.log(1);\n  await Promise.resolve();\n  console.log(2);\n}\ntest();\nconsole.log(3);\n```",
+    "options": [
+      "1 -> 3 -> 2",
+      "1 -> 2 -> 3",
+      "3 -> 1 -> 2",
+      "1 -> 3"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Дадена `async` функция се изпълнява синхронно, докато не достигне първия си израз `await`. Изразът `await` спира изпълнението на функцията и поставя на опашката микрозадача за нейното възобновяване. Контролът незабавно се връща към външния стек от извиквания, което кара `3` да се отпечата преди микрозадачата да се изпълни и да отпечата `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, когато даден Promise бъде отхвърлен и няма манипулатор за отхвърляне, но манипулатор catch бъде добавен 2 секунди по-късно?\n```javascript\nconst p = Promise.reject('error');\nsetTimeout(() => {\n  p.catch(e => console.log('handled:', e));\n}, 2000);\n```",
+    "options": [
+      "Събитието unhandledrejection се задейства незабавно, а след това Promise се разрешава успешно, когато се обработи по-късно",
+      "Енджинът хвърля неуловимо изключение незабавно и се срива",
+      "Отхвърлянето се отлага и никога не се регистрира предупреждение",
+      "Кодът хвърля синтактична грешка"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ако даден Promise се отхвърли без манипулатор, енджинът задейства събитие `unhandledrejection` в глобалния контекст в края на итерацията на микрозадачите. Ако впоследствие бъде прикачен манипулатор по-късно (напр. след 2 секунди), енджинът го обработва и може да задейства събитие `rejectionhandled`, за да извести, че отхвърлянето в крайна сметка е било овланяно.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nrequestAnimationFrame(() => console.log('raf'));\nPromise.resolve().then(() => console.log('promise'));\n```",
+    "options": [
+      "\"promise\" се изпълнява първо, но редът между \"timeout\" и \"raf\" зависи от графика за рендиране (reflow schedule) на браузъра",
+      "\"timeout\" -> \"raf\" -> \"promise\"",
+      "\"raf\" -> \"timeout\" -> \"promise\"",
+      "\"promise\" -> \"timeout\" -> \"raf\" последователно във всички среди"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Микрозадачите (`promise`) се изпълняват преди всякакви макрозадачи или рендиране на фреймове. `requestAnimationFrame` се изпълнява как част от тръбопровода за рендиране на браузъра (преди изчертаване/paint). `setTimeout` работи във фазата на таймерите на цикъла за събития (event loop). Редът между рендирането на фреймовете и макрозадачите на таймера зависи от планирането на браузъра и прецизността на времето.",
+    "points": 10
+  },
+  {
+    "question_text": "В цикъла от събития (event loop) на Node.js, какъв е резултатът от следния код?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nsetImmediate(() => console.log('immediate'));\n```",
+    "options": [
+      "Редът на извеждане не е детерминиран и зависи от производителността на процеса",
+      "Винаги \"timeout\" -> \"immediate\"",
+      "Винаги \"immediate\" -> \"timeout\"",
+      "Те работят паралелно на отделни нишки"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Редът на изпълнение между `setTimeout` (с нулево закъснение 0ms, което се привежда до 1ms) и `setImmediate` е недетерминиран, когато се извикват от главния модул. Това зависи от това колко бързо се стартира цикълът за събития и проверява опашката от таймери спрямо опашката за проверка (check queue). Ако се извика в рамките на I/O цикъл, `setImmediate` винаги се изпълнява първи.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst controller = new AbortController();\nconst signal = controller.signal;\nconst p = new Promise((resolve, reject) => {\n  signal.addEventListener('abort', () => reject('aborted'));\n});\ncontroller.abort();\np.catch(e => console.log(e));\n```",
+    "options": [
+      "\"aborted\"",
+      "Не логва нищо",
+      "Хвърля unhandled rejection",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "API интерфейсът `AbortController` позволява отмяна на асинхронни дейности. Чрез слушане на събитието `abort` на сигнала `signal` на контролера, можем незабавно да отхвърлим Promise обекта, когато се извика `controller.abort()`. Тук слушателят на събития се задейства синхронно по време на извикването на `.abort()`, отхвърляйки обещанието.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nasync function foo() {\n  return 1;\n}\nasync function bar() {\n  return Promise.resolve(1);\n}\nconsole.log(foo() instanceof Promise);\nconsole.log(bar() instanceof Promise);\n```",
+    "options": [
+      "true и true",
+      "false и true",
+      "true и false",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Всяка функция, декларирана с `async`, винаги връща Promise. Ако функцията връща примитивна стойност като `1`, енджинът я обвива в разрешен Promise. Ако връща Promise, тя се разрешава до изхода на този Promise, но самата върната стойност на обвивката на асинхронната функция все още е Promise.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst p = new Promise(resolve => {\n  console.log(1);\n  resolve(2);\n  console.log(3);\n});\np.then(v => console.log(v));\nconsole.log(4);\n```",
+    "options": [
+      "1 -> 3 -> 4 -> 2",
+      "1 -> 4 -> 3 -> 2",
+      "4 -> 1 -> 3 -> 2",
+      "1 -> 2 -> 3 -> 4"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Изпълняващата функция (executor function) на Promise се стартира синхронно. При конструирането на `p` тя изпълнява `console.log(1)`, извиква `resolve(2)` и изпълнява `console.log(3)`. Разрешаването на Promise е асинхронно по отношение на неговите `.then` колбеци (които се нареждат като микрозадачи). По този начин следващото логнато е `4`, последвано от изпълнението на опашката от микрозадачи, отпечатващо `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nPromise.race([])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "Увисва безкрайно (никога не се разрешава или отхвърля)",
+      "Разрешава се незабавно с undefined",
+      "Отхвърля се незабавно с TypeError",
+      "Отхвърля се с AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.race(iterable)` връща Promise, който се разрешава или отхвърля веднага щом едно от обещанията в итерируемия обект се разреши или отхвърли. Ако подаденият итерируем обект е празен, няма Promise обекти за надпревара и върнатият Promise остава в състояние на изчакване (pending) завинаги.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nasync function test() {\n  throw new Error('sync-error');\n}\ntest().catch(e => console.log(e.message));\n```",
+    "options": [
+      "\"sync-error\"",
+      "Хвърля неуловима грешка и прекратява изпълнението",
+      "Не логва нищо",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Дори ако дадена грешка бъде хвърлена синхронно преди какъвто и да е израз `await` в `async` функция, енджинът я улавя вътрешно и я преобразува в отхвърлен Promise. Следователно грешката винаги може да бъде уловена чрез стандартен `.catch()` на върнатия Promise.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst p = new Promise((resolve) => {\n  resolve(1);\n  throw new Error('error');\n});\np.then(v => console.log(v)).catch(e => console.log(e.message));\n```",
+    "options": [
+      "1",
+      "\"error\"",
+      "1 и \"error\"",
+      "Хвърля unhandled rejection"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Даден Promise може да премине само през един преход на състоянието (напр. от изчакващо към разрешено). След като се извика `resolve(1)`, състоянието на Promise се заключва като изпълнено. Последващото `throw new Error` се игнорира от машината на състояния на Promise и манипулаторът за отхвърляне никога не се извиква.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nlet resolvePromise;\nconst p = new Promise(resolve => {\n  resolvePromise = resolve;\n});\np.then(() => console.log('resolved'));\n\nconst obj = {\n  then(resolve) {\n    console.log('thenable');\n    resolve();\n  }\n};\n\nresolvePromise(obj);\n```",
+    "options": [
+      "\"thenable\", последвано от \"resolved\"",
+      "\"resolved\", последвано от \"thenable\"",
+      "само \"thenable\"",
+      "само \"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Когато даден Promise бъде разрешен с тогавашен обект (thenable object), енджинът обвива тогавашния обект в микрозадача, за да оцени неговия метод `.then`. Извикването на функцията за разрешаване (resolution function) извиква `obj.then`, което отпечатва \"thenable\" и разрешава вътрешния Promise, впоследствие изпълнявайки веригата `.then` и логвайки \"resolved\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, ако цикъл от микрозадачи се изпълнява рекурсивно, без да отстъпва място на опашката от макрозадачи?\n```javascript\nfunction run() {\n  Promise.resolve().then(run);\n}\nrun();\n```",
+    "options": [
+      "Той блокира цикъла от събития (event loop) напълно, лишавайки от ресурси рендирането и макрозадачите, което води до замръзване на таба/процеса",
+      "Това задейства Call Stack Overflow изключение незабавно",
+      "V8 го прекратява автоматично след 1000 итерации",
+      "Той се изпълнява асинхронно на фонова нишка, без да засяга потребителския интерфейс (UI)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Микрозадачите се разрешават изцяло, преди контролът да се върне към цикъла от събития (event loop). Ако една микрозадача планира друга микрозадача, опашката от микрозадачи никога не се изпразва. В резултат на това цикълът от събития остава в капан във фазата на проверка на микрозадачите (microtasks checkpoint phase), блокиракйи изцяло макрозадачите, входните събития (input events) и рендирането на браузъра.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2020+)\n```javascript\nPromise.allSettled([\n  Promise.resolve(1),\n  Promise.reject('error')\n]).then(results => {\n  console.log(results[0].status, results[1].status);\n  console.log(results[1].reason);\n});\n```",
+    "options": [
+      "\"fulfilled rejected\" и \"error\"",
+      "\"fulfilled fulfilled\" и undefined",
+      "\"resolved rejected\" и \"error\"",
+      "Хвърля AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.allSettled` връща масив от обекти, представляващи резултата от всеки Promise обект. Той никога не се отхвърля. За разрешените обещания статусът е `'fulfilled'` (заедно със стойност `value`). За отхвърлените статусът е `'rejected'` (заедно с причина `reason`).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е редът на извеждане, когато два слушателя на DOM събития се задействат чрез програмно `.click()` спрямо реално щракване с мишката от потребител?\n```javascript\nconst btn = document.createElement('button');\nbtn.addEventListener('click', () => {\n  Promise.resolve().then(() => console.log('Microtask 1'));\n  console.log('Listener 1');\n});\nbtn.addEventListener('click', () => {\n  console.log('Listener 2');\n});\n// Case A: User clicks button physically\n// Case B: btn.click() is called programmatically\n```",
+    "options": [
+      "Случай А: Listener 1 -> Microtask 1 -> Listener 2. Случай B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Случай А: Listener 1 -> Listener 2 -> Microtask 1. Случай B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Случай А: Listener 1 -> Microtask 1 -> Listener 2. Случай B: Listener 1 -> Microtask 1 -> Listener 2.",
+      "Случай А: Listener 1 -> Listener 2 -> Microtask 1. Случай B: Listener 1 -> Microtask 1 -> Listener 2."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "При реално потребителско кликване браузърът задейства колбеците на слушателите асинхронно. Стекът от извиквания (call stack) се изпразва между слушателите, което кара опашката от микрозадачи да се стартира. За програмно `.click()` извикването е синхронно в активния стек от извиквания. Стекът не се изпразва между изпращанията на слушателите, което забавя всички микрозадачи, докато и двата слушателя завършат изпълнението си.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nPromise.resolve(1)\n  .then(x => {\n    throw x + 1;\n  })\n  .catch(err => {\n    return err + 1;\n  })\n  .then(y => {\n    console.log(y);\n  });\n```",
+    "options": [
+      "3",
+      "2",
+      "undefined",
+      "Хвърля unhandled promise rejection"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Първо, `then(x => { throw x + 1; })` получава 1 и хвърля 2, което кара Promise да се отхвърли. След това `.catch` улавя отхвърлянето (стойност 2), изпълнява `2 + 1` и връща 3. Тъй като този блок catch се изпълнява нормално, той разрешава Promise със стойност 3, която след това се логва от следващия `.then` манипулатор.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst proxy = new Proxy({}, {\n  get(target, prop, receiver) {\n    return receiver;\n  }\n});\nconsole.log(proxy.anyProperty === proxy);\nconst derived = Object.create(proxy);\nconsole.log(derived.anyProperty === derived);\n```",
+    "options": [
+      "true и true",
+      "true и false",
+      "false и true",
+      "false и false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Параметърът `receiver` в капана (trap) `get` се отнася до обекта, върху който е иницииран достъпът до свойството. За `proxy.anyProperty` получателят е `proxy`. За `derived.anyProperty` (където `derived` наследява от `proxy`), получателят е `derived`, което кара двата оператора да логнат `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Защо е необходим аргументът `receiver` в `Reflect.set`?\n```javascript\nReflect.set(target, propertyKey, value, receiver);\n```",
+    "options": [
+      "Това гарантира, че ако target има сетер в своя прототип, сетерът ще се изпълни с this, обвързан с receiver",
+      "Това позволява дефиниране на свойство върху получателя (receiver), вместо върху целта (target)",
+      "Използва се само за целите на отстраняване на грешки (debugging)",
+      "Предотвратява събирането на боклука (garbage collection) на целта"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Когато се прихваща капан за задаване (set trap) чрез Proxy, модификацията може да бъде изпълнена върху производен обект, който наследява от проксито. Използването на `Reflect.set(target, prop, val, receiver)` гарантира, че всички наследени сетери се изпълняват с `this`, рефериращ към правилния `receiver` (производния обект), предотвратявайки бъгове в дефинирането на свойства във веригата от прототипи.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  writable: false,\n  configurable: false\n});\nconst proxy = new Proxy(target, {\n  get() {\n    return 99;\n  }\n});\ntry {\n  console.log(proxy.x);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "99",
+      "42",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Прокситата (proxies) налагат инварианти за поддържане на последователност. Ако целево свойство е неконфигурируемо (non-configurable) и незаписваемо (non-writable), капанът `get` на проксито ТРЯБВА да върне действителната стойност на целевото свойство. Ако капанът върне различна стойност (99 вместо 42), енджинът хвърля TypeError, задействайки блока catch.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst map = new WeakMap();\n(function() {\n  const key = { name: 'key' };\n  const val = { name: 'val' };\n  map.set(key, val);\n})();\n// Imagine garbage collection runs here\n```",
+    "options": [
+      "Както key, така и val подлежат на събиране на боклука (garbage collection), тъй като key вече не е достъпен",
+      "Само key се събира, val остава в картата",
+      "Нито едното не се събира, тъй като картата запазва препратките",
+      "Кодът хвърля изключение по време на изпълнение (runtime exception)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В `WeakMap` ключовете се държат слабо (weakly). Когато единствената препратка към обекта-ключ (`key`) бъде загубена (т.е. излезе от обхват след IIFE), ключът става достъпен за събиране на боклука. След като ключът бъде събран, съответната стойност (`val`) също се освобождава (ако приемем, че не съществуват други препратки към `val`), предотвратявайки изтичане на памет (memory leaks).",
+    "points": 10
+  },
+  {
+    "question_text": "Кой от следните кодови шаблони създава изтичане на памет от отделен DOM елемент (detached DOM memory leak)?\n```javascript\n// Scenario 1\nlet element = document.getElementById('button');\nelement.addEventListener('click', () => console.log('clicked'));\nelement.remove();\n\n// Scenario 2\nlet element = document.getElementById('button');\nconst ref = { el: element };\nelement.remove();\nelement = null;\n```",
+    "options": [
+      "Само Сценарий 2, защото обектът ref все още държи референция към елемента",
+      "Само Сценарий 1",
+      "И двата сценария",
+      "Нито един от двата сценария"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В Сценарий 2, въпреки че елементът е премахнат от DOM и неговата локална променлива е нулирана, обектът `ref` все още запазва препратка към `element`. Тъй като JS не може да събере DOM възела чрез GC, докато той е достъпен през `ref`, това създава изтичане на отделен DOM елемент (detached DOM leak). В Сценарий 1 премахването на елемента изчиства стандартните референции и браузърът може да го събере.",
+    "points": 10
+  },
+  {
+    "question_text": "Как генерационният събирач на боклука (Generational Garbage Collector) на V8 оптимизира събирането на памет за краткотрайни обекти?",
+    "options": [
+      "Той разпределя нови обекти в 'New Space' (Nursery) и ги събира бързо с помощта на Scavenger алгоритъма",
+      "Той изпълнява пълен цикъл на Mark-Sweep-Compact при всяко извикване на функция",
+      "Той делегира всички събирания на главната нишка на уеб браузъра",
+      "Той деактивира събирането на боклука за обекти, по-малки от 1KB"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 разделя хийпа (heap) на пространства. Повечето нови разпределения на памет се случват в 'New Space' (или nursery). Тъй като повечето обекти умират млади, V8 използва бърз копиращ колектор (Scavenger) за почистване на 'New Space', като премества оцелелите обекти във второ полупространство, популяризирайки ги в 'Old Space' само след като оцелеят няколко цикъла.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst set = new WeakSet();\nconst obj = { x: 1 };\nset.add(obj);\nconsole.log(set.has(obj));\nconsole.log(Object.keys(set).length);\n```",
+    "options": [
+      "true и 0",
+      "true и 1",
+      "false и 0",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WeakSet` държи обекти слабо (weakly) и не е изброим (enumerable). Той не излага свойства, дължина или итераторни методи (като ключове или стойности). Така `set.has(obj)` е `true`, но извикването на `Object.keys(set)` дава празен масив с дължина 0.",
+    "points": 10
+  },
+  {
+    "question_text": "Как събирачът на боклука (garbage collector) на JavaScript обработва циклични препратки (circular references) между обекти?\n```javascript\nfunction createCycle() {\n  const objA = {};\n  const objB = {};\n  objA.sibling = objB;\n  objB.sibling = objA;\n}\ncreateCycle();\n```",
+    "options": [
+      "Той ги събира, тъй като вече не са достъпни от коренните контексти на изпълнение (root execution contexts)",
+      "Той изтича памет (leaks memory), тъй като броят на референциите на двата обекта остава 1",
+      "Той срива енджина V8 поради препълване на стека (stack overflow)",
+      "Той ги съхранява постоянно в Large Object Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Модерните JS енджини използват алгоритъм за събиране на боклука 'маркиране и помитане' (mark-and-sweep), а не броене на референциите. Като започне от коренните контексти (roots), колекторът маркира всички достъпни обекти. Тъй като `objA` и `objB` вече не са достъпни от нито един корен след връщането на `createCycle`, те се събират, въпреки че реферират един към друг.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следните сравнения?\n```javascript\nconsole.log(Object.is(NaN, NaN));\nconsole.log(Object.is(-0, +0));\nconsole.log(-0 === +0);\n```",
+    "options": [
+      "true, false, true",
+      "false, true, true",
+      "true, true, false",
+      "false, false, true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.is` оценява равенството на стойностите. За разлика от `===`, което счита, че `NaN !== NaN` и `-0 === +0`, `Object.is` третира `NaN` като равен на `NaN` и разграничава `-0` от `+0` (връщайки `false` за тяхното сравнение).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  enumerable: false,\n  configurable: true\n});\nconst proxy = new Proxy(target, {\n  ownKeys() {\n    return ['x', 'y'];\n  }\n});\nconsole.log(Object.keys(proxy));\nconsole.log(Reflect.ownKeys(proxy));\n```",
+    "options": [
+      "[] и [\"x\", \"y\"]",
+      "[\"x\"] и [\"x\", \"y\"]",
+      "[] и [\"x\"]",
+      "Хвърля TypeError, тъй като 'y' липсва в target"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.keys` връща само собствени изброими свойства на целевия обект. Въпреки че капанът `ownKeys` върна `['x', 'y']`, `'x'` е неизброимо (non-enumerable) в целевия обект, така че се филтрира от `Object.keys`, а `'y'` не е дефинирано в целевия обект. `Reflect.ownKeys` заобикаля проверките за изброимост и връща необработените резултати от капана.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2021+)\n```javascript\nconst registry = new FinalizationRegistry(heldValue => {\n  console.log(heldValue);\n});\nlet obj = { x: 1 };\nregistry.register(obj, 'collected');\nobj = null;\n```",
+    "options": [
+      "Не се гарантира конзолен изход синхронно (времето за събиране от GC е недетерминирано)",
+      "\"collected\" се логва незабавно",
+      "Хвърля ReferenceError",
+      "\"collected\" се логва при следващия тик на цикъла от събития (event loop tick)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`FinalizationRegistry` позволява регистриране на колбеци, когато обектите се събират от боклука. Времето за изпълнение на събирането обаче изцяло зависи от енджина. То е недетерминирано, което означава, че колбекът няма да се изпълни незабавно или в предвидим цикъл и може никога да не се стартира по време на краткия живот на процеса.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва с оптимизацията на V8 за обект, когато използвате оператора `delete`, за да премахнете свойство?\n```javascript\nconst obj = { a: 1, b: 2 };\ndelete obj.a;\n```",
+    "options": [
+      "Това анулира скрития клас (Shape) и може да свали обекта в 'режим на речник' (dictionary mode / бавни свойства)",
+      "Това оптимизира достъпа до свойства чрез възстановяване на компресиран скрит клас",
+      "Това компилира обекта в неизменяема структура",
+      "Това няма никакво влияние върху вътрешните пътища за оптимизация на V8"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Изтриването на свойства от обект нарушава преходите на неговите скрити класове. В V8 използването на `delete` (особено върху свойства, които не са последно добавените) често принуждава енджина да отхвърли изцяло оптимизираната форма на скрития клас и да превключи обекта в 'режим на речник' (бавни асоциативни масиви), намалявайки производителността.",
+    "points": 10
+  },
+  {
+    "question_text": "Как бързите свойства на V8 се различават от бавните свойства?",
+    "options": [
+      "Бързите свойства използват фиксирани отмествания (offsets) в непрекъсната структура, базирана на скрити класове, докато бавните свойства използват речникова хеш таблица",
+      "Бързите свойства са числа, докато бавните свойства са низове и символи",
+      "Бързите свойства се намират в глобалния обект, докато бавните свойства са в затваряния (closures)",
+      "Бързите свойства се кешират в локалната памет, докато бавните свойства се извличат от кеша на браузъра"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 съхранява свойства в различни режими. 'Бързите свойства' (Fast properties) се съхраняват директно върху обекта или в плосък масив, използвайки отмествания (offsets) на дескриптори, проследявани от Скрития клас на обекта. 'Бавните свойства' (Slow properties) са резервни структури, които съхраняват свойства в речникова хеш таблица, избягвайки преходите на скритите класове, но намалявайки скоростта на търсене.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код?\n```javascript\nconst sym = Symbol('key');\nconst obj = {\n  [sym]: 'secret'\n};\nconsole.log(Object.keys(obj));\nconsole.log(Object.getOwnPropertyNames(obj));\nconsole.log(Object.getOwnPropertySymbols(obj)[0] === sym);\n```",
+    "options": [
+      "[], [] и true",
+      "[\"key\"], [] и true",
+      "[], [\"key\"] и false",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Символните ключове са проектирани да бъдат скрити от стандартна инспекция. Те не се появяват в `Object.keys` или `Object.getOwnPropertyNames`. За да ги извлечете, трябва да използвате `Object.getOwnPropertySymbols` или `Reflect.ownKeys`, които успешно намират референцията към Symbol.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво е поведението на метода `deref()` върху обект `WeakRef`, след като неговата цел е била събрана от боклука? (ES2021+)\n```javascript\nlet obj = { data: 'val' };\nconst ref = new WeakRef(obj);\nobj = null;\n// Assume garbage collection has completed successfully\nconsole.log(ref.deref());\n```",
+    "options": [
+      "undefined",
+      "null",
+      "Хвърля ReferenceError",
+      "Празният обект {}"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "API-то `WeakRef` позволява задържане на слаба референция към обект. Когато GC идентифицира, че целевият обект вече не е силно достъпен и го изчисти, методът `deref()` спира да връща обекта и започва да връща `undefined` вместо него.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2020+)\n```javascript\nconst val1 = 0 ?? 'fallback';\nconst val2 = 0 || 'fallback';\nconsole.log(val1, val2);\n```",
+    "options": [
+      "0 и \"fallback\"",
+      "\"fallback\" и 0",
+      "0 и 0",
+      "\"fallback\" и \"fallback\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Операторът за обединяване на нулеви стойности (nullish coalescing - `??`) връща своя десен операнд само ако левият операнд е `null` или `undefined`. За разлика от него, логическото ИЛИ (`||`) проверява за истинност (truthiness), третирайки лъжливи стойности (falsy) като `0`, `\"\"` и `false` като задействащи фактори за връщане на резервната стойност (fallback).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2020+)\n```javascript\nconst obj = {\n  a: {\n    b: null\n  }\n};\ntry {\n  console.log(obj.a?.b?.());\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "undefined",
+      "null",
+      "Хвърля SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Незадължителното верижно свързване (optional chaining - `obj.a?.b?.()`) прекратява изпълнението по-рано, ако предходната препратка е nullish. За `obj.a?.b` се оценява до `null`. Следващата верига се оценява като `null?.()`. Тъй като `b` е `null` (а не undefined), се прави опит той да бъде оценен като функция. Тъй като не е функция, се хвърля TypeError, задействайки блока catch.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2020+)\n```javascript\ntry {\n  const res = 10n / 3n;\n  console.log(res);\n  const err = 10n + 3;\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "3n и error",
+      "3.333n и error",
+      "3 и 13",
+      "само error"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES2020 операциите с `BigInt` връщат целочислени стойности; делението (напр. `10n / 3n`) съкращава дробната част, което води до `3n`. От решаващо значение е, че смесените математически операции между `BigInt` и стандартните типове `Number` хвърлят TypeError, причинявайки грешка на втория ред и регистриране на 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Кое от следните описва поведението при изпълнение и кеширане на динамичния `import()`? (ES2020+)",
+    "options": [
+      "Той връща Promise, който се разрешава до обекта на пространството от имена на модула, който се кешира, така че последващите извиквания да не изпълняват отново скрипта на модула",
+      "Той изпълнява модула синхронно и заобикаля стандартните механизми за кеширане",
+      "Той изтегля отново и изпълнява повторно целевия модул при всяко извикване",
+      "Работи само в нишките на уеб работници (web workers) на браузъра"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Динамичният `import()` зарежда ES модули асинхронно, връщайки Promise. След като даден модул бъде разрешен и изпълнен, енджинът кешира инстанцията на модула. Последващите динамични импортирания на същия път извличат кеширания обект от пространство от имена на модула, без да изпълняват скрипта отново.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2021+)\n```javascript\nlet x = null;\nlet y = 5;\nx ??= y;\ny &&= 10;\nconsole.log(x, y);\n```",
+    "options": [
+      "5 и 10",
+      "null и 5",
+      "5 и 5",
+      "null и 10"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Логическите оператори за присвояване комбинират логически тестове с присвояване. `x ??= y` присвоява `y` на `x`, тъй като `x` е нулев (nullish), разрешавайки `x` до 5. `y &&= 10` присвоява `10` на `y`, тъй като `y` е истинно (5 е истинно, разрешавайки `y` до 10).",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2022+)\n```javascript\nclass Base {\n  #brand = true;\n  static check(obj) {\n    return #brand in obj;\n  }\n}\nconsole.log(Base.check(new Base()));\nconsole.log(Base.check(Object.create(Base.prototype)));\n```",
+    "options": [
+      "true и false",
+      "true и true",
+      "false и false",
+      "Хвърля TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Проверката на частна марка (private brand check - `#brand in obj`) проверява дали частното поле е инсталирано в инстанцията. Обектите, създадени чрез `Object.create(Base.prototype)`, имат правилния прототип, но не преминават през инициализация на конструктора, така че нямат инсталирани частни полета. Следователно тя връща `false` без да хвърля грешка.",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2021+)\n```javascript\nconst str = 'apple banana apple';\nconst res = str.replaceAll('apple', () => 'pear');\nconsole.log(res);\n```",
+    "options": [
+      "\"pear banana pear\"",
+      "\"pear banana apple\"",
+      "Хвърля TypeError",
+      "\"apple banana apple\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2021 въведе `String.prototype.replaceAll()`. Когато се извика с низ като шаблон за търсене, той заменя всички срещания на този низ с новата стойност или с резултата от заместващата функция, извеждайки \"pear banana pear\".",
+    "points": 10
+  },
+  {
+    "question_text": "Какъв е резултатът от следния код? (ES2022+)\n```javascript\nconst arr = [1, 2, , 4];\nconsole.log(arr.at(-1));\nconsole.log(arr.at(-2));\n```",
+    "options": [
+      "4 и undefined",
+      "4 и null",
+      "4 и 2",
+      "Хвърля RangeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2022 въведе метода `.at()` за масиви. Той поддържа отрицателни индекси, където `-1` сочи към последния елемент (`4`), а `-2` сочи към предпоследния елемент (който е празен слот, съдържащ `undefined` в този масив).",
+    "points": 10
+  },
+  {
+    "question_text": "Защо се предпочита `Object.hasOwn` пред `Object.prototype.hasOwnProperty`? (ES2022+)\n```javascript\nconst obj = Object.create(null);\n// Case A: obj.hasOwnProperty('x');\n// Case B: Object.hasOwn(obj, 'x');\n```",
+    "options": [
+      "Случай А хвърля TypeError, докато Случай B се изпълнява безопасно",
+      "Случай B е синхронен, докато Случай А е асинхронен",
+      "Случай B работи само за частни полета, докато Случай А работи за стандартни свойства",
+      "Няма разлика, това е чисто синтактична захар (syntax sugar)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.hasOwn` е статичен метод. Той не изисква достъп до свойство в прототипа на целевия обект. Ако обектът не наследява от `Object.prototype` (като `Object.create(null)`), извикването на `hasOwnProperty` хвърля TypeError. `Object.hasOwn` работи безопасно за всички обекти.",
+    "points": 10
+  },
+  {
+    "question_text": "В спецификацията за декоратори на TC39 Stage 3/4, каква е целта на `Symbol.metadata`? (ES2023+)",
+    "options": [
+      "Той действа като ключ за съхранение на метаданни, дефиниран в конструктора на класа, за да улови метаданни, дефинирани от декоратори на класове и свойства",
+      "Той компилира системи за структурно типизиране в метаданни за изпълнение на JavaScript",
+      "Той съхранява частни идентификационни данни за достъп до уеб сокети (web sockets)",
+      "Използва се за проверка дали даден клас има частни методи"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Предложението за декоратори на Етап 3 (Stage 3 Decorators) въвежда `Symbol.metadata` като ключ в конструкторите на класове. Декораторите могат да осъществяват достъп и да пишат в обект с метаданни, който след това се запазва в свойството `[Symbol.metadata]` на класа, осигурявайки стандартизиран начин за четене на анотации на декоратори по време на изпълнение.",
+    "points": 10
+  },
+  {
+    "question_text": "В JIT компилационния тръбопровод (compilation pipeline) на V8, каква роля изпълнява компонентът 'Ignition'?",
+    "options": [
+      "Той е интерпретаторът на байткод (bytecode interpreter), който парсва JavaScript и изпълнява кода, събирайки обратна връзка за профилиране (profiling feedback)",
+      "Той е оптимизиращият компилатор, който генерира машинен код от горещи пътища (hot paths)",
+      "Той е парсерът, който проверява за синтактични грешки и хвърля предупреждения",
+      "Той е събирачът на боклука (garbage collector), който помита 'New Space' хийпа"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Компилационният тръбопровод на V8 започва с парсване на JS до абстрактно синтактично дърво (AST). 'Ignition' интерпретира това AST в байткод, изпълнявайки го незабавно. Докато се изпълнява, той събира данни за производителността и профилираща информация, за да идентифицира 'горещи' функции, които могат да бъдат оптимизирани по-късно от TurboFan.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво се случва, когато Inline Cache (IC) премине от 'Polymorphic' към 'Megamorphic' във V8?",
+    "options": [
+      "Енджинът спира да оптимизира отместванията на свойствата (property offsets) и се връща към бавно търсене по хеш (hash lookup) във формата на обекта",
+      "Кодът се оптимизира директно за компилиране на машинни инструкции",
+      "Изпълнението се пренасочва към уеб работници (web workers)",
+      "Хийпът е напълно компресиран за освобождаване на памет"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Inline Cache (IC) оптимизира достъпа до свойства. Ако достъпът до свойство е с 1 форма (shape), той е мономорфен (monomorphic). До 4 форми той е полиморфен (polymorphic). Ако енджинът открие повече от 4 различни форми на това място на извикване (call-site), IC става мегаморфен (megamorphic), като спира вграденото кеширане (inline caching) и се връща към по-бавен път за глобално търсене.",
+    "points": 10
+  },
+  {
+    "question_text": "Как конструкторните функции, които инициализират свойства в различен ред, влияят върху производителността на изпълнението във V8?\n```javascript\nfunction A() { this.x = 1; this.y = 2; }\nfunction B() { this.y = 2; this.x = 1; }\n```",
+    "options": [
+      "Те генерират различни скрити класове (Shapes), правейки местата за извикване на функции полиморфни или мегаморфни, вместо мономорфни",
+      "Те използват идентични скрити класове, така че имат нулево влияние върху производителността",
+      "Те карат TurboFan да компилира функциите директно, без да парсва байткод",
+      "Те задействат незабавни събирания на боклука (garbage collection sweeps)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 създава скрити класове (Hidden Classes / Shapes) въз основа на реда, в който свойствата се присвояват на даден обект. Въпреки че инстанциите на `A` и `B` имат еднакви свойства (`x` и `y`), те преминават в различен ред, генерирайки два различни скрити класа. Подаването на обекти с различни скрити класове към една и съща функция води до влошаване на оптимизациите.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво описва фазата на копиране при Scavenger алгоритъма за събиране на боклука в V8?",
+    "options": [
+      "Той копира оцелелите обекти от активното 'From Space' в 'To Space', изхвърляйки мъртвите обекти, и след това разменя ролите на пространствата",
+      "Той сканира целия хийп, маркира цикличните референции и ги компресира на място",
+      "Той преобразува фрагментите памет в един непрекъснат WebAssembly буфер",
+      "Той записва дъмпове на хийпа (heap dumps) във файловата система за диагностични оценки"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Алгоритъмът Scavenger е насочен към 'New Space' на V8. Това пространство е разделено на две полупространства: 'From Space' и 'To Space'. При събиране Scavenger преминава през коренните обекти (roots), копира живите обекти от 'From Space' в 'To Space' и изхвърля останалите. След това пространствата разменят ролите си, поддържайки компактен хийп.",
+    "points": 10
+  },
+  {
+    "question_text": "Какво задейства деоптимизация (Deoptimization / Deopt) в TurboFan компилатора на V8?",
+    "options": [
+      "Оптимизирана функция получава аргументи, които се отклоняват от формите на типовете (type shapes) или условията, събрани по време на профилирането",
+      "Стекът от извиквания (call stack) надвишава максималните граници за изпълнение",
+      "Събирачът на боклука стартира цикъл на mark-sweep компресиране",
+      "Програмата се опитва да зареди динамични импорти"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "TurboFan оптимизира кода въз основа на обратна връзка за типовете (например приемайки, че даден параметър винаги е цяло число). Ако функцията получи стойност от друг тип (например низ), предположенията на оптимизирания код се оказват невалидни. Енджинът трябва да изхвърли оптимизирания машинен код и да се върне към интерпретиран байткод (deopt).",
+    "points": 10
+  },
+  {
+    "question_text": "Кое пространство от паметта (memory space) в хийпа на V8 съдържа компилирания изпълним машинен код на оптимизираните функции?",
+    "options": [
+      "Code Space",
+      "Large Object Space",
+      "Old Pointer Space",
+      "Map Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 разпределя памет в специализирани области на хийпа. Компилираните машинни инструкции, генерирани от оптимизиращи компилатори като TurboFan, се съхраняват в 'Code Space', което е единственото пространство, маркирано като изпълнимо в паметта, с цел предотвратяване на експлойти в сигурността.",
+    "points": 10
+  },
+  {
+    "question_text": "За да поддържате функциите на V8 оптимизирани, каква е най-добрата практика относно типовете достъп до свойства?",
+    "options": [
+      "Осигурете мономорфност на функциите, като подавате обекти, които споделят абсолютно същата форма на скрит клас (hidden class shape)",
+      "Преназначавайте свойства към различни типове често вътре в цикли",
+      "Изтривайте свойства от обекти веднага щом вече не са необходими",
+      "Винаги извиквайте функции с променлив брой аргументи, като използвате arguments"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Функциите остават оптимизирани (мономорфни), когато обработват обекти с идентични скрити класове. Избягването на модификации на реда на свойствата, структурни актуализации като изтривания (delete) или промени в типа на параметрите гарантира, че Inline Caches остават бързи и предположенията на компилатора остават валидни.",
+    "points": 10
+  },
+  {
+    "question_text": "Защо V8 не поддържа обща оптимизация на опашните извиквания (Tail Call Optimization - TCO) при съвременното изпълнение на JavaScript?",
+    "options": [
+      "TCO премахва кадрите от извиквания (call frames), затруднявайки генерирането на проследяване на стека (stack trace) и дебъгването, и не може да бъде договорено за всички архитектури на енджини",
+      "Математически е невъзможно да се имплементира в среди за динамични скриптове",
+      "Беше заменено от WebAssembly опашни извиквания във всички браузъри",
+      "Компилаторът V8 изисква кадри от извиквания, за да изпълнява цикли на събиране на боклука"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Въпреки че TCO беше добавена към спецификацията на ES6, V8 (както и повечето енджини, с изключение на JSC на Safari) спряха поддръжката за нея. Причините включват: TCO изхвърля кадрите в стека, което разваля проследяването на `Error.stack`, правейки дебъгването изключително трудно; както и сложни изисквания за имплементация при правилата за динамичен обхват (dynamic scoping).",
+    "points": 10
+  },
+  {
+    "question_text": "Как асинхронните Web API колбеци (като разрешаване на `fetch`) влизат в главната нишка на изпълнение на V8?",
+    "options": [
+      "Те се подреждат в опашки за задачи/микрозадачи от средата, а цикълът от събития (event loop) ги изтласква в стека на V8, след като стекът се изпразни",
+      "Те прекъсват изпълнението на V8 незабавно чрез хардуерни прекъсвания (hardware interrupts)",
+      "Те се изпълняват на вторични нишки на V8 паралелно с главния контекст на изпълнение",
+      "Те се изпълняват директно от нишката за събиране на боклука"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 е еднонишков. Уеб API-тата се изпълняват на отделни нишки на хост средата (браузър/node). Когато приключат, техните колбеци се подреждат на опашка в опашките за задачи/микрозадачи. Цикълът от събития (Event Loop) следи стека от извиквания на V8. След като стекът от извиквания се изчисти напълно, той изважда задачите от опашката и ги изтласква към V8.",
+    "points": 10
+  },
+  {
+    "question_text": "Каква е разликата между пълния парсер (full parser) на V8 и неговия предварителен парсер (pre-parser)?",
+    "options": [
+      "Пълният парсер изгражда абстрактно синтактично дърво (AST) за изпълнение, докато предварителният парсер проверява синтаксиса и пропуска генерирането на AST за вложени функции",
+      "Предварителният парсер превежда кода в байткод, а пълният парсер го оптимизира",
+      "Предварителният парсер работи на отделен работен процес, докато пълният парсер работи на графичния процесор (GPU)",
+      "Няма разлика; те са алтернативни имена за интерпретатора на байткод Ignition"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "За намаляване на времето за стартиране, V8 използва мързеливо парсване (lazy parsing). Предварителният парсер извършва бързо сканиране на вътрешни/вложени функции, за да провери синтаксиса и да потърси променливи в блоковия обхват, без да компилира AST или да разпределя памет. Пълният парсер работи по-късно, за да изгради AST само когато функцията действително бъде извикана.",
+    "points": 10
+  }
+]

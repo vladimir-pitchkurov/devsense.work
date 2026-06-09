@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes im Strict Mode?\n```javascript\n'use strict';\nfunction test() {\n  console.log(typeof foo);\n  if (true) {\n    function foo() { return 1; }\n  }\n  console.log(typeof foo);\n}\ntest();\n```",
+    "options": [
+      "\"undefined\" und \"undefined\"",
+      "\"function\" und \"function\"",
+      "\"undefined\" und \"function\"",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Strict-Mode von ES6 haben Funktionsdeklarationen innerhalb von Blöcken einen Block-Gültigkeitsbereich (Block-Scope). Sie werden innerhalb ihrer block-lexikalischen Umgebung gehoistet, sind aber im äußeren Funktions-Gültigkeitsbereich nicht sichtbar. Daher ist `typeof foo` sowohl vor als auch nach dem Block \"undefined\".",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet x = 1;\nfunction outer() {\n  let x = 2;\n  function inner() {\n    console.log(x);\n  }\n  x = 3;\n  return inner;\n}\nconst fn = outer();\nfn();\n```",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "JavaScript-Closures erfassen Variablen per Referenz, nicht per Wert. Die Closure `inner` behält eine Referenz auf die äußere Variable `x` (aus der Variablenumgebung von `outer`). Wenn `fn` ausgeführt wird, wurde der Wert von `x` bereits auf 3 aktualisiert, sodass 3 ausgegeben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst arr = [];\nfor (var i = 0; i < 3; i++) {\n  arr.push(() => i);\n}\nconst arr2 = [];\nfor (let j = 0; j < 3; j++) {\n  arr2.push(() => j);\n}\nconsole.log(arr[1](), arr2[1]());\n```",
+    "options": [
+      "1 1",
+      "3 1",
+      "3 3",
+      "1 3"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Mit `var` deklarierte Variablen haben einen Funktions-Gültigkeitsbereich (Function-Scope), was bedeutet, dass es über alle Schleifendurchläufe hinweg nur eine einzige gemeinsame Bindung für `i` gibt. Ihr Endwert ist 3. Mit `let` im Schleifenkopf deklarierte Variablen erstellen für jeden Durchlauf eine neue lexikalische Umgebung mit einer neuen Bindung für `j`. Daher gibt die Closure im ersten Array 3 zurück, und im zweiten Array 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nvar x = 10;\nfunction test() {\n  console.log(x);\n  if (false) {\n    var x = 20;\n  }\n}\ntest();\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Mit `var` deklarierte Variablen werden während der Erstellungsphase des Ausführungskontexts an den Anfang ihres umschließenden Funktions-Gültigkeitsbereichs gehoistet, unabhängig davon, ob der entsprechende Zweig ausgeführt wird. Daher wird `var x` innerhalb von `test()` gehoistet, wodurch das globale `x` überschattet wird, und vor der Zuweisung mit `undefined` initialisiert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nvar x = 1;\n{\n  var x = 2;\n  let y = 3;\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "2 und \"undefined\"",
+      "1 und \"number\"",
+      "2 und \"number\"",
+      "1 und \"undefined\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Variable `x` wird mit `var` deklariert, was den Block-Gültigkeitsbereich nicht berücksichtigt. Die Neuzuweisung `var x = 2` überschreibt das globale `x`. Die Variable `y` wird mit `let` deklariert, was block-scoped ist, sodass außerhalb des Blocks nicht darauf zugegriffen werden kann, was dazu führt, dass `typeof y` \"undefined\" zurückgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet x = 10;\n{\n  console.log(x);\n  let x = 20;\n}\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Innerhalb eines Blocks befinden sich block-scoped Variablen (`let` und `const`) in einer temporären Totzone (Temporal Dead Zone, TDZ), und zwar vom Beginn des Blocks an bis die Deklaration verarbeitet wird. Der Zugriff auf `x` innerhalb des Blocks vor seiner lokalen Deklaration wirft einen ReferenceError, obwohl die äußere Variable `x` existiert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\n(function() {\n  var a = b = 3;\n})();\nconsole.log(typeof a);\nconsole.log(typeof b);\n```",
+    "options": [
+      "\"undefined\" und \"number\"",
+      "\"number\" und \"undefined\"",
+      "\"undefined\" und \"undefined\"",
+      "\"number\" und \"number\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Ausdruck `var a = b = 3;` wird von rechts nach links ausgewertet. Zuerst wird `b = 3` ausgeführt. Da `b` nicht deklariert ist, erzeugt es im Non-Strict-Mode eine Eigenschaft auf dem globalen Objekt. Danach deklariert `var a` eine lokale Variable `a` innerhalb der IIFE. Außerhalb ist `a` nicht definiert (typeof \"undefined\"), aber `b` ist global (typeof \"number\").",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nvar x = 1;\nfunction test(x = x) {\n  console.log(x);\n}\ntest();\n```",
+    "options": [
+      "1",
+      "undefined",
+      "Wirft einen ReferenceError",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Standard-Parameterwerte (Default Parameters) werden in ihrem eigenen Zwischenbereich ausgewertet. Der Ausdruck `x = x` versucht, den Parameter `x` zu lesen, um sich selbst zu initialisieren. Da sich der Parameter `x` während seiner eigenen Initialisierung in der TDZ befindet, wird ein ReferenceError geworfen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst f = function g() {\n  console.log(typeof g);\n};\nf();\nconsole.log(typeof g);\n```",
+    "options": [
+      "\"function\" und \"undefined\"",
+      "\"undefined\" und \"function\"",
+      "\"function\" und \"function\"",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In einem benannten Funktionsausdruck (Named Function Expression, NFE) ist der Name der Funktion (hier `g`) nur innerhalb des Gültigkeitsbereichs der Funktion selbst gebunden. Er ist im äußeren Gültigkeitsbereich nicht verfügbar, wo `typeof g` \"undefined\" zurückgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction test(a, b = 2) {\n  a = 10;\n  console.log(arguments[0]);\n}\ntest(1);\n```",
+    "options": [
+      "1",
+      "10",
+      "undefined",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn eine Funktion in ES6 Standardwerte, Rest-Parameter oder destrukturierte Parameter enthält, ist das `arguments`-Objekt nicht synchronisiert (non-mapped, ähnlich dem Verhalten im Strict Mode). Das Ändern des Parameters `a` innerhalb der Funktion ändert nicht den entsprechenden Wert in `arguments[0]`, welcher den ursprünglichen Argumentwert `1` behält.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nvar x = 1;\nlet y = 2;\nconsole.log(globalThis.hasOwnProperty('x'));\nconsole.log(globalThis.hasOwnProperty('y'));\n```",
+    "options": [
+      "true und false",
+      "false und true",
+      "true und true",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im globalen Gültigkeitsbereich werden mit `var` deklarierte Variablen oder Funktionsdeklarationen als Eigenschaften des globalen Objekts erstellt. Mit `let`, `const` oder `class` deklarierte Variablen werden stattdessen in der globalen lexikalischen Umgebung gebunden und werden nicht zu Eigenschaften des globalen Objekts.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes im Strict Mode?\n```javascript\n'use strict';\nlet x = 1;\nfunction test() {\n  eval('var x = 2; console.log(x);');\n}\ntest();\nconsole.log(x);\n```",
+    "options": [
+      "2 und 1",
+      "2 und 2",
+      "Wirft einen SyntaxError",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Strict Mode hat `eval` seine eigene private lexikalische Umgebung. Mit `var` deklarierte Variablen innerhalb von `eval` dringen nicht in den umgebenden Funktionsbereich oder den globalen Gültigkeitsbereich vor. Die Ausgabe innerhalb von `eval` gibt 2 aus, während das globale `x` 1 bleibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet a = 1;\n{\n  let a = 2;\n  function f() {\n    console.log(a);\n  }\n}\nf();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Obwohl Funktionsdeklarationen in Blöcken block-scoped sind, werden sie in Non-Strict-Umgebungen aus dem Block gehoistet. Entscheidend ist, dass die Closure die lexikalische Umgebung erfasst, in der sie deklariert wurde. Die Funktion `f` wurde im Blockbereich deklariert, in dem `let a = 2` gebunden ist, sodass das Ausführen von `f()` 2 ausgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\ntry {\n  throw new Error('fail');\n} catch (x) {\n  var x = 1;\n  let y = 2;\n  console.log(x);\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "1, 1, \"undefined\"",
+      "1, undefined, \"undefined\"",
+      "Error: fail, undefined, \"number\"",
+      "Wirft einen SyntaxError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Catch-Block-Parameter `x` ist auf den Catch-Block beschränkt (block-scoped). Allerdings wird `var x` in den Funktions- oder globalen Gültigkeitsbereich gehoistet. Innerhalb des Catch-Blocks überschattet der Catch-Parameter `x` die gehoistete Variable `x`. Die Zuweisung `x = 1` aktualisiert den lokalen Catch-Parameter `x`. Nach dem Block bleibt das äußere gehoistete `x` `undefined` (da es im Catch-Block überschattet wurde). `y` ist block-scoped und außerhalb nicht verfügbar.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction test() {\n  const arr = [];\n  for (let i = 0; i < 3; i++) {\n    arr.push(() => {\n      console.log(i);\n    });\n  }\n  return arr;\n}\nconst funcs = test();\nfuncs[0]();\nfuncs[1]();\n```",
+    "options": [
+      "0 und 1",
+      "3 und 3",
+      "0 und 0",
+      "undefined und undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Verwendung von `let` im Kopf der `for`-Schleife weist die Engine an, für jeden Schleifendurchlauf eine neue lexikalische Umgebung zu erstellen, die den aktuellen Wert von `i` an diesen Durchlauf bindet. Jede Funktions-Closure erfasst ihre eigene eindeutige `i`-Variable, was beim Aufruf zu den korrekten sequenziellen Indizes führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst obj = {};\nObject.defineProperty(obj, 'x', {\n  value: 42,\n  writable: true,\n  configurable: false,\n  enumerable: true\n});\nObject.defineProperty(obj, 'x', {\n  writable: false\n});\nconsole.log(obj.x);\nObject.defineProperty(obj, 'x', {\n  value: 99\n});\n```",
+    "options": [
+      "42, wirft dann einen TypeError",
+      "99, gibt dann 99 aus",
+      "42, gibt dann 99 aus",
+      "Wirft einen TypeError bei der ersten Eigenschaftsdefinition"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn eine Eigenschaft nicht konfigurierbar ist (`configurable: false`), können ihre Deskriptoren nicht geändert werden, mit einer Ausnahme: `writable` kann von `true` auf `false` geändert werden. Sobald `writable` jedoch false ist, kann es nicht wieder auf `true` geändert werden und der `value` kann nicht mehr modifiziert werden. Daher wirft der Versuch, `value: 99` zu ändern, einen TypeError.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst proto = {\n  set value(val) {\n    this._val = val * 2;\n  }\n};\nconst obj = Object.create(proto);\nobj.value = 10;\nconsole.log(obj.value, obj._val);\n```",
+    "options": [
+      "undefined und 20",
+      "10 und undefined",
+      "20 und 20",
+      "10 und 20"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Bei der Zuweisung einer Eigenschaft auf `obj` (d. h. `obj.value = 10`) durchsucht JS die Prototypenkette. Da ein Setter namens `value` auf `proto` existiert, ruft JS den Setter auf, wobei `this` an das Empfängerobjekt `obj` gebunden ist. Der Setter weist `this._val = 20` zu, wodurch `_val` auf `obj` erstellt wird. Der Getter für `value` ist weder auf `proto` noch auf `obj` definiert, sodass `obj.value` `undefined` zurückgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst obj = Object.create(null);\ntry {\n  console.log(obj.hasOwnProperty('x'));\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "false",
+      "error",
+      "undefined",
+      "true"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Object.create(null)` erstellt ein Objekt mit einem Prototyp von `null`. Dieses Objekt erbt nicht von `Object.prototype`, was bedeutet, dass Methoden wie `hasOwnProperty`, `toString` etc. nicht verfügbar sind. Der Aufruf von `obj.hasOwnProperty` wirft einen TypeError, was den catch-Block auslöst, der 'error' ausgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nclass Parent {\n  constructor() {\n    console.log(new.target.name);\n  }\n}\nclass Child extends Parent {\n  constructor() {\n    super();\n  }\n}\nnew Child();\n```",
+    "options": [
+      "\"Parent\"",
+      "\"Child\"",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Wert von `new.target` innerhalb eines Konstruktors zeigt auf den Klassenkonstruktor, der durch den `new`-Operator aufgerufen wurde. Selbst wenn Code im Konstruktor von `Parent` über `super()` ausgeführt wird, bleibt `new.target` an die abgeleitete Klasse `Child` gebunden, sodass `new.target.name` \"Child\" ausgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2022+)\n```javascript\nclass Validator {\n  #value;\n  constructor(val) {\n    this.#value = val;\n  }\n  static check(obj) {\n    return #value in obj;\n  }\n}\nconst v = new Validator(10);\nconsole.log(Validator.check(v));\nconsole.log(Validator.check({}));\n```",
+    "options": [
+      "true und false",
+      "true und wirft einen TypeError",
+      "wirft einen SyntaxError",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Mit ES2022 wurde die Prüfung auf private Felder (Private Brand Check) mithilfe des `in`-Operators eingeführt (`#field in object`). Dies gibt `true` zurück, falls das Objekt das private Feld besitzt (was während der Konstruktion der Instanz dieser Klasse geschieht), andernfalls `false`, ohne einen Fehler zu werfen.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Aussagen beschreibt die Auswirkung der Ausführung von `Object.setPrototypeOf` auf ein Objekt?\n```javascript\nconst a = { x: 1 };\nconst b = { y: 2 };\nObject.setPrototypeOf(a, b);\n```",
+    "options": [
+      "Es macht das Objekt `a` unveränderlich",
+      "Es macht Engine-Optimierungen (Hidden Classes / Inline Caches) für `a` und dessen Nachkommen ungültig",
+      "Es kompiliert `a` in ein natives WebAssembly-Modul",
+      "Es hat bei modernen V8-Engine-Versionen keinerlei Auswirkungen auf die Performance"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Das dynamische Ändern des Prototyps eines Objekts über `Object.setPrototypeOf` ist in JS-Engines eine extrem langsame Operation. Engines wie V8 optimieren Eigenschaftszugriffe basierend auf 'Hidden Classes' (Shapes) und Inline Caches (IC). Das Ändern des Prototyps macht diese Optimierungen ungültig, was dazu führt, dass der gesamte nachfolgende Code, der Eigenschaften auf den betroffenen Objekten abfragt, einen langsameren Ausführungspfad einschlägt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst proto = { x: 10 };\nconst obj = Object.create(proto);\nObject.freeze(obj);\nobj.x = 20;\nconsole.log(obj.x);\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.freeze` verhindert, dass neue Eigenschaften hinzugefügt, bestehende Eigenschaften entfernt oder Deskriptorkonfigurationen auf dem Zielobjekt geändert werden. Es friert Prototyp-Objekte NICHT rekursiv ein. Da `obj` jedoch eingefroren ist, schlägt die Zuweisung `obj.x = 20` (im Sloppy Mode) stillschweigend fehl, weil auf `obj` selbst keine neuen Eigenschaften definiert werden können. Dadurch bleibt der geerbte Wert `proto.x` von 10 erhalten.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2022+)\n```javascript\nclass Test {\n  static count = 0;\n  static {\n    this.count = 5;\n  }\n  static {\n    this.count += 10;\n  }\n}\nconsole.log(Test.count);\n```",
+    "options": [
+      "15",
+      "0",
+      "5",
+      "Wirft einen SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Statische Blöcke in ES2022-Klassen ermöglichen die Initialisierung statischer Eigenschaften. Sie werden in der Reihenfolge ausgeführt, in der sie in der Klassendefinition definiert sind, und zwar im Kontext des Klassenkonstruktors. Hier setzt der erste statische Block `count` auf 5, und der zweite Block addiert 10 hinzu, was zu 15 führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst Mixin = (Base) => class extends Base {\n  greet() { return 'Hello'; }\n};\nclass BaseClass {}\nclass ChildClass extends Mixin(BaseClass) {}\nconst inst = new ChildClass();\nconsole.log(inst instanceof BaseClass);\nconsole.log(inst instanceof ChildClass);\n```",
+    "options": [
+      "true und true",
+      "false und true",
+      "true und false",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Mixins werden mithilfe von Klassenausdrücken implementiert, die eine Basisklasse erweitern. `Mixin(BaseClass)` gibt eine neue Klasse zurück, die `BaseClass` erweitert. Daher erbt `ChildClass` von dieser Zwischenklasse, die wiederum von `BaseClass` erbt. Somit enthält die Prototypenkette sowohl `ChildClass` als auch `BaseClass`, wodurch beide `instanceof`-Prüfungen zu `true` evaluiert werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nclass Custom {\n  static [Symbol.hasInstance](instance) {\n    return 'special' in instance;\n  }\n}\nconsole.log({} instanceof Custom);\nconsole.log({ special: true } instanceof Custom);\n```",
+    "options": [
+      "false und true",
+      "true und false",
+      "true und true",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die statische Methode `Symbol.hasInstance` erlaubt es, das Verhalten des `instanceof`-Operators anzupassen. Hier prüft `instanceof Custom`, ob der Operand die Eigenschaft `'special'` besitzt, was zu `false` für `{}` und `true` für `{ special: true }` führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nclass Parent {\n  static getValue() {\n    return this.val;\n  }\n}\nParent.val = 100;\nclass Child extends Parent {}\nChild.val = 200;\nconsole.log(Child.getValue());\n```",
+    "options": [
+      "200",
+      "100",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In JavaScript-Klassenvererbung werden statische Eigenschaften und Methoden vererbt. Die Prototyp-Referenz (`[[Prototype]]`) der Konstruktorfunktion `Child` verweist auf den `Parent`-Konstruktor. Wenn `Child.getValue()` aufgerufen wird, wird `getValue` auf `Parent` gefunden, aber mit `this` auf `Child` ausgeführt. Daher evaluiert `this.val` zu `Child.val`, was 200 ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst proto = {};\nObject.defineProperty(proto, 'x', {\n  value: 42,\n  writable: false\n});\nconst obj = Object.create(proto);\nobj.x = 99;\nconsole.log(obj.x);\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Wirft im Non-Strict-Mode einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn eine geerbte Eigenschaft nicht schreibbar ist (`writable: false`), kann sie nicht durch eine einfache Zuweisung (`obj.x = 99`) überschattet werden. Die Zuweisung schlägt im Sloppy Mode stillschweigend fehl (und wirft im Strict Mode einen Fehler). Um eine nicht schreibbare geerbte Eigenschaft zu überschatten, müssen Sie die Eigenschaft direkt auf dem Kindobjekt mithilfe von `Object.defineProperty` definieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nclass Example {\n  x = 1;\n  constructor() {\n    this.x = 2;\n  }\n}\nExample.prototype.x = 3;\nconst e = new Example();\nconsole.log(e.x);\n```",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Klassenfelder (wie `x = 1`) werden während der Konstruktion auf der Instanz initialisiert, noch bevor der Konstruktor-Code ausgeführt wird. Innerhalb des Konstruktors überschreibt `this.x = 2` die Feldinitialisierung. Die Prototyp-Eigenschaft `Example.prototype.x = 3` wird ignoriert, da Instanzeigenschaften Vorrang vor Eigenschaften in der Prototypenkette haben.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2022+)\n```javascript\nclass Tester {\n  #val = 42;\n  compare(other) {\n    return other.#val;\n  }\n}\nconst t1 = new Tester();\nconst t2 = new Tester();\nconsole.log(t1.compare(t2));\n```",
+    "options": [
+      "42",
+      "Wirft einen TypeError",
+      "undefined",
+      "Wirft einen SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "JavaScript erlaubt es Instanzen derselben Klasse, auf private Eigenschaften anderer Instanzen derselben Klasse zuzugreifen. Da `t2` ebenfalls eine Instanz von `Tester` ist, ist `other.#val` gültig und greift erfolgreich auf das private Feld von `t2` zu, was 42 zurückgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction Base() {\n  this.x = 1;\n}\nfunction Custom() {}\nconst obj = Reflect.construct(Base, [], Custom);\nconsole.log(obj.x);\nconsole.log(Object.getPrototypeOf(obj) === Custom.prototype);\n```",
+    "options": [
+      "1 und true",
+      "undefined und true",
+      "1 und false",
+      "undefined und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Reflect.construct(target, argumentsList, newTarget)` ruft den Konstruktor `target` (Base) auf, verwendet jedoch `newTarget` (Custom) als Prototyp-Blaupause. Das zurückgegebene Objekt hat seine `[[Prototype]]`-Verbindung auf `Custom.prototype` gesetzt, führt aber dennoch den Konstruktor `Base` aus, wodurch `this.x = 1` gesetzt wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst obj = {\n  x: 42,\n  getX() {\n    const inner = () => this.x;\n    return inner;\n  }\n};\nconst detached = obj.getX();\nconsole.log(detached.call({ x: 99 }));\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pfeilfunktionen (Arrow Functions) erfassen ihren `this`-Wert lexikalisch aus dem sie umgebenden Kontext zum Zeitpunkt ihrer Erstellung. In diesem Fall erfasst `inner` das `this` aus `getX()`, wo sich `this` auf `obj` bezieht. Die `this`-Bindung von Pfeilfunktionen ist dauerhaft und kann nicht durch `call()`, `apply()` oder `bind()` geändert werden, weshalb 42 zurückgegeben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction test() {\n  console.log(this.val);\n}\nconst bound = test.bind({ val: 1 }).bind({ val: 2 });\nbound();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Aufruf von `bind()` gibt eine neue Wrapper-Funktion zurück, die `this` während des Aufrufs auf das übergebene Objekt setzt. Wenn Sie eine funktion mehrmals binden (z. B. `f.bind(obj1).bind(obj2)`), ist nur die erste Bindung wirksam. Nachfolgende Bindungen verpacken lediglich die bereits gebundene Funktion, können aber den erfassten `this`-Kontext nicht mehr ändern.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction curried(a) {\n  const fn = (b) => curried(a + b);\n  fn.toString = () => a;\n  fn.valueOf = () => a;\n  return fn;\n}\nconsole.log(Number(curried(1)(2)(3)));\n```",
+    "options": [
+      "6",
+      "1",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Currying-Kette gibt Funktionen zurück, die die Argumente akkumulieren. Durch das Überschreiben der Prototyp-Methoden `valueOf` und `toString` auf der zurückgegebenen Funktion definieren wir, wie JavaScript die Funktion in einen primitiven Wert umwandelt. Wenn sie in `Number(...)` eingepackt wird, ruft JS `valueOf()` auf, was den akkumulierten Wert zurückgibt (1 + 2 + 3 = 6).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes im Non-Strict-Mode?\n```javascript\nfunction test() {\n  return this;\n}\nconsole.log(test.call(undefined) === globalThis);\nconsole.log(test.call(42) instanceof Number);\n```",
+    "options": [
+      "true und true",
+      "false und false",
+      "true und false",
+      "false und true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Non-Strict-Mode wird ein an `call` oder `apply` als `this`-Argument übergebenes `null` oder `undefined` von der Engine in das globale Objekt umgewandelt. Ebenso werden primitive Werte wie `42` in ihre Objekt-Wrapper eingepackt (z. B. `Number(42)`), wodurch beide Bedingungen zu `true` evaluiert werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction* genA() {\n  yield 1;\n  return 'doneA';\n}\nfunction* genB() {\n  const val = yield* genA();\n  yield val;\n}\nconst it = genB();\nconsole.log(it.next().value);\n```",
+    "options": [
+      "1",
+      "\"doneA\"",
+      "undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Operator `yield*` delegiert Iterator-Operationen. Entscheidend ist, dass er zum Rückgabewert des delegierten Generators evaluiert wird. Somit liefert `genA` den Wert `1` und gibt dann `'doneA'` zurück. Dieser Rückgabewert wird von `val` in `genB` erfasst und anschließend geliefert. Der letzte Aufruf von `it.next()` prüft, ob der Generator fertig ist, was `true` ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst myAsyncIterable = {\n  [Symbol.asyncIterator]() {\n    let count = 0;\n    return {\n      async next() {\n        if (count < 2) {\n          return { value: count++, done: false };\n        }\n        return { value: undefined, done: true };\n      }\n    };\n  }\n};\n(async () => {\n  let res = '';\n  for await (const x of myAsyncIterable) {\n    res += x;\n  }\n  console.log(res);\n})();\n```",
+    "options": [
+      "\"01\"",
+      "\"012\"",
+      "\"12\"",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Um einen gültigen benutzerdefinierten asynchronen Iterator zu erstellen, muss das Objekt `[Symbol.asyncIterator]` implementieren und ein Iterator-Objekt mit einer `next()`-Methode zurückgeben, die ein Promise auflöst, das wiederum zu einem Iterator-Ergebnisobjekt auflöst. Die Schleife läuft für `x = 0` und `x = 1` und gibt \"01\" aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst slice = Function.prototype.call.bind(Array.prototype.slice);\nconst result = slice({ 0: 'a', 1: 'b', length: 2 });\nconsole.log(Array.isArray(result));\nconsole.log(result[1]);\n```",
+    "options": [
+      "true und \"b\"",
+      "false und \"b\"",
+      "true und undefined",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Function.prototype.call.bind(method)` bindet die generische `call`-Funktion an eine Zielmethode. Der Aufruf von `slice(arrayLike)` entspricht dem Aufruf von `Array.prototype.slice.call(arrayLike)`. Da das Eingabeobjekt array-ähnlich ist (es besitzt indizierte Eigenschaften und eine `length`), konvertiert slice es in ein echtes Array und gibt `['a', 'b']` zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } catch (err) {\n    yield err;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.throw('error').value);\n```",
+    "options": [
+      "1 und \"error\"",
+      "1 und wirft 'error'",
+      "undefined und \"error\"",
+      "1 und undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Generator-Methode `.throw(err)` nimmt die Ausführung wieder auf und wirft den Fehler an der Stelle des aktuell angehaltenen `yield`-Ausdrucks. In diesem Generator befindet sich das `yield 1` in einem try-catch-Block. Wenn `.throw('error')` aufgerufen wird, wird der catch-Block ausgeführt und liefert den Fehler-String an den Aufrufer zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst partial = (fn, ...args) => (...rest) => fn(...args.map(x => x === '_' ? rest.shift() : x).concat(rest));\nconst greet = (g, name) => `${g}, ${name}!`;\nconst greetHello = partial(greet, 'Hello', '_');\nconsole.log(greetHello('Alice'));\n```",
+    "options": [
+      "\"Hello, Alice!\"",
+      "\"Hello, _!\"",
+      "\"Alice, Hello!\"",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Diese Implementierung einer partiellen Funktion verarbeitet Platzhalter-Parameter (`'_'`). Wenn `greetHello('Alice')` aufgerufen wird, wird der Platzhalter durch `'Alice'` ersetzt, wodurch das endgültige Argument-Array `['Hello', 'Alice']` erzeugt wird, das an `greet` übergeben wird und \"Hello, Alice!\" liefert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet x = 1;\nfunction test(a = x, b = () => x) {\n  let x = 2;\n  console.log(a);\n  console.log(b());\n}\ntest();\n```",
+    "options": [
+      "1 und 1",
+      "1 und 2",
+      "2 und 2",
+      "Wirft einen ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Standard-Parameter-Ausdrücke haben ihren eigenen lexikalischen Gültigkeitsbereich, der die Parameter enthält. Im Funktionskörper deklarierte Variablen (`let x = 2`) können die Auflösung von Standard-Parametern nicht beeinflussen, da diese die Variablen des äußeren Gültigkeitsbereichs erfassen. Daher evaluieren sowohl `a` als auch die Closure `b` zum äußeren `x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\n'use strict';\nconst test = () => {\n  return arguments;\n};\ntry {\n  test(1, 2);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "Ein arguments-Objekt",
+      "undefined",
+      "Wirft einen SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pfeilfunktionen besitzen kein eigenes `arguments`-Objekt. Stattdessen erfassen sie das `arguments`-Objekt der sie umgebenden lexikalischen Umgebung. In diesem Fall ist `test` im globalen Gültigkeitsbereich definiert, in dem in strikten ES-Modulen keine `arguments`-Bindung existiert, was einen ReferenceError wirft.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } finally {\n    yield 2;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.return(3).value);\nconsole.log(g.next().value);\n```",
+    "options": [
+      "1, 2, 3",
+      "1, 3, undefined",
+      "1, 2, undefined",
+      "1, undefined, undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Methode `.return(val)` beendet die Generator-Ausführung und gibt `val` zurück. Wenn der Generator jedoch derzeit in einem `try`-Block unterbrochen ist, der einen `finally`-Block besitzt, garantiert die Engine, dass zuerst der `finally`-Block ausgeführt wird. Der aus dem `finally`-Block gelieferte Wert (`2`) wird zurückgegeben, und ein nachfolgendes `.next()` gibt den endgültigen Rückgabewert (`3`) zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst f1 = (a, b = 1, ...c) => {};\nconst f2 = (a, b, c) => {};\nconsole.log(f1.length, f2.length);\n```",
+    "options": [
+      "1 und 3",
+      "2 und 3",
+      "3 und 3",
+      "1 und 2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Eigenschaft `length` einer Funktion gibt die Anzahl der erwarteten Argumente zurück. Sie schließt Rest-Parameter und Parameter mit Standardwerten sowie alle nachfolgenden Parameter nach dem ersten Parameter mit einem Standardwert aus. Für `f1` qualifiziert sich nur `a`, es ist also 1. Für `f2` qualifizieren sich alle 3, es ist also 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Ist das folgende Objekt gemäß den ECMAScript-Iterationsprotokollen ein gültiges Iterable?\n```javascript\nconst obj = {\n  next() {\n    return { value: 42, done: false };\n  }\n};\n```",
+    "options": [
+      "Nein, es ist ein Iterator, aber es fehlt der Iterator-Prototyp-Wrapper mit [Symbol.iterator]",
+      "Ja, es erfüllt sowohl das Iterator- als auch das Iterable-Protokoll",
+      "Nein, da die next-Methode kein Promise zurückgibt",
+      "Ja, da jedes Objekt mit einer next-Methode automatisch iterierbar ist"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Um das Iterable-Protokoll zu erfüllen, muss das Objekt eine `[Symbol.iterator]`-Eigenschaft haben, die einen Iterator zurückgibt. Ein Objekt, das nur eine `next`-Methode besitzt, ist ein 'Iterator', aber kein 'Iterable'. Um es iterierbar zu machen, muss es `[Symbol.iterator]() { return this; }` implementieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  const f = new Function('console.log(x);');\n  return f;\n}\nouter()();\n```",
+    "options": [
+      "10",
+      "20",
+      "Wirft einen ReferenceError",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Funktionen, die mit dem Konstruktor `new Function` erstellt wurden, erben nicht die lexikalische Umgebung ihres Erstellungsbereichs. Stattdessen werden sie immer im globalen Gültigkeitsbereich erstellt (der nur die globale Umgebung umschließt). Somit greift die erstellte Funktion auf das globale `x` (10) zu, nicht auf das lokale `x` (20).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst p = new Promise((resolve, reject) => {\n  reject('fail');\n});\np.then(null, err => {\n  return 'recovered';\n}).then(val => {\n  console.log(val);\n});\n```",
+    "options": [
+      "\"recovered\"",
+      "Gibt nichts aus",
+      "Wirft ein unbehandeltes Promise-Rejection-Ereignis",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn ein Promise abgewiesen (rejected) wird, fließt es zum nächsten Abweisungshandler (`onRejected`). Da das zweite Argument von `p.then` die Abweisung abfängt, gibt es `'recovered'` zurück. Da dieser Abweisungshandler normal zurückkehrt (ohne einen Fehler zu werfen oder ein abgewiesenes Promise zurückzugeben), wird das zurückgegebene Promise mit `'recovered'` aufgelöst, was den nächsten `onFulfilled`-Handler auslöst.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconsole.log('start');\nsetTimeout(() => console.log('timeout'), 0);\nPromise.resolve().then(() => console.log('promise'));\nqueueMicrotask(() => console.log('microtask'));\nconsole.log('end');\n```",
+    "options": [
+      "start -> end -> promise -> microtask -> timeout",
+      "start -> end -> timeout -> promise -> microtask",
+      "start -> promise -> microtask -> timeout -> end",
+      "start -> end -> promise -> timeout -> microtask"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die synchrone Codeausführung läuft zuerst. Wenn der Stack leer ist, wird die Mikrotask-Warteschlange (Microtask Queue) vollständig abgearbeitet, bevor Makrotasks (wie `setTimeout`) ausgeführt werden. Sowohl `Promise.then` als auch `queueMicrotask` fügen Tasks zur Mikrotask-Warteschlange hinzu. Sie werden in der Reihenfolge ihres Einfügens ausgeführt, gefolgt von der Timer-Task.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nPromise.resolve().then(() => {\n  console.log('A');\n  queueMicrotask(() => console.log('B'));\n});\nqueueMicrotask(() => {\n  console.log('C');\n});\n```",
+    "options": [
+      "A -> C -> B",
+      "A -> B -> C",
+      "C -> A -> B",
+      "A -> C"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Mikrotasks werden nacheinander ausgeführt, bis die Mikrotask-Warteschlange vollständig leer ist. Anfangs sind zwei Mikrotasks eingereiht: der `Promise`-Handler und der `C`-Task. Während der Ausführung des ersten wird ein neuer Mikrotask `B` eingereiht. Nach der Ausgabe von `A` verarbeitet die Engine den nächsten eingereihten Mikrotask `C` und verarbeitet danach `B`.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nPromise.all([1, Promise.reject('error'), 3])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "\"rejected error\"",
+      "\"resolved [1, undefined, 3]\"",
+      "Gibt nichts aus",
+      "\"rejected [undefined, 'error', undefined]\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.all` wird sofort abgewiesen, wenn ein Promise im Eingabe-Array abgewiesen wird (Fail-Fast-Verhalten). Selbst wenn sich Werte in der Liste befinden, die keine Promises sind oder bereits aufgelöste Promises darstellen, wird die gesamte Ausführung bei einer Abweisung abgebrochen und die Steuerung mit dem spezifischen Fehler an den nächsten `.catch`-Handler übergeben.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2021+)\n```javascript\nPromise.any([])\n  .then(() => console.log('resolved'))\n  .catch(err => console.log(err.name));\n```",
+    "options": [
+      "\"AggregateError\"",
+      "\"TypeError\"",
+      "Hangs indefinitely",
+      "\"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.any` gibt ein Promise zurück, das aufgelöst wird, sobald eines der Eingabe-Promises aufgelöst wird. Wenn das übergebene Iterable leer ist, wird es sofort mit einem `AggregateError` abgewiesen, der ein leeres Array von Fehlern enthält, da keine Promises vorhanden sind, die aufgelöst werden könnten.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nasync function test() {\n  console.log(1);\n  await Promise.resolve();\n  console.log(2);\n}\ntest();\nconsole.log(3);\n```",
+    "options": [
+      "1 -> 3 -> 2",
+      "1 -> 2 -> 3",
+      "3 -> 1 -> 2",
+      "1 -> 3"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Eine `async`-Funktion wird synchron ausgeführt, bis sie auf ihren ersten `await`-Ausdruck stößt. Das `await` unterbricht die Ausführung der Funktion und reiht einen Mikrotask ein, um sie fortzusetzen. Die Steuerung kehrt sofort zum äußeren Aufrufstapel zurück, wodurch `3` ausgegeben wird, bevor der Mikrotask läuft und `2` ausgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn ein Promise abgewiesen wird und kein Abweisungshandler vorhanden ist, aber 2 Sekunden später ein Catch-Handler hinzugefügt wird?\n```javascript\nconst p = Promise.reject('error');\nsetTimeout(() => {\n  p.catch(e => console.log('handled:', e));\n}, 2000);\n```",
+    "options": [
+      "Ein unhandledrejection-Ereignis wird sofort ausgelöst, und das Promise wird später erfolgreich aufgelöst, wenn es behandelt wird",
+      "Die Engine wirft sofort eine nicht abfangbare Ausnahme und stürzt ab",
+      "Die Abweisung wird aufgeschoben und es wird nie eine Warnung ausgegeben",
+      "Der Code wirft einen Syntaxfehler"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn ein Promise ohne Handler abgewiesen wird, löst die Engine am Ende des Mikrotask-Durchlaufs ein `unhandledrejection`-Ereignis im globalen Kontext aus. Wenn nachträglich (z. B. nach 2 Sekunden) ein Handler angehängt wird, verarbeitet die Engine diesen und löst unter Umständen ein `rejectionhandled`-Ereignis aus, um anzuzeigen, dass die Abweisung schließlich doch behandelt wurde.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nrequestAnimationFrame(() => console.log('raf'));\nPromise.resolve().then(() => console.log('promise'));\n```",
+    "options": [
+      "\"promise\" wird zuerst ausgeführt, aber die Reihenfolge zwischen \"timeout\" und \"raf\" hängt vom Reflow-Zeitplan des Browsers ab",
+      "\"timeout\" -> \"raf\" -> \"promise\"",
+      "\"raf\" -> \"timeout\" -> \"promise\"",
+      "\"promise\" -> \"timeout\" -> \"raf\" konsistent in allen Umgebungen"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Mikrotasks (`promise`) werden vor allen Makrotasks oder Frame-Rendervorgängen ausgeführt. `requestAnimationFrame` wird als Teil der Rendering-Pipeline des Browsers ausgeführt (vor dem Paint-Vorgang). `setTimeout` läuft in der Timer-Phase der Ereignisschleife. Die Reihenfolge zwischen Frame-Rendering und Timer-Makrotasks hängt von der Browser-Planung und der Zeitpräzision ab.",
+    "points": 10
+  },
+  {
+    "question_text": "In einer Node.js-Ereignisschleife die Ausgabe des folgenden Codes?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nsetImmediate(() => console.log('immediate'));\n```",
+    "options": [
+      "Die Reihenfolge der Ausgabe ist nicht deterministisch und hängt von der Prozessleistung ab",
+      "Immer \"timeout\" -> \"immediate\"",
+      "Immer \"immediate\" -> \"timeout\"",
+      "Sie laufen parallel in separaten Threads"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Ausführungsreihenfolge zwischen `setTimeout` (mit einer Verzögerung von 0 ms, was auf 1 ms erzwungen wird) und `setImmediate` is nicht deterministisch, wenn sie aus dem Hauptmodul aufgerufen werden. Sie hängt davon ab, wie schnell die Ereignisschleife startet und die Timer-Warteschlange im Vergleich zur Check-Warteschlange überprüft. Wenn sie innerhalb eines I/O-Zyklus aufgerufen wird, wird `setImmediate` immer zuerst ausgeführt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst controller = new AbortController();\nconst signal = controller.signal;\nconst p = new Promise((resolve, reject) => {\n  signal.addEventListener('abort', () => reject('aborted'));\n});\ncontroller.abort();\np.catch(e => console.log(e));\n```",
+    "options": [
+      "\"aborted\"",
+      "Gibt nichts aus",
+      "Wirft eine unbehandelte Abweisung (unhandled rejection)",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die `AbortController`-API ermöglicht den Abbruch von asynchronen Vorgängen. Indem wir auf das `abort`-Ereignis des `signal`-Objekts des Controllers hören, können wir das Promise sofort abweisen, wenn `controller.abort()` aufgerufen wird. Hier wird der Ereignis-Listener synchron während des `.abort()`-Aufrufs ausgelöst, wodurch das Promise abgewiesen wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nasync function foo() {\n  return 1;\n}\nasync function bar() {\n  return Promise.resolve(1);\n}\nconsole.log(foo() instanceof Promise);\nconsole.log(bar() instanceof Promise);\n```",
+    "options": [
+      "true und true",
+      "false und true",
+      "true und false",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Jede mit `async` deklarierte Funktion gibt immer ein Promise zurück. Wenn die Funktion einen primitiven Wert wie `1` zurückgibt, verpackt die Engine diesen in ein aufgelöstes Promise. Wenn sie ein Promise zurückgibt, löst sie sich zur Auflösung dieses Promises auf, aber der Rückgabewert des async-Funktions-Wrappers selbst ist immer noch ein Promise.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst p = new Promise(resolve => {\n  console.log(1);\n  resolve(2);\n  console.log(3);\n});\np.then(v => console.log(v));\nconsole.log(4);\n```",
+    "options": [
+      "1 -> 3 -> 4 -> 2",
+      "1 -> 4 -> 3 -> 2",
+      "4 -> 1 -> 3 -> 2",
+      "1 -> 2 -> 3 -> 4"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Promise-Executor-Funktion wird synchron ausgeführt. Beim Erstellen von `p` führt sie `console.log(1)` aus, ruft `resolve(2)` auf und führt `console.log(3)` aus. Das Auflösen eines Promises erfolgt asynchron in Bezug auf seine `.then`-Callbacks (die in die Mikrotask-Warteschlange eingereiht werden). Daher wird als Nächstes `4` protokolliert, gefolgt von der Ausführung der Mikrotask-Warteschlange, die `2` ausgibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nPromise.race([])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "Es hängt unbegrenzt (wird weder aufgelöst noch abgewiesen)",
+      "Es wird sofort mit undefined aufgelöst",
+      "Es wird sofort mit einem TypeError abgewiesen",
+      "Es wird mit einem AggregateError abgewiesen"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.race(iterable)` gibt ein Promise zurück, das aufgelöst oder abgewiesen wird, sobald eines der Promises im Iterable aufgelöst oder abgewiesen wird. Wenn das übergebene Iterable leer ist, gibt es keine Promises, die gegeneinander antreten können, und das zurückgegebene Promise bleibt für immer im Zustand 'schwebend' (pending).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nasync function test() {\n  throw new Error('sync-error');\n}\ntest().catch(e => console.log(e.message));\n```",
+    "options": [
+      "\"sync-error\"",
+      "Wirft einen nicht abfangbaren Fehler und beendet das Programm",
+      "Gibt nichts aus",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Selbst wenn ein Fehler synchron vor einer `await`-Anweisung in einer `async`-Funktion geworfen wird, fängt die Engine diesen intern ab und konvertiert ihn in ein abgewiesenes Promise. Daher kann der Fehler immer mit einem Standard-`.catch()` auf dem zurückgegebenen Promise abgefangen werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst p = new Promise((resolve) => {\n  resolve(1);\n  throw new Error('error');\n});\np.then(v => console.log(v)).catch(e => console.log(e.message));\n```",
+    "options": [
+      "1",
+      "\"error\"",
+      "1 und \"error\"",
+      "Wirft eine unbehandelte Abweisung (unhandled rejection)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ein Promise kann nur einen einzigen Zustandsübergang durchlaufen (z. B. von 'schwebend' zu 'aufgelöst'). Sobald `resolve(1)` aufgerufen wird, ist der Zustand des Promises als erfüllt festgelegt. Das nachfolgende `throw new Error` wird von der Zustandsmaschine des Promises ignoriert und der Abweisungshandler wird nie aufgerufen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nlet resolvePromise;\nconst p = new Promise(resolve => {\n  resolvePromise = resolve;\n});\np.then(() => console.log('resolved'));\n\nconst obj = {\n  then(resolve) {\n    console.log('thenable');\n    resolve();\n  }\n};\n\nresolvePromise(obj);\n```",
+    "options": [
+      "\"thenable\" gefolgt von \"resolved\"",
+      "\"resolved\" gefolgt von \"thenable\"",
+      "Nur \"thenable\"",
+      "Nur \"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn ein Promise mit einem Thenable-Objekt aufgelöst wird, verpackt die Engine das Thenable in einen Mikrotask-Job, um dessen `.then`-Methode auszuwerten. Der Aufruf der Auflösungsfunktion ruft `obj.then` auf, was \"thenable\" ausgibt und das interne Promise auflöst, woraufhin die `.then`-Kette ausgeführt und \"resolved\" ausgegeben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn eine Mikrotask-Schleife rekursiv ausgeführt wird, ohne an die Makrotask-Warteschlange abzugeben?\n```javascript\nfunction run() {\n  Promise.resolve().then(run);\n}\nrun();\n```",
+    "options": [
+      "Es blockiert die Ereignisschleife vollständig, entzieht Rendering- und Makrotasks Ressourcen und führt dazu, dass der Tab/Prozess einfriert",
+      "Es löst sofort eine Call-Stack-Overflow-Ausnahme aus",
+      "V8 beendet die Schleife automatisch nach 1000 Iterationen",
+      "Es wird asynchron in einem Hintergrund-Thread ausgeführt, ohne die Benutzeroberfläche zu beeinträchtigen"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Mikrotasks werden vollständig verarbeitet, bevor die Steuerung an die Ereignisschleife zurückgegeben wird. Wenn ein Mikrotask einen weiteren Mikrotask einplant, wird die Mikrotask-Warteschlange never leer. Infolgedessen bleibt die Ereignisschleife in der Prüfphase für Mikrotasks gefangen, was Makrotasks, Eingabeereignisse und das Rendering im Browser vollständig blockiert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2020+)\n```javascript\nPromise.allSettled([\n  Promise.resolve(1),\n  Promise.reject('error')\n]).then(results => {\n  console.log(results[0].status, results[1].status);\n  console.log(results[1].reason);\n});\n```",
+    "options": [
+      "\"fulfilled rejected\" und \"error\"",
+      "\"fulfilled fulfilled\" und undefined",
+      "\"resolved rejected\" und \"error\"",
+      "Wirft einen AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.allSettled` gibt ein Array von Objekten zurück, die das Ergebnis jedes Promises darstellen. Es wird nie abgewiesen. Für aufgelöste Promises lautet der Status `'fulfilled'` (zusammen mit einem `value`). Für abgewiesene Promises lautet der Status `'rejected'` (zusammen mit einer `reason`).",
+    "points": 10
+  },
+  {
+    "question_text": "Wie lautet die Reihenfolge der Ausgabe, wenn zwei DOM-Event-Listener durch ein programmatisches `.click()` im Vergleich zu einem echten Benutzer-Mausklick ausgelöst werden?\n```javascript\nconst btn = document.createElement('button');\nbtn.addEventListener('click', () => {\n  Promise.resolve().then(() => console.log('Microtask 1'));\n  console.log('Listener 1');\n});\nbtn.addEventListener('click', () => {\n  console.log('Listener 2');\n});\n// Case A: User clicks button physically\n// Case B: btn.click() is called programmatically\n```",
+    "options": [
+      "Fall A: Listener 1 -> Microtask 1 -> Listener 2. Fall B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Fall A: Listener 1 -> Listener 2 -> Microtask 1. Fall B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Fall A: Listener 1 -> Microtask 1 -> Listener 2. Fall B: Listener 1 -> Microtask 1 -> Listener 2.",
+      "Fall A: Listener 1 -> Listener 2 -> Microtask 1. Fall B: Listener 1 -> Microtask 1 -> Listener 2."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Bei einem echten Benutzerklick löst der Browser die Listener-Callbacks asynchron aus. Der Aufrufstapel leert sich zwischen den Listenern, wodurch die Mikrotask-Warteschlange ausgeführt wird. Bei einem programmatischen `.click()` erfolgt der Aufruf synchron auf dem aktiven Aufrufstapel. Der Aufrufstapel leert sich nicht zwischen den Aufrufen der Listener, wodurch alle Mikrotasks verzögert werden, bis beide Listener die Ausführung beendet haben.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nPromise.resolve(1)\n  .then(x => {\n    throw x + 1;\n  })\n  .catch(err => {\n    return err + 1;\n  })\n  .then(y => {\n    console.log(y);\n  });\n```",
+    "options": [
+      "3",
+      "2",
+      "undefined",
+      "Wirft ein unbehandeltes Promise-Rejection-Ereignis"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Zuerst erhält `then(x => { throw x + 1; })` den Wert 1 und wirft 2, was dazu führt, dass das Promise abgewiesen wird. Als Nächstes fängt `.catch` die Abweisung (Wert 2) ab, führt `2 + 1` aus und gibt 3 zurück. Da dieser Catch-Block normal zurückkehrt, löst er das Promise mit dem Wert 3 auf, welcher dann vom nächsten `.then`-Handler ausgegeben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst proxy = new Proxy({}, {\n  get(target, prop, receiver) {\n    return receiver;\n  }\n});\nconsole.log(proxy.anyProperty === proxy);\nconst derived = Object.create(proxy);\nconsole.log(derived.anyProperty === derived);\n```",
+    "options": [
+      "true und true",
+      "true und false",
+      "false und true",
+      "false und false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Parameter `receiver` im `get`-Trap bezieht sich auf das Objekt, auf dem der Eigenschaftszugriff initiiert wurde. Für `proxy.anyProperty` ist der Receiver `proxy`. Für `derived.anyProperty` (wobei `derived` von `proxy` erbt) ist der Receiver `derived`, weshalb beide Ausdrücke `true` ausgeben.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum ist das Argument `receiver` in `Reflect.set` erforderlich?\n```javascript\nReflect.set(target, propertyKey, value, receiver);\n```",
+    "options": [
+      "Es stellt sicher, dass, wenn das Ziel (target) einen Setter auf seinem Prototyp besitzt, dieser Setter mit `this` an den Receiver gebunden ausgeführt wird",
+      "Es erlaubt das Definieren einer Eigenschaft auf dem Receiver anstelle des Ziels (target)",
+      "It is only used for debugging purposes",
+      "Es verhindert die Garbage Collection des Ziels (target)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Beim Abfangen eines Set-Traps via Proxy kann die Änderung auf einem abgeleiteten Objekt ausgeführt werden, das vom Proxy erbt. Die Verwendung von `Reflect.set(target, prop, val, receiver)` stellt sicher, dass alle geerbten Setter ausgeführt werden, während sich `this` auf den korrekten `receiver` (das abgeleitete Objekt) bezieht, was Fehler bei Eigenschaftsdefinitionen in der Prototypenkette verhindert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  writable: false,\n  configurable: false\n});\nconst proxy = new Proxy(target, {\n  get() {\n    return 99;\n  }\n});\ntry {\n  console.log(proxy.x);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "99",
+      "42",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Proxies setzen Invarianten durch, um die Konsistenz zu wahren. Wenn eine Eigenschaft des Ziels (target) nicht konfigurierbar und nicht schreibbar ist, MUSS der `get`-Trap des Proxys den tatsächlichen Wert der Eigenschaft des Ziels zurückgeben. Wenn der Trap einen anderen Wert zurückgibt (99 statt 42), wirft die Engine einen TypeError, was den catch-Block auslöst.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst map = new WeakMap();\n(function() {\n  const key = { name: 'key' };\n  const val = { name: 'val' };\n  map.set(key, val);\n})();\n// Imagine garbage collection runs here\n```",
+    "options": [
+      "Sowohl key als auch val sind für die Garbage Collection berechtigt, da key nicht mehr erreichbar ist",
+      "Nur key wird eingesammelt, val bleibt in der Map",
+      "Keines von beiden wird eingesammelt, da die Map Referenzen behält",
+      "Der Code wirft eine Laufzeitausnahme"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In einer `WeakMap` werden Schlüssel (keys) schwach gehalten. Wenn die einzige Referenz auf das Schlüsselobjekt (`key`) verloren geht (d. h. nach der IIFE außerhalb des Gültigkeitsbereichs liegt), wird der Schlüssel für die Garbage Collection freigegeben. Sobald der Schlüssel eingesammelt ist, wird auch der zugehörige Wert (`val`) freigegeben (sofern keine anderen Referenzen auf `val` existieren), was Speicherlecks verhindert.",
+    "points": 10
+  },
+  {
+    "question_text": "Welches der folgenden Codemuster erzeugt ein detached-DOM-Speicherleck?\n```javascript\n// Scenario 1\nlet element = document.getElementById('button');\nelement.addEventListener('click', () => console.log('clicked'));\nelement.remove();\n\n// Scenario 2\nlet element = document.getElementById('button');\nconst ref = { el: element };\nelement.remove();\nelement = null;\n```",
+    "options": [
+      "Nur Szenario 2, da das Objekt `ref` immer noch eine Referenz auf das Element hält",
+      "Nur Szenario 1",
+      "Beide Szenarien",
+      "Keines der Szenarien"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In Szenario 2 wird das Element zwar aus dem DOM entfernt und seine lokale Variable auf Null gesetzt, aber das Objekt `ref` behält weiterhin eine Referenz auf das `element` (DOM-Knoten). Da JS den DOM-Knoten nicht einsammeln kann, solange er über `ref` erreichbar ist, entsteht ein Speicherleck durch ein detached-DOM-Element. In Szenario 1 bereinigt das Entfernen des Elements die Standardreferenzen, sodass der Browser es einsammeln kann.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie optimiert der Generational Garbage Collector von V8 die Speicherbereinigung für kurzlebige Objekte?",
+    "options": [
+      "Er allokiert neue Objekte im 'New Space' (Nursery) und sammelt sie schnell mithilfe des Scavenger-Algorithmus ein",
+      "Er führt bei jedem Funktionsaufruf einen vollständigen Mark-Sweep-Compact-Zyklus aus",
+      "Er delegiert alle Bereinigungen an den Hauptthread des Webbrowsers",
+      "Er deaktiviert die Garbage Collection für Objekte, die kleiner als 1 KB sind"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 teilt den Heap in verschiedene Bereiche auf. Die meisten neuen Allokationen finden im 'New Space' (oder Nursery) statt. Da die meisten Objekte jung sterben, verwendet V8 einen schnellen kopierenden Collector (Scavenger), um den New Space zu bereinigen, indem er überlebende Objekte in einen zweiten Semi-Space verschiebt und sie erst nach dem Überleben mehrerer Zyklen in den 'Old Space' befördert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst set = new WeakSet();\nconst obj = { x: 1 };\nset.add(obj);\nconsole.log(set.has(obj));\nconsole.log(Object.keys(set).length);\n```",
+    "options": [
+      "true und 0",
+      "true und 1",
+      "false und 0",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WeakSet` hält Objekte schwach und ist nicht iterierbar. Es legt keine Eigenschaften, Längen oder Iterator-Methoden (like keys oder values) offen. Daher ist `set.has(obj)` gleich `true`, aber der Aufruf von `Object.keys(set)` liefert ein leeres Array der Länge 0.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verarbeitet der Garbage Collector von JavaScript zirkuläre Referenzen zwischen Objekten?\n```javascript\nfunction createCycle() {\n  const objA = {};\n  const objB = {};\n  objA.sibling = objB;\n  objB.sibling = objA;\n}\ncreateCycle();\n```",
+    "options": [
+      "Er sammelt sie ein, da sie von den Root-Ausführungskontexten aus nicht mehr erreichbar sind",
+      "Er erzeugt ein Speicherleck, da die Referenzanzahl beider Objekte bei 1 bleibt",
+      "Er bringt die V8-Engine aufgrund eines Stack-Overflows zum Absturz",
+      "Er speichert sie dauerhaft im Large Object Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Moderne JS-Engines verwenden einen 'Mark-and-Sweep'-Garbage-Collection-Algorithmus anstelle von Referenzzählung (Reference Counting). Ausgehend von den Root-Kontexten markiert der Collector alle erreichbaren Objekte. Da `objA` und `objB` nach der Rückkehr von `createCycle` von keiner Root aus mehr erreichbar sind, werden sie eingesammelt, obwohl sie sich gegenseitig referenzieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist das Ergebnis der folgenden Vergleiche?\n```javascript\nconsole.log(Object.is(NaN, NaN));\nconsole.log(Object.is(-0, +0));\nconsole.log(-0 === +0);\n```",
+    "options": [
+      "true, false, true",
+      "false, true, true",
+      "true, true, false",
+      "false, false, true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.is` bewertet die Wertegleichheit. Im Gegensatz zu `===`, das `NaN !== NaN` und `-0 === +0` annimmt, behandelt `Object.is` `NaN` als gleich `NaN` und unterscheidet `-0` von `+0` (und gibt bei deren Vergleich `false` zurück).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  enumerable: false,\n  configurable: true\n});\nconst proxy = new Proxy(target, {\n  ownKeys() {\n    return ['x', 'y'];\n  }\n});\nconsole.log(Object.keys(proxy));\nconsole.log(Reflect.ownKeys(proxy));\n```",
+    "options": [
+      "[] und [\"x\", \"y\"]",
+      "[\"x\"] und [\"x\", \"y\"]",
+      "[] und [\"x\"]",
+      "Wirft einen TypeError, da 'y' im Ziel (target) fehlt"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.keys` gibt nur die aufzählbaren (enumerable) eigenen Eigenschaften des Ziels zurück. Obwohl der `ownKeys`-Trap `['x', 'y']` zurückgegeben hat, ist `'x'` auf dem Ziel nicht aufzählbar und wird daher von `Object.keys` herausgefiltert, während `'y'` auf dem Ziel gar nicht definiert ist. `Reflect.ownKeys` umgeht Aufzählbarkeitsprüfungen und gibt das rohe Trap-Ergebnis zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2021+)\n```javascript\nconst registry = new FinalizationRegistry(heldValue => {\n  console.log(heldValue);\n});\nlet obj = { x: 1 };\nregistry.register(obj, 'collected');\nobj = null;\n```",
+    "options": [
+      "Es wird synchron keine Konsolenausgabe garantiert (der GC-Zeitpunkt ist nicht deterministisch)",
+      "\"collected\" wird sofort ausgegeben",
+      "Wirft einen ReferenceError",
+      "\"collected\" wird im nächsten Tick der Ereignisschleife ausgegeben"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`FinalizationRegistry` ermöglicht das Registrieren von Callbacks, wenn Objekte von der Garbage Collection bereinigt werden. Der genaue Zeitpunkt der Ausführung der Garbage Collection liegt jedoch völlig bei der Engine. Er ist nicht deterministisch, was bedeutet, dass der Callback weder sofort noch in einem vorhersehbaren Tick ausgeführt wird, und während der kurzen Lebensdauer des Prozesses unter Umständen gar nicht läuft.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert mit der V8-Optimierung eines Objekts, wenn Sie den Operator `delete` verwenden, um eine Eigenschaft zu entfernen?\n```javascript\nconst obj = { a: 1, b: 2 };\ndelete obj.a;\n```",
+    "options": [
+      "Es macht die Hidden Class (Shape) ungültig und kann das Objekt in den 'Dictionary Mode' (Slow Properties) versetzen",
+      "Es optimiert den Eigenschaftszugriff, indem es eine komprimierte Hidden Class neu aufbaut",
+      "Es kompiliert das Objekt in eine unveränderliche Struktur",
+      "Es hat keinen Einfluss auf die internen V8-Optimierungspfade"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Das Löschen von Eigenschaften aus einem Objekt stört dessen Hidden-Class-Übergänge. In V8 zwingt die Verwendung von `delete` (insbesondere bei Eigenschaften, die nicht als letzte hinzugefügt wurden) oft dazu, die optimierte Hidden-Class-Form vollständig zu verwerfen und das Objekt in den 'Dictionary Mode' (langsame assoziative Arrays) zu versetzen, was die Performance verringert.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich fast properties (schnelle Eigenschaften) von slow properties (langsamen Eigenschaften) in V8?",
+    "options": [
+      "Fast Properties verwenden feste Offsets in einer zusammenhängenden Struktur basierend auf Hidden Classes, während Slow Properties eine Dictionary-Hashtabelle verwenden",
+      "Fast Properties sind Zahlen, während Slow Properties Strings und Symbole sind",
+      "Fast Properties befinden sich auf dem globalen Objekt, während Slow Properties in Closures liegen",
+      "Fast Properties werden im lokalen Speicher zwischengespeichert, während Slow Properties aus dem Browser-Cache geladen werden"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 speichert Eigenschaften in verschiedenen Modi. 'Fast Properties' werden direkt auf dem Objekt oder in einem flachen Array gespeichert, unter Verwendung von Eigenschafts-Offsets, die von der Hidden Class des Objekts verfolgt werden. 'Slow Properties' sind Fallback-Strukturen, die Eigenschaften in einer Dictionary-Hashtabelle speichern, was den Overhead von Klassenübergängen vermeidet, aber die Lookup-Geschwindigkeit verringert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes?\n```javascript\nconst sym = Symbol('key');\nconst obj = {\n  [sym]: 'secret'\n};\nconsole.log(Object.keys(obj));\nconsole.log(Object.getOwnPropertyNames(obj));\nconsole.log(Object.getOwnPropertySymbols(obj)[0] === sym);\n```",
+    "options": [
+      "[], [] und true",
+      "[\"key\"], [] und true",
+      "[], [\"key\"] und false",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Symbol-Schlüssel sind so konzipiert, dass sie bei Standard-Inspektionen verborgen bleiben. Sie tauchen nicht in `Object.keys` oder `Object.getOwnPropertyNames` auf. Um sie abzurufen, müssen Sie `Object.getOwnPropertySymbols` oder `Reflect.ownKeys` verwenden, wodurch die Symbol-Referenz erfolgreich gefunden wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich die Methode `deref()` bei einem `WeakRef`-Objekt, nachdem sein Ziel von der Garbage Collection bereinigt wurde? (ES2021+)\n```javascript\nlet obj = { data: 'val' };\nconst ref = new WeakRef(obj);\nobj = null;\n// Assume garbage collection has completed successfully\nconsole.log(ref.deref());\n```",
+    "options": [
+      "undefined",
+      "null",
+      "Wirft einen ReferenceError",
+      "Das leere Objekt {}"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die `WeakRef`-API ermöglicht es, eine schwache Referenz auf ein Objekt zu halten. Wenn der GC feststellt, dass das Zielobjekt nicht mehr stark erreichbar ist, und es zurückfordert, gibt die Methode `deref()` nicht mehr das Objekt zurück, sondern stattdessen `undefined`.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2020+)\n```javascript\nconst val1 = 0 ?? 'fallback';\nconst val2 = 0 || 'fallback';\nconsole.log(val1, val2);\n```",
+    "options": [
+      "0 und \"fallback\"",
+      "\"fallback\" und 0",
+      "0 und 0",
+      "\"fallback\" und \"fallback\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Nullish-Coalescing-Operator (`??`) gibt seinen rechten Operanden nur dann zurück, wenn der linke Operand `null` oder `undefined` ist. Im Gegensatz dazu prüft der logische OR-Operator (`||`) auf Truthiness, wodurch Falsy-Werte wie `0`, `\"\"` und `false` als Auslöser für den Fallback behandelt werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2020+)\n```javascript\nconst obj = {\n  a: {\n    b: null\n  }\n};\ntry {\n  console.log(obj.a?.b?.());\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "undefined",
+      "null",
+      "Wirft einen SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Optional Chaining (`obj.a?.b?.()`) bricht die Auswertung ab (Short-Circuit), wenn die vorhergehende Referenz Nullish ist. Für `obj.a?.b` wird `null` ermittelt. Die nachfolgende Kette wird als `null?.()` evaluiert. Da `b` `null` ist (nicht undefined), versucht die Engine, es als Funktion auszuführen. Da es keine Funktion ist, wird ein TypeError geworfen, was den catch-Block auslöst.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2020+)\n```javascript\ntry {\n  const res = 10n / 3n;\n  console.log(res);\n  const err = 10n + 3;\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "3n und error",
+      "3.333n und error",
+      "3 und 13",
+      "Nur error"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In ES2020 geben `BigInt`-Operationen ganzzahlige Werte zurück; Divisionen (z. B. `10n / 3n`) schneiden Nachkommastellen ab, was zu `3n` führt. Entscheidend ist, dass gemischte mathematische Operationen zwischen `BigInt` und Standard-`Number`-Typen einen TypeError werfen, wodurch die zweite Zeile fehlschlägt und 'error' ausgegeben wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Aussagen beschreibt das Ausführungs- und Caching-Verhalten von dynamischem `import()`? (ES2020+)",
+    "options": [
+      "Es gibt ein Promise zurück, das zum Namespace-Objekt des Moduls aufgelöst wird, welches im Cache gespeichert wird, sodass nachfolgende Aufrufe das Modulskript nicht erneut ausführen",
+      "Es führt das Modul synchron aus und umgeht Standard-Caching-Mechanismen",
+      "Es lädt das Zielmodul bei jedem Aufruf erneut herunter und führt es erneut aus",
+      "Es funktioniert nur in Web-Worker-Threads von Browsern"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dynamisches `import()` lädt ES-Module asynchron und gibt ein Promise zurück. Sobald ein Modul aufgelöst und ausgeführt wurde, speichert die Engine die Modulinstanz im Cache. Nachfolgende dynamische Importe desselben Pfads rufen das zwischengespeicherte Modul-Namespace-Objekt ab, ohne das Skript erneut auszuführen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2021+)\n```javascript\nlet x = null;\nlet y = 5;\nx ??= y;\ny &&= 10;\nconsole.log(x, y);\n```",
+    "options": [
+      "5 und 10",
+      "null und 5",
+      "5 und 5",
+      "null und 10"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Logische Zuweisungsoperatoren kombinieren logische Tests mit einer Zuweisung. `x ??= y` weist `x` den Wert `y` zu, da `x` Nullish ist (was `x` zu 5 auflöst). `y &&= 10` weist `y` den Wert `10` zu, da `y` Truthy ist (5 ist Truthy, was `y` zu 10 auflöst).",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2022+)\n```javascript\nclass Base {\n  #brand = true;\n  static check(obj) {\n    return #brand in obj;\n  }\n}\nconsole.log(Base.check(new Base()));\nconsole.log(Base.check(Object.create(Base.prototype)));\n```",
+    "options": [
+      "true und false",
+      "true und true",
+      "false und false",
+      "Wirft einen TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Prüfung auf private Felder (Private Brand Check, `#brand in obj`) verifiziert, ob das private Feld auf der Instanz installiert ist. Objekte, die über `Object.create(Base.prototype)` erstellt wurden, besitzen zwar den korrekten Prototyp, durchlaufen jedoch nicht die Konstruktor-Initialisierung, weshalb auf ihnen keine privaten Felder installiert sind. Daher gibt dies `false` zurück, ohne einen Fehler zu werfen.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2021+)\n```javascript\nconst str = 'apple banana apple';\nconst res = str.replaceAll('apple', () => 'pear');\nconsole.log(res);\n```",
+    "options": [
+      "\"pear banana pear\"",
+      "\"pear banana apple\"",
+      "Wirft einen TypeError",
+      "\"apple banana apple\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2021 hat `String.prototype.replaceAll()` eingeführt. Wenn es mit einem String als Suchmuster aufgerufen wird, ersetzt es alle Vorkommen dieses Strings durch den Ersetzungswert oder das Ergebnis der Replacer-Funktion, was zu \"pear banana pear\" führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Ausgabe des folgenden Codes? (ES2022+)\n```javascript\nconst arr = [1, 2, , 4];\nconsole.log(arr.at(-1));\nconsole.log(arr.at(-2));\n```",
+    "options": [
+      "4 und undefined",
+      "4 und null",
+      "4 und 2",
+      "Wirft einen RangeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2022 hat die Methode `.at()` für Arrays eingeführt. Sie unterstützt negative Indizes, wobei `-1` auf das letzte Element verweist (`4`) und `-2` auf das vorletzte Element zeigt (welches in diesem Array ein leerer Slot ist, der `undefined` enthält).",
+    "points": 10
+  },
+  {
+    "question_text": "Warum wird `Object.hasOwn` gegenüber `Object.prototype.hasOwnProperty` bevorzugt? (ES2022+)\n```javascript\nconst obj = Object.create(null);\n// Case A: obj.hasOwnProperty('x');\n// Case B: Object.hasOwn(obj, 'x');\n```",
+    "options": [
+      "Fall A wirft einen TypeError, während Fall B sicher ausgeführt wird",
+      "Fall B ist synchron, während Fall A asynchron ist",
+      "Fall B funktioniert nur für private Felder, während Fall A für Standardeigenschaften funktioniert",
+      "Es gibt keinen Unterschied, es handelt sich rein um syntaktischen Zucker"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.hasOwn` ist eine statische Methode. Sie erfordert keinen Zugriff auf eine Eigenschaft des Prototyps des Zielobjekts. Wenn ein HK (wie `Object.create(null)`) nicht von `Object.prototype` erbt, wirft der Aufruf von `hasOwnProperty` einen TypeError. `Object.hasOwn` funktioniert für alle Objekte sicher.",
+    "points": 10
+  },
+  {
+    "question_text": "In der TC39 Stage 3/4 Decorators-Spezifikation der Zweck von `Symbol.metadata`? (ES2023+)",
+    "options": [
+      "Es dient als Schlüssel für die Metadatenspeicherung auf dem Klassenkonstruktor, um Metadaten zu erfassen, die von Klassen- und Eigenschafts-Decorators definiert wurden",
+      "Es kompiliert strukturelle Typisierungssysteme in JavaScript-Laufzeitmetadaten",
+      "Es speichert private Zugangsdaten für WebSockets",
+      "Es wird verwendet, um zu prüfen, ob eine Klasse private Methoden besitzt"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Stage-3-Decorators-Vorschlag führt `Symbol.metadata` als Schlüssel für Klassenkonstruktoren ein. Decorators können auf ein Metadatenobjekt zugreifen und in dieses schreiben, welches dann in der Eigenschaft `[Symbol.metadata]` der Klasse gespeichert wird, was eine standardisierte Möglichkeit bietet, Decorator-Annotationen zur Laufzeit auszulesen.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Rolle spielt die Komponente 'Ignition' in der JIT-Compilations-Pipeline von V8?",
+    "options": [
+      "Es ist der Bytecode-Interpreter, der JavaScript parst, Code ausführt und Profiling-Feedback sammelt",
+      "Es ist der optimierende Compiler, der aus Hot Paths Maschinencode generiert",
+      "Es ist der Parser, der Syntaxfehler überprüft und Syntaxwarnungen ausgibt",
+      "Es ist der Garbage Collector, der den New-Space-Heap bereinigt"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Compilations-Pipeline von V8 beginnt mit dem Parsen von JS in einen Abstract Syntax Tree (AST). 'Ignition' interpretiert diesen AST in Bytecode und führt ihn sofort aus. Während der Ausführung sammelt es Performance-Daten und Profiling-Informationen, um Hot Functions zu identifizieren, die später von TurboFan optimiert werden können.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn ein Inline Cache (IC) in V8 von 'Polymorph' zu 'Megamorph' übergeht?",
+    "options": [
+      "Die Engine stoppt die Optimierung von Eigenschafts-Offsets und fällt auf eine langsame Hash-Suche auf dem Shape des Objekts zurück",
+      "Der Code wird direkt für die Ausführung von Maschinenbefehlen optimiert",
+      "Die Ausführung wird an Web Worker weitergeleitet",
+      "Der Heap wird vollständig komprimiert, um Speicher freizugeben"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Inline Cache (IC) optimiert den Eigenschaftszugriff. Wenn auf eine Eigenschaft mit 1 Form (Shape) zugegriffen wird, ist sie monomorph. Bis zu 4 Shapes ist sie polymorph. Wenn die Engine an einer Aufrufstelle mehr als 4 verschiedene Shapes erkennt, wird der IC megamorph, beendet das Inline-Caching und fällt auf einen langsameren globalen Lookup-Pfad zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Auswirkungen haben Konstruktoren, die Eigenschaften in unterschiedlicher Reihenfolge initialisieren, auf die Ausführungsperformance von V8?\n```javascript\nfunction A() { this.x = 1; this.y = 2; }\nfunction B() { this.y = 2; this.x = 1; }\n```",
+    "options": [
+      "Sie erzeugen unterschiedliche Hidden Classes (Shapes), wodurch Funktionsaufrufe anstelle von monomorph polymorph oder megamorph werden",
+      "Sie verwenden identische Hidden Classes, sodass sie keinerlei Auswirkungen auf die Performance haben",
+      "Sie veranlassen TurboFan dazu, die Funktionen direkt zu kompilieren, ohne Bytecode zu parsen",
+      "Sie lösen sofortige Garbage-Collection-Durchläufe aus"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 erstellt Hidden Classes (Shapes) basierend auf der Reihenfolge, in der Eigenschaften einem Objekt zugewiesen werden. Obwohl Instanzen von `A` und `B` dieselben Eigenschaften (`x` und `y`) besitzen, finden die Übergänge in einer anderen Reihenfolge statt, wodurch zwei unterschiedliche Hidden Classes erzeugt werden. Das Übergeben von Objekten mit unterschiedlichen Hidden Classes an dieselbe Funktion führt dazu, dass Optimierungen herabgestuft werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was beschreibt die Kopierphase des Scavenger-Garbage-Collection-Algorithmus von V8?",
+    "options": [
+      "Sie kopiert überlebende Objekte aus dem aktiven 'From Space' in den 'To Space', verwirft tote Objekte und vertauscht anschließend die Rollen der Speicherbereiche",
+      "Sie scannt den gesamten Heap, markiert zirkuläre Referenzen und komprimiert diese direkt vor Ort",
+      "Sie konvertiert Speicherfragmente in einen einzigen zusammenhängenden WebAssembly-Puffer",
+      "Sie schreibt Heap-Dumps zur diagnostischen Auswertung in das Dateisystem"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Scavenger-Algorithmus zielt auf den 'New Space' von V8 ab. Der New Space ist in zwei Semi-Spaces unterteilt: 'From Space' und 'To Space'. Bei einer Bereinigung durchläuft der Scavenger die Roots, kopiert lebende Objekte aus dem 'From Space' in den 'To Space' und verwirft den Rest. Die Speicherbereiche vertauschen anschließend ihre Rollen, wodurch ein kompakter Heap erhalten bleibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was beschreibt eine Deoptimierung (Deopt) im TurboFan-Compiler von V8?",
+    "options": [
+      "Eine optimierte Funktion erhält Argumente, die von den beim Profiling erfassten Typ-Shapes oder Bedingungen abweichen",
+      "Der Aufrufstapel überschreitet die maximalen Ausführungslimits",
+      "Der Garbage Collector startet einen Mark-Sweep-Kompaktierungszyklus",
+      "Das Programm versucht, dynamische Importe zu laden"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "TurboFan optimiert Code basierend auf Typ-Feedback (z. B. unter der Annahme, dass ein Parameter immer eine Ganzzahl ist). Wenn die Funktion einen Wert eines anderen Typs erhält (z. B. einen String), werden die Annahmen des optimierten Codes ungültig. Die Engine muss den optimierten Maschinencode verwerfen und auf interpretierten Bytecode zurückgreifen (Deoptimierung).",
+    "points": 10
+  },
+  {
+    "question_text": "Welcher Speicherbereich im V8-Heap enthält den kompilierten ausführbaren Maschinencode optimierter Funktionen?",
+    "options": [
+      "Code Space",
+      "Large Object Space",
+      "Old Pointer Space",
+      "Map Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 allokiert Speicher in dedizierten Heap-Bereichen. Kompilierte Maschinenbefehle, die von optimierenden Compilern wie TurboFan generiert werden, werden im 'Code Space' abgelegt, welcher als einziger Bereich im Speicher als ausführbar markiert ist, um Sicherheits-Exploits zu verhindern.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die beste Praxis bezüglich der Eigenschaftszugriffstypen, um V8-Funktionen optimiert zu halten?",
+    "options": [
+      "Sicherstellen, dass Funktionen monomorph sind, indem Objekte übergeben werden, die exakt dieselbe Hidden-Class-Form (Shape) teilen",
+      "Häufiges Neuzuweisen von Eigenschaften zu anderen Typen innerhalb von Schleifen",
+      "Löschen von Eigenschaften aus Objekten, sobald diese nicht mehr benötigt werden",
+      "Funktionen immer mit einer variablen Anzahl von Argumenten unter Verwendung von `arguments` aufrufen"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Funktionen bleiben optimiert (monomorph), wenn sie Objekte mit identischen Hidden Classes verarbeiten. Das Vermeiden von Änderungen an der Eigenschaftsreihenfolge, strukturellen Updates wie Deletes oder Änderungen an Parametertypen stellt sicher, dass Inline Caches schnell und Compiler-Annahmen gültig bleiben.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum unterstützt V8 keine allgemeine Endrekursionsoptimierung (Tail Call Optimization, TCO) in der modernen JavaScript-Ausführung?",
+    "options": [
+      "TCO entfernt Stack-Frames, was die Erstellung von Stack-Traces und das Debugging erschwert, und es konnte keine Einigung über alle Engine-Architekturen hinweg erzielt werden",
+      "Es ist in dynamischen Scripting-Engines mathematisch unmöglich zu implementieren",
+      "Es wurde in allen Browsern durch WebAssembly-Tail-Calls ersetzt",
+      "Der V8-Compiler benötigt Stack-Frames, um Garbage-Collection-Zyklen auszuführen"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Obwohl TCO in die ES6-Spezifikation aufgenommen wurde, haben V8 (und die meisten Engines außer Safaris JSC) die Unterstützung deaktiviert. Gründe hierfür sind unter anderem: TCO verwirft Stack-Frames, was den Stack-Trace von Fehlern (`Error.stack`) zerstört und das Debuggen extrem erschwert, sowie komplexe Implementierungsanforderungen unter dynamischen Gültigkeitsbereichsregeln.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie gelang asynchrone Web-API-Callbacks (wie aufgelöste `fetch`-Aufrufe) in den V8-Hauptausführungsthread?",
+    "options": [
+      "Sie werden von der Umgebung in Task-/Mikrotask-Warteschlangen eingereiht und die Ereignisschleife schiebt sie auf den V8-Stack, sobald dieser leer ist",
+      "Sie unterbrechen die V8-Ausführung sofort über Hardware-Interrupts",
+      "Sie werden auf sekundären V8-Threads parallel zum Hauptausführungskontext ausgeführt",
+      "Sie werden direkt vom Garbage-Collection-Thread ausgeführt"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 ist Single-Threaded. Web-APIs laufen auf separaten Threads der Host-Umgebung (Browser/Node). Wenn sie abgeschlossen sind, werden ihre Callbacks in Task-/Mikrotask-Warteschlangen eingereiht. Die Ereignisschleife (Event Loop) überwacht den V8-Aufrufstapel. Sobald dieser vollständig leer ist, holt sie Tasks aus der Warteschlange und schiebt sie auf den V8-Stack.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Unterschied zwischen dem Full Parser (vollständigen Parser) und dem Pre-Parser von V8?",
+    "options": [
+      "Der Full Parser erstellt einen Abstract Syntax Tree (AST) für die Ausführung, während der Pre-Parser die Syntax prüft und die AST-Generierung für geschachtelte Funktionen überspringt",
+      "Der Pre-Parser übersetzt Code in Bytecode und der Full Parser optimiert ihn",
+      "Der Pre-Parser läuft in einem separaten Worker-Prozess, während der Full Parser auf der GPU läuft",
+      "Es gibt keinen Unterschied; es handelt sich um alternative Namen für den Ignition-Bytecode-Parser"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Um die Startzeiten zu verkürzen, verwendet V8 Lazy Parsing. Der Pre-Parser führt einen schnellen Scan von inneren/geschachtelten Funktionen durch, um die Syntax zu prüfen und nach Variablen im Block-Gültigkeitsbereich zu suchen, ohne einen AST zu kompilieren oder Speicher zu allokieren. Der Full Parser läuft erst später, um den AST aufzubauen, wenn die Funktion tatsächlich aufgerufen wird.",
+    "points": 10
+  }
+]

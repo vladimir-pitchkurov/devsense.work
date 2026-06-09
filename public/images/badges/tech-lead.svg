@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE066" />
+      <stop offset="50%" stop-color="#F5B041" />
+      <stop offset="100%" stop-color="#C0392B" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer circle with gradient border -->
+  <circle cx="50" cy="50" r="46" fill="#1e1e2f" stroke="url(#goldGrad)" stroke-width="3.5" filter="url(#shadow)" />
+  
+  <!-- Inner decorative elements -->
+  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#goldGrad)" stroke-width="1.2" stroke-dasharray="6,3" opacity="0.75"/>
+  
+  <!-- Central Shield or Badge Icon -->
+  <path d="M50,22 L68,34 L68,58 L50,78 L32,58 L32,34 Z" fill="url(#goldGrad)" />
+  
+  <!-- Three Stars in Center -->
+  <g fill="#1e1e2f">
+    <polygon points="50,32 52,38 58,38 53,42 55,48 50,44 45,48 47,42 42,38 48,38" />
+    <polygon points="40,46 42,52 48,52 43,56 45,62 40,58 35,62 37,56 32,52 38,52" />
+    <polygon points="60,46 62,52 68,52 63,56 65,62 60,58 55,62 57,56 52,52 58,52" />
+  </g>
+  
+  <!-- Ribbon or Text Support -->
+  <rect x="25" y="66" width="50" height="10" rx="3" fill="#1e1e2f" stroke="url(#goldGrad)" stroke-width="1.5" />
+  <text x="50" y="73" font-family="'Outfit', 'Inter', sans-serif" font-size="6" font-weight="bold" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="1">LEAD</text>
+  
+  <!-- Shiny reflection overlay -->
+  <path d="M6,50 A44,44 0 0,1 94,50 A44,44 0 0,0 6,50 Z" fill="url(#glowGrad)" pointer-events="none" />
+</svg>
