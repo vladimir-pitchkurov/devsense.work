@@ -1093,3 +1093,47 @@
         border-color: var(--primary-hover);
     }
 }
+
+/* Quiz Question Code Block & Inline Code Styling */
+.question-code-block {
+    background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--code-border-accent);
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    padding: 1rem 1.25rem;
+
+    pre {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+
+    code {
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.85rem;
+        color: var(--code-text);
+        background: none !important;
+        padding: 0 !important;
+        white-space: pre-wrap; /* Wrap long code blocks nicely on mobile */
+        word-break: break-all;
+    }
+}
+
+.question-text code,
+.choice-text code,
+.review-question-text code,
+.review-opt code,
+.review-explanation code,
+.quiz-explanation code {
+    background-color: rgba(128, 128, 128, 0.15);
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85em;
+    color: var(--primary-color);
+}
+

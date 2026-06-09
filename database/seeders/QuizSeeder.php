@@ -233,6 +233,70 @@ class QuizSeeder extends Seeder
                     'es' => ['title' => 'Experto en Fundamentos de JS', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista sobre fundamentos de JS.'],
                     'it' => ['title' => 'Esperto in Fondamenti di JS', 'description' => 'Ottenuto il 100% nel quiz di intervista sui fondamenti di JS.'],
                 ]
+            ],
+            [
+                'slug' => 'js-advanced-bronze',
+                'quiz_slug' => 'javascript-advanced-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/js-advanced-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Advanced Bronze', 'description' => 'Scored 50% or more on the JavaScript Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: JS Advanced', 'description' => 'Набрано 50% или более правильных ответов в продвинутом квизе по JavaScript.'],
+                    'ua' => ['title' => 'Бронза: JS Advanced', 'description' => 'Набрано 50% або більше правильних відповідей у просунутому квізі з JavaScript.'],
+                    'bg' => ['title' => 'Бронз: JS Advanced', 'description' => 'Резултат от 50% или повече на теста за напреднали по JavaScript.'],
+                    'de' => ['title' => 'JS-Fortgeschritten Bronze', 'description' => 'Erreichte 50% oder mehr im JavaScript-Fortgeschrittenen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Bronze JS Avancé', 'description' => 'Obtenu 50% ou plus au quiz d\'entretien sur JS avancé.'],
+                    'es' => ['title' => 'Bronce en JS Avanzado', 'description' => 'Obtuvo un 50% o más en el cuestionario de entrevista de JavaScript avanzado.'],
+                    'it' => ['title' => 'Bronzo in JS Avanzato', 'description' => 'Ottenuto il 50% o più nel quiz di intervista su JavaScript avanzato.'],
+                ]
+            ],
+            [
+                'slug' => 'js-advanced-silver',
+                'quiz_slug' => 'javascript-advanced-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/js-advanced-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Advanced Silver', 'description' => 'Scored 70% or more on the JavaScript Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: JS Advanced', 'description' => 'Набрано 70% или более правильных ответов в продвинутом квизе по JavaScript.'],
+                    'ua' => ['title' => 'Срібло: JS Advanced', 'description' => 'Набрано 70% або більше правильних відповідей у просунутому квізі з JavaScript.'],
+                    'bg' => ['title' => 'Сребро: JS Advanced', 'description' => 'Резултат от 70% или повече на теста за напреднали по JavaScript.'],
+                    'de' => ['title' => 'JS-Fortgeschritten Silber', 'description' => 'Erreichte 70% oder mehr im JavaScript-Fortgeschrittenen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Argent JS Avancé', 'description' => 'Obtenu 70% ou plus au quiz d\'entretien sur JS avancé.'],
+                    'es' => ['title' => 'Plata en JS Avanzado', 'description' => 'Obtuvo un 70% o más en el cuestionario de entrevista de JavaScript avanzado.'],
+                    'it' => ['title' => 'Argento in JS Avanzato', 'description' => 'Ottenuto il 70% o più nel quiz di intervista su JavaScript avanzato.'],
+                ]
+            ],
+            [
+                'slug' => 'js-advanced-gold',
+                'quiz_slug' => 'javascript-advanced-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/js-advanced-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Advanced Gold', 'description' => 'Scored 85% or more on the JavaScript Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: JS Advanced', 'description' => 'Набрано 85% или более правильных ответов в продвинутом квизе по JavaScript.'],
+                    'ua' => ['title' => 'Золото: JS Advanced', 'description' => 'Набрано 85% або більше правильних відповідей у просунутому квізі з JavaScript.'],
+                    'bg' => ['title' => 'Злато: JS Advanced', 'description' => 'Резултат от 85% или повече на теста за напреднали по JavaScript.'],
+                    'de' => ['title' => 'JS-Fortgeschritten Gold', 'description' => 'Erreichte 85% oder mehr im JavaScript-Fortgeschrittenen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Or JS Avancé', 'description' => 'Obtenu 85% ou plus au quiz d\'entretien sur JS avancé.'],
+                    'es' => ['title' => 'Oro en JS Avanzado', 'description' => 'Obtuvo un 85% o más en el cuestionario de entrevista de JavaScript avanzado.'],
+                    'it' => ['title' => 'Oro in JS Avanzato', 'description' => 'Ottenuto l\'85% o più nel quiz di intervista su JavaScript avanzato.'],
+                ]
+            ],
+            [
+                'slug' => 'js-advanced-expert',
+                'quiz_slug' => 'javascript-advanced-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/js-advanced-expert.svg',
+                'translations' => [
+                    'en' => ['title' => 'JS Advanced Expert', 'description' => 'Scored 100% on the JavaScript Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Эксперт: JS Advanced', 'description' => 'Набрано 100% правильных ответов в продвинутом квизе по JavaScript.'],
+                    'ua' => ['title' => 'Експерт: JS Advanced', 'description' => 'Набрано 100% правильних відповідей у просунутому квізі з JavaScript.'],
+                    'bg' => ['title' => 'Експерт: JS Advanced', 'description' => 'Резултат от 100% на теста за напреднали по JavaScript.'],
+                    'de' => ['title' => 'JS-Fortgeschritten Experte', 'description' => 'Erreichte 100% im JavaScript-Fortgeschrittenen-Interview-Quiz.'],
+                    'fr' => ['title' => 'Expert JS Avancé', 'description' => 'Obtenu 100% au quiz d\'entretien sur JS avancé.'],
+                    'es' => ['title' => 'Experto en JS Avanzado', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista de JavaScript avanzado.'],
+                    'it' => ['title' => 'Esperto in JS Avanzato', 'description' => 'Ottenuto il 100% nel quiz di intervista su JavaScript advanced.'],
+                ]
             ]
         ];
 
@@ -283,6 +347,18 @@ class QuizSeeder extends Seeder
             'it' => ['title' => 'Colloquio sui Fondamenti di JavaScript', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di JavaScript, ambiti, closure, prototipi, programmazione asincrona, array e moduli.'],
         ];
         $this->seedQuiz('javascript-basics-interview', 1000, $jsQuizTrans, 'javascript-basics-interview');
+
+        $jsAdvancedQuizTrans = [
+            'en' => ['title' => 'JavaScript Advanced Interview', 'description' => 'A challenging test of 100 questions covering closures, prototype chain, async design, proxies, memory leaks, modern ES specs, and JS engine internals.'],
+            'ru' => ['title' => 'Продвинутое собеседование по JavaScript', 'description' => 'Сложный тест из 100 вопросов, охватывающий замыкания, прототипы, асинхронность, прокси, утечки памяти, современные стандарты ES и устройство JS-движков.'],
+            'ua' => ['title' => 'Просунута співбесіда з JavaScript', 'description' => 'Складний тест із 100 питань, що охоплює замикання, прототипи, асинхронність, проксі, витоки пам’яті, сучасні стандарти ES та пристрій JS-рушіїв.'],
+            'bg' => ['title' => 'Интервю за напреднали по JavaScript', 'description' => 'Предизвикателен тест от 100 въпроса, обхващащ затваряния, прототипи, асинхронно програмиране, прокси, изтичане на памет, ES спецификации и вътрешности на JS двигателя.'],
+            'de' => ['title' => 'JavaScript-Fortgeschrittenen Interview', 'description' => 'Ein anspruchsvoller Test mit 100 Fragen zu Closures, Prototypenkette, asynchronem Design, Proxies, Speicherlecks, modernen ES-Spezifikationen und JS-Engine-Interna.'],
+            'fr' => ['title' => 'Entretien JS Avancé', 'description' => 'Un test exigeant de 100 questions couvrant les fermetures, la chaîne de prototypes, la programmation asynchrone, les proxies, les fuites de mémoire, les spécifications ES et les rouages des moteurs JS.'],
+            'es' => ['title' => 'Entrevista de JavaScript Avanzado', 'description' => 'Un examen desafiante de 100 preguntas que abarca closures, cadena de prototipos, diseño asíncrono, proxies, fugas de memoria, especificaciones de ES e internos del motor JS.'],
+            'it' => ['title' => 'Colloquio su JavaScript Avanzato', 'description' => 'Un test impegnativo di 100 domande che copre closure, catena di prototipi, programmazione asincrona, proxy, perdite di memoria, specifiche ES e interni dei motori JS.'],
+        ];
+        $this->seedQuiz('javascript-advanced-interview', 1000, $jsAdvancedQuizTrans, 'javascript-advanced-interview');
     }
 
     private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir): void

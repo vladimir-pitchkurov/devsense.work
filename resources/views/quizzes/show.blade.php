@@ -275,6 +275,18 @@
         const feedbackHint = document.getElementById('feedback-hint');
         const quizBoxFooter = document.getElementById('quiz-box-footer');
 
+        function formatText(str) {
+            if (!str) return '';
+            let escaped = str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+            return escaped.replace(/\n/g, '<br>');
+        }
+
         function loadQuestion() {
             selectedOptionIndex = null;
             isChecked = false;
@@ -294,8 +306,24 @@
             const progressPct = ((currentQuestionIndex) / total) * 100;
             quizStepFill.style.width = `${progressPct}%`;
 
-            // Set Text
-            questionText.innerHTML = question.text;
+            // Parse Code Block
+            const text = question.text;
+            const codeBlockRegex = /```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/;
+            const match = text.match(codeBlockRegex);
+            const codeBlockContainer = document.getElementById('question-code-block');
+            
+            let cleanText = text;
+            if (match) {
+                cleanText = text.replace(codeBlockRegex, '').trim();
+                const code = match[1];
+                codeBlockContainer.querySelector('code').textContent = code;
+                codeBlockContainer.style.display = 'block';
+            } else {
+                codeBlockContainer.style.display = 'none';
+                codeBlockContainer.querySelector('code').textContent = '';
+            }
+
+            questionText.innerHTML = formatText(cleanText);
 
             // Render Choices
             choicesGrid.innerHTML = '';
@@ -305,7 +333,7 @@
                 choiceBtn.className = 'choice-card';
                 choiceBtn.innerHTML = `
                     <span class="choice-marker">${String.fromCharCode(65 + idx)}</span>
-                    <span class="choice-text">${option}</span>
+                    <span class="choice-text">${formatText(option)}</span>
                 `;
                 choiceBtn.addEventListener('click', () => selectOption(idx));
                 choicesGrid.appendChild(choiceBtn);
@@ -463,7 +491,7 @@
             const isRu = "{{ app()->getLocale() === 'ru' }}";
             feedbackHint.innerHTML = `
                 <div class="quiz-explanation">
-                    <strong>${isRu ? 'Объяснение:' : 'Explanation:'}</strong> ${text}
+                    <strong>${isRu ? 'Объяснение:' : 'Explanation:'}</strong> ${formatText(text)}
                 </div>
             `;
             feedbackHint.style.display = 'block';
@@ -636,17 +664,37 @@
                     answersHTML += `
                         <div class="review-opt ${optClass}">
                             <span class="opt-bullet">${String.fromCharCode(65 + idx)}</span>
-                            <span>${opt}</span>
+                            <span>${formatText(opt)}</span>
                         </div>
                     `;
                 });
 
+                const text = q.text;
+                const codeBlockRegex = /```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/;
+                const match = text.match(codeBlockRegex);
+                let cleanText = text;
+                let codeHTML = '';
+                if (match) {
+                    cleanText = text.replace(codeBlockRegex, '').trim();
+                    const code = match[1];
+                    const escapedCode = code
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                    codeHTML = `
+                        <div class="question-code-block" style="margin: 0.75rem 0;">
+                            <pre><code>${escapedCode}</code></pre>
+                        </div>
+                    `;
+                }
+
                 reviewItem.innerHTML = `
-                    <h5 class="review-question-text">${q.text}</h5>
+                    <h5 class="review-question-text">${formatText(cleanText)}</h5>
+                    ${codeHTML}
                     <div class="review-opts-container">${answersHTML}</div>
                     ${explanation ? `
                         <div class="review-explanation">
-                            <strong>{{ app()->getLocale() === 'ru' ? 'Объяснение:' : 'Explanation:' }}</strong> ${explanation}
+                            <strong>{{ app()->getLocale() === 'ru' ? 'Объяснение:' : 'Explanation:' }}</strong> ${formatText(explanation)}
                         </div>
                     ` : ''}
                 `;

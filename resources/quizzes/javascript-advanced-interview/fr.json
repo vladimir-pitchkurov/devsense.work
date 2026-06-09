@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Quel est le résultat du code suivant en mode strict ?\n```javascript\n'use strict';\nfunction test() {\n  console.log(typeof foo);\n  if (true) {\n    function foo() { return 1; }\n  }\n  console.log(typeof foo);\n}\ntest();\n```",
+    "options": [
+      "\"undefined\" et \"undefined\"",
+      "\"function\" et \"function\"",
+      "\"undefined\" et \"function\"",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En mode strict d'ES6, les déclarations de fonctions à l'intérieur de blocs ont une portée de bloc. Elles sont hissées (hoisted) au sein de l'environnement lexical de leur bloc mais ne sont pas visibles dans la portée de la fonction externe. Par conséquent, `typeof foo` vaut `\"undefined\"` avant et après le bloc.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet x = 1;\nfunction outer() {\n  let x = 2;\n  function inner() {\n    console.log(x);\n  }\n  x = 3;\n  return inner;\n}\nconst fn = outer();\nfn();\n```",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Les fermetures (closures) en JavaScript capturent les variables par référence, et non par valeur. La fermeture `inner` conserve une référence à la variable externe `x` (provenant de l'environnement de variables de `outer`). Lorsque `fn` est exécutée, la valeur de `x` a déjà été mise à jour à 3, elle affiche donc 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst arr = [];\nfor (var i = 0; i < 3; i++) {\n  arr.push(() => i);\n}\nconst arr2 = [];\nfor (let j = 0; j < 3; j++) {\n  arr2.push(() => j);\n}\nconsole.log(arr[1](), arr2[1]());\n```",
+    "options": [
+      "1 1",
+      "3 1",
+      "3 3",
+      "1 3"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Les variables déclarées avec `var` ont une portée de fonction, ce qui signifie qu'il n'y a qu'une seule liaison partagée pour `i` à travers toutes les itérations de la boucle. Sa valeur finale est 3. Les variables déclarées avec `let` dans l'en-tête d'une boucle créent un nouvel environnement lexical pour chaque itération avec une nouvelle liaison pour `j`. Ainsi, la fermeture dans le premier tableau renvoie 3, et dans le second tableau renvoie 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nvar x = 10;\nfunction test() {\n  console.log(x);\n  if (false) {\n    var x = 20;\n  }\n}\ntest();\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Les variables déclarées avec `var` sont hissées (hoisted) au sommet de la portée de leur fonction conteneuse lors de la phase de création du contexte d'exécution, peu importe si la branche s'exécute ou non. Ainsi, `var x` est hissée à l'intérieur de `test()`, masquant la variable globale `x`, et est initialisée à `undefined` avant l'affectation.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nvar x = 1;\n{\n  var x = 2;\n  let y = 3;\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "2 et \"undefined\"",
+      "1 et \"number\"",
+      "2 et \"number\"",
+      "1 et \"undefined\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La variable `x` est déclarée à l'aide de `var`, qui ne respecte pas la portée de bloc. La réaffectation `var x = 2` écrase la variable globale `x`. La variable `y` est déclarée avec `let`, qui a une portée de bloc, elle est donc inaccessible en dehors du bloc, ce qui fait que `typeof y` renvoie `\"undefined\"`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet x = 10;\n{\n  console.log(x);\n  let x = 20;\n}\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Au sein d'un bloc, les variables à portée de bloc (`let` et `const`) se trouvent dans une « zone morte temporelle » (Temporal Dead Zone - TDZ) depuis le début du bloc jusqu'à ce que la déclaration soit traitée. Accéder à `x` à l'intérieur du bloc avant sa déclaration locale lève une erreur `ReferenceError`, bien que la variable externe `x` existe.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\n(function() {\n  var a = b = 3;\n})();\nconsole.log(typeof a);\nconsole.log(typeof b);\n```",
+    "options": [
+      "\"undefined\" et \"number\"",
+      "\"number\" et \"undefined\"",
+      "\"undefined\" et \"undefined\"",
+      "\"number\" et \"number\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'instruction `var a = b = 3;` est évaluée de droite à gauche. D'abord, `b = 3` est exécuté. Comme `b` n'est pas déclaré, en mode non strict, cela crée une propriété sur l'objet global. Ensuite, `var a` déclare une variable locale `a` à l'intérieur de l'IIFE. À l'extérieur, `a` n'est pas défini (typeof `\"undefined\"`), mais `b` est global (typeof `\"number\"`).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nvar x = 1;\nfunction test(x = x) {\n  console.log(x);\n}\ntest();\n```",
+    "options": [
+      "1",
+      "undefined",
+      "Lève une erreur ReferenceError",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Les valeurs par défaut des paramètres sont évaluées dans leur propre portée intermédiaire. L'expression `x = x` tente de lire le paramètre `x` pour s'initialiser elle-même. Comme le paramètre `x` est dans la TDZ lors de sa propre initialisation, cela lève une erreur `ReferenceError`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst f = function g() {\n  console.log(typeof g);\n};\nf();\nconsole.log(typeof g);\n```",
+    "options": [
+      "\"function\" et \"undefined\"",
+      "\"undefined\" et \"function\"",
+      "\"function\" et \"function\"",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans une expression de fonction nommée (NFE), le nom de la fonction (ici `g`) n'est lié qu'au sein de la portée de la fonction elle-même. Il n'est pas disponible dans la portée externe, où `typeof g` renvoie `\"undefined\"`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction test(a, b = 2) {\n  a = 10;\n  console.log(arguments[0]);\n}\ntest(1);\n```",
+    "options": [
+      "1",
+      "10",
+      "undefined",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En ES6, si une fonction contient des valeurs par défaut, des paramètres du reste ou des paramètres déstructurés, l'objet `arguments` n'est pas lié dynamiquement aux paramètres (comportement similaire au mode strict). Modifier le paramètre `a` à l'intérieur de la fonction ne modifie pas la valeur correspondante dans `arguments[0]`, qui conserve la valeur d'argument initiale `1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nvar x = 1;\nlet y = 2;\nconsole.log(globalThis.hasOwnProperty('x'));\nconsole.log(globalThis.hasOwnProperty('y'));\n```",
+    "options": [
+      "true et false",
+      "false et true",
+      "true et true",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans la portée globale, les variables déclarées avec `var` ou les déclarations de fonction sont créées en tant que propriétés de l'objet global. Les variables déclarées avec `let`, `const` ou `class` sont à la place liées dans l'environnement lexical global et ne deviennent pas des propriétés de l'objet global.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\n'use strict';\nlet x = 1;\nfunction test() {\n  eval('var x = 2; console.log(x);');\n}\ntest();\nconsole.log(x);\n```",
+    "options": [
+      "2 et 1",
+      "2 et 2",
+      "Lève une erreur SyntaxError",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En mode strict, `eval` possède son propre environnement lexical privé. Les variables déclarées avec `var` à l'intérieur de `eval` ne fuient pas dans la portée de la fonction environnante ni dans la portée globale. Le log à l'intérieur de `eval` affiche 2, tandis que la variable globale `x` reste égale à 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet a = 1;\n{\n  let a = 2;\n  function f() {\n    console.log(a);\n  }\n}\nf();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Bien que les déclarations de fonctions à l'intérieur de blocs aient une portée de bloc, dans les environnements non stricts, elles sont hissées en dehors du bloc. Point crucial, la fermeture (closure) capture l'environnement lexical dans lequel elle a été déclarée. La fonction `f` a été déclarée dans la portée de bloc où `let a = 2` est lié, donc l'exécution de `f()` affiche 2.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\ntry {\n  throw new Error('fail');\n} catch (x) {\n  var x = 1;\n  let y = 2;\n  console.log(x);\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "1, 1, \"undefined\"",
+      "1, undefined, \"undefined\"",
+      "Error: fail, undefined, \"number\"",
+      "Lève une erreur SyntaxError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Le paramètre `x` du bloc catch a une portée limitée à ce bloc. Cependant, `var x` est hissé vers la portée de la fonction ou globale. À l'intérieur du bloc catch, le paramètre catch `x` masque la variable hissée `x`. L'affectation `x = 1` met à jour le paramètre catch local `x`. Après le bloc, le `x` externe hissé reste `undefined` (car il a été masqué à l'intérieur du bloc catch). `y` a une portée de bloc et n'est pas disponible à l'extérieur.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction test() {\n  const arr = [];\n  for (let i = 0; i < 3; i++) {\n    arr.push(() => {\n      console.log(i);\n    });\n  }\n  return arr;\n}\nconst funcs = test();\nfuncs[0]();\nfuncs[1]();\n```",
+    "options": [
+      "0 et 1",
+      "3 et 3",
+      "0 et 0",
+      "undefined et undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'utilisation de `let` dans l'en-tête de la boucle `for` indique au moteur de créer un nouvel environnement lexical pour chaque itération, liant la valeur actuelle de `i` à cette itération. Chaque fermeture de fonction capture sa propre variable `i` distincte, ce qui donne les indices séquentiels corrects lorsqu'elles sont invoquées.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst obj = {};\nObject.defineProperty(obj, 'x', {\n  value: 42,\n  writable: true,\n  configurable: false,\n  enumerable: true\n});\nObject.defineProperty(obj, 'x', {\n  writable: false\n});\nconsole.log(obj.x);\nObject.defineProperty(obj, 'x', {\n  value: 99\n});\n```",
+    "options": [
+      "42, puis lève une erreur TypeError",
+      "99, puis affiche 99",
+      "42, puis affiche 99",
+      "Lève une erreur TypeError à la première définition de propriété"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Si une propriété est non configurable (`configurable: false`), ses descripteurs ne peuvent pas être modifiés, à une exception près : `writable` peut passer de `true` à `false`. Cependant, une fois que `writable` est à `false`, il ne peut plus être remis à `true`, et la valeur `value` ne peut plus être modifiée. Ainsi, tenter de modifier `value: 99` lève une erreur `TypeError`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst proto = {\n  set value(val) {\n    this._val = val * 2;\n  }\n};\nconst obj = Object.create(proto);\nobj.value = 10;\nconsole.log(obj.value, obj._val);\n```",
+    "options": [
+      "undefined et 20",
+      "10 et undefined",
+      "20 et 20",
+      "10 et 20"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lors de l'affectation d'une propriété sur `obj` (c'est-à-dire `obj.value = 10`), JS parcourt la chaîne de prototypes. Comme un setter nommé `value` existe sur `proto`, JS appelle le setter avec `this` lié au récepteur `obj`. Le setter affecte `this._val = 20`, créant `_val` on `obj`. Le getter pour `value` n'étant pas défini sur `proto` ou `obj`, `obj.value` renvoie `undefined`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst obj = Object.create(null);\ntry {\n  console.log(obj.hasOwnProperty('x'));\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "false",
+      "error",
+      "undefined",
+      "true"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Object.create(null)` crée un objet avec un prototype de `null`. Cet objet n'hérite pas de `Object.prototype`, ce qui signifie que des méthodes comme `hasOwnProperty`, `toString`, etc. ne sont pas disponibles. Appeler `obj.hasOwnProperty` lève une erreur `TypeError`, déclenchant le bloc catch qui affiche 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nclass Parent {\n  constructor() {\n    console.log(new.target.name);\n  }\n}\nclass Child extends Parent {\n  constructor() {\n    super();\n  }\n}\nnew Child();\n```",
+    "options": [
+      "\"Parent\"",
+      "\"Child\"",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "La valeur de `new.target` à l'intérieur d'un constructeur pointe vers le constructeur de classe qui a été invoqué par l'opérateur `new`. Même lors de l'exécution du code dans le constructeur de `Parent` via `super()`, `new.target` reste lié à la classe dérivée `Child`, de sorte que `new.target.name` affiche \"Child\".",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2022+)\n```javascript\nclass Validator {\n  #value;\n  constructor(val) {\n    this.#value = val;\n  }\n  static check(obj) {\n    return #value in obj;\n  }\n}\nconst v = new Validator(10);\nconsole.log(Validator.check(v));\nconsole.log(Validator.check({}));\n```",
+    "options": [
+      "true et false",
+      "true et lève une erreur TypeError",
+      "lève une erreur SyntaxError",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "ES2022 a introduit la vérification de marque privée (private brand check) à l'aide de l'opérateur `in` sur les champs privés (`#field in object`). Elle renvoie `true` si l'objet possède le champ privé installé sur lui (ce qui se produit lors de la construction de l'instance de cette classe), et `false` sinon, sans lever d'erreur.",
+    "points": 10
+  },
+  {
+    "question_text": "Laquelle des propositions suivantes décrit l'impact de l'exécution de `Object.setPrototypeOf` sur un objet ?\n```javascript\nconst a = { x: 1 };\nconst b = { y: 2 };\nObject.setPrototypeOf(a, b);\n```",
+    "options": [
+      "Cela rend l'objet `a` immuable",
+      "Cela invalide les optimisations au niveau du moteur (classes cachées / caches en ligne - Inline Caches) pour `a` et ses descendants",
+      "Cela compile `a` en un module WebAssembly natif",
+      "Cela n'a aucun impact sur les performances avec les versions modernes du moteur V8"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Modifier dynamiquement le prototype d'un objet via `Object.setPrototypeOf` est une opération extrêmement lente dans les moteurs JS. Les moteurs comme V8 optimisent l'accès aux propriétés en se basant sur des « classes cachées » (Shapes) et des caches en ligne (Inline Caches - IC). Changer le prototype invalide ces optimisations, forçant tout le code en aval qui recherche des propriétés sur les objets concernés à emprunter un chemin d'exécution plus lent.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst proto = { x: 10 };\nconst obj = Object.create(proto);\nObject.freeze(obj);\nobj.x = 20;\nconsole.log(obj.x);\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.freeze` empêche l'ajout de nouvelles propriétés, la suppression de propriétés existantes et la modification de la configuration des descripteurs sur l'objet cible. Il ne gèle PAS récursivement les objets prototypes. Cependant, comme `obj` est gelé, l'affectation `obj.x = 20` échoue silencieusement (en mode sloppy) car `obj` lui-même ne peut pas avoir de nouvelles propriétés définies sur lui, ce qui laisse la valeur héritée de 10 pour `proto.x`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2022+)\n```javascript\nclass Test {\n  static count = 0;\n  static {\n    this.count = 5;\n  }\n  static {\n    this.count += 10;\n  }\n}\nconsole.log(Test.count);\n```",
+    "options": [
+      "15",
+      "0",
+      "5",
+      "Lève une erreur SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les blocs statiques de classe en ES2022 permettent l'initialisation de propriétés statiques. Ils s'exécutent dans l'ordre où ils sont définis dans la définition de la classe, dans le contexte du constructeur de la classe. Ici, le premier bloc statique définit `count` à 5, et le second bloc ajoute 10, ce qui donne 15.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst Mixin = (Base) => class extends Base {\n  greet() { return 'Hello'; }\n};\nclass BaseClass {}\nclass ChildClass extends Mixin(BaseClass) {}\nconst inst = new ChildClass();\nconsole.log(inst instanceof BaseClass);\nconsole.log(inst instanceof ChildClass);\n```",
+    "options": [
+      "true et true",
+      "false et true",
+      "true et false",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les mixins sont implémentés à l'aide d'expressions de classe qui étendent une classe de base. `Mixin(BaseClass)` renvoie une nouvelle classe qui étend `BaseClass`. Par conséquent, `ChildClass` hérite de cette classe intermédiaire, qui elle-même hérite de `BaseClass`. Ainsi, la chaîne de prototypes contient à la fois `ChildClass` et `BaseClass`, ce qui fait que les deux vérifications `instanceof` renvoient `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nclass Custom {\n  static [Symbol.hasInstance](instance) {\n    return 'special' in instance;\n  }\n}\nconsole.log({} instanceof Custom);\nconsole.log({ special: true } instanceof Custom);\n```",
+    "options": [
+      "false et true",
+      "true et false",
+      "true et true",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La méthode statique `Symbol.hasInstance` permet de personnaliser le comportement de l'opérateur `instanceof`. Ici, `instanceof Custom` vérifie si l'opérande possède la propriété `'special'`, ce qui donne `false` pour `{}` et `true` pour `{ special: true }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nclass Parent {\n  static getValue() {\n    return this.val;\n  }\n}\nParent.val = 100;\nclass Child extends Parent {}\nChild.val = 200;\nconsole.log(Child.getValue());\n```",
+    "options": [
+      "200",
+      "100",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans l'héritage de classes en JavaScript, les propriétés et méthodes statiques sont héritées. Le constructeur `Child` a son prototype (`[[Prototype]]`) lié au constructeur `Parent`. Lorsque `Child.getValue()` est appelé, `getValue` est trouvé sur `Parent`, mais exécuté avec `this` faisant référence à `Child`. Par conséquent, `this.val` correspond à `Child.val`, qui vaut 200.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst proto = {};\nObject.defineProperty(proto, 'x', {\n  value: 42,\n  writable: false\n});\nconst obj = Object.create(proto);\nobj.x = 99;\nconsole.log(obj.x);\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Lève une erreur TypeError en mode non strict"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Si une propriété héritée est non scriptible (`writable: false`), vous ne pouvez pas la masquer par une simple affectation (`obj.x = 99`). L'affectation échoue silencieusement en mode sloppy (et lève une erreur en mode strict). Pour masquer une propriété héritée non scriptible, vous devez définir la propriété directement sur l'objet enfant à l'aide de `Object.defineProperty`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nclass Example {\n  x = 1;\n  constructor() {\n    this.x = 2;\n  }\n}\nExample.prototype.x = 3;\nconst e = new Example();\nconsole.log(e.x);\n```",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les champs de classe (tels que `x = 1`) sont initialisés sur l'instance lors de la construction, avant l'exécution du code du constructeur. Dans le constructeur, `this.x = 2` remplace l'initialisation du champ. La propriété de prototype `Example.prototype.x = 3` est ignorée car les propriétés d'instance ont priorité sur les propriétés de la chaîne de prototypes.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2022+)\n```javascript\nclass Tester {\n  #val = 42;\n  compare(other) {\n    return other.#val;\n  }\n}\nconst t1 = new Tester();\nconst t2 = new Tester();\nconsole.log(t1.compare(t2));\n```",
+    "options": [
+      "42",
+      "Lève une erreur TypeError",
+      "undefined",
+      "Lève une erreur SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "JavaScript permet aux instances d'une même classe d'accéder aux propriétés privées d'autres instances de cette même classe. Comme `t2` est également une instance de `Tester`, `other.#val` est valide et accède avec succès au champ privé de `t2`, renvoyant 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction Base() {\n  this.x = 1;\n}\nfunction Custom() {}\nconst obj = Reflect.construct(Base, [], Custom);\nconsole.log(obj.x);\nconsole.log(Object.getPrototypeOf(obj) === Custom.prototype);\n```",
+    "options": [
+      "1 et true",
+      "undefined et true",
+      "1 et false",
+      "undefined et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Reflect.construct(target, argumentsList, newTarget)` appelle le constructeur `target` (Base) mais utilise `newTarget` (Custom) comme schéma de prototype. L'objet retourné aura sa liaison `[[Prototype]]` définie sur `Custom.prototype` mais exécutera tout de même le constructeur `Base`, ce qui définit `this.x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst obj = {\n  x: 42,\n  getX() {\n    const inner = () => this.x;\n    return inner;\n  }\n};\nconst detached = obj.getX();\nconsole.log(detached.call({ x: 99 }));\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les fonctions fléchées capturent leur valeur `this` de manière lexicale depuis leur contexte environnant au moment où elles sont créées. Dans ce cas, `inner` capture `this` depuis `getX()`, où `this` fait référence à `obj`. Les liaisons de `this` pour les fonctions fléchées sont permanentes et ne peuvent pas être modifiées par `call()`, `apply()` ou `bind()`, elle renvoie donc 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction test() {\n  console.log(this.val);\n}\nconst bound = test.bind({ val: 1 }).bind({ val: 2 });\nbound();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'appel à `bind()` renvoie une nouvelle fonction d'enveloppement qui définit `this` sur l'objet fourni lors de l'appel. Si vous liez une fonction plusieurs fois (par exemple, `f.bind(obj1).bind(obj2)`), seule la première liaison est effective. Les liaisons suivantes ne font qu'envelopper la fonction liée mais ne peuvent pas modifier le contexte `this` capturé.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction curried(a) {\n  const fn = (b) => curried(a + b);\n  fn.toString = () => a;\n  fn.valueOf = () => a;\n  return fn;\n}\nconsole.log(Number(curried(1)(2)(3)));\n```",
+    "options": [
+      "6",
+      "1",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La chaîne de curryification renvoie des fonctions qui accumulent les arguments. En remplaçant les méthodes de prototype `valueOf` et `toString` sur la fonction retournée, nous définissons la manière dont JavaScript convertit la fonction en primitive. Lorsqu'elle est enveloppée dans `Number(...)`, JS appelle `valueOf()`, qui renvoie la valeur accumulée (1 + 2 + 3 = 6).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant en mode non strict ?\n```javascript\nfunction test() {\n  return this;\n}\nconsole.log(test.call(undefined) === globalThis);\nconsole.log(test.call(42) instanceof Number);\n```",
+    "options": [
+      "true et true",
+      "false et false",
+      "true et false",
+      "false et true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En mode non strict, si `null` ou `undefined` est passé comme argument `this` à `call` ou `apply`, le moteur le convertit en l'objet global. De même, les valeurs primitives comme `42` sont encapsulées (boxed) dans leurs objets d'enveloppement (par exemple, `Number(42)`), ce qui fait que les deux conditions sont évaluées à `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction* genA() {\n  yield 1;\n  return 'doneA';\n}\nfunction* genB() {\n  const val = yield* genA();\n  yield val;\n}\nconst it = genB();\nconsole.log(it.next().value);\n```",
+    "options": [
+      "1",
+      "\"doneA\"",
+      "undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'opérateur `yield*` délègue les opérations de l'itérateur. Point crucial, il correspond à la valeur de retour du générateur délégué. Ainsi, `genA` produit (yield) `1`, puis renvoie `'doneA'`. Cette valeur de retour est capturée par `val` dans `genB`, qui est ensuite produite. Le dernier appel à `it.next()` vérifie si le générateur est terminé, ce qui est `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst myAsyncIterable = {\n  [Symbol.asyncIterator]() {\n    let count = 0;\n    return {\n      async next() {\n        if (count < 2) {\n          return { value: count++, done: false };\n        }\n        return { value: undefined, done: true };\n      }\n    };\n  }\n};\n(async () => {\n  let res = '';\n  for await (const x of myAsyncIterable) {\n    res += x;\n  }\n  console.log(res);\n})();\n```",
+    "options": [
+      "\"01\"",
+      "\"012\"",
+      "\"12\"",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pour créer un itérateur asynchrone personnalisé valide, l'objet doit implémenter `[Symbol.asyncIterator]` renvoyant un objet itérateur avec une méthode `next()` qui renvoie une promesse se résolvant en un objet de résultat d'itérateur. La boucle s'exécute pour `x = 0` et `x = 1`, affichant \"01\".",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst slice = Function.prototype.call.bind(Array.prototype.slice);\nconst result = slice({ 0: 'a', 1: 'b', length: 2 });\nconsole.log(Array.isArray(result));\nconsole.log(result[1]);\n```",
+    "options": [
+      "true et \"b\"",
+      "false et \"b\"",
+      "true et undefined",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Function.prototype.call.bind(method)` lie la fonction générique `call` à une méthode cible. Invoquer `slice(arrayLike)` équivaut à appeler `Array.prototype.slice.call(arrayLike)`. Comme l'objet d'entrée est semblable à un tableau (possède des propriétés indexées et une longueur), `slice` le convertit en un véritable tableau, renvoyant `['a', 'b']`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } catch (err) {\n    yield err;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.throw('error').value);\n```",
+    "options": [
+      "1 et \"error\"",
+      "1 et lève l'erreur 'error'",
+      "undefined et \"error\"",
+      "1 et undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La méthode `.throw(err)` du générateur reprend l'exécution et lève l'erreur à l'emplacement de l'instruction `yield` actuellement suspendue. Dans ce générateur, l'instruction `yield 1` est enveloppée dans un try-catch. Lorsque `.throw('error')` est appelé, le bloc catch s'exécute et produit à nouveau la chaîne d'erreur vers l'appelant.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst partial = (fn, ...args) => (...rest) => fn(...args.map(x => x === '_' ? rest.shift() : x).concat(rest));\nconst greet = (g, name) => `${g}, ${name}!`;\nconst greetHello = partial(greet, 'Hello', '_');\nconsole.log(greetHello('Alice'));\n```",
+    "options": [
+      "\"Hello, Alice!\"",
+      "\"Hello, _!\"",
+      "\"Alice, Hello!\"",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Cette implémentation de fonction partielle gère des paramètres génériques (placeholders) (`'_'`). Lorsque `greetHello('Alice')` est appelé, le paramètre générique est remplacé par `'Alice'`, générant le tableau d'arguments final `['Hello', 'Alice']` passé à `greet`, ce qui produit \"Hello, Alice!\".",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet x = 1;\nfunction test(a = x, b = () => x) {\n  let x = 2;\n  console.log(a);\n  console.log(b());\n}\ntest();\n```",
+    "options": [
+      "1 et 1",
+      "1 et 2",
+      "2 et 2",
+      "Lève une erreur ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les expressions de paramètres par défaut possèdent leur propre portée lexicale contenant les paramètres. Les variables déclarées dans le corps de la fonction (`let x = 2`) ne peuvent pas affecter la résolution des paramètres par défaut, qui capturent les variables de la portée externe. Par conséquent, `a` et la fermeture `b` se résolvent tous deux vers la variable externe `x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\n'use strict';\nconst test = () => {\n  return arguments;\n};\ntry {\n  test(1, 2);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "Un objet arguments",
+      "undefined",
+      "Lève une erreur SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les fonctions fléchées ne possèdent pas leur propre objet `arguments`. À la place, elles capturent l'objet `arguments` de leur environnement lexical environnant. Dans ce cas, `test` est défini dans la portée globale où aucune liaison `arguments` n'existe dans les modules ES stricts, ce qui lève une erreur `ReferenceError`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } finally {\n    yield 2;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.return(3).value);\nconsole.log(g.next().value);\n```",
+    "options": [
+      "1, 2, 3",
+      "1, 3, undefined",
+      "1, 2, undefined",
+      "1, undefined, undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La méthode `.return(val)` met fin à l'exécution du générateur et renvoie `val`. Cependant, si le générateur est actuellement suspendu à l'intérieur d'un bloc `try` qui possède un bloc `finally`, le moteur garantit d'abord l'exécution du bloc `finally`. La valeur produite (yielded) depuis le bloc `finally` (`2`) est renvoyée, puis un appel ultérieur à `.next()` renvoie la valeur finale retournée (`3`).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst f1 = (a, b = 1, ...c) => {};\nconst f2 = (a, b, c) => {};\nconsole.log(f1.length, f2.length);\n```",
+    "options": [
+      "1 et 3",
+      "2 et 3",
+      "3 et 3",
+      "1 et 2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La propriété `length` d'une fonction renvoie le nombre d'arguments attendus. Elle exclut les paramètres du reste et tout paramètre ayant une valeur par défaut, ainsi que tous les paramètres suivants après le premier paramètre ayant une valeur par défaut. Pour `f1`, seul `a` est qualifié, donc elle vaut 1. Pour `f2`, les 3 sont qualifiés, donc elle vaut 3.",
+    "points": 10
+  },
+  {
+    "question_text": "L'objet suivant est-il un itérable valide selon les protocoles d'itération d'ECMAScript ?\n```javascript\nconst obj = {\n  next() {\n    return { value: 42, done: false };\n  }\n};\n```",
+    "options": [
+      "Non, c'est un itérateur, mais il lui manque l'enveloppe de prototype d'itérateur avec [Symbol.iterator]",
+      "Oui, il satisfait aux protocoles d'itérateur et d'itérable",
+      "Non, car la méthode next ne renvoie pas de Promise",
+      "Oui, car tout objet avec une méthode next est automatiquement itérable"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pour satisfaire au protocole itérable, l'objet doit posséder une propriété `[Symbol.iterator]` qui renvoie un itérateur. Un objet qui ne possède qu'une méthode `next` est un « itérateur » mais pas un « itérable ». Pour le rendre itérable, il doit implémenter `[Symbol.iterator]() { return this; }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  const f = new Function('console.log(x);');\n  return f;\n}\nouter()();\n```",
+    "options": [
+      "10",
+      "20",
+      "Lève une erreur ReferenceError",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les fonctions créées à l'aide du constructeur `new Function` n'héritent pas de l'environnement lexical de leur portée de création. Au lieu de cela, elles sont toujours créées dans la portée globale (n'enveloppant que l'environnement global). Ainsi, la fonction créée accède au `x` global (10), et non au `x` local (20).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst p = new Promise((resolve, reject) => {\n  reject('fail');\n});\np.then(null, err => {\n  return 'recovered';\n}).then(val => {\n  console.log(val);\n});\n```",
+    "options": [
+      "\"recovered\"",
+      "N'affiche rien",
+      "Lève un rejet de promesse non géré",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lorsqu'une Promise est rejetée, elle se propage vers le gestionnaire de rejet le plus proche (`onRejected`). Comme le second argument de `p.then` capture le rejet, il renvoie `'recovered'`. Puisque ce gestionnaire de rejet se termine normalement (sans lever d'erreur ni renvoyer une promesse rejetée), la promesse renvoyée est résolue avec `'recovered'`, ce qui déclenche le gestionnaire `onFulfilled` suivant.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconsole.log('start');\nsetTimeout(() => console.log('timeout'), 0);\nPromise.resolve().then(() => console.log('promise'));\nqueueMicrotask(() => console.log('microtask'));\nconsole.log('end');\n```",
+    "options": [
+      "start -> end -> promise -> microtask -> timeout",
+      "start -> end -> timeout -> promise -> microtask",
+      "start -> promise -> microtask -> timeout -> end",
+      "start -> end -> promise -> timeout -> microtask"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'exécution du code synchrone a lieu en premier. Une fois la pile (stack) vide, la file d'attente des microtâches (microtasks) est épuisée avant que les macrotâches (comme `setTimeout`) ne soient exécutées. `Promise.then` et `queueMicrotask` ajoutent tous deux des tâches à la file d'attente des microtâches. Elles sont exécutées dans leur ordre d'insertion, suivies par la tâche du minuteur.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nPromise.resolve().then(() => {\n  console.log('A');\n  queueMicrotask(() => console.log('B'));\n});\nqueueMicrotask(() => {\n  console.log('C');\n});\n```",
+    "options": [
+      "A -> C -> B",
+      "A -> B -> C",
+      "C -> A -> B",
+      "A -> C"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les microtâches sont exécutées séquentiellement jusqu'à ce que la file d'attente des microtâches soit complètement vide. Initialement, deux microtâches sont en attente : le gestionnaire `Promise` et la tâche `C`. Pendant l'exécution de la première, une nouvelle microtâche `B` est ajoutée à la file d'attente. Après avoir affiché `A`, le moteur traite la microtâche suivante en file d'attente `C`, puis traite `B`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nPromise.all([1, Promise.reject('error'), 3])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "\"rejected error\"",
+      "\"resolved [1, undefined, 3]\"",
+      "N'affiche rien",
+      "\"rejected [undefined, 'error', undefined]\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.all` rejette immédiatement si une promesse du tableau d'entrée rejette (comportement fail-fast). Même s'il y a des valeurs qui ne sont pas des promesses ou des promesses résolues dans la liste, toute l'exécution s'interrompt lors du rejet, transférant le contrôle au gestionnaire `.catch` le plus proche avec l'erreur spécifique.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2021+)\n```javascript\nPromise.any([])\n  .then(() => console.log('resolved'))\n  .catch(err => console.log(err.name));\n```",
+    "options": [
+      "\"AggregateError\"",
+      "\"TypeError\"",
+      "Reste en attente indéfiniment",
+      "\"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.any` renvoie une promesse qui se résout dès qu'une des promesses d'entrée se résout. Si l'itérable d'entrée est vide, elle rejette immédiatement avec une erreur `AggregateError` contenant un tableau d'erreurs vide, car il n'y a aucune promesse qui puisse se résoudre.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nasync function test() {\n  console.log(1);\n  await Promise.resolve();\n  console.log(2);\n}\ntest();\nconsole.log(3);\n```",
+    "options": [
+      "1 -> 3 -> 2",
+      "1 -> 2 -> 3",
+      "3 -> 1 -> 2",
+      "1 -> 3"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une fonction `async` s'exécute de manière synchrone jusqu'à ce qu'elle rencontre sa première expression `await`. Le `await` suspend l'exécution de la fonction et place une microtâche en file d'attente pour la reprendre. Le contrôle revient immédiatement à la pile d'appels externe, ce qui fait que `3` est affiché avant que la microtâche ne s'exécute et n'affiche `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il lorsqu'une Promise rejette et qu'il n'y a pas de gestionnaire de rejet, mais qu'un gestionnaire catch est ajouté 2 secondes plus tard ?\n```javascript\nconst p = Promise.reject('error');\nsetTimeout(() => {\n  p.catch(e => console.log('handled:', e));\n}, 2000);\n```",
+    "options": [
+      "Un événement unhandledrejection est déclenché immédiatement, puis la promesse se résout avec succès lorsqu'elle est gérée plus tard",
+      "Le moteur lève immédiatement une exception impossible à intercepter et plante",
+      "Le rejet est différé et aucun avertissement n'est jamais consigné",
+      "Le code lève une erreur de syntaxe"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Si une Promise rejette sans gestionnaire, le moteur déclenche un événement `unhandledrejection` sur le contexte global à la fin du cycle de microtâche. Si un gestionnaire est ensuite attaché plus tard (par exemple après 2 secondes), le moteur le gère et peut déclencher un événement `rejectionhandled` pour signaler que le rejet a finalement été pris en charge.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nrequestAnimationFrame(() => console.log('raf'));\nPromise.resolve().then(() => console.log('promise'));\n```",
+    "options": [
+      "\"promise\" s'exécute en premier, mais l'ordre entre \"timeout\" et \"raf\" dépend du calendrier de refusion (reflow) du navigateur",
+      "\"timeout\" -> \"raf\" -> \"promise\"",
+      "\"raf\" -> \"timeout\" -> \"promise\"",
+      "\"promise\" -> \"timeout\" -> \"raf\" de manière cohérente dans tous les environnements"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les microtâches (`promise`) s'exécutent avant toutes les macrotâches ou rendus de trame (frame renders). `requestAnimationFrame` est exécuté dans le cadre du pipeline de rendu du navigateur (avant le dessin - paint). `setTimeout` s'exécute dans la phase des minuteurs de la boucle d'événements. L'ordre entre le rendu de trame et les macrotâches du minuteur dépend de la planification du navigateur et de la précision temporelle.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans une boucle d'événements Node.js, quel est le résultat du code suivant ?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nsetImmediate(() => console.log('immediate'));\n```",
+    "options": [
+      "L'ordre de sortie est non déterministe et dépend des performances du processus",
+      "\"timeout\" -> \"immediate\" toujours",
+      "\"immediate\" -> \"timeout\" toujours",
+      "Ils s'exécutent en parallèle sur des threads distincts"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'ordre d'exécution entre `setTimeout` (avec un délai de 0ms, qui est contraint à 1ms) et `setImmediate` est non déterministe lorsqu'ils sont appelés depuis le module principal. Cela dépend de la rapidité avec laquelle la boucle d'événements démarre et vérifie la file d'attente des minuteurs par rapport à la file d'attente de vérification (check queue). S'il est appelé au sein d'un cycle d'E/S (I/O), `setImmediate` s'exécute toujours en premier.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst controller = new AbortController();\nconst signal = controller.signal;\nconst p = new Promise((resolve, reject) => {\n  signal.addEventListener('abort', () => reject('aborted'));\n});\ncontroller.abort();\np.catch(e => console.log(e));\n```",
+    "options": [
+      "\"aborted\"",
+      "N'affiche rien",
+      "Lève un rejet non géré",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'API `AbortController` permet l'annulation d'activités asynchrones. En écoutant l'événement `abort` sur le `signal` du contrôleur, nous pouvons rejeter la Promise immédiatement lorsque `controller.abort()` est appelé. Ici, l'écouteur d'événement est déclenché de manière synchrone pendant l'appel `.abort()`, ce qui rejette la promesse.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nasync function foo() {\n  return 1;\n}\nasync function bar() {\n  return Promise.resolve(1);\n}\nconsole.log(foo() instanceof Promise);\nconsole.log(bar() instanceof Promise);\n```",
+    "options": [
+      "true et true",
+      "false et true",
+      "true et false",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Toute fonction déclarée avec `async` renvoie toujours une Promise. Si la fonction renvoie une valeur primitive comme `1`, le moteur l'enveloppe dans une Promise résolue. Si elle renvoie une Promise, elle se résout en la résolution de cette Promise, mais la valeur renvoyée par l'enveloppe de la fonction async elle-même reste une Promise.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst p = new Promise(resolve => {\n  console.log(1);\n  resolve(2);\n  console.log(3);\n});\np.then(v => console.log(v));\nconsole.log(4);\n```",
+    "options": [
+      "1 -> 3 -> 4 -> 2",
+      "1 -> 4 -> 3 -> 2",
+      "4 -> 1 -> 3 -> 2",
+      "1 -> 2 -> 3 -> 4"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La fonction exécutive de la Promise s'exécute de manière synchrone. Lors de la construction de `p`, elle exécute `console.log(1)`, appelle `resolve(2)`, et exécute `console.log(3)`. La résolution d'une Promise est asynchrone en ce qui concerne ses rappels (callbacks) `.then` (qui sont placés en file d'attente en tant que microtâches). Ainsi, `4` est affiché ensuite, suivi de l'exécution de la file d'attente des microtâches affichant `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nPromise.race([])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "Il reste en suspens indéfiniment (ne se résout ni ne se rejette jamais)",
+      "Il se résout immédiatement avec undefined",
+      "Il rejette immédiatement avec une erreur TypeError",
+      "Il rejette avec une erreur AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.race(iterable)` renvoie une promesse qui se résout ou se rejette dès qu'une des promesses de l'itérable se résout ou se rejette. Si l'itérable passé est vide, il n'y a pas de promesses en compétition, et la promesse retournée reste à l'état en attente (pending) pour toujours.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nasync function test() {\n  throw new Error('sync-error');\n}\ntest().catch(e => console.log(e.message));\n```",
+    "options": [
+      "\"sync-error\"",
+      "Lève une erreur impossible à intercepter et se termine",
+      "N'affiche rien",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Même si une erreur est levée de manière synchrone avant toute instruction `await` dans une fonction `async`, le moteur la capture en interne et la convertit en une Promise rejetée. Ainsi, l'erreur peut toujours être interceptée à l'aide d'un `.catch()` standard sur la promesse retournée.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst p = new Promise((resolve) => {\n  resolve(1);\n  throw new Error('error');\n});\np.then(v => console.log(v)).catch(e => console.log(e.message));\n```",
+    "options": [
+      "1",
+      "\"error\"",
+      "1 et \"error\"",
+      "Lève un rejet non géré"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une Promise ne peut subir qu'une seule transition d'état (par exemple, de en attente à résolue). Une fois `resolve(1)` invoqué, l'état de la Promise est verrouillé en tant que rempli (fulfilled). Le `throw new Error` qui suit est ignoré par la machine d'état de la Promise, et le gestionnaire de rejet n'est jamais appelé.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nlet resolvePromise;\nconst p = new Promise(resolve => {\n  resolvePromise = resolve;\n});\np.then(() => console.log('resolved'));\n\nconst obj = {\n  then(resolve) {\n    console.log('thenable');\n    resolve();\n  }\n};\n\nresolvePromise(obj);\n```",
+    "options": [
+      "\"thenable\" suivi de \"resolved\"",
+      "\"resolved\" suivi de \"thenable\"",
+      "\"thenable\" uniquement",
+      "\"resolved\" uniquement"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lorsqu'une Promise est résolue avec un objet thenable, le moteur enveloppe le thenable dans un travail de microtâche pour évaluer sa méthode `.then`. Appeler la fonction de résolution appelle `obj.then`, ce qui affiche \"thenable\" et résout la promesse interne, exécutant par la suite la chaîne `.then` et consignant \"resolved\".",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il si une boucle de microtâches s'exécute de manière récursive sans céder le passage à la file d'attente des macrotâches ?\n```javascript\nfunction run() {\n  Promise.resolve().then(run);\n}\nrun();\n```",
+    "options": [
+      "Cela bloque complètement la boucle d'événements, privant de ressources le rendu et les macrotâches, ce qui entraîne le gel de l'onglet ou du processus",
+      "Cela déclenche immédiatement une exception de dépassement de pile (Call Stack Overflow)",
+      "V8 y met fin automatiquement après 1000 itérations",
+      "Cela s'exécute de manière asynchrone sur un thread d'arrière-plan sans affecter l'interface utilisateur"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les microtâches sont entièrement résolues avant que le contrôle ne retourne à la boucle d'événements. Si une microtâche planifie une autre microtâche, la file d'attente des microtâches n'est jamais vidée. En conséquence, la boucle d'événements reste piégée dans la phase de point de contrôle (checkpoint) des microtâches, bloquant complètement les macrotâches, les événements d'entrée et le rendu du navigateur.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2020+)\n```javascript\nPromise.allSettled([\n  Promise.resolve(1),\n  Promise.reject('error')\n]).then(results => {\n  console.log(results[0].status, results[1].status);\n  console.log(results[1].reason);\n});\n```",
+    "options": [
+      "\"fulfilled rejected\" et \"error\"",
+      "\"fulfilled fulfilled\" et undefined",
+      "\"resolved rejected\" et \"error\"",
+      "Lève une erreur AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.allSettled` renvoie un tableau d'objets représentant le résultat de chaque promesse. Elle ne rejette jamais. Pour les promesses résolues, le statut est `'fulfilled'` (avec une valeur `value`). Pour celles rejetées, le statut est `'rejected'` (avec un motif `reason`).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est l'ordre d'affichage lorsque deux écouteurs d'événements DOM sont déclenchés par un `.click()` programmatique par rapport à un clic de souris d'un utilisateur réel ?\n```javascript\nconst btn = document.createElement('button');\nbtn.addEventListener('click', () => {\n  Promise.resolve().then(() => console.log('Microtask 1'));\n  console.log('Listener 1');\n});\nbtn.addEventListener('click', () => {\n  console.log('Listener 2');\n});\n// Case A: User clicks button physically\n// Case B: btn.click() is called programmatically\n```",
+    "options": [
+      "Cas A: Listener 1 -> Microtask 1 -> Listener 2. Cas B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Cas A: Listener 1 -> Listener 2 -> Microtask 1. Cas B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Cas A: Listener 1 -> Microtask 1 -> Listener 2. Cas B: Listener 1 -> Microtask 1 -> Listener 2.",
+      "Cas A: Listener 1 -> Listener 2 -> Microtask 1. Cas B: Listener 1 -> Microtask 1 -> Listener 2."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lors d'un clic d'un utilisateur réel, le navigateur déclenche les rappels des écouteurs de manière asynchrone. La pile d'appels se vide entre les écouteurs, ce qui entraîne l'exécution de la file d'attente des microtâches. Pour un `.click()` programmatique, l'invocation est synchrone sur la pile d'appels active. La pile d'appels ne se vide pas entre la distribution des écouteurs, ce qui retarde toutes les microtâches jusqu'à ce que les deux écouteurs aient fini de s'exécuter.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nPromise.resolve(1)\n  .then(x => {\n    throw x + 1;\n  })\n  .catch(err => {\n    return err + 1;\n  })\n  .then(y => {\n    console.log(y);\n  });\n```",
+    "options": [
+      "3",
+      "2",
+      "undefined",
+      "Lève un rejet de promesse non géré"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "D'abord, `then(x => { throw x + 1; })` reçoit 1 et lève (throw) 2, ce qui provoque le rejet de la promesse. Ensuite, le `.catch` capture le rejet (valeur 2), exécute `2 + 1`, et renvoie 3. Comme ce bloc catch se termine normalement, il résout la promesse avec la valeur 3, qui est ensuite affichée par le gestionnaire `.then` suivant.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst proxy = new Proxy({}, {\n  get(target, prop, receiver) {\n    return receiver;\n  }\n});\nconsole.log(proxy.anyProperty === proxy);\nconst derived = Object.create(proxy);\nconsole.log(derived.anyProperty === derived);\n```",
+    "options": [
+      "true et true",
+      "true et false",
+      "false et true",
+      "false et false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Le paramètre `receiver` dans le piège (trap) `get` fait référence à l'objet sur lequel l'accès à la propriété a été initié. Pour `proxy.anyProperty`, le récepteur est `proxy`. Pour `derived.anyProperty` (où `derived` hérite de `proxy`), le récepteur est `derived`, ce qui fait que les deux instructions affichent `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi l'argument receiver est-il nécessaire dans Reflect.set ?\n```javascript\nReflect.set(target, propertyKey, value, receiver);\n```",
+    "options": [
+      "Cela garantit que si la cible possède un setter sur son prototype, le setter s'exécute avec this lié au récepteur",
+      "Cela permet de définir une propriété sur le récepteur plutôt que sur la cible",
+      "Il est uniquement utilisé à des fins de débogage",
+      "Cela empêche le ramasse-miettes (garbage collector) de collecter la cible"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lors de l'interception d'un piège (trap) `set` via un Proxy, la modification peut être exécutée sur un objet dérivé qui hérite du proxy. L'utilisation de `Reflect.set(target, prop, val, receiver)` garantit que tous les setters hérités sont exécutés avec `this` faisant référence au bon récepteur (`receiver`, l'objet dérivé), évitant ainsi les bogues dans les définitions de propriétés de la chaîne de prototypes.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  writable: false,\n  configurable: false\n});\nconst proxy = new Proxy(target, {\n  get() {\n    return 99;\n  }\n});\ntry {\n  console.log(proxy.x);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "99",
+      "42",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les Proxies imposent des invariants pour maintenir la cohérence. Si une propriété cible est non configurable et non scriptible, le piège `get` du proxy DOIT renvoyer la valeur réelle de la propriété cible. Si le piège renvoie une valeur différente (99 au lieu de 42), le moteur lève une erreur `TypeError`, déclenchant le bloc catch.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst map = new WeakMap();\n(function() {\n  const key = { name: 'key' };\n  const val = { name: 'val' };\n  map.set(key, val);\n})();\n// Imagine garbage collection runs here\n```",
+    "options": [
+      "key et val sont tous deux éligibles au ramassage-miettes car key n'est plus accessible",
+      "Seul key est collecté, val reste dans la map",
+      "Aucun des deux n'est collecté car la map conserve des références",
+      "Le code lève une exception d'exécution"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans une `WeakMap`, les clés sont détenues de manière faible (weakly). Lorsque la seule référence à l'objet clé (`key`) est perdue (c'est-à-dire en sortant de la portée après l'IIFE), la clé devient éligible au ramassage-miettes. Une fois la clé collectée, la valeur correspondante (`val`) est également libérée (en supposant qu'aucune autre référence à `val` n'existe), évitant ainsi les fuites de mémoire.",
+    "points": 10
+  },
+  {
+    "question_text": "Lequel des modèles de code suivants crée une fuite de mémoire DOM détachée ?\n```javascript\n// Scenario 1\nlet element = document.getElementById('button');\nelement.addEventListener('click', () => console.log('clicked'));\nelement.remove();\n\n// Scenario 2\nlet element = document.getElementById('button');\nconst ref = { el: element };\nelement.remove();\nelement = null;\n```",
+    "options": [
+      "Le scénario 2 uniquement, car l'objet ref détient toujours une référence à l'élément",
+      "Le scénario 1 uniquement",
+      "Les deux scénarios",
+      "Aucun des deux scénarios"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans le scénario 2, bien que l'élément soit retiré du DOM et que sa variable locale soit définie à `null`, l'objet `ref` conserve une référence à `element`. Comme JS ne peut pas collecter le nœud DOM tant qu'il est accessible via `ref`, cela crée une fuite d'élément DOM détaché. Dans le scénario 1, la suppression de l'élément nettoie les références standard, et le navigateur peut le collecter.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment le ramasse-miettes générationnel de V8 (Generational Garbage Collector) optimise-t-il la collecte de mémoire pour les objets à courte durée de vie ?\n```javascript\n```",
+    "options": [
+      "Il alloue les nouveaux objets dans le « New Space » (Nursery) et les collecte rapidement à l'aide de l'algorithme Scavenger",
+      "Il exécute un cycle complet de Mark-Sweep-Compact à chaque appel de fonction",
+      "Il délègue toutes les collectes au thread principal du navigateur web",
+      "Il désactive le ramassage-miettes pour les objets de moins de 1 Ko"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 divise le tas (heap) en plusieurs espaces. La plupart des nouvelles allocations se produisent dans le « New Space » (ou nursery). Comme la plupart des objets meurent jeunes, V8 utilise un collecteur par copie rapide (Scavenger) pour nettoyer le New Space en déplaçant les objets survivants vers un second semi-espace, ne les promouvant dans le « Old Space » qu'après avoir survécu à plusieurs cycles.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst set = new WeakSet();\nconst obj = { x: 1 };\nset.add(obj);\nconsole.log(set.has(obj));\nconsole.log(Object.keys(set).length);\n```",
+    "options": [
+      "true et 0",
+      "true et 1",
+      "false et 0",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WeakSet` détient des objets de manière faible et n'est pas énumérable. Il n'expose pas de propriétés, de longueur (length) ou de méthodes d'itérateur (comme keys ou values). Ainsi, `set.has(obj)` vaut `true`, mais l'appel à `Object.keys(set)` renvoie un tableau vide de longueur 0.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment le ramasse-miettes de JavaScript gère-t-il les références circulaires entre objets ?\n```javascript\nfunction createCycle() {\n  const objA = {};\n  const objB = {};\n  objA.sibling = objB;\n  objB.sibling = objA;\n}\ncreateCycle();\n```",
+    "options": [
+      "Il les collecte car ils ne sont plus accessibles depuis les contextes d'exécution racine",
+      "Cela crée une fuite de mémoire car le compteur de références des deux objets reste égal à 1",
+      "Cela fait planter le moteur V8 en raison d'un dépassement de pile",
+      "Il les stocke de manière permanente dans le Large Object Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les moteurs JS modernes utilisent un algorithme de ramassage-miettes « mark-and-sweep » (marquage et balayage) plutôt que le comptage de références. En partant des contextes racines, le collecteur marque tous les objets accessibles. Comme `objA` et `objB` ne sont plus accessibles depuis aucune racine après le retour de `createCycle`, ils sont collectés, bien qu'ils se référencent mutuellement.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat des comparaisons suivantes ?\n```javascript\nconsole.log(Object.is(NaN, NaN));\nconsole.log(Object.is(-0, +0));\nconsole.log(-0 === +0);\n```",
+    "options": [
+      "true, false, true",
+      "false, true, true",
+      "true, true, false",
+      "false, false, true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.is` évalue l'égalité des valeurs. Contrairement à `===`, qui considère que `NaN !== NaN` et `-0 === +0`, `Object.is` traite `NaN` comme égal à `NaN`, et distingue `-0` de `+0` (renvoyant `false` lors de leur comparaison).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  enumerable: false,\n  configurable: true\n});\nconst proxy = new Proxy(target, {\n  ownKeys() {\n    return ['x', 'y'];\n  }\n});\nconsole.log(Object.keys(proxy));\nconsole.log(Reflect.ownKeys(proxy));\n```",
+    "options": [
+      "[] et [\"x\", \"y\"]",
+      "[\"x\"] et [\"x\", \"y\"]",
+      "[] et [\"x\"]",
+      "Lève une erreur TypeError car 'y' est manquant dans la cible"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.keys` ne renvoie que les propriétés propres et énumérables de la cible. Bien que le piège `ownKeys` ait renvoyé `['x', 'y']`, `'x'` n'est pas énumérable sur la cible, elle est donc filtrée par `Object.keys`, et `'y'` n'est pas défini sur la cible. `Reflect.ownKeys` contourne les vérifications d'énumérabilité et renvoie les résultats bruts du piège.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2021+)\n```javascript\nconst registry = new FinalizationRegistry(heldValue => {\n  console.log(heldValue);\n});\nlet obj = { x: 1 };\nregistry.register(obj, 'collected');\nobj = null;\n```",
+    "options": [
+      "Aucune sortie console n'est garantie de manière synchrone (le timing de collecte du ramasse-miettes est non déterministe)",
+      "\"collected\" est affiché immédiatement",
+      "Lève une erreur ReferenceError",
+      "\"collected\" est affiché lors du tick de boucle d'événements suivant"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`FinalizationRegistry` permet d'enregistrer des rappels (callbacks) lorsque des objets sont récupérés par le ramasse-miettes. Cependant, le moment de l'exécution du ramassage-miettes dépend entièrement du moteur. Il est non déterministe, ce qui signifie que le rappel ne s'exécutera pas immédiatement ni sur un tick prévisible, et peut même ne jamais s'exécuter pendant la courte durée de vie du processus.",
+    "points": 10
+  },
+  {
+    "question_text": "Qu'arrive-t-il à l'optimisation par V8 d'un objet lorsque vous utilisez l'opérateur delete pour supprimer une propriété ?\n```javascript\nconst obj = { a: 1, b: 2 };\ndelete obj.a;\n```",
+    "options": [
+      "Cela invalide la classe cachée (Shape) et peut faire basculer l'objet en « mode dictionnaire » (propriétés lentes)",
+      "Cela optimise l'accès aux propriétés en reconstruisant une classe cachée compressée",
+      "Cela compile l'objet en une structure immuable",
+      "Cela n'a aucun impact sur les chemins d'optimisation internes de V8"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La suppression de propriétés d'un objet perturbe ses transitions de classes cachées. Dans V8, l'utilisation de `delete` (en particulier sur des propriétés qui ne sont pas les dernières ajoutées) force souvent le moteur à rejeter complètement la forme de classe cachée optimisée et à faire basculer l'objet en « mode dictionnaire » (tableaux associatifs lents), ce qui diminue les performances.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi les propriétés rapides (fast properties) de V8 diffèrent-elles des propriétés lentes (slow properties) ?\n```javascript\n```",
+    "options": [
+      "Les propriétés rapides utilisent des décalages fixes dans une structure contiguë basée sur des classes cachées, tandis que les propriétés lentes utilisent une table de hachage de dictionnaire",
+      "Les propriétés rapides sont des nombres, tandis que les propriétés lentes sont des chaînes et des symboles",
+      "Les propriétés rapides résident sur l'objet global, tandis que les propriétés lentes se trouvent dans des fermetures (closures)",
+      "Les propriétés rapides sont mises en cache dans la mémoire locale, tandis que les propriétés lentes sont récupérées depuis le cache du navigateur"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 stocke les propriétés dans différents modes. Les « propriétés rapides » sont stockées directement sur l'objet ou dans un tableau plat, en utilisant des décalages de descripteur suivis par la classe cachée de l'objet. Les « propriétés lentes » sont des structures de repli qui stockent les propriétés dans une table de hachage de dictionnaire, évitant ainsi les surcoûts de transition de classe mais réduisant la vitesse de recherche.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ?\n```javascript\nconst sym = Symbol('key');\nconst obj = {\n  [sym]: 'secret'\n};\nconsole.log(Object.keys(obj));\nconsole.log(Object.getOwnPropertyNames(obj));\nconsole.log(Object.getOwnPropertySymbols(obj)[0] === sym);\n```",
+    "options": [
+      "[], [] et true",
+      "[\"key\"], [] et true",
+      "[], [\"key\"] et false",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les clés de type Symbol sont conçues pour être masquées lors d'une inspection standard. Elles n'apparaissent pas dans `Object.keys` ni dans `Object.getOwnPropertyNames`. Pour les récupérer, vous devez utiliser `Object.getOwnPropertySymbols` ou `Reflect.ownKeys`, qui trouvent avec succès la référence du Symbol.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le comportement de la méthode deref() sur un objet WeakRef après que sa cible a été collectée par le ramasse-miettes ? (ES2021+)\n```javascript\nlet obj = { data: 'val' };\nconst ref = new WeakRef(obj);\nobj = null;\n// Assume garbage collection has completed successfully\nconsole.log(ref.deref());\n```",
+    "options": [
+      "undefined",
+      "null",
+      "Lève une erreur ReferenceError",
+      "L'objet vide {}"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'API `WeakRef` permet de conserver une référence faible vers un objet. Lorsque le ramasse-miettes identifie que l'objet cible n'est plus accessible de manière forte et le récupère, la méthode `deref()` cesse de renvoyer l'objet et commence à renvoyer `undefined` à la place.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2020+)\n```javascript\nconst val1 = 0 ?? 'fallback';\nconst val2 = 0 || 'fallback';\nconsole.log(val1, val2);\n```",
+    "options": [
+      "0 et \"fallback\"",
+      "\"fallback\" et 0",
+      "0 et 0",
+      "\"fallback\" et \"fallback\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'opérateur de coalescence des valeurs nulles (`??`) ne renvoie son opérande de droite que si l'opérande de gauche est `null` ou `undefined`. À l'inverse, l'opérateur logique OU (`||`) vérifie la « vérité » (truthiness), traitant les valeurs fausses (falsy) comme `0`, `\"\"` et `false` comme des déclencheurs pour le repli.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2020+)\n```javascript\nconst obj = {\n  a: {\n    b: null\n  }\n};\ntry {\n  console.log(obj.a?.b?.());\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "undefined",
+      "null",
+      "Lève une erreur SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Le chaînage optionnel (`obj.a?.b?.()`) s'interrompt (short-circuits) si la référence précédente est nulle ou indéfinie (nullish). Pour `obj.a?.b`, elle se résout en `null`. La chaîne suivante s'évalue comme `null?.()`. Puisque `b` est `null` (et non `undefined`), JS essaie de l'évaluer comme une fonction. Comme ce n'est pas une fonction, cela lève une erreur `TypeError`, déclenchant le bloc catch.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2020+)\n```javascript\ntry {\n  const res = 10n / 3n;\n  console.log(res);\n  const err = 10n + 3;\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "3n et error",
+      "3.333n et error",
+      "3 et 13",
+      "error uniquement"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En ES2020, les opérations sur les `BigInt` renvoient des valeurs entières ; la division (par exemple, `10n / 3n`) tronque les composants fractionnaires, ce qui donne `3n`. De manière cruciale, les opérations mathématiques mixtes entre des types `BigInt` et des types `Number` standard lèvent une erreur `TypeError`, ce qui fait échouer la seconde ligne et affiche 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Laquelle des propositions suivantes décrit le comportement d'exécution et de mise en cache de l'importation dynamique `import()` ? (ES2020+)",
+    "options": [
+      "Elle renvoie une Promise se résolvant en l'objet d'espace de noms du module, qui est mis en cache de sorte que les appels ultérieurs ne réexécutent pas le script du module",
+      "Elle exécute le module de manière synchrone et contourne les mécanismes standard de mise en cache",
+      "Elle retélécharge et réexécute le module cible à chaque invocation",
+      "Elle ne fonctionne que dans les threads de worker web du navigateur"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'importation dynamique `import()` charge les modules ES de manière asynchrone, en renvoyant une Promise. Une fois qu'un module est résolu et exécuté, le moteur met en cache l'instance du module. Les importations dynamiques ultérieures du même chemin récupèrent l'objet d'espace de noms du module mis en cache sans réexécuter le script.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2021+)\n```javascript\nlet x = null;\nlet y = 5;\nx ??= y;\ny &&= 10;\nconsole.log(x, y);\n```",
+    "options": [
+      "5 et 10",
+      "null et 5",
+      "5 et 5",
+      "null et 10"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les opérateurs d'affectation logique combinent des tests logiques avec une affectation. `x ??= y` affecte `y` à `x` puisque `x` est nul ou indéfini (résolvant `x` à 5). `y &&= 10` affecte `10` à `y` puisque `y` est vrai (5 est vrai, résolvant `y` à 10).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2022+)\n```javascript\nclass Base {\n  #brand = true;\n  static check(obj) {\n    return #brand in obj;\n  }\n}\nconsole.log(Base.check(new Base()));\nconsole.log(Base.check(Object.create(Base.prototype)));\n```",
+    "options": [
+      "true et false",
+      "true et true",
+      "false et false",
+      "Lève une erreur TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La vérification de marque privée (`#brand in obj`) vérifie si le champ privé est installé sur l'instance. Les objets créés via `Object.create(Base.prototype)` ont le bon prototype mais ne subissent pas l'initialisation du constructeur, ils n'ont donc pas de champs privés installés. Ainsi, elle renvoie `false` sans lever d'erreur.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2021+)\n```javascript\nconst str = 'apple banana apple';\nconst res = str.replaceAll('apple', () => 'pear');\nconsole.log(res);\n```",
+    "options": [
+      "\"pear banana pear\"",
+      "\"pear banana apple\"",
+      "Lève une erreur TypeError",
+      "\"apple banana apple\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'ES2021 a introduit `String.prototype.replaceAll()`. Lorsqu'elle est appelée avec une chaîne de caractères comme motif de recherche, elle remplace toutes les occurrences de cette chaîne par la valeur de remplacement ou le résultat de la fonction de remplacement, produisant en sortie \"pear banana pear\".",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le résultat du code suivant ? (ES2022+)\n```javascript\nconst arr = [1, 2, , 4];\nconsole.log(arr.at(-1));\nconsole.log(arr.at(-2));\n```",
+    "options": [
+      "4 et undefined",
+      "4 et null",
+      "4 et 2",
+      "Lève une erreur RangeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'ES2022 a introduit la méthode `.at()` pour les tableaux. Elle prend en charge les indices négatifs, où `-1` pointe vers le dernier élément (`4`) et `-2` pointe vers l'avant-dernier élément (qui est un emplacement vide dispersé contenant `undefined` dans ce tableau).",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi Object.hasOwn est-il préféré à Object.prototype.hasOwnProperty ? (ES2022+)\n```javascript\nconst obj = Object.create(null);\n// Case A: obj.hasOwnProperty('x');\n// Case B: Object.hasOwn(obj, 'x');\n```",
+    "options": [
+      "Le cas A lève une erreur TypeError, tandis que le cas B s'exécute en toute sécurité",
+      "Le cas B est synchrone, tandis que le cas A est asynchrone",
+      "Le cas B ne fonctionne que pour les champs privés, tandis que le cas A fonctionne pour les propriétés standard",
+      "Il n'y a pas de différence, c'est purement du sucre syntaxique"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.hasOwn` est une méthode statique. Elle ne nécessite pas d'accéder à une propriété sur le prototype de l'objet cible. Si un objet n'hérite pas d' `Object.prototype` (comme `Object.create(null)`), l'appel à `hasOwnProperty` lève une erreur `TypeError`. `Object.hasOwn` fonctionne en toute sécurité pour tous les objets.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans la spécification des Décorateurs de l'étape 3/4 du TC39, quel est le but de `Symbol.metadata` ? (ES2023+)",
+    "options": [
+      "Il sert de clé de stockage des métadonnées définie sur le constructeur de classe pour capturer les métadonnées définies par les décorateurs de classe et de propriété",
+      "Il compile les systèmes de typage structurel en métadonnées d'exécution JavaScript",
+      "Il stocke les identifiants d'accès privé pour les web sockets",
+      "Il est utilisé pour vérifier si une classe possède des méthodes privées"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La proposition de décorateurs d'étape 3 introduit `Symbol.metadata` en tant que clé sur les constructeurs de classe. Les décorateurs peuvent accéder et écrire dans un objet de métadonnées, qui est ensuite conservé dans la propriété `[Symbol.metadata]` de la classe, fournissant un moyen standardisé de lire les annotations des décorateurs à l'exécution.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans le pipeline de compilation JIT de V8, quel rôle joue le composant « Ignition » ?\n```javascript\n```",
+    "options": [
+      "C'est l'interprète de bytecode qui analyse le JavaScript et exécute le code, tout en recueillant des informations de profilage",
+      "C'est le compilateur d'optimisation qui génère du code machine à partir des chemins fréquemment empruntés (hot paths)",
+      "C'est l'analyseur (parser) qui vérifie les erreurs de syntaxe et signale les avertissements de syntaxe",
+      "C'est le ramasse-miettes qui balaie le tas du New Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Le pipeline de compilation de V8 commence par analyser le JS en un arbre de syntaxe abstraite (AST). « Ignition » interprète cet AST en bytecode, l'exécutant immédiatement. Lors de l'exécution, il rassemble des données de performance et des informations de profilage pour identifier les fonctions chaudes (hot functions) qui pourront être optimisées plus tard par TurboFan.",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il lorsqu'un cache en ligne (Inline Cache - IC) passe de « Polymorphic » à « Megamorphic » dans V8 ?\n```javascript\n```",
+    "options": [
+      "Le moteur cesse d'optimiser les décalages de propriétés et se replie sur une recherche de hachage lente sur la forme de l'objet",
+      "Le code est optimisé directement pour compiler des instructions machine",
+      "L'exécution est redirigée vers des web workers",
+      "Le tas est complètement compacté pour libérer de la mémoire"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Le cache en ligne (IC) optimise l'accès aux propriétés. Si une propriété est accédée avec 1 seule forme (shape), elle est monomorphe. Jusqu'à 4 formes, elle est polymorphe. Si le moteur détecte plus de 4 formes distinctes à cet emplacement d'appel, l'IC devient mégamorphe, arrêtant la mise en cache en ligne et se repliant sur un chemin de recherche global plus lent.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est l'impact sur les performances d'exécution de V8 des fonctions constructeurs qui initialisent les propriétés dans des ordres différents ?\n```javascript\nfunction A() { this.x = 1; this.y = 2; }\nfunction B() { this.y = 2; this.x = 1; }\n```",
+    "options": [
+      "Elles génèrent des classes cachées (Shapes) différentes, rendant les emplacements d'appel de fonction polymorphes ou mégamorphes au lieu de monomorphes",
+      "Elles utilisent des classes cachées identiques, elles n'ont donc aucun impact sur les performances",
+      "Elles obligent TurboFan à compiler directement les fonctions sans analyser le bytecode",
+      "Elles déclenchent des nettoyages immédiats par le ramasse-miettes"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 crée des classes cachées (Shapes) en se basant sur l'ordre dans lequel les propriétés sont affectées à un objet. Même si les instances de `A` et `B` ont les mêmes propriétés (`x` et `y`), elles transitent dans un ordre différent, générant deux classes cachées différentes. Passer des objets de classes cachées différentes à la même fonction entraîne une dégradation des optimisations.",
+    "points": 10
+  },
+  {
+    "question_text": "Qu'est-ce qui décrit la phase de copie de l'algorithme de ramassage-miettes Scavenger de V8 ?\n```javascript\n```",
+    "options": [
+      "Il copie les objets survivants du « From Space » actif vers le « To Space », rejette les objets morts, puis échange les rôles des espaces",
+      "Il analyse l'ensemble du tas, marque les références circulaires et les compacte sur place",
+      "Il convertit les fragments de mémoire en un seul tampon WebAssembly contigu",
+      "Il écrit des vidages de tas (heap dumps) sur le système de fichiers pour des évaluations de diagnostic"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'algorithme Scavenger cible le « New Space » de V8. Le New Space est divisé en deux semi-espaces : le « From Space » et le « To Space ». Lors de la collecte, Scavenger parcourt les racines, copie les objets vivants de « From Space » vers « To Space », et rejette le reste. Les espaces échangent ensuite leurs rôles, maintenant un tas compact.",
+    "points": 10
+  },
+  {
+    "question_text": "Qu'est-ce qui déclenche une « déoptimisation » (Deopt) dans le compilateur TurboFan de V8 ?\n```javascript\n```",
+    "options": [
+      "Une fonction optimisée reçoit des arguments qui s'écartent des formes de types ou des conditions collectées lors du profilage",
+      "La pile d'appels dépasse les limites maximales d'exécution",
+      "Le ramasse-miettes démarre un cycle de compactage de type mark-sweep",
+      "Le programme tente de charger des importations dynamiques"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "TurboFan optimise le code en se basant sur le retour d'information des types (par exemple, en supposant qu'un paramètre est toujours un entier). Si la fonction reçoit une valeur d'un type différent (par exemple, une chaîne), les hypothèses du code optimisé sont invalidées. Le moteur doit rejeter le code machine optimisé et repasser au bytecode interprété (deopt).",
+    "points": 10
+  },
+  {
+    "question_text": "Quel espace mémoire dans le tas V8 contient le code machine exécutable compilé des fonctions optimisées ?\n```javascript\n```",
+    "options": [
+      "Code Space",
+      "Large Object Space",
+      "Old Pointer Space",
+      "Map Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 alloue de la mémoire dans des zones de tas dédiées. Les instructions machine compilées générées par des compilateurs optimisants comme TurboFan sont stockées dans le « Code Space », qui est le seul espace marqué comme exécutable en mémoire pour empêcher les failles de sécurité.",
+    "points": 10
+  },
+  {
+    "question_text": "Pour garder les fonctions de V8 optimisées, quelle est la meilleure pratique concernant les types d'accès aux propriétés ?\n```javascript\n```",
+    "options": [
+      "S'assurer que les fonctions sont monomorphes en passant des objets qui partagent exactement la même forme de classe cachée",
+      "Réaffecter fréquemment des propriétés à des types différents à l'intérieur des boucles",
+      "Supprimer les propriétés des objets dès qu'elles ne sont plus nécessaires",
+      "Toujours appeler les fonctions avec des nombres variables d'arguments en utilisant arguments"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les fonctions restent optimisées (monomorphes) lorsqu'elles traitent des objets avec des classes cachées identiques. Éviter les modifications de l'ordre des propriétés, les mises à jour structurelles comme les suppressions ou les changements de type de paramètres garantit que les caches en ligne restent rapides et que les hypothèses du compilateur restent valides.",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi V8 ne prend-il pas en charge l'optimisation des appels terminaux (Tail Call Optimization - TCO) de manière générale dans l'exécution moderne du JavaScript ?\n```javascript\n```",
+    "options": [
+      "La TCO supprime les trames d'appel (call frames), ce qui complique la génération de traces de pile (stack trace) et le débogage, et aucun accord n'a pu être trouvé sur l'ensemble des architectures de moteurs",
+      "C'est mathématiquement impossible à implémenter dans des moteurs de script dynamique",
+      "Elle a été remplacée par les appels terminaux WebAssembly dans tous les navigateurs",
+      "Le compilateur V8 nécessite des trames d'appel pour exécuter les cycles de ramassage-miettes"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Bien que la TCO ait été ajoutée à la spécification ES6, V8 (et la plupart des moteurs à l'exception de JSC de Safari) a désactivé sa prise en charge. Les raisons incluent : la TCO élimine les trames de pile, ce qui rompt les traces d' `Error.stack`, rendant le débogage extrêmement difficile ; et des exigences d'implémentation complexes sous des règles de portée dynamique.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment les rappels d'API Web asynchrones (comme les résolutions de fetch) entrent-ils dans le thread d'exécution principal de V8 ?\n```javascript\n```",
+    "options": [
+      "Ils sont placés dans des files d'attente de tâches/microtâches par l'environnement, et la boucle d'événements les pousse sur la pile V8 une fois que la pile est vide",
+      "Ils interrompent immédiatement l'exécution de V8 via interruptions matérielles",
+      "Ils s'exécutent sur des threads secondaires de V8 en parallèle avec le contexte d'exécution principal",
+      "Ils sont exécutés directement par le thread du ramasse-miettes"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 est mono-threadé. Les API Web s'exécutent sur des threads d'environnement hôte distincts (navigateur/node). Lorsqu'elles se terminent, leurs rappels sont mis en file d'attente dans des files de tâches/microtâches. La boucle d'événements surveille la pile d'appels de V8. Une fois la pile d'appels complètement vide, elle retire les tâches de la file et les pousse vers V8.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle est la différence entre l'analyseur complet (full parser) de V8 et son pré-analyseur (pre-parser) ?\n```javascript\n```",
+    "options": [
+      "L'analyseur complet construit un arbre de syntaxe abstraite (AST) pour l'exécution, tandis que le pré-analyseur vérifie la syntaxe et saute la génération de l'AST pour les fonctions imbriquées",
+      "Le pré-analyseur traduit le code en bytecode, et l'analyseur complet l'optimise",
+      "Le pré-analyseur s'exécute sur un processus de travail distinct, tandis que l'analyseur complet s'exécute sur le GPU",
+      "Il n'y a pas de différence ; ce sont des noms alternatifs pour l'analyseur de bytecode Ignition"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pour réduire les temps de démarrage, V8 utilise une analyse paresseuse (lazy parsing). Le pré-analyseur effectue un balayage rapide des fonctions internes/imbriquées pour vérifier la syntaxe et rechercher des variables de portée de bloc sans compiler d'AST ni allouer de mémoire. L'analyseur complet s'exécute plus tard pour construire l'AST uniquement lorsque la fonction est réellement appelée.",
+    "points": 10
+  }
+]

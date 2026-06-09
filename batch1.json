@@ -1,0 +1,182 @@
+[
+  {
+    "question_text": "Gegeben ist die folgende Funktion im Standard-Koerzitivmodus (coercive mode). Wie verhält sich PHP, wenn ein Float an den Integer-Parameter übergeben wird?\n\n```php\nfunction setAge(int $age) {\n    return $age;\n}\nsetAge(25.8);\n```",
+    "options": [
+      "Ein TypeError wird sofort ausgelöst.",
+      "Der Float-Wert wird ohne Warnung durch Abschneiden des Nachkommateils in den Integer 25 umgewandelt (coerced).",
+      "Die Skriptausführung wird mit einem fatalen Kompilierungsfehler abgebrochen.",
+      "Der Wert wird trotzdem in ein Float umgewandelt, wobei die Typdeklaration ignoriert wird."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Im Koerzitivmodus (Standard) konvertiert PHP skalare Typen automatisch, wenn möglich. Ein an einen `int`-Parameter übergebener Float-Wert wird durch Abschneiden des Nachkommateils in einen Integer umgewandelt.",
+    "points": 10
+  },
+  {
+    "question_text": "Gegeben ist der folgende Code:\n\n```php\ndeclare(strict_types=1);\nfunction add(int $a, int $b): int {\n    return $a + $b;\n}\n```\n\nWie wirkt sich die Direktive `declare(strict_types=1);` auf die Validierung von Funktionsargumenten und Rückgabetypen in diesem Skript aus? (PHP 7.0+)",
+    "options": [
+      "Sie deaktiviert jegliche Typumwandlung und löst bei jeder Abweichung einen TypeError aus, außer bei der Übergabe eines int an einen float-Parameter.",
+      "Sie erfordert, dass alle Variablen in der Datei bei der Deklaration explizit typisiert werden.",
+      "Sie verhindert die Verwendung von dynamischen Variablen und Eigenschaften auf globaler Ebene.",
+      "Sie betrifft nur integrierte PHP-Funktionen, während benutzerdefinierte Funktionen im Koerzitivmodus verbleiben."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Deklaration von `strict_types=1` erzwingt eine strenge Typprüfung für Funktionsargumente und Rückgabewerte. Die einzige erlaubte implizite Typumwandlung ist die Übergabe eines Integers an einen `float`-Parameter.",
+    "points": 10
+  },
+  {
+    "question_text": "Welcher der folgenden Typen wird in PHP als skalarer Typ (scalar type) betrachtet?",
+    "options": [
+      "array",
+      "object",
+      "float",
+      "resource"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP hat vier skalare Typen: Boolean, Integer, Float (Double) und String. Arrays, Objekte, Ressourcen und `null` sind keine skalaren Typen.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Argumente können an den Parameter in der folgenden Funktionsdeklaration übergeben werden? (PHP 7.1+)\n\n```php\nfunction process(iterable $items) {\n    foreach ($items as $item) {\n        // ...\n    }\n}\n```",
+    "options": [
+      "Nur Standard-Arrays.",
+      "Jedes Array oder Objekt, das das Traversable-Interface implementiert.",
+      "Nur Objekte, die das Iterator-Interface implementiert.",
+      "Jede Variable, die in ein Array umgewandelt werden kann."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Typ-Hint `iterable` passt sowohl auf native Arrays als auch auf Objekte, die das `Traversable`-Interface implementieren, und somit mit `foreach` durchlaufen werden können.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Deklaration des Rückgabetyps in der folgenden Funktion erzwingt, dass die Funktion keinerlei Wert zurückgeben darf, nicht einmal null? (PHP 7.1+)\n\n```php\nfunction logMessage(string $msg): void {\n    echo $msg;\n}\n```",
+    "options": [
+      "never",
+      "null",
+      "void",
+      "false"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Ein Rückgabetyp von `void` gibt an, dass die Funktion keinen Wert zurückgibt. Jede `return`-Anweisung innerhalb der Funktion muss entweder leer sein (`return;`) oder ganz weggelassen werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich der Null-Coalescing-Operator (??) im folgenden Ausdruck? (PHP 7.0+)\n\n```php\n$username = $_GET['user'] ?? 'anonymous';\n```",
+    "options": [
+      "Er gibt den ersten Operanden zurück, wenn er definiert und nicht null ist; andernfalls gibt er den zweiten Operanden zurück.",
+      "Er gibt den ersten Operanden zurück, wenn er als true ausgewertet wird; andernfalls gibt er den zweiten Operanden zurück.",
+      "Er löst eine Exception aus, wenn der erste Operand nicht definiert ist.",
+      "Er verhält sich genau wie der Ternäre Operator ?: ohne zu prüfen, ob die Variable gesetzt ist."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Null-Coalescing-Operator `??` gibt seinen ersten Operanden zurück, wenn dieser existiert und nicht `null` ist; andernfalls greift er auf den zweiten Operanden zurück, was Warnungen wegen nicht definierter Variablen ('undefined variable') vermeidet.",
+    "points": 10
+  },
+  {
+    "question_text": "Gegeben ist das folgende Code-Snippet. Wie verhält sich der Null-Coalescing-Zuweisungsoperator (??=)? (PHP 7.4+)\n\n```php\n$config['timeout'] ??= 30;\n```",
+    "options": [
+      "Er weist den rechten Operanden dem linken Operanden zu, wenn der linke Operand gesetzt und nicht null ist.",
+      "Er weist den rechten Operanden dem linken Operanden nur dann zu, wenn der linke Operand null oder nicht definiert ist.",
+      "Er vergleicht zwei Variablen und weist dem linken Operanden den kleineren Wert zu.",
+      "Er löst einen TypeError aus, wenn der rechte Operand null ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Null-Coalescing-Zuweisungsoperator `??=` weist den Wert des rechten Operanden dem linken Operanden zu, falls der linke Operand `null` ist oder nicht existiert.",
+    "points": 10
+  },
+  {
+    "question_text": "Was gibt der Ausdruck gettype(3.14) zurück?",
+    "options": [
+      "float",
+      "double",
+      "real",
+      "decimal"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Aus historischen Gründen gibt `gettype()` für Fließkommazahlen 'double' anstelle von 'float' zurück.",
+    "points": 10
+  },
+  {
+    "question_text": "Welcher der folgenden Typen ist ein zusammengesetzter Typ (compound type) in PHP?",
+    "options": [
+      "string",
+      "array",
+      "callable",
+      "null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Zusammengesetzte Typen (compound types) in PHP umfassen `array` und `object`. Skalare Typen umfassen `int`, `float`, `string` und `bool`. Spezialtypen umfassen `resource` und `null`.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhält sich der Rückgabetyp `never` in der folgenden Funktionsdeklaration? (PHP 8.1+)\n\n```php\nfunction redirect(string $url): never {\n    header(\"Location: $url\");\n    exit;\n}\n```",
+    "options": [
+      "Er gibt an, dass die Funktion null oder void zurückgibt.",
+      "Er gibt an, dass die Funktion niemals zurückkehrt, was bedeutet, dass sie das Skript beenden, eine Exception auslösen oder in einer Endlosschleife laufen muss.",
+      "Er gibt an, dass die Funktion veraltet ist und niemals aufgerufen werden sollte.",
+      "Er ist ein Alias für den Rückgabetyp void."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Rückgabetyp `never` signalisiert, dass die Funktion niemals einen Wert zurückgibt oder normal beendet wird, was bedeutet, dass sie `exit()`, `die()` aufrufen, eine Exception auslösen oder eine Endlosschleife enthalten muss.",
+    "points": 10
+  },
+  {
+    "question_text": "Gegeben sind die folgenden Codedeklarationen. Was ist der Unterschied zwischen Union-Typen (verwendet in `accept`) und Schnittmengen-Typen (Intersection Types, verwendet in `process`)? (PHP 8.1+)\n\n```php\nfunction accept(HTMLRequest|APIRequest $request) {}\nfunction process(Logger&Serializable $object) {}\n```",
+    "options": [
+      "Union-Typen erlauben es einem Wert, einen beliebigen der aufgelisteten Typen zu erfüllen, während Schnittmengen-Typen erfordern, dass er alle aufgelisteten Typen erfüllt.",
+      "Union-Typen werden für skalare Variablen verwendet, während Schnittmengen-Typen nur für Klassen verwendet werden.",
+      "Union-Typen werden mit & deklariert und Schnittmengen-Typen mit |.",
+      "Es gibt keinen Unterschied; sie sind alternative Syntaxen für dieselbe Typprüfung."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Union-Typen (z. B. `A|B`) erfordern, dass ein Wert eine Instanz von A oder B ist. Schnittmengen-Typen (z. B. `A&B`) erfordern, dass ein Wert gleichzeitig eine Instanz sowohl von A als auch von B ist.",
+    "points": 10
+  },
+  {
+    "question_text": "Ist die folgende Funktionsdeklaration mit einem eigenständigen `null`-Rückgabetyp in PHP gültig? (PHP 8.2+)\n\n```php\nfunction getNothing(): null {\n    return null;\n}\n```",
+    "options": [
+      "Nein, null kann nur in Union-Typen wie string|null verwendet werden.",
+      "Ja, null kann als eigenständiger Rückgabetyp deklariert werden.",
+      "Nein, null wird ausschließlich durch den Rückgabetyp void dargestellt.",
+      "Ja, aber es erfordert die Aktivierung der Direktive declare(strict_types=1)."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ab PHP 8.2 kann `null` als eigenständiger Rückgabetyp verwendet werden. Eine Funktion, die mit dem Rückgabetyp `null` deklariert wurde, muss `null` zurückgeben oder darf keinen Rückgabewert besitzen (was standardmäßig zu `null` führt).",
+    "points": 10
+  },
+  {
+    "question_text": "Unter welcher Bedingung führt der Zugriff auf eine nicht initialisierte Variable in einem Kontext wie diesem zu einem fatalen Fehler (Error-Exception) anstelle einer Warnung/Notice? (PHP 8.0+)\n\n```php\nclass Profile {\n    public string $bio;\n}\n$profile = new Profile();\necho $profile->bio;\n```",
+    "options": [
+      "Wenn Strict-Types aktiviert sind.",
+      "Wenn die Variable eine typisierte Eigenschaft einer Klasse ist und vor der Initialisierung darauf zugegriffen wird.",
+      "Wenn die Variable eine globale Variable ist.",
+      "Wenn die Variable in einer Zeichenkette in doppelten Anführungszeichen verwendet wird."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Zugriff auf typisierte Klasseneigenschaften vor deren Initialisierung löst eine `Error`-Exception aus (Error: Typed property must not be accessed before initialization). Der Zugriff auf normale nicht initialisierte lokale Variablen löst in PHP 8.0+ lediglich eine Warnung/Notice aus.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Typdeklaration in der folgenden Funktionssignatur ist gültig und erlaubt es dem Parameter, entweder einen Integer, einen Float oder null zu akzeptieren? (PHP 8.0+)\n\n```php\nfunction process(??? $value) {}\n```",
+    "options": [
+      "?int|float",
+      "int|float|null",
+      "number|null",
+      "numeric|null"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.0+, union types erlauben die explizite Auflistung von Typen, wie z. B. `int|float|null`. Die Kurzschreibweise `?int|float` ist eine ungültige Syntax, da das `?` nur einem einzelnen Typ vorangestellt werden darf.",
+    "points": 10
+  },
+  {
+    "question_text": "Gegeben ist die folgende Funktionsdefinition. Wie verhält sich der Rückgabetyp, wenn eine Funktion so deklariert ist, dass sie `false` zurückgibt? (PHP 8.2+)\n\n```php\nfunction getStatus(): false {\n    return false;\n}\n```",
+    "options": [
+      "Er ist nur als Teil eines Union-Typs wie string|false erlaubt.",
+      "Er kann als eigenständiger Rückgabetyp verwendet werden.",
+      "Er wird als boolescher Rückgabetyp behandelt, was bedeutet, dass er auch true zurückgeben kann.",
+      "Er ist nicht erlaubt und löst einen Kompilierungsfehler aus."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Seit PHP 8.2 können `false` (und `true`) als eigenständige Typen verwendet werden. Zuvor war `false` nur in Union-Typen erlaubt.",
+    "points": 10
+  }
+]

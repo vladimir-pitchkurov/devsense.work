@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Яким буде результат виконання наступного коду в строгому режимі (strict mode)?\n```javascript\n'use strict';\nfunction test() {\n  console.log(typeof foo);\n  if (true) {\n    function foo() { return 1; }\n  }\n  console.log(typeof foo);\n}\ntest();\n```",
+    "options": [
+      "\"undefined\" та \"undefined\"",
+      "\"function\" та \"function\"",
+      "\"undefined\" та \"function\"",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В строгому режимі ES6 оголошення функцій всередині блоків мають блочну область видимості. Вони піднімаються (hoisted) в межах свого блочного лексичного оточення, але не є видимими в зовнішній області видимості функції. Тому `typeof foo` має значення \"undefined\" як до, так і після блоку.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet x = 1;\nfunction outer() {\n  let x = 2;\n  function inner() {\n    console.log(x);\n  }\n  x = 3;\n  return inner;\n}\nconst fn = outer();\nfn();\n```",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "undefined"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Замикання в JavaScript захоплюють змінні за посиланням, а не за значенням. Замикання `inner` зберігає посилання на зовнішню змінну `x` (із середовища змінних `outer`). На момент виконання `fn` значення `x` уже було оновлено на 3, тому воно виводить 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst arr = [];\nfor (var i = 0; i < 3; i++) {\n  arr.push(() => i);\n}\nconst arr2 = [];\nfor (let j = 0; j < 3; j++) {\n  arr2.push(() => j);\n}\nconsole.log(arr[1](), arr2[1]());\n```",
+    "options": [
+      "1 1",
+      "3 1",
+      "3 3",
+      "1 3"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Змінні, оголошені за допомогою `var`, мають область видимості функції, що означає наявність лише одного спільного зв'язування для `i` між усіма ітераціями циклу. Його кінцеве значення дорівнює 3. Змінні, оголошені за допомогою `let` в заголовку циклу, створюють нове лексичне оточення для кожної ітерації з новим зв'язуванням для `j`. Таким чином, замикання в першому масиві повертає 3, а в другому — 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nvar x = 10;\nfunction test() {\n  console.log(x);\n  if (false) {\n    var x = 20;\n  }\n}\ntest();\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Змінні, оголошені за допомогою `var`, піднімаються (hoisted) до верху області видимості своєї функції під час фази створення контексту виконання, незалежно від того, чи виконується відповідна гілка коду. Таким чином, `var x` піднімається всередині `test()`, затінюючи глобальну змінну `x`, та ініціалізується значенням `undefined` перед присвоєнням.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nvar x = 1;\n{\n  var x = 2;\n  let y = 3;\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "2 та \"undefined\"",
+      "1 та \"number\"",
+      "2 та \"number\"",
+      "1 та \"undefined\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Змінна `x` оголошена за допомогою `var`, яка не підпорядковується блочній області видимості. Переприсвоєння `var x = 2` перезаписує глобальну змінну `x`. Змінна `y` оголошена за допомогою `let`, яка має блочну область видимості, тому вона недоступна за межами блоку, що змушує `typeof y` повернути \"undefined\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet x = 10;\n{\n  console.log(x);\n  let x = 20;\n}\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Всередині блоку змінні з блочною областю видимості (`let` та `const`) перебувають у «тимчасовій мертвій зоні» (Temporal Dead Zone, TDZ) від початку блоку до моменту обробки їхнього оголошення. Спроба доступу до `x` всередині блоку перед її локальним оголошенням викликає помилку ReferenceError, незважаючи на існування зовнішньої змінної `x`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\n(function() {\n  var a = b = 3;\n})();\nconsole.log(typeof a);\nconsole.log(typeof b);\n```",
+    "options": [
+      "\"undefined\" та \"number\"",
+      "\"number\" та \"undefined\"",
+      "\"undefined\" та \"undefined\"",
+      "\"number\" та \"number\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Вираз `var a = b = 3;` обчислюється справа наліво. Спочатку виконується `b = 3`. Оскільки змінна `b` не оголошена, у нестрогому режимі це створює властивість у глобальному об'єкті. Потім `var a` оголошує локальну змінну `a` всередині IIFE. Ззовні `a` є невизначеною (typeof повертає \"undefined\"), але `b` є глобальною (typeof повертає \"number\").",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nvar x = 1;\nfunction test(x = x) {\n  console.log(x);\n}\ntest();\n```",
+    "options": [
+      "1",
+      "undefined",
+      "Виникає помилка ReferenceError",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Значення параметрів за замовчуванням обчислюються у власній проміжній області видимості. Вираз `x = x` намагається зчитати параметр `x` для власної ініціалізації. Оскільки параметр `x` перебуває в TDZ під час своєї ж ініціалізації, це викликає помилку ReferenceError.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst f = function g() {\n  console.log(typeof g);\n};\nf();\nconsole.log(typeof g);\n```",
+    "options": [
+      "\"function\" та \"undefined\"",
+      "\"undefined\" та \"function\"",
+      "\"function\" та \"function\"",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У іменованому функціональному виразі (Named Function Expression, NFE) ім'я функції (в даному випадку `g`) є зв'язаним лише в області видимості самої функції. Воно недоступне в зовнішній області видимості, де `typeof g` повертає \"undefined\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction test(a, b = 2) {\n  a = 10;\n  console.log(arguments[0]);\n}\ntest(1);\n```",
+    "options": [
+      "1",
+      "10",
+      "undefined",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES6, якщо функція містить значення за замовчуванням, rest-параметри або деструктуровані параметри, об'єкт `arguments` є незв'язаним (поведінка аналогічна строгому режиму). Зміна параметра `a` всередині функції не змінює відповідне значення в `arguments[0]`, яке зберігає початкове значення аргументу `1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nvar x = 1;\nlet y = 2;\nconsole.log(globalThis.hasOwnProperty('x'));\nconsole.log(globalThis.hasOwnProperty('y'));\n```",
+    "options": [
+      "true та false",
+      "false та true",
+      "true та true",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У глобальній області видимості змінні, оголошені за допомогою `var`, або оголошення функцій створюються як властивості глобального об'єкта. Натомість змінні, оголошені за допомогою `let`, `const` або `class`, зв'язуються в глобальному лексичному оточенні і не стають властивостями глобального об'єкта.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\n'use strict';\nlet x = 1;\nfunction test() {\n  eval('var x = 2; console.log(x);');\n}\ntest();\nconsole.log(x);\n```",
+    "options": [
+      "2 та 1",
+      "2 та 2",
+      "Виникає помилка SyntaxError",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У строгому режимі `eval` має власне закрите лексичне оточення. Змінні, оголошені за допомогою `var` всередині `eval`, не потрапляють у навколишню область видимості функції або в глобальну область видимості. Виведення всередині `eval` друкує 2, тоді як глобальна `x` залишається 1.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet a = 1;\n{\n  let a = 2;\n  function f() {\n    console.log(a);\n  }\n}\nf();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Хоча оголошення функцій всередині блоків мають блочну область видимості, у нестрогому середовищі вони піднімаються (hoist) за межі блоку. Найважливіше те, що замикання захоплює лексичне оточення (Lexical Environment), в якому воно було оголошене. Функція `f` була оголошена в області видимості блоку, де зв'язана змінна `let a = 2`, тому виконання `f()` виводить 2.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\ntry {\n  throw new Error('fail');\n} catch (x) {\n  var x = 1;\n  let y = 2;\n  console.log(x);\n}\nconsole.log(x);\nconsole.log(typeof y);\n```",
+    "options": [
+      "1, 1, \"undefined\"",
+      "1, undefined, \"undefined\"",
+      "Error: fail, undefined, \"number\"",
+      "Виникає помилка SyntaxError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Параметр блоку `catch` `x` має блочну область видимості, обмежену цим блоком `catch`. Проте `var x` піднімається до області видимості функції або глобальної області видимості. Всередині блоку `catch` параметр `x` затінює підняту змінну `x`. Присвоєння `x = 1` оновлює локальний параметр `x` блоку `catch`. Після блоку зовнішня піднята змінна `x` залишається `undefined` (оскільки вона була затінена всередині блоку `catch`). Змінна `y` має блочну область видимості і недоступна ззовні.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction test() {\n  const arr = [];\n  for (let i = 0; i < 3; i++) {\n    arr.push(() => {\n      console.log(i);\n    });\n  }\n  return arr;\n}\nconst funcs = test();\nfuncs[0]();\nfuncs[1]();\n```",
+    "options": [
+      "0 та 1",
+      "3 та 3",
+      "0 та 0",
+      "undefined та undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Використання `let` у заголовку циклу `for` вказує рушію створювати нове лексичне оточення для кожної ітерації, пов'язуючи поточне значення `i` з цією ітерацією. Кожне замикання функції захоплює свою власну окрему змінну `i`, що призводить до отримання правильних послідовних індексів при виклику.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst obj = {};\nObject.defineProperty(obj, 'x', {\n  value: 42,\n  writable: true,\n  configurable: false,\n  enumerable: true\n});\nObject.defineProperty(obj, 'x', {\n  writable: false\n});\nconsole.log(obj.x);\nObject.defineProperty(obj, 'x', {\n  value: 99\n});\n```",
+    "options": [
+      "42, а потім виникає помилка TypeError",
+      "99, а потім виводиться 99",
+      "42, а потім виводиться 99",
+      "Виникає помилка TypeError при першому визначенні властивості"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Якщо властивість є неконфігурованою (`configurable: false`), її дескриптори не можуть бути змінені, за одним винятком: `writable` можна змінити з `true` на `false`. Однак після того, як `writable` стає `false`, його не можна повернути назад на `true`, і значення `value` більше не може бути змінено. Таким чином, спроба встановити `value: 99` викликає помилку TypeError.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst proto = {\n  set value(val) {\n    this._val = val * 2;\n  }\n};\nconst obj = Object.create(proto);\nobj.value = 10;\nconsole.log(obj.value, obj._val);\n```",
+    "options": [
+      "undefined та 20",
+      "10 та undefined",
+      "20 та 20",
+      "10 та 20"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "При присвоєнні властивості об'єкту `obj` (тобто `obj.value = 10`), JS шукає її в ланцюжку прототипів. Оскільки в `proto` існує сетер з назвою `value`, JS викликає цей сетер з контекстом `this`, прив'язаним до отримувача `obj`. Сетер присвоює значення `this._val = 20`, створюючи властивість `_val` на `obj`. Гетер для `value` не визначений ні в `proto`, ні в `obj`, тому `obj.value` повертає `undefined`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst obj = Object.create(null);\ntry {\n  console.log(obj.hasOwnProperty('x'));\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "false",
+      "error",
+      "undefined",
+      "true"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Object.create(null)` створює об'єкт із прототипом `null`. Цей об'єкт не успадковує властивості від `Object.prototype`, тобто такі методи, як `hasOwnProperty`, `toString` тощо, є недоступними. Виклик `obj.hasOwnProperty` викликає помилку TypeError, що активує блок `catch`, який виводить 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nclass Parent {\n  constructor() {\n    console.log(new.target.name);\n  }\n}\nclass Child extends Parent {\n  constructor() {\n    super();\n  }\n}\nnew Child();\n```",
+    "options": [
+      "\"Parent\"",
+      "\"Child\"",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Значення `new.target` всередині конструктора вказує на конструктор класу, який був викликаний оператором `new`. Навіть при виконанні коду всередині конструктора `Parent` через `super()`, `new.target` залишається зв'язаним із похідним класом `Child`, тому `new.target.name` виводить \"Child\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2022+)\n```javascript\nclass Validator {\n  #value;\n  constructor(val) {\n    this.#value = val;\n  }\n  static check(obj) {\n    return #value in obj;\n  }\n}\nconst v = new Validator(10);\nconsole.log(Validator.check(v));\nconsole.log(Validator.check({}));\n```",
+    "options": [
+      "true та false",
+      "true та виникає помилка TypeError",
+      "виникає помилка SyntaxError",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES2022 було представлено перевірку наявності приватного поля (private brand check) за допомогою оператора `in` для приватних полів (`#field in object`). Він повертає `true`, якщо об'єкт містить приватне поле (що відбувається під час конструювання екземпляра цього класу), і `false` в іншому випадку, не викликаючи помилки.",
+    "points": 10
+  },
+  {
+    "question_text": "Що з наступного описує наслідки виконання `Object.setPrototypeOf` для об'єкта?\n```javascript\nconst a = { x: 1 };\nconst b = { y: 2 };\nObject.setPrototypeOf(a, b);\n```",
+    "options": [
+      "Це робить об'єкт `a` незмінним (immutable)",
+      "Це скасовує оптимізації на рівні рушія (приховані класи/Inline Caches) для `a` та його нащадків",
+      "Це компілює `a` в нативний модуль WebAssembly",
+      "Це має нульовий вплив на продуктивність у сучасних версіях рушія V8"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Динамічна зміна прототипу об'єкта за допомогою `Object.setPrototypeOf` є надзвичайно повільною операцією в рушіях JS. Рушії на кшталт V8 оптимізують доступ до властивостей на основі «прихованих класів» (Shapes) та Inline Caches (IC). Зміна прототипу скасовує ці оптимізації, змушуючи весь подальший код, який шукає властивості в задіяних об'єктах, виконуватися повільнішим шляхом.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst proto = { x: 10 };\nconst obj = Object.create(proto);\nObject.freeze(obj);\nobj.x = 20;\nconsole.log(obj.x);\n```",
+    "options": [
+      "10",
+      "20",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.freeze` запобігає додаванню нових властивостей, видаленню існуючих властивостей та зміні конфігурацій дескрипторів цільового об'єкта. Він НЕ заморожує об'єкти прототипів рекурсивно. Проте, оскільки `obj` заморожений, присвоєння `obj.x = 20` завершується невдачею без помилки (в нестрогому режимі / sloppy mode), оскільки сам `obj` не може мати визначених на ньому нових властивостей, залишаючи успадковане значення `proto.x` рівним 10.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2022+)\n```javascript\nclass Test {\n  static count = 0;\n  static {\n    this.count = 5;\n  }\n  static {\n    this.count += 10;\n  }\n}\nconsole.log(Test.count);\n```",
+    "options": [
+      "15",
+      "0",
+      "5",
+      "Виникає помилка SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Статичні блоки класів в ES2022 дозволяють ініціалізувати статичні властивості. Вони виконуються в тому порядку, в якому вони визначені в класі, в контексті конструктора класу. Тут перший статичний блок встановлює `count` рівним 5, а другий блок додає 10, що дає в результаті 15.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst Mixin = (Base) => class extends Base {\n  greet() { return 'Hello'; }\n};\nclass BaseClass {}\nclass ChildClass extends Mixin(BaseClass) {}\nconst inst = new ChildClass();\nconsole.log(inst instanceof BaseClass);\nconsole.log(inst instanceof ChildClass);\n```",
+    "options": [
+      "true та true",
+      "false та true",
+      "true та false",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Міксини (mixins) реалізуються за допомогою виразів класів, які розширюють базовий клас. `Mixin(BaseClass)` повертає новий клас, який розширює `BaseClass`. Отже, `ChildClass` успадковує цей проміжний клас, який у свою чергу успадковує `BaseClass`. Таким чином, ланцюжок прототипів містить як `ChildClass`, так і `BaseClass`, що робить обидві перевірки `instanceof` рівними `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nclass Custom {\n  static [Symbol.hasInstance](instance) {\n    return 'special' in instance;\n  }\n}\nconsole.log({} instanceof Custom);\nconsole.log({ special: true } instanceof Custom);\n```",
+    "options": [
+      "false та true",
+      "true та false",
+      "true та true",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Статичний метод `Symbol.hasInstance` дозволяє налаштовувати поведінку оператора `instanceof`. Тут `instanceof Custom` перевіряє, чи має операнд властивість `'special'`, що дає `false` для `{}` та `true` для `{ special: true }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nclass Parent {\n  static getValue() {\n    return this.val;\n  }\n}\nParent.val = 100;\nclass Child extends Parent {}\nChild.val = 200;\nconsole.log(Child.getValue());\n```",
+    "options": [
+      "200",
+      "100",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В успадкуванні класів JavaScript статичні властивості та методи успадковуються. Вона має свій прототип (`[[Prototype]]`), пов'язаний із конструктором `Parent`. При виклику `Child.getValue()`, метод `getValue` знаходиться у `Parent`, але виконується з `this`, що посилається на `Child`. Таким чином, `this.val` обчислюється як `Child.val`, що дорівнює 200.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst proto = {};\nObject.defineProperty(proto, 'x', {\n  value: 42,\n  writable: false\n});\nconst obj = Object.create(proto);\nobj.x = 99;\nconsole.log(obj.x);\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Виникає помилка TypeError у нестрогому режимі (non-strict mode)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Якщо успадкована властивість є незаписуваною (`writable: false`), ви не можете затінити її простим присвоєнням (`obj.x = 99`). Присвоєння завершується невдачею без повідомлення в нестрогому режимі (і викидає помилку в строгому режимі). Для затінення незаписуваної успадкованої властивості необхідно визначити властивість безпосередньо на дочірньому об'єкті за допомогою `Object.defineProperty`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nclass Example {\n  x = 1;\n  constructor() {\n    this.x = 2;\n  }\n}\nExample.prototype.x = 3;\nconst e = new Example();\nconsole.log(e.x);\n```",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Поля класу (такі як `x = 1`) ініціалізуються на екземплярі під час конструювання, перед виконанням коду конструктора. Всередині конструктора `this.x = 2` перевизначає ініціалізацію поля. Властивість прототипу `Example.prototype.x = 3` ігнорується, оскільки властивості екземпляра мають пріоритет над властивостями в ланцюжку прототипів.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2022+)\n```javascript\nclass Tester {\n  #val = 42;\n  compare(other) {\n    return other.#val;\n  }\n}\nconst t1 = new Tester();\nconst t2 = new Tester();\nconsole.log(t1.compare(t2));\n```",
+    "options": [
+      "42",
+      "Виникає помилка TypeError",
+      "undefined",
+      "Виникає помилка SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "JavaScript дозволяє екземплярам одного класу мати доступ до приватних властивостей інших екземплярів того самого класу. Оскільки `t2` також є екземпляром `Tester`, вираз `other.#val` є допустимим і успішно звертається до приватного поля `t2`, повертаючи 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction Base() {\n  this.x = 1;\n}\nfunction Custom() {}\nconst obj = Reflect.construct(Base, [], Custom);\nconsole.log(obj.x);\nconsole.log(Object.getPrototypeOf(obj) === Custom.prototype);\n```",
+    "options": [
+      "1 та true",
+      "undefined та true",
+      "1 та false",
+      "undefined та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Reflect.construct(target, argumentsList, newTarget)` викликає конструктор `target` (Base), але використовує `newTarget` (Custom) як шаблон прототипу. Повернутий об'єкт матиме зв'язок `[[Prototype]]`, налаштований на `Custom.prototype`, але все одно виконає конструктор `Base`, встановлюючи `this.x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst obj = {\n  x: 42,\n  getX() {\n    const inner = () => this.x;\n    return inner;\n  }\n};\nconst detached = obj.getX();\nconsole.log(detached.call({ x: 99 }));\n```",
+    "options": [
+      "42",
+      "99",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Стрілкові функції захоплюють значення `this` лексично з оточуючого контексту в момент свого створення. В цьому випадку `inner` захоплює `this` з `getX()`, де `this` посилається на `obj`. Зв'язування `this` у стрілкових функціях є постійним і не може бути змінено за допомогою `call()`, `apply()` чи `bind()`, тому повертається 42.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction test() {\n  console.log(this.val);\n}\nconst bound = test.bind({ val: 1 }).bind({ val: 2 });\nbound();\n```",
+    "options": [
+      "1",
+      "2",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Виклик `bind()` повертає нову функцію-обгортку, яка встановлює `this` у вказаний об'єкт під час виклику. Якщо прив'язувати функцію кілька разів (наприклад, `f.bind(obj1).bind(obj2)`), дієвою буде лише перша прив'язка. Наступні прив'язки лише обгортають прив'язану функцію, але не можуть змінити захоплений контекст `this`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction curried(a) {\n  const fn = (b) => curried(a + b);\n  fn.toString = () => a;\n  fn.valueOf = () => a;\n  return fn;\n}\nconsole.log(Number(curried(1)(2)(3)));\n```",
+    "options": [
+      "6",
+      "1",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ланцюжок каррування (currying) повертає функції, які накопичують аргументи. Перевизначаючи методи прототипу `valueOf` та `toString` у повернутій функції, ми визначаємо, як саме JavaScript зводить функцію до примітиву. При використанні `Number(...)` JS викликає `valueOf()`, який повертає накопичене значення (1 + 2 + 3 = 6).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду в нестрогому режимі (non-strict mode)?\n```javascript\nfunction test() {\n  return this;\n}\nconsole.log(test.call(undefined) === globalThis);\nconsole.log(test.call(42) instanceof Number);\n```",
+    "options": [
+      "true та true",
+      "false та false",
+      "true та false",
+      "false та true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У нестрогому режимі, якщо `null` або `undefined` передаються як аргумент `this` для `call` або `apply`, рушій зводить їх до глобального об'єкта. Аналогічно примітивні значення, такі як `42`, огортаються у відповідні об'єкти (наприклад, `Number(42)`), що робить обидва твердження рівними `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction* genA() {\n  yield 1;\n  return 'doneA';\n}\nfunction* genB() {\n  const val = yield* genA();\n  yield val;\n}\nconst it = genB();\nconsole.log(it.next().value);\n```",
+    "options": [
+      "1",
+      "\"doneA\"",
+      "undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Оператор `yield*` делегує операції ітератора. Важливо, що результатом його виконання стає значення, яке повертає делегований генератор. Таким чином, `genA` повертає через `yield` значення `1`, а потім повертає `'doneA'` через `return`. Це повернене значення записується в `val` у `genB`, а потім повертається через `yield`. Останній виклик `it.next()` перевіряє, чи завершено генератор, що є `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst myAsyncIterable = {\n  [Symbol.asyncIterator]() {\n    let count = 0;\n    return {\n      async next() {\n        if (count < 2) {\n          return { value: count++, done: false };\n        }\n        return { value: undefined, done: true };\n      }\n    };\n  }\n};\n(async () => {\n  let res = '';\n  for await (const x of myAsyncIterable) {\n    res += x;\n  }\n  console.log(res);\n})();\n```",
+    "options": [
+      "\"01\"",
+      "\"012\"",
+      "\"12\"",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Щоб створити правильний користувацький асинхронний ітератор, об'єкт повинен реалізувати метод `[Symbol.asyncIterator]`, який повертає об'єкт ітератора з методом `next()`, що повертає проміс, який розв'язується до об'єкта результату ітератора. Цикл виконується для `x = 0` та `x = 1`, виводячи \"01\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst slice = Function.prototype.call.bind(Array.prototype.slice);\nconst result = slice({ 0: 'a', 1: 'b', length: 2 });\nconsole.log(Array.isArray(result));\nconsole.log(result[1]);\n```",
+    "options": [
+      "true та \"b\"",
+      "false та \"b\"",
+      "true та undefined",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Function.prototype.call.bind(method)` прив'язує спільний метод `call` до цільового методу. Виклик `slice(arrayLike)` еквівалентний виклику `Array.prototype.slice.call(arrayLike)`. Оскільки вхідний об'єкт є масивоподібним (має індексовані властивості та довжину `length`), `slice` перетворює його на справжній масив, повертаючи `['a', 'b']`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } catch (err) {\n    yield err;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.throw('error').value);\n```",
+    "options": [
+      "1 та \"error\"",
+      "1 та викидає 'error'",
+      "undefined та \"error\"",
+      "1 та undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Метод генератора `.throw(err)` відновлює виконання та викидає помилку в місці поточного призупиненого оператора `yield`. У цьому генераторі інструкція `yield 1` обгорнута у блок try-catch. При виклику `.throw('error')` виконується блок catch, який повертає рядок помилки через `yield` назад викликачу.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst partial = (fn, ...args) => (...rest) => fn(...args.map(x => x === '_' ? rest.shift() : x).concat(rest));\nconst greet = (g, name) => `${g}, ${name}!`;\nconst greetHello = partial(greet, 'Hello', '_');\nconsole.log(greetHello('Alice'));\n```",
+    "options": [
+      "\"Hello, Alice!\"",
+      "\"Hello, _!\"",
+      "\"Alice, Hello!\"",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ця реалізація часткового застосування функції (partial application) обробляє параметри-заповнювачі (`'_'`). При виклику `greetHello('Alice')` заповнювач замінюється на `'Alice'`, створюючи фінальний масив аргументів `['Hello', 'Alice']`, що передається у `greet`, яка у свою чергу повертає \"Hello, Alice!\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet x = 1;\nfunction test(a = x, b = () => x) {\n  let x = 2;\n  console.log(a);\n  console.log(b());\n}\ntest();\n```",
+    "options": [
+      "1 та 1",
+      "1 та 2",
+      "2 та 2",
+      "Виникає помилка ReferenceError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Вирази параметрів за замовчуванням мають власну лексичну область видимості, що містить ці параметри. Змінні, оголошені в тілі функції (`let x = 2`), не можуть впливати на розв'язання параметрів за замовчуванням, які захоплюють змінні із зовнішньої області видимості. Отже, як `a`, так і замикання `b` розв'язуються до зовнішнього `x = 1`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\n'use strict';\nconst test = () => {\n  return arguments;\n};\ntry {\n  test(1, 2);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "Об'єкт arguments",
+      "undefined",
+      "Виникає помилка SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Стрілкові функції не мають власного об'єкта `arguments`. Замість цього вони захоплюють об'єкт `arguments` зі свого навколишнього лексичного оточення. В даному випадку `test` визначено в глобальній області видимості, де в строгих ES-модулях немає зв'язування `arguments`, тому викидається помилка ReferenceError.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nfunction* gen() {\n  try {\n    yield 1;\n  } finally {\n    yield 2;\n  }\n}\nconst g = gen();\nconsole.log(g.next().value);\nconsole.log(g.return(3).value);\nconsole.log(g.next().value);\n```",
+    "options": [
+      "1, 2, 3",
+      "1, 3, undefined",
+      "1, 2, undefined",
+      "1, undefined, undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Метод `.return(val)` припиняє виконання генератора і повертає `val`. Однак, якщо генератор наразі призупинений всередині блоку `try`, який має блок `finally`, рушій гарантує виконання спочатку блоку `finally`. Значення `2`, повернуте з блоку `finally` через `yield`, повертається першим, а наступний виклик `.next()` повертає фінальне значення (`3`).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst f1 = (a, b = 1, ...c) => {};\nconst f2 = (a, b, c) => {};\nconsole.log(f1.length, f2.length);\n```",
+    "options": [
+      "1 та 3",
+      "2 та 3",
+      "3 та 3",
+      "1 та 2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Властивість `length` функції повертає кількість очікуваних аргументів. Вона виключає rest-параметри та будь-які параметри зі значенням за замовчуванням, а також усі наступні параметри після першого параметра зі значенням за замовчуванням. Для `f1` підходить лише `a`, тому довжина дорівнює 1. Для `f2` підходять усі 3, тому довжина дорівнює 3.",
+    "points": 10
+  },
+  {
+    "question_text": "Чи є наступний об'єкт валідним ітерованим об'єктом (iterable) відповідно до протоколів ітерації ECMAScript?\n```javascript\nconst obj = {\n  next() {\n    return { value: 42, done: false };\n  }\n};\n```",
+    "options": [
+      "Ні, це ітератор, але йому бракує обгортки прототипу ітератора з [Symbol.iterator]",
+      "Так, він задовольняє протоколи як ітератора, так і ітерованого об'єкта",
+      "Ні, тому що метод next не повертає Promise",
+      "Так, тому що будь-який об'єкт із методом next автоматично є ітерованим"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Для задоволення протоколу ітерованого об'єкта (iterable), об'єкт повинен мати властивість `[Symbol.iterator]`, яка повертає ітератор. Об'єкт, який має лише метод `next`, є «ітератором» (iterator), але не «ітерованим об'єктом» (iterable). Щоб зробити його ітерованим, він повинен реалізувати `[Symbol.iterator]() { return this; }`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  const f = new Function('console.log(x);');\n  return f;\n}\nouter()();\n```",
+    "options": [
+      "10",
+      "20",
+      "Виникає помилка ReferenceError",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Функції, створені за допомогою конструктора `new Function`, не успадковують лексичне оточення тієї області видимості, в якій вони були створені. Замість цього вони завжди створюються у глобальній області видимості (замикаючи лише глобальне оточення). Таким чином, створена функція отримує доступ до глобальної `x` (10), а не до локальної `x` (20).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst p = new Promise((resolve, reject) => {\n  reject('fail');\n});\np.then(null, err => {\n  return 'recovered';\n}).then(val => {\n  console.log(val);\n});\n```",
+    "options": [
+      "\"recovered\"",
+      "Нічого не виводиться",
+      "Виникає неперехоплена помилка відхилення промісу (unhandled promise rejection)",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Коли проміс відхиляється, виконання переходить до найближчого обробника відхилення (`onRejected`). Оскільки другий аргумент `p.then` перехоплює відхилення, він повертає `'recovered'`. Оскільки цей обробник відхилення завершується нормально (без викидання помилки чи повернення відхиленого промісу), повернутий проміс розв'язується зі значенням `'recovered'`, запускаючи наступний обробник `onFulfilled`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconsole.log('start');\nsetTimeout(() => console.log('timeout'), 0);\nPromise.resolve().then(() => console.log('promise'));\nqueueMicrotask(() => console.log('microtask'));\nconsole.log('end');\n```",
+    "options": [
+      "start -> end -> promise -> microtask -> timeout",
+      "start -> end -> timeout -> promise -> microtask",
+      "start -> promise -> microtask -> timeout -> end",
+      "start -> end -> promise -> timeout -> microtask"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Спочатку виконується синхронний код. Коли стек викликів порожній, черга мікрозадач (microtask queue) повністю вичерпується перед виконанням будь-яких макрозадач (таких як `setTimeout`). І `Promise.then`, і `queueMicrotask` додають завдання до черги мікрозадач. Вони виконуються в порядку додавання, після чого виконується задача таймера.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nPromise.resolve().then(() => {\n  console.log('A');\n  queueMicrotask(() => console.log('B'));\n});\nqueueMicrotask(() => {\n  console.log('C');\n});\n```",
+    "options": [
+      "A -> C -> B",
+      "A -> B -> C",
+      "C -> A -> B",
+      "A -> C"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Мікрозадачі виконуються послідовно, доки черга мікрозадач повністю не спорожніє. Спочатку в чергу додаються дві мікрозадачі: обробник `Promise` та задача `C`. Під час виконання першої задачі в чергу додається нова мікрозадача `B`. Після виведення `A` рушій обробляє наступну в черзі мікрозадачу `C`, а потім переходить до `B`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nPromise.all([1, Promise.reject('error'), 3])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "\"rejected error\"",
+      "\"resolved [1, undefined, 3]\"",
+      "Нічого не виводиться",
+      "\"rejected [undefined, 'error', undefined]\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.all` відхиляється миттєво, якщо будь-який проміс у вхідному масиві відхиляється (поведінка швидкого виходу з ладу / fail-fast). Навіть якщо в списку є не-проміси або успішно виконані проміси, при виникненні відхилення все виконання переривається, передаючи управління найближчому обробнику `.catch` з конкретною помилкою.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2021+)\n```javascript\nPromise.any([])\n  .then(() => console.log('resolved'))\n  .catch(err => console.log(err.name));\n```",
+    "options": [
+      "\"AggregateError\"",
+      "\"TypeError\"",
+      "Зависає на невизначений час",
+      "\"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.any` повертає проміс, який розв'язується, як тільки розв'яжеться хоча б один із вхідних промісів. Якщо вхідний ітерований об'єкт порожній, він миттєво відхиляється з помилкою `AggregateError`, що містить порожній масив помилок, оскільки немає промісів, які могли б розв'язатися.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nasync function test() {\n  console.log(1);\n  await Promise.resolve();\n  console.log(2);\n}\ntest();\nconsole.log(3);\n```",
+    "options": [
+      "1 -> 3 -> 2",
+      "1 -> 2 -> 3",
+      "3 -> 1 -> 2",
+      "1 -> 3"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Асинхронна (`async`) функція виконується синхронно, доки не досягне свого першого виразу `await`. `await` призупиняє виконання функції та додає мікрозадачу для її відновлення. Управління негайно повертається до зовнішнього стеку викликів, що призводить до виведення `3` перед тим, як запуститься мікрозадача і виведе `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Що відбувається, коли проміс відхиляється і обробник відхилення відсутній, але обробник catch додається через 2 секунди?\n```javascript\nconst p = Promise.reject('error');\nsetTimeout(() => {\n  p.catch(e => console.log('handled:', e));\n}, 2000);\n```",
+    "options": [
+      "Подія unhandledrejection виникає негайно, а потім проміс успішно обробляється пізніше",
+      "Рушій негайно викидає неперехоплювану помилку та аварійно завершує роботу",
+      "Відхилення відкладається і жодне попередження ніколи не виводиться",
+      "Код викликає синтаксичну помилку"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Якщо проміс відхиляється без обробника, в кінці такту мікрозадач рушій викликає подію `unhandledrejection` у глобальному контексті. Якщо згодом (наприклад, через 2 секунди) додається обробник, рушій обробляє його і може викликати подію `rejectionhandled`, щоб повідомити, що відхилення зрештою було опрацьовано.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nrequestAnimationFrame(() => console.log('raf'));\nPromise.resolve().then(() => console.log('promise'));\n```",
+    "options": [
+      "\"promise\" виконується першим, але порядок виконання \"timeout\" та \"raf\" залежить від графіка оновлення інтерфейсу (reflow) браузером",
+      "\"timeout\" -> \"raf\" -> \"promise\"",
+      "\"raf\" -> \"timeout\" -> \"promise\"",
+      "\"promise\" -> \"timeout\" -> \"raf\" стабільно у всіх середовищах"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Мікрозадачі (`promise`) виконуються перед будь-якими макрозадачами або рендерингом кадру. `requestAnimationFrame` виконується як частина процесу рендерингу браузера (перед малюванням/paint). `setTimeout` працює у фазі таймерів циклу подій. Порядок виконання між рендерингом кадру та макрозадачами таймера залежить від внутрішніх алгоритмів планування браузера та точності часу.",
+    "points": 10
+  },
+  {
+    "question_text": "У циклі подій Node.js, яким буде результат виконання наступного коду?\n```javascript\nsetTimeout(() => console.log('timeout'), 0);\nsetImmediate(() => console.log('immediate'));\n```",
+    "options": [
+      "Порядок виведення є недетермінованим і залежить від продуктивності процесу",
+      "Завжди \"timeout\" -> \"immediate\"",
+      "Завжди \"immediate\" -> \"timeout\"",
+      "Вони виконуються паралельно в окремих потоках"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Порядок виконання між `setTimeout` (із затримкою 0 мс, яка приводиться до 1 мс) та `setImmediate` є недетермінованим при виклику з головного модуля. Він залежить від того, як швидко запускається цикл подій і перевіряє чергу таймерів у порівнянні з чергою перевірки (check queue). Якщо виклик відбувається всередині циклу введення-виведення (I/O cycle), `setImmediate` завжди виконується першим.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst controller = new AbortController();\nconst signal = controller.signal;\nconst p = new Promise((resolve, reject) => {\n  signal.addEventListener('abort', () => reject('aborted'));\n});\ncontroller.abort();\np.catch(e => console.log(e));\n```",
+    "options": [
+      "\"aborted\"",
+      "Нічого не виводиться",
+      "Виникає неперехоплене відхилення промісу (unhandled rejection)",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "API `AbortController` дозволяє скасовувати асинхронні операції. Прослуховуючи подію `abort` на сигналі (`signal`) контролера, ми можемо негайно відхилити проміс при виклику `controller.abort()`. У цьому прикладі слухач події викликається синхронно під час виклику `.abort()`, що призводить до відхилення промісу.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nasync function foo() {\n  return 1;\n}\nasync function bar() {\n  return Promise.resolve(1);\n}\nconsole.log(foo() instanceof Promise);\nconsole.log(bar() instanceof Promise);\n```",
+    "options": [
+      "true та true",
+      "false та true",
+      "true та false",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Будь-яка функція, оголошена з ключовим словом `async`, завжди повертає проміс. Якщо функція повертає примітивне значення, наприклад `1`, рушій обгортає його в уже розв'язаний проміс. Якщо вона повертає проміс, то вона розв'язується до результату цього промісу, але повернене значення самої обгортки async-функції все одно є промісом.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst p = new Promise(resolve => {\n  console.log(1);\n  resolve(2);\n  console.log(3);\n});\np.then(v => console.log(v));\nconsole.log(4);\n```",
+    "options": [
+      "1 -> 3 -> 4 -> 2",
+      "1 -> 4 -> 3 -> 2",
+      "4 -> 1 -> 3 -> 2",
+      "1 -> 2 -> 3 -> 4"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Функція виконання промісу (executor) виконується синхронно. При створенні `p` вона виконує `console.log(1)`, викликає `resolve(2)` та виконує `console.log(3)`. Вирішення (resolving) промісу є асинхронним з точки зору його колбеків `.then` (які стають у чергу як мікрозадачі). Відповідно, наступним виводиться `4`, а потім виконується черга мікрозадач, яка виводить `2`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nPromise.race([])\n  .then(val => console.log('resolved', val))\n  .catch(err => console.log('rejected', err));\n```",
+    "options": [
+      "Він зависає на невизначений час (ніколи не розв'язується і не відхиляється)",
+      "Він негайно розв'язується зі значенням undefined",
+      "Він негайно відхиляється з помилкою TypeError",
+      "Він відхиляється з помилкою AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.race(iterable)` повертає проміс, який розв'язується або відхиляється, як тільки один із промісів в ітерованому об'єкті розв'язується або відхиляється. Якщо переданий ітерований об'єкт є порожнім, немає промісів для змагання, і повернутий проміс назавжди залишається в стані очікування (pending).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nasync function test() {\n  throw new Error('sync-error');\n}\ntest().catch(e => console.log(e.message));\n```",
+    "options": [
+      "\"sync-error\"",
+      "Викидає неперехоплювану помилку і завершує роботу",
+      "Нічого не виводиться",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Навіть якщо помилка викидається синхронно перед будь-яким виразом `await` в асинхронній (`async`) функції, рушій перехоплює її внутрішньо і перетворює на відхилений проміс. Отже, помилку завжди можна перехопити за допомогою стандартного методу `.catch()` на повернутому промісі.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst p = new Promise((resolve) => {\n  resolve(1);\n  throw new Error('error');\n});\np.then(v => console.log(v)).catch(e => console.log(e.message));\n```",
+    "options": [
+      "1",
+      "\"error\"",
+      "1 and \"error\"",
+      "Виникає неперехоплена помилка відхилення промісу (unhandled rejection)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Проміс може пройти лише через один перехід стану (наприклад, із pending у resolved). Після виклику `resolve(1)` стан промісу фіксується як виконаний (fulfilled). Наступний вираз `throw new Error` ігнорується кінцевим автоматом промісу, і обробник відхилення ніколи не викликається.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nlet resolvePromise;\nconst p = new Promise(resolve => {\n  resolvePromise = resolve;\n});\np.then(() => console.log('resolved'));\n\nconst obj = {\n  then(resolve) {\n    console.log('thenable');\n    resolve();\n  }\n};\n\nresolvePromise(obj);\n```",
+    "options": [
+      "Спочатку \"thenable\", а потім \"resolved\"",
+      "Спочатку \"resolved\", а потім \"thenable\"",
+      "Тільки \"thenable\"",
+      "Тільки \"resolved\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Коли проміс розв'язується за допомогою thenable-об'єкта, рушій обгортає thenable у мікрозадачу для обчислення його методу `.then`. Виклик функції вирішення запускає `obj.then`, який виводить \"thenable\" і розв'язує внутрішній проміс, згодом виконуючи ланцюжок `.then` та виводячи \"resolved\".",
+    "points": 10
+  },
+  {
+    "question_text": "Що станеться, якщо цикл мікрозадач запускається рекурсивно, не передаючи керування черзі макрозадач?\n```javascript\nfunction run() {\n  Promise.resolve().then(run);\n}\nrun();\n```",
+    "options": [
+      "Це повністю заблокує цикл подій, перекриваючи доступ рендерингу та макрозадачам, що призведе до зависання вкладки/процесу",
+      "Це негайно викликає помилку переповнення стеку викликів (Call Stack Overflow)",
+      "V8 автоматично припиняє виконання після 1000 ітерацій",
+      "Це виконується асинхронно у фоновому потоці, не впливаючи на інтерфейс користувача"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Мікрозадачі виконуються повністю перед тим, як керування повернеться до циклу подій. Якщо мікрозадача планує іншу мікрозадачу, черга мікрозадач ніколи не спорожніє. У результаті цикл подій залишається захопленим на етапі перевірки мікрозадач (microtasks checkpoint), повністю блокуючи макрозадачі, події введення та рендеринг сторінки браузером.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2020+)\n```javascript\nPromise.allSettled([\n  Promise.resolve(1),\n  Promise.reject('error')\n]).then(results => {\n  console.log(results[0].status, results[1].status);\n  console.log(results[1].reason);\n});\n```",
+    "options": [
+      "\"fulfilled rejected\" та \"error\"",
+      "\"fulfilled fulfilled\" та undefined",
+      "\"resolved rejected\" та \"error\"",
+      "Виникає помилка AggregateError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Promise.allSettled` повертає масив об'єктів, які представляють результат виконання кожного промісу. Він ніколи не відхиляється. Для розв'язаних промісів статус встановлюється як `'fulfilled'` (разом із `value`). Для відхилених статус встановлюється як `'rejected'` (разом із `reason`).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде порядок виведення, коли два слухачі подій DOM запускаються фізичним натисканням миші користувачем у порівнянні з програмним викликом `.click()`?\n```javascript\nconst btn = document.createElement('button');\nbtn.addEventListener('click', () => {\n  Promise.resolve().then(() => console.log('Microtask 1'));\n  console.log('Listener 1');\n});\nbtn.addEventListener('click', () => {\n  console.log('Listener 2');\n});\n// Case A: User clicks button physically\n// Case B: btn.click() is called programmatically\n```",
+    "options": [
+      "Випадок А: Listener 1 -> Microtask 1 -> Listener 2. Випадок B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Випадок А: Listener 1 -> Listener 2 -> Microtask 1. Випадок B: Listener 1 -> Listener 2 -> Microtask 1.",
+      "Випадок А: Listener 1 -> Microtask 1 -> Listener 2. Випадок B: Listener 1 -> Microtask 1 -> Listener 2.",
+      "Випадок А: Listener 1 -> Listener 2 -> Microtask 1. Випадок B: Listener 1 -> Microtask 1 -> Listener 2."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Для реального кліка користувача браузер запускає функції зворотного виклику слухачів асинхронно. Стек викликів порожніє між слухачами, що призводить до запуску черги мікрозадач. Для програмного виклику `.click()` запуск відбувається синхронно на активному стеку викликів. Стек викликів не порожніє між викликами слухачів, що відкладає всі мікрозадачі доти, доки обидва слухачі не закінчать виконання.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nPromise.resolve(1)\n  .then(x => {\n    throw x + 1;\n  })\n  .catch(err => {\n    return err + 1;\n  })\n  .then(y => {\n    console.log(y);\n  });\n```",
+    "options": [
+      "3",
+      "2",
+      "undefined",
+      "Виникає неперехоплена помилка відхилення промісу (unhandled promise rejection)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Спочатку `then(x => { throw x + 1; })` отримує 1 і викидає 2, що призводить до відхилення промісу. Далі метод `.catch` перехоплює це відхилення (значення 2), виконує `2 + 1` і повертає 3. Оскільки цей блок catch завершується нормально, він розв'язує проміс зі значенням 3, яке потім виводиться наступним обробником `.then`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst proxy = new Proxy({}, {\n  get(target, prop, receiver) {\n    return receiver;\n  }\n});\nconsole.log(proxy.anyProperty === proxy);\nconst derived = Object.create(proxy);\nconsole.log(derived.anyProperty === derived);\n```",
+    "options": [
+      "true та true",
+      "true та false",
+      "false та true",
+      "false та false"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Параметр `receiver` у пастці `get` посилається на об'єкт, на якому було ініційовано доступ до властивості. Для `proxy.anyProperty` отримувачем (receiver) є `proxy`. Для `derived.anyProperty` (де `derived` успадковує `proxy`) отримувачем є `derived`, що змушує обидва вирази вивести `true`.",
+    "points": 10
+  },
+  {
+    "question_text": "Чому аргумент `receiver` є необхідним у `Reflect.set`?\n```javascript\nReflect.set(target, propertyKey, value, receiver);\n```",
+    "options": [
+      "Він гарантує, що якщо ціль (target) має сетер у своєму прототипі, цей сетер виконуватиметься з контекстом `this`, прив'язаним до отримувача (receiver)",
+      "Він дозволяє визначити властивість на отримувачі (receiver) замість цілі (target)",
+      "Він використовується виключно для цілей налагодження",
+      "Він запобігає збиранню сміття для цілі (target)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "При перехопленні пастки `set` через Proxy, зміна може виконуватися на похідному об'єкті, який успадковує цей проксі. Використання `Reflect.set(target, prop, val, receiver)` гарантує, що будь-які успадковані сетери виконуються з контекстом `this`, який вказує на правильний `receiver` (похідний об'єкт), запобігаючи помилкам у визначенні властивостей у ланцюжку прототипів.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  writable: false,\n  configurable: false\n});\nconst proxy = new Proxy(target, {\n  get() {\n    return 99;\n  }\n});\ntry {\n  console.log(proxy.x);\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "99",
+      "42",
+      "undefined"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Проксі забезпечують інваріанти для підтримки узгодженості. Якщо властивість цільового об'єкта є неконфігурованою та незаписуваною, пастка `get` проксі ПОВИННА повернути фактичне значення цієї властивості. Якщо пастка повертає інше значення (99 замість 42), рушій викидає помилку TypeError, активуючи блок `catch`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst map = new WeakMap();\n(function() {\n  const key = { name: 'key' };\n  const val = { name: 'val' };\n  map.set(key, val);\n})();\n// Уявіть, що тут запускається збирач сміття\n```",
+    "options": [
+      "Обидва об'єкти (key та val) стають доступними для збирання сміття, оскільки key більше недоступний",
+      "Збирається лише key, а val залишається в WeakMap",
+      "Нічого не збирається, оскільки мапа зберігає посилання",
+      "Код викликає помилку під час виконання (runtime exception)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У `WeakMap` ключі утримуються за слабкими посиланнями. Коли єдине посилання на об'єкт ключа (`key`) втрачається (тобто при виході з області видимості після IIFE), цей ключ стає доступним для збирання сміття. Після того, як збирається ключ, відповідне значення (`val`) також вивільняється (припускаючи, що інших посилань на `val` немає), запобігаючи витоку пам'яті.",
+    "points": 10
+  },
+  {
+    "question_text": "Який із наведених патернів коду створює витік пам'яті через від'єднаний DOM-елемент (detached DOM element)?\n```javascript\n// Сценарій 1\nlet element = document.getElementById('button');\nelement.addEventListener('click', () => console.log('clicked'));\nelement.remove();\n\n// Сценарій 2\nlet element = document.getElementById('button');\nconst ref = { el: element };\nelement.remove();\nelement = null;\n```",
+    "options": [
+      "Лише Сценарій 2, оскільки об'єкт `ref` все ще зберігає посилання на елемент",
+      "Лише Сценарій 1",
+      "Обидва сценарії",
+      "Жоден зі сценаріїв"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "У Сценарії 2, хоча елемент і видаляється з DOM, а його локальна змінна очищається (`element = null`), об'єкт `ref` все одно зберігає посилання на `element`. Оскільки JS не може зібрати сміття для DOM-вузла, поки він доступний через `ref`, це створює витік від'єднаного DOM-елемента. У Сценарії 1 видалення елемента очищає стандартні посилання, і браузер може його зібрати.",
+    "points": 10
+  },
+  {
+    "question_text": "Як поколіннєвий збирач сміття (Generational Garbage Collector) рушія V8 оптимізує збирання пам'яті для короткоживучих об'єктів?",
+    "options": [
+      "Він виділяє пам'ять під нові об'єкти в «Новому просторі» (New Space / Nursery) та швидко збирає їх за допомогою алгоритму Scavenger",
+      "Він запускає повний цикл Mark-Sweep-Compact при кожному виклику функції",
+      "Він делегує все збирання сміття основному потоку веб-браузера",
+      "Він вимикає збирання сміття для об'єктів, менших за 1 КБ"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 розділяє купу (heap) на простори. Більшість нових виділень пам'яті відбувається в «Новому просторі» (New Space або nursery). Оскільки більшість об'єктів «вмирають молодими», V8 використовує швидкий копіюючий збирач (Scavenger) для очищення Нового простору шляхом переміщення виживших об'єктів до другого напівпростору, переносячи їх до «Старого простору» (Old Space) лише після того, як вони пережили кілька циклів.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst set = new WeakSet();\nconst obj = { x: 1 };\nset.add(obj);\nconsole.log(set.has(obj));\nconsole.log(Object.keys(set).length);\n```",
+    "options": [
+      "true та 0",
+      "true та 1",
+      "false та 0",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WeakSet` утримує об'єкти за слабкими посиланнями і не є ітерованим. Він не надає доступу до властивостей, довжини чи методів ітератора (таких як keys або values). Таким чином, `set.has(obj)` дорівнює `true`, але виклик `Object.keys(set)` повертає порожній масив довжиною 0.",
+    "points": 10
+  },
+  {
+    "question_text": "Як збирач сміття JavaScript обробляє циклічні посилання між об'єктами?\n```javascript\nfunction createCycle() {\n  const objA = {};\n  const objB = {};\n  objA.sibling = objB;\n  objB.sibling = objA;\n}\ncreateCycle();\n```",
+    "options": [
+      "Він збирає їх, оскільки вони більше не є досяжними з кореневих контекстів виконання",
+      "Це призводить до витоку пам'яті, оскільки лічильник посилань обох об'єктів залишається рівним 1",
+      "Це призводить до аварійного завершення роботи рушія V8 через переповнення стеку",
+      "Він назавжди зберігає їх у просторі великих об'єктів (Large Object Space)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Сучасні рушії JS використовують алгоритм збирання сміття «познач та підмети» (mark-and-sweep), а не підрахунок посилань. Починаючи з кореневих контекстів, збирач позначає всі досяжні об'єкти. Оскільки `objA` та `objB` більше не є досяжними з жодного кореня після повернення з `createCycle`, вони збираються, незважаючи на те, що посилаються один на одного.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступних порівнянь?\n```javascript\nconsole.log(Object.is(NaN, NaN));\nconsole.log(Object.is(-0, +0));\nconsole.log(-0 === +0);\n```",
+    "options": [
+      "true, false, true",
+      "false, true, true",
+      "true, true, false",
+      "false, false, true"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.is` оцінює рівність значень. На відміну від `===`, який вважає, що `NaN !== NaN` та `-0 === +0`, `Object.is` розглядає `NaN` як рівне `NaN`, і відрізняє `-0` від `+0` (повертаючи `false` при їх порівнянні).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst target = {};\nObject.defineProperty(target, 'x', {\n  value: 42,\n  enumerable: false,\n  configurable: true\n});\nconst proxy = new Proxy(target, {\n  ownKeys() {\n    return ['x', 'y'];\n  }\n});\nconsole.log(Object.keys(proxy));\nconsole.log(Reflect.ownKeys(proxy));\n```",
+    "options": [
+      "[] та [\"x\", \"y\"]",
+      "[\"x\"] та [\"x\", \"y\"]",
+      "[] та [\"x\"]",
+      "Виникає помилка TypeError, оскільки 'y' відсутня в target"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.keys` повертає лише власні перелічувані (enumerable) властивості об'єкта. Хоча пастка `ownKeys` повернула `['x', 'y']`, `'x'` є неперелічуваною властивістю на цілі (target), тому вона відфільтровується методом `Object.keys`, а `'y'` не визначена на target. `Reflect.ownKeys` ігнорує перевірку на перелічуваність і повертає сирі результати роботи пастки.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2021+)\n```javascript\nconst registry = new FinalizationRegistry(heldValue => {\n  console.log(heldValue);\n});\nlet obj = { x: 1 };\nregistry.register(obj, 'collected');\nobj = null;\n```",
+    "options": [
+      "Жодне виведення в консоль синхронно не гарантується (час запуску збирача сміття є недетермінованим)",
+      "\"collected\" виводиться негайно",
+      "Виникає помилка ReferenceError",
+      "\"collected\" виводиться на наступному такті циклу подій (event loop)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`FinalizationRegistry` дозволяє реєструвати функції зворотного виклику, які запускаються при збиранні сміття для об'єктів. Проте час виконання збирання сміття повністю визначається рушієм. Воно є недетермінованим, тобто колбек не виконається негайно чи на передбачуваному такті, і може взагалі ніколи не запуститися протягом короткого часу життя процесу.",
+    "points": 10
+  },
+  {
+    "question_text": "Що відбувається з оптимізацією об'єкта в рушії V8, коли ви використовуєте оператор `delete` для видалення властивості?\n```javascript\nconst obj = { a: 1, b: 2 };\ndelete obj.a;\n```",
+    "options": [
+      "Це анулює прихований клас (Shape) і може перевести об'єкт у «режим словника» (slow properties)",
+      "Це оптимізує доступ до властивостей шляхом перебудови стисненого прихованого класу",
+      "Це компілює об'єкт у незмінну структуру",
+      "Це не впливає на внутрішні шляхи оптимізації V8"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Видалення властивостей з об'єкта порушує переходи його прихованих класів. У V8 використання `delete` (особливо для властивостей, які не були додані останніми) часто змушує рушій повністю відкинути оптимізовану форму прихованого класу та переключити об'єкт у «режим словника» (dictionary mode, тобто повільні асоціативні масиви), що знижує продуктивність.",
+    "points": 10
+  },
+  {
+    "question_text": "Чим швидкі властивості (fast properties) у V8 відрізняються від повільних (slow properties)?",
+    "options": [
+      "Швидкі властивості використовують фіксовані зміщення в суміжній структурі на основі прихованих класів, тоді як повільні властивості використовують словникову хеш-таблицю",
+      "Швидкі властивості є числами, тоді як повільні властивості — рядками та символами",
+      "Швидкі властивості містяться в глобальному об'єкті, тоді як повільні — в замиканнях",
+      "Швидкі властивості кешуються в локальній пам'яті, тоді як повільні завантажуються з кешу браузера"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 зберігає властивості в різних режимах. «Швидкі властивості» зберігаються безпосередньо на об'єкті або в плоскому масиві за допомогою зміщень дескрипторів, які відстежуються прихованим класом об'єкта. «Повільні властивості» — це резервні структури, які зберігають властивості в словниковій хеш-таблиці, що дозволяє уникнути накладних витрат на переходи класів, але знижує швидкість пошуку.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду?\n```javascript\nconst sym = Symbol('key');\nconst obj = {\n  [sym]: 'secret'\n};\nconsole.log(Object.keys(obj));\nconsole.log(Object.getOwnPropertyNames(obj));\nconsole.log(Object.getOwnPropertySymbols(obj)[0] === sym);\n```",
+    "options": [
+      "[], [] та true",
+      "[\"key\"], [] та true",
+      "[], [\"key\"] та false",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ключі типу Symbol розроблені так, щоб бути прихованими від стандартних інспекцій. Вони не з'являються в `Object.keys` або `Object.getOwnPropertyNames`. Щоб отримати їх, потрібно використовувати `Object.getOwnPropertySymbols` або `Reflect.ownKeys`, які успішно знаходять посилання на символ.",
+    "points": 10
+  },
+  {
+    "question_text": "Якою буде поведінка методу `deref()` на об'єкті `WeakRef` після того, як його ціль була видалена збирачем сміття? (ES2021+)\n```javascript\nlet obj = { data: 'val' };\nconst ref = new WeakRef(obj);\nobj = null;\n// Припустимо, збирання сміття завершилося успішно\nconsole.log(ref.deref());\n```",
+    "options": [
+      "undefined",
+      "null",
+      "Виникає помилка ReferenceError",
+      "Порожній об'єкт {}"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "API `WeakRef` дозволяє утримувати слабке посилання на об'єкт. Коли збирач сміття визначає, що цільовий об'єкт більше не досяжний за сильними посиланнями і вивільняє його, метод `deref()` перестає повертати об'єкт і натомість починає повертати `undefined`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2020+)\n```javascript\nconst val1 = 0 ?? 'fallback';\nconst val2 = 0 || 'fallback';\nconsole.log(val1, val2);\n```",
+    "options": [
+      "0 та \"fallback\"",
+      "\"fallback\" та 0",
+      "0 та 0",
+      "\"fallback\" та \"fallback\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Оператор об'єднання з null (nullish coalescing `??`) повертає правий операнд лише тоді, коли лівий операнд дорівнює `null` або `undefined`. Натомість логічний оператор АБО (`||`) перевіряє значення на істинність (truthiness), трактуючи хибні (falsy) значення, такі як `0`, `\"\"` та `false`, як тригери для повернення значення за замовчуванням.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2020+)\n```javascript\nconst obj = {\n  a: {\n    b: null\n  }\n};\ntry {\n  console.log(obj.a?.b?.());\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "error",
+      "undefined",
+      "null",
+      "Виникає помилка SyntaxError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Опціональний ланцюжок (`obj.a?.b?.()`) перериває обчислення, якщо попереднє посилання є nullish (дорівнює `null` або `undefined`). Для `obj.a?.b` воно обчислюється як `null`. Наступна ланка обчислюється як `null?.()`. Оскільки `b` дорівнює `null` (а не `undefined`), воно намагається викликати його як функцію. Оскільки це не функція, викидається помилку TypeError, що запускає блок `catch`.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2020+)\n```javascript\ntry {\n  const res = 10n / 3n;\n  console.log(res);\n  const err = 10n + 3;\n} catch (e) {\n  console.log('error');\n}\n```",
+    "options": [
+      "3n та error",
+      "3.333n та error",
+      "3 та 13",
+      "тільки error"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES2020 операції з `BigInt` повертають цілі значення; ділення (наприклад, `10n / 3n`) відкидає дробову частину, даючи в результаті `3n`. Важливо, що змішані математичні операції між типами `BigInt` та стандартним `Number` викликають помилку TypeError, що призводить до збою на другому рядку та виведення 'error'.",
+    "points": 10
+  },
+  {
+    "question_text": "Що з наступного описує виконання та кешування динамічного імпорту `import()`? (ES2020+)",
+    "options": [
+      "Він повертає проміс, який розв'язується до об'єкта простору імен модуля, що кешується, тому наступні виклики не виконують скрипт модуля знову",
+      "Він виконує модуль синхронно та обходить стандартні механізми кешування",
+      "Він повторно завантажує та повторно виконує цільовий модуль при кожному виклику",
+      "Він працює лише у фонових потоках веб-робітників (web workers) браузера"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Динамічний `import()` завантажує ES-модулі асинхронно, повертаючи проміс. Коли модуль розв'язаний та виконаний, рушій кешує екземпляр модуля. Подальші динамічні імпорти за тим самим шляхом повертають кешований об'єкт простору імен модуля без повторного виконання скрипту.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2021+)\n```javascript\nlet x = null;\nlet y = 5;\nx ??= y;\ny &&= 10;\nconsole.log(x, y);\n```",
+    "options": [
+      "5 та 10",
+      "null та 5",
+      "5 та 5",
+      "null та 10"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Оператори логічного присвоєння поєднують логічні перевірки з присвоєнням. Вираз `x ??= y` присвоює `y` змінній `x`, оскільки `x` є nullish (записуючи в `x` значення 5). Вираз `y &&= 10` присвоює `10` змінній `y`, оскільки `y` є істинним (5 є truthy, записуючи в `y` значення 10).",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2022+)\n```javascript\nclass Base {\n  #brand = true;\n  static check(obj) {\n    return #brand in obj;\n  }\n}\nconsole.log(Base.check(new Base()));\nconsole.log(Base.check(Object.create(Base.prototype)));\n```",
+    "options": [
+      "true та false",
+      "true та true",
+      "false та false",
+      "Виникає помилка TypeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Перевірка наявності приватного бренду (`#brand in obj`) перевіряє, чи встановлено приватне поле на екземплярі. Об'єкти, створені за допомогою `Object.create(Base.prototype)`, мають правильний прототип, але не проходять ініціалізацію в конструкторі, тому вони не мають встановлених приватних полів. Таким чином, перевірка повертає `false` без викидання помилки.",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2021+)\n```javascript\nconst str = 'apple banana apple';\nconst res = str.replaceAll('apple', () => 'pear');\nconsole.log(res);\n```",
+    "options": [
+      "\"pear banana pear\"",
+      "\"pear banana apple\"",
+      "Виникає помилка TypeError",
+      "\"apple banana apple\""
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES2021 було представлено метод `String.prototype.replaceAll()`. При виклику з рядком як шаблоном пошуку він замінює всі входження цього рядка на нове значення або на результат виконання функції заміни, повертаючи \"pear banana pear\".",
+    "points": 10
+  },
+  {
+    "question_text": "Яким буде результат виконання наступного коду? (ES2022+)\n```javascript\nconst arr = [1, 2, , 4];\nconsole.log(arr.at(-1));\nconsole.log(arr.at(-2));\n```",
+    "options": [
+      "4 та undefined",
+      "4 та null",
+      "4 та 2",
+      "Виникає помилка RangeError"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "В ES2022 було представлено метод `.at()` для масивів. Він підтримує негативні індекси, де `-1` вказує на останній елемент (`4`), а `-2` вказує на передостанній елемент (який є порожнім пропуском у цьому масиві і містить `undefined`).",
+    "points": 10
+  },
+  {
+    "question_text": "Чому методу `Object.hasOwn` віддають перевагу перед `Object.prototype.hasOwnProperty`? (ES2022+)\n```javascript\nconst obj = Object.create(null);\n// Case A: obj.hasOwnProperty('x');\n// Case B: Object.hasOwn(obj, 'x');\n```",
+    "options": [
+      "Випадок А викидає помилку TypeError, тоді як Випадок B виконується безпечно",
+      "Випадок B є синхронним, тоді як Випадок А є асинхронним",
+      "Випадок B працює лише для приватних полів, тоді як Випадок А працює для стандартних властивостей",
+      "Різниці немає, це чисто синтаксичний цукор"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`Object.hasOwn` є статичним методом. Він не вимагає доступу до властивості в прототипі цільового об'єкта. Якщо об'єкт не успадковує `Object.prototype` (як-от `Object.create(null)`), виклик `hasOwnProperty` викликає помилку TypeError. `Object.hasOwn` безпечно працює для всіх об'єктів.",
+    "points": 10
+  },
+  {
+    "question_text": "Яке призначення `Symbol.metadata` у специфікації декораторів TC39 Stage 3/4? (ES2023+)",
+    "options": [
+      "Він виступає як ключ збереження метаданих, визначений на конструкторі класу, для запису метаданих від декораторів класів та властивостей",
+      "Він компілює системи структурної типізації в метадані середовища виконання JavaScript",
+      "Він зберігає приватні облікові дані доступу для веб-сокетів",
+      "Він використовується для перевірки, чи має клас приватні методи"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Пропозиція декораторів Stage 3 вводить `Symbol.metadata` як ключ для конструкторів класів. Декоратори можуть отримувати доступ до об'єкта метаданих і записувати в нього дані, які потім зберігаються у властивості `[Symbol.metadata]` класу, забезпечуючи стандартизований спосіб читання анотацій декораторів під час виконання.",
+    "points": 10
+  },
+  {
+    "question_text": "Яку роль виконує компонент «Ignition» у конвеєрі JIT-компіляції рушія V8?",
+    "options": [
+      "Він є інтерпретатором байт-коду, який аналізує JavaScript, виконує код та збирає інформацію профілювання",
+      "Він є оптимізуючим компілятором, який генерує машинний код для «гарячих» шляхів виконання",
+      "Він є парсером, який перевіряє синтаксичні помилки та видає синтаксичні попередження",
+      "Він є збирачем сміття, який очищає купу Нового простору (New Space)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Конвеєр компіляції V8 починається з парсингу JS в абстрактне синтаксичне дерево (AST). «Ignition» інтерпретує це AST у байт-код, негайно його виконуючи. Під час виконання він збирає дані про продуктивність та профілювання для виявлення «гарячих» функцій, які пізніше можуть бути оптимізовані за допомогою TurboFan.",
+    "points": 10
+  },
+  {
+    "question_text": "Що відбувається, коли Inline Cache (IC) переходить з «поліморфного» (Polymorphic) в «мегаморфний» (Megamorphic) стан у V8?",
+    "options": [
+      "Рушій припиняє оптимізацію зміщень властивостей і повертається до повільного пошуку за хешем форми об'єкта",
+      "Код оптимізується напряму для компіляції машинних інструкцій",
+      "Виконання перенаправляється на веб-робітників (web workers)",
+      "Купа повністю ущільнюється для вивільнення пам'яті"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Inline Cache (IC) оптимізує доступ до властивостей. Якщо доступ до властивості відбувається з однією формою об'єкта, він є мономорфним. До 4 різних форм — він поліморфний. Якщо рушій виявляє більше 4 різних форм у цьому місці виклику, IC стає мегаморфним, припиняючи інлайнове кешування та переходячи на повільніші шляхи глобального пошуку.",
+    "points": 10
+  },
+  {
+    "question_text": "Як функції-конструктори, які ініціалізують властивості в різному порядку, впливають на продуктивність виконання у V8?\n```javascript\nfunction A() { this.x = 1; this.y = 2; }\nfunction B() { this.y = 2; this.x = 1; }\n```",
+    "options": [
+      "Вони генерують різні приховані класи (Shapes), що робить місця виклику функцій поліморфними або мегаморфними замість мономорфних",
+      "Вони використовують однакові приховані класи, тому мають нульовий вплив на продуктивність",
+      "Вони змушують TurboFan компілювати функції напряму без аналізу байт-коду",
+      "Вони запускають негайне збирання сміття"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 створює приховані класи (Shapes) на основі порядку, в якому властивості присвоюються об'єкту. Незважаючи на те, що екземпляри `A` та `B` мають однакові властивості (`x` та `y`), вони переходять у різному порядку, генеруючи два різні приховані класи. Передача об'єктів різних прихованих класів в одну й ту саму функцію призводить до погіршення оптимізації.",
+    "points": 10
+  },
+  {
+    "question_text": "Що описує фазу копіювання алгоритму збирання сміття Scavenger у V8?",
+    "options": [
+      "Він копіює виживші об'єкти з активного простору «From Space» у простір «To Space», відкидаючи мертві об'єкти, а потім міняє простори місцями",
+      "Він сканує всю купу, позначає циклічні посилання та ущільнює їх на місці",
+      "Він перетворює фрагменти пам'яті в єдиний суміжний буфер WebAssembly",
+      "Він записує дампи купи у файлову систему для діагностичної оцінки"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Алгоритм Scavenger націлений на «Новий простір» (New Space) у V8. Новий простір розділений на два напівпростори: «From Space» та «To Space». Під час збирання Scavenger обходить корені, копіює живі об'єкти з «From Space» в «To Space» та видаляє решту. Потім простори міняються ролями, зберігаючи купу компактною.",
+    "points": 10
+  },
+  {
+    "question_text": "Що викликає «деоптимізацію» (Deoptimization / Deopt) в компіляторі TurboFan у V8?",
+    "options": [
+      "Оптимізована функція отримує аргументи, які відхиляються від форм типів або умов, зібраних під час профілювання",
+      "Стек викликів перевищує максимальні ліміти виконання",
+      "Збирач сміття починає цикл ущільнення mark-sweep",
+      "Програма намагається завантажити динамічні імпорти"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "TurboFan оптимізує код на основі відгуків про типи (наприклад, припускаючи, що параметр завжди є цілим числом). Якщо функція отримує значення іншого типу (наприклад, рядок), припущення оптимізованого коду анулюються. Рушій повинен відкинути оптимізований машинний код і повернутися до інтерпретованого байт-коду (деоптимізація).",
+    "points": 10
+  },
+  {
+    "question_text": "Який простір пам'яті в купі V8 містить скомпільований виконуваний машинний код оптимізованих функцій?",
+    "options": [
+      "Code Space",
+      "Large Object Space",
+      "Old Pointer Space",
+      "Map Space"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 виділяє пам'ять у виділених областях купи. Скомпільовані машинні інструкції, згенеровані оптимізуючими компіляторами, такими як TurboFan, зберігаються в просторі «Code Space», який є єдиним простором у пам'яті, позначеним як виконуваний, для запобігання експлуатації вразливостей безпеки.",
+    "points": 10
+  },
+  {
+    "question_text": "Якою є найкраща практика щодо типів доступу до властивостей для збереження функцій оптимізованими у V8?",
+    "options": [
+      "Переконуватися, що функції є мономорфними, передаючи об'єкти, які мають точно таку саму форму прихованого класу",
+      "Часто перепризначати властивості на інші типи всередині циклів",
+      "Видаляти властивості з об'єктів, як тільки вони більше не потрібні",
+      "Завжди викликати функції зі змінною кількістю аргументів, використовуючи `arguments`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Функції залишаються оптимізованими (мономорфними), коли вони обробляють об'єкти з однаковими прихованими класами. Уникнення змін порядку властивостей, структурних оновлень на кшталт видалення (`delete`) чи зміни типів параметрів гарантує, що Inline Caches залишатимуться швидкими, а припущення компілятора — чинними.",
+    "points": 10
+  },
+  {
+    "question_text": "Чому V8 не підтримує загальну оптимізацію хвостових викликів (TCO) у сучасному виконанні JavaScript?",
+    "options": [
+      "TCO видаляє фрейми викликів, що ускладнює генерацію стеку викликів (stack trace) та налагодження, а також її не вдалося узгодити між архітектурами всіх рушіїв",
+      "Це математично неможливо реалізувати в динамічних скриптових рушіях",
+      "Вона була замінена хвостовими викликами WebAssembly у всіх браузерах",
+      "Компілятор V8 потребує фреймів викликів для запуску циклів збирання сміття"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Хоча TCO було додано до специфікації ES6, рушій V8 (і більшість інших рушіїв, за винятком JSC у Safari) вимкнув цю підтримку. Причини включають: TCO відкидає фрейми стеку, що ламає трасування помилок через `Error.stack`, значно ускладнюючи налагодження; а також складні вимоги до реалізації за правил динамічної області видимості.",
+    "points": 10
+  },
+  {
+    "question_text": "Як асинхронні колбеки Web API (такі як завершення `fetch`) потрапляють в основний потік виконання V8?",
+    "options": [
+      "Вони додаються в черги задач/мікрозадач середовищем виконання, а цикл подій (event loop) проштовхує їх у стек V8, як тільки він стає порожнім",
+      "Вони переривають виконання V8 негайно через апаратні переривання",
+      "Вони виконуються на допоміжних потоках V8 паралельно з основним контекстом виконання",
+      "Вони виконуються безпосередньо потоком збирання сміття"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "V8 є однопотоковим. Web API працюють на окремих потоках хост-середовища (браузера чи Node.js). Коли вони завершуються, їхні функції зворотного виклику стають у чергу задач/мікрозадач. Цикл подій стежить за стеком викликів V8. Як тільки стек викликів повністю звільняється, цикл подій забирає завдання з черги та передає їх у V8.",
+    "points": 10
+  },
+  {
+    "question_text": "У чому різниця між повним парсером (full parser) та попереднім парсером (pre-parser) у V8?",
+    "options": [
+      "Повний парсер будує абстрактне синтаксичне дерево (AST) для виконання, тоді як попередній парсер перевіряє синтаксис та пропускає генерацію AST для вкладених функцій",
+      "Попередній парсер транслює код у байт-код, а повний парсер його оптимізує",
+      "Попередній парсер працює в окремому робочому процесі, тоді як повний парсер працює на графічному процесорі (GPU)",
+      "Різниці немає; це альтернативні назви для парсера байт-коду Ignition"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Щоб скоротити час запуску, V8 використовує лінивий парсинг (lazy parsing). Попередній парсер виконує швидке сканування внутрішніх/вкладених функцій для перевірки синтаксису та пошуку змінних з блочною областю видимості без компіляції AST або виділення пам'яті. Повний парсер запускається пізніше для побудови AST лише тоді, коли функція безпосередньо викликається.",
+    "points": 10
+  }
+]
