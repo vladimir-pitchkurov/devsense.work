@@ -585,6 +585,7 @@ document.addEventListener('click', function (event) {
 });
 </script>
 
+    <x-cookie-consent />
     @stack('scripts')
 </body>
 </html>
