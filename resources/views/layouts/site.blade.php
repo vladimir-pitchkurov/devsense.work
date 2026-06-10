@@ -2,26 +2,37 @@
 <html lang="{{ $htmlLang }}">
 <head>
     {{-- GTM is loaded automatically by Cloudflare Google Tag Gateway --}}
-    {{-- Consent Mode: restore user preference from localStorage BEFORE GTM fires tags --}}
+    {{-- Consent Mode v2: set default THEN restore from localStorage — both before GTM fires --}}
     <script>
         (function(){
-            var KEY='ds_cookie_consent';
-            try{
-                var raw=localStorage.getItem(KEY);
-                if(raw){
-                    var d=JSON.parse(raw);
-                    if(!d.expires||Date.now()<=d.expires){
-                        window.dataLayer=window.dataLayer||[];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('consent','update',{
-                            analytics_storage: d.analytics?'granted':'denied',
-                            ad_storage: d.marketing?'granted':'denied',
-                            ad_user_data: d.marketing?'granted':'denied',
-                            ad_personalization: d.marketing?'granted':'denied'
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+
+            // Step 1: Set consent defaults (denied) — GTM reads this from queue on load
+            gtag('consent', 'default', {
+                analytics_storage:  'denied',
+                ad_storage:         'denied',
+                ad_user_data:       'denied',
+                ad_personalization: 'denied',
+                wait_for_update:    2000
+            });
+
+            // Step 2: If user already gave consent, update immediately
+            try {
+                var KEY = 'ds_cookie_consent';
+                var raw = localStorage.getItem(KEY);
+                if (raw) {
+                    var d = JSON.parse(raw);
+                    if (!d.expires || Date.now() <= d.expires) {
+                        gtag('consent', 'update', {
+                            analytics_storage:  d.analytics ? 'granted' : 'denied',
+                            ad_storage:         d.marketing ? 'granted' : 'denied',
+                            ad_user_data:       d.marketing ? 'granted' : 'denied',
+                            ad_personalization: d.marketing ? 'granted' : 'denied'
                         });
                     }
                 }
-            }catch(e){}
+            } catch(e) {}
         })();
     </script>
 
