@@ -124,14 +124,18 @@
 
     function pushConsent(prefs) {
         window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            event: 'consent_update',
-            analytics_storage: prefs.analytics ? 'granted' : 'denied',
-            ad_storage: prefs.marketing ? 'granted' : 'denied',
-            ad_user_data: prefs.marketing ? 'granted' : 'denied',
-            ad_personalization: prefs.marketing ? 'granted' : 'denied',
+            // Required by Google Consent Mode v2 — must use gtag('consent', 'update')
+        function gtag(){ window.dataLayer.push(arguments); }
+        gtag('consent', 'update', {
+            'analytics_storage': prefs.analytics ? 'granted' : 'denied',
+            'ad_storage':        prefs.marketing ? 'granted' : 'denied',
+            'ad_user_data':      prefs.marketing ? 'granted' : 'denied',
+            'ad_personalization': prefs.marketing ? 'granted' : 'denied',
         });
+        // Also fire a custom event so GTM triggers can react if needed
+        window.dataLayer.push({ event: 'consent_update' });
     }
+
 
     function hideBanner() {
         const banner = document.getElementById('cookie-banner');
