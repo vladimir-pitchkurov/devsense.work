@@ -2,6 +2,29 @@
 <html lang="{{ $htmlLang }}">
 <head>
     {{-- GTM is loaded automatically by Cloudflare Google Tag Gateway --}}
+    {{-- Consent Mode: restore user preference from localStorage BEFORE GTM fires tags --}}
+    <script>
+        (function(){
+            var KEY='ds_cookie_consent';
+            try{
+                var raw=localStorage.getItem(KEY);
+                if(raw){
+                    var d=JSON.parse(raw);
+                    if(!d.expires||Date.now()<=d.expires){
+                        window.dataLayer=window.dataLayer||[];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('consent','update',{
+                            analytics_storage: d.analytics?'granted':'denied',
+                            ad_storage: d.marketing?'granted':'denied',
+                            ad_user_data: d.marketing?'granted':'denied',
+                            ad_personalization: d.marketing?'granted':'denied'
+                        });
+                    }
+                }
+            }catch(e){}
+        })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="{{ $themeColor }}">
