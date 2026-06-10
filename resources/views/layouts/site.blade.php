@@ -5,12 +5,18 @@
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){ dataLayer.push(arguments); }
+
+        // Consent — always granted for analytics
         gtag('consent', 'default', {
             analytics_storage:  'granted',
             ad_storage:         'denied',
             ad_user_data:       'denied',
             ad_personalization: 'denied'
         });
+
+        // Initialize GA4 directly (gtag/js is loaded by Cloudflare via /j389/)
+        gtag('js', new Date());
+        gtag('config', 'G-VM2L2L4KGG', { send_page_view: true });
     </script>
 
     <meta charset="UTF-8">
