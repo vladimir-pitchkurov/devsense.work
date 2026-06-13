@@ -258,3 +258,20 @@ Route::prefix('{locale}')
             ->name('articles.show_custom')
             ->where('any', '.*');
     });
+
+Route::fallback(function (Request $request) {
+    $segments = $request->segments();
+    $firstSegment = $segments[0] ?? '';
+
+    if (in_array($firstSegment, SetLocale::SUPPORTED_LOCALES, true)) {
+        abort(404);
+    }
+
+    $locale = config('app.default_site_locale', 'en');
+    if (! in_array($locale, SetLocale::SUPPORTED_LOCALES, true)) {
+        $locale = 'en';
+    }
+
+    $newPath = '/' . $locale . '/' . ltrim($request->getRequestUri(), '/');
+    return redirect($newPath, 301);
+});
