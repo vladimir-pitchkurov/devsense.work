@@ -54,7 +54,8 @@ class SeoEndpointsTest extends TestCase
         $body = (string) $response->getContent();
         $this->assertStringContainsString('Allow: /', $body);
         $this->assertStringContainsString('Sitemap: https://devsense.work/sitemap.xml', $body);
-        $this->assertStringNotContainsString('Disallow: /', $body);
+        $lines = explode("\n", str_replace("\r", "", $body));
+        $this->assertNotContains('Disallow: /', $lines);
     }
 
     public function test_robots_blocks_all_crawlers_when_indexing_disabled(): void

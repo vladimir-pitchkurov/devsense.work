@@ -17,17 +17,92 @@ class ArticlesController extends Controller
     /**
      * Display a listing of the articles.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Article::with(['author', 'categories', 'translations', 'pendingTranslations']);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('author_id', Auth::id());
+        } else {
+            // Admin can filter by author
+            if ($request->filled('author')) {
+                $query->where('author_id', $request->input('author'));
+            }
         }
 
-        $articles = $query->latest()->paginate(15);
+        // Filter by Category
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->input('category'));
+            });
+        }
 
-        return view('admin.articles.index', compact('articles'));
+        // Filter by Status
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            if ($status === 'pending_approval') {
+                $query->where('is_approved', false);
+            } elseif ($status === 'pending_update') {
+                $query->where('is_approved', true)
+                      ->whereHas('pendingTranslations');
+            } elseif ($status === 'published') {
+                $query->where('is_approved', true)
+                      ->where('is_published', true);
+            } elseif ($status === 'draft') {
+                $query->where('is_approved', true)
+                      ->where('is_published', false);
+            }
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('slug', 'like', "%{$search}%")
+                  ->orWhereHas('translations', function ($sq) use ($search) {
+                      $sq->where('title', 'like', "%{$search}%")
+                         ->orWhere('content', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('pendingTranslations', function ($sq) use ($search) {
+                      $sq->where('title', 'like', "%{$search}%")
+                         ->orWhere('content', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->input('sort_by', 'created_at_desc');
+        switch ($sortBy) {
+            case 'created_at_asc':
+                $query->orderBy('created_at');
+                break;
+            case 'published_at_desc':
+                $query->orderByDesc('published_at');
+                break;
+            case 'published_at_asc':
+                $query->orderBy('published_at');
+                break;
+            case 'slug_asc':
+                $query->orderBy('slug');
+                break;
+            case 'slug_desc':
+                $query->orderByDesc('slug');
+                break;
+            case 'created_at_desc':
+            default:
+                $query->latest(); // Default order
+                break;
+        }
+
+        $articles = $query->paginate(15)->withQueryString();
+
+        $categories = Category::all();
+        $authors = [];
+        if (Auth::user()->isAdmin()) {
+            $authors = \App\Models\User::whereIn('role', [\App\Models\User::ROLE_SUPER_ADMIN, \App\Models\User::ROLE_AUTHOR])->get();
+        }
+
+        return view('admin.articles.index', compact('articles', 'categories', 'authors'));
     }
 
     /**

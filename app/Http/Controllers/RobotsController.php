@@ -17,7 +17,16 @@ class RobotsController extends Controller
             $body = "User-agent: *\nDisallow: /\n";
         } else {
             $root = rtrim((string) config('app.url'), '/');
-            $body = "User-agent: *\nAllow: /\n\nSitemap: {$root}/sitemap.xml\n";
+            $body = "User-agent: *\n" .
+                    "Allow: /\n" .
+                    "Disallow: */vote\n" .
+                    "Disallow: */reports\n" .
+                    "Disallow: */likes\n" .
+                    "Disallow: */complete\n" .
+                    "Disallow: */progress\n" .
+                    "Disallow: /partytown-proxy\n" .
+                    "Disallow: /vote\n\n" .
+                    "Sitemap: {$root}/sitemap.xml\n";
         }
 
         return response($body, 200)->header('Content-Type', 'text/plain; charset=UTF-8');

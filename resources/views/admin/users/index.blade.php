@@ -25,6 +25,55 @@
     @endif
 
     <div class="admin-card">
+        <!-- Filters panel -->
+        <div class="admin-filters-card" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 0.75rem;">
+            <form action="{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}" method="GET" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+                <div style="flex: 1 1 200px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Search</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Name or Email..." class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                </div>
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Role</label>
+                    <select name="role" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                        <option value="">All Roles</option>
+                        <option value="{{ \App\Models\User::ROLE_SUPER_ADMIN }}" {{ request('role') === \App\Models\User::ROLE_SUPER_ADMIN ? 'selected' : '' }}>Admin</option>
+                        <option value="{{ \App\Models\User::ROLE_AUTHOR }}" {{ request('role') === \App\Models\User::ROLE_AUTHOR ? 'selected' : '' }}>Author</option>
+                        <option value="{{ \App\Models\User::ROLE_READER }}" {{ request('role') === \App\Models\User::ROLE_READER ? 'selected' : '' }}>Reader</option>
+                    </select>
+                </div>
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Approved Status</label>
+                    <select name="approved" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                        <option value="">All Statuses</option>
+                        <option value="approved" {{ request('approved') === 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="pending" {{ request('approved') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    </select>
+                </div>
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Suspension Status</label>
+                    <select name="status" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                        <option value="">All Statuses</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                    </select>
+                </div>
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Sort By</label>
+                    <select name="sort_by" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                        <option value="name_asc" {{ request('sort_by') === 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                        <option value="name_desc" {{ request('sort_by') === 'name_desc' ? 'selected' : '' }}>Name (Z-A)</option>
+                        <option value="created_at_desc" {{ request('sort_by') === 'created_at_desc' ? 'selected' : '' }}>Newest Registered</option>
+                        <option value="created_at_asc" {{ request('sort_by') === 'created_at_asc' ? 'selected' : '' }}>Oldest Registered</option>
+                        <option value="xp_desc" {{ request('sort_by') === 'xp_desc' ? 'selected' : '' }}>Highest XP Points</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.5rem 1rem;">Filter</button>
+                    <a href="{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary" style="padding: 0.5rem 1rem;">Reset</a>
+                </div>
+            </form>
+        </div>
+
         <div class="table-responsive">
             <table class="admin-table">
                 <thead>

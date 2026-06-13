@@ -13,11 +13,58 @@ class UserController extends Controller
     /**
      * Display a listing of all users.
      */
-    public function index()
+    public function index(Request $request)
     {
         Gate::authorize('manage-users');
 
-        $users = User::orderBy('name')->paginate(15);
+        $query = User::query();
+
+        // Filter by Role
+        if ($request->filled('role')) {
+            $query->where('role', $request->input('role'));
+        }
+
+        // Filter by Approval Status
+        if ($request->filled('approved')) {
+            $query->where('is_approved', $request->input('approved') === 'approved');
+        }
+
+        // Filter by Blocked Status
+        if ($request->filled('status')) {
+            $query->where('is_blocked', $request->input('status') === 'suspended');
+        }
+
+        // Search by Name or Email
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->input('sort_by', 'name_asc');
+        switch ($sortBy) {
+            case 'name_desc':
+                $query->orderByDesc('name');
+                break;
+            case 'created_at_desc':
+                $query->orderByDesc('created_at');
+                break;
+            case 'created_at_asc':
+                $query->orderBy('created_at');
+                break;
+            case 'xp_desc':
+                $query->orderByDesc('points');
+                break;
+            case 'name_asc':
+            default:
+                $query->orderBy('name');
+                break;
+        }
+
+        $users = $query->paginate(15)->withQueryString();
 
         return view('admin.users.index', compact('users'));
     }
