@@ -116,6 +116,10 @@ Route::prefix('{locale}')
         Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'verify'])->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
         Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'send'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+        // Onboarding routes
+        Route::get('/onboarding', [\App\Http\Controllers\Auth\OnboardingController::class, 'show'])->middleware(['auth'])->name('onboarding.show');
+        Route::post('/onboarding', [\App\Http\Controllers\Auth\OnboardingController::class, 'submit'])->middleware(['auth'])->name('onboarding.submit');
+
 
         Route::prefix('admin')->middleware(['auth', 'verified', 'can:access-admin'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');

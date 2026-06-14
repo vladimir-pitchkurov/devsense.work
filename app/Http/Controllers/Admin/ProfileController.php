@@ -17,7 +17,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $user->load('pendingProfile');
-        return view('admin.profile.edit', compact('user'));
+        $categories = \App\Models\Category::with('translations')->get();
+        return view('admin.profile.edit', compact('user', 'categories'));
     }
 
     /**
@@ -55,9 +56,33 @@ class ProfileController extends Controller
             'portfolio.*.existing_images.*' => ['string'],
             'portfolio.*.new_images' => ['nullable', 'array', 'max:3'],
             'portfolio.*.new_images.*' => ['file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'locale' => ['sometimes', 'required', 'string', 'in:en,ru,ua,bg,de,fr,es,it'],
+            'interests' => ['sometimes', 'nullable', 'array'],
+            'interests.*' => ['exists:categories,id'],
         ], [
             'slug.regex' => 'The slug must be a valid URL-friendly string (e.g. jane-doe).',
         ]);
+
+        // Save notification preferences directly on User if provided
+        $userUpdate = [];
+        if ($request->has('locale')) {
+            $userUpdate['locale'] = $validated['locale'];
+        }
+        if ($request->has('notify_articles_quizzes')) {
+            $userUpdate['notify_articles_quizzes'] = $request->boolean('notify_articles_quizzes');
+        }
+        if ($request->has('notify_comments')) {
+            $userUpdate['notify_comments'] = $request->boolean('notify_comments');
+        }
+        if (count($userUpdate) > 0) {
+            $user->update($userUpdate);
+        }
+
+        if ($request->has('interests')) {
+            $user->interests()->sync($request->input('interests', []));
+        }
+
+        unset($validated['locale'], $validated['interests']);
 
         $validated['is_public'] = (bool) $request->input('is_public', false);
         $validated['is_anonymous'] = (bool) $request->input('is_anonymous', false);
@@ -144,7 +169,7 @@ class ProfileController extends Controller
         }
 
         return redirect()
-            ->route('admin.profile.edit', ['locale' => app()->getLocale()])
+            ->route('admin.profile.edit', ['locale' => $user->locale])
             ->with('success', $message);
     }
 

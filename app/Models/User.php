@@ -20,7 +20,8 @@ use Illuminate\Support\Str;
     'github_url', 'linkedin_url', 'twitter_url', 'website_url',
     'is_public', 'is_approved', 'is_blocked', 'points',
     'intro', 'experience', 'job_status', 'is_anonymous', 'portfolio',
-    'google_id',
+    'google_id', 'locale', 'notify_articles_quizzes', 'notify_comments',
+    'last_notified_at',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
@@ -111,6 +112,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the categories/topics this user is interested in.
+     */
+    public function interests(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_user');
+    }
+
+    /**
      * Attribute casting configuration.
      *
      * @return array<string, string>
@@ -125,6 +134,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_blocked'        => 'boolean',
             'is_anonymous'      => 'boolean',
             'portfolio'         => 'array',
+            'notify_articles_quizzes' => 'boolean',
+            'notify_comments'   => 'boolean',
+            'last_notified_at'  => 'datetime',
         ];
     }
 

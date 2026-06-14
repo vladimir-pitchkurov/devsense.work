@@ -80,6 +80,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Verification</th>
                         <th>Role</th>
                         <th>Approved Status</th>
                         <th>Suspension Status</th>
@@ -102,6 +103,13 @@
                                 @endif
                             </td>
                             <td><code>{{ $user->email }}</code></td>
+                            <td>
+                                @if($user->email_verified_at)
+                                    <span class="admin-badge admin-badge--published">Verified</span>
+                                @else
+                                    <span class="admin-badge admin-badge--draft">Unverified</span>
+                                @endif
+                            </td>
                             <td>
                                 @if($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
                                     <span class="admin-badge admin-badge--ai">Admin</span>
@@ -127,11 +135,26 @@
                             </td>
                             <td>{{ $user->created_at->diffForHumans() }}</td>
                             <td class="text-right actions-cell">
-                                <div class="action-buttons">
+                                <div class="action-buttons" style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                    @if(!$user->is_approved && $user->id !== auth()->id())
+                                        @if($user->email_verified_at)
+                                            <form action="{{ route('admin.moderation.authors.approve', ['locale' => app()->getLocale(), 'user' => $user->id]) }}" method="POST" style="display: inline; margin: 0;">
+                                                @csrf
+                                                <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #10b981; border: none; color: white;">
+                                                    Approve
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button class="admin-btn admin-btn--secondary" disabled style="padding: 0.4rem 0.8rem; font-size: 0.85rem; opacity: 0.5; cursor: not-allowed;" title="Email verification is required before approval.">
+                                                Approve
+                                            </button>
+                                        @endif
+                                    @endif
+
                                     @if($user->id !== auth()->id())
                                         <a href="{{ route('admin.users.edit', ['locale' => app()->getLocale(), 'user' => $user->id]) }}" 
                                            class="admin-btn admin-btn--secondary" 
-                                           title="Edit User">
+                                           title="Edit User" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
                                             Edit
                                         </a>
                                     @else

@@ -334,7 +334,7 @@ class QuizSeeder extends Seeder
             'es' => ['title' => 'Entrevista de Fundamentos de PHP', 'description' => 'Un examen exhaustivo de 100 preguntas que abarca conceptos básicos de PHP, ámbitos, POO, métodos mágicos y PHP funcional.'],
             'it' => ['title' => 'Colloquio sui Fondamenti di PHP', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di PHP, ambito, OOP, metodi magici e PHP funzionale.'],
         ];
-        $this->seedQuiz('php-basics-interview', 1000, $phpQuizTrans, 'php-basics-interview');
+        $this->seedQuiz('php-basics-interview', 1000, $phpQuizTrans, 'php-basics-interview', 'php');
 
         $jsQuizTrans = [
             'en' => ['title' => 'JavaScript Basics Interview', 'description' => 'A comprehensive test of 100 questions covering core JavaScript concepts, scopes, closures, prototypes, async programming, arrays, and modules.'],
@@ -346,7 +346,7 @@ class QuizSeeder extends Seeder
             'es' => ['title' => 'Entrevista de Fundamentos de JavaScript', 'description' => 'Un examen exhaustivo de 100 preguntas que abarca conceptos básicos de JavaScript, ámbitos, closures, prototipos, programación asíncrona, arrays y módulos.'],
             'it' => ['title' => 'Colloquio sui Fondamenti di JavaScript', 'description' => 'Un test completo di 100 domande che copre i concetti chiave di JavaScript, ambiti, closure, prototipi, programmazione asincrona, array e moduli.'],
         ];
-        $this->seedQuiz('javascript-basics-interview', 1000, $jsQuizTrans, 'javascript-basics-interview');
+        $this->seedQuiz('javascript-basics-interview', 1000, $jsQuizTrans, 'javascript-basics-interview', 'javascript');
 
         $jsAdvancedQuizTrans = [
             'en' => ['title' => 'JavaScript Advanced Interview', 'description' => 'A challenging test of 100 questions covering closures, prototype chain, async design, proxies, memory leaks, modern ES specs, and JS engine internals.'],
@@ -358,14 +358,26 @@ class QuizSeeder extends Seeder
             'es' => ['title' => 'Entrevista de JavaScript Avanzado', 'description' => 'Un examen desafiante de 100 preguntas que abarca closures, cadena de prototipos, diseño asíncrono, proxies, fugas de memoria, especificaciones de ES e internos del motor JS.'],
             'it' => ['title' => 'Colloquio su JavaScript Avanzato', 'description' => 'Un test impegnativo di 100 domande che copre closure, catena di prototipi, programmazione asincrona, proxy, perdite di memoria, specifiche ES e interni dei motori JS.'],
         ];
-        $this->seedQuiz('javascript-advanced-interview', 1000, $jsAdvancedQuizTrans, 'javascript-advanced-interview');
+        $this->seedQuiz('javascript-advanced-interview', 1000, $jsAdvancedQuizTrans, 'javascript-advanced-interview', 'javascript');
     }
 
-    private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir): void
+    private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir, string $categorySlug): void
     {
+        $category = \App\Models\Category::firstOrCreate(['slug' => $categorySlug]);
+        $categoryName = $categorySlug === 'php' ? 'PHP' : ($categorySlug === 'javascript' ? 'JavaScript' : ucfirst($categorySlug));
+        foreach (['en', 'ru', 'ua', 'bg', 'de', 'fr', 'es', 'it'] as $locale) {
+            $category->translations()->firstOrCreate(
+                ['locale' => $locale],
+                ['name' => $categoryName]
+            );
+        }
+
         $quiz = Quiz::updateOrCreate(
             ['slug' => $slug],
-            ['points' => $points]
+            [
+                'points' => $points,
+                'category_id' => $category->id,
+            ]
         );
 
         foreach ($translations as $locale => $tData) {
@@ -412,5 +424,8 @@ class QuizSeeder extends Seeder
                 ]);
             }
         }
+
+        // Trigger notification
+        app(\App\Services\NotificationService::class)->notifyNewQuiz($quiz);
     }
 }

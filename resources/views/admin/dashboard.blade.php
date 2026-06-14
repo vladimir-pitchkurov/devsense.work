@@ -129,7 +129,8 @@
                 $pendingProfilesCount = $pendingProfiles->count();
                 $pendingArticlesCount = $pendingArticles->count();
                 $reportsCount = $reports->count();
-                $totalModerationCount = $pendingAuthorsCount + $pendingProfilesCount + $pendingArticlesCount + $reportsCount;
+                $openTicketsCount = $openTickets->count();
+                $totalModerationCount = $pendingAuthorsCount + $pendingProfilesCount + $pendingArticlesCount + $reportsCount + $openTicketsCount;
             @endphp
             
             @if ($totalModerationCount === 0)
@@ -156,6 +157,9 @@
                     </button>
                     <button onclick="switchModerationTab('reports')" id="tab-btn-reports" class="tab-btn">
                         User Reports ({{ $reportsCount }})
+                    </button>
+                    <button onclick="switchModerationTab('tickets')" id="tab-btn-tickets" class="tab-btn">
+                        Support Tickets ({{ $openTicketsCount }})
                     </button>
                 </div>
 
@@ -437,6 +441,52 @@
                         </div>
                     @endif
                 </div>
+
+                <!-- Support Tickets Tab Content -->
+                <div id="tab-content-tickets" class="tab-content" style="display: none;">
+                    @if ($openTickets->isEmpty())
+                        <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No open support tickets.</p>
+                    @else
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket ID</th>
+                                        <th>Sender</th>
+                                        <th>Subject</th>
+                                        <th>Message</th>
+                                        <th>Date Submitted</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($openTickets as $ticket)
+                                        <tr>
+                                            <td><code>#{{ $ticket->id }}</code></td>
+                                            <td>
+                                                <strong>{{ $ticket->sender_name ?: 'Anonymous' }}</strong><br>
+                                                <code>{{ $ticket->sender_email }}</code>
+                                            </td>
+                                            <td>
+                                                <span style="font-weight: 600;">{{ $ticket->subject }}</span>
+                                                <span class="admin-badge admin-badge--category" style="margin-left: 0.5rem; text-transform: uppercase;">
+                                                    {{ $ticket->type }}
+                                                </span>
+                                            </td>
+                                            <td>{{ Str::limit($ticket->message, 80) }}</td>
+                                            <td class="text-nowrap">{{ $ticket->created_at->diffForHumans() }}</td>
+                                            <td class="text-right">
+                                                <a href="{{ route('admin.tickets.show', ['locale' => app()->getLocale(), 'ticket' => $ticket->id]) }}" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; text-decoration: none;">
+                                                    View & Reply
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
             @endif
         </div>
     @endif
@@ -636,11 +686,13 @@ function switchModerationTab(tabName) {
     document.getElementById('tab-content-profiles').style.display = 'none';
     document.getElementById('tab-content-articles').style.display = 'none';
     document.getElementById('tab-content-reports').style.display = 'none';
+    document.getElementById('tab-content-tickets').style.display = 'none';
 
     document.getElementById('tab-btn-authors').classList.remove('tab-btn--active');
     document.getElementById('tab-btn-profiles').classList.remove('tab-btn--active');
     document.getElementById('tab-btn-articles').classList.remove('tab-btn--active');
     document.getElementById('tab-btn-reports').classList.remove('tab-btn--active');
+    document.getElementById('tab-btn-tickets').classList.remove('tab-btn--active');
 
     document.getElementById('tab-content-' + tabName).style.display = 'block';
     document.getElementById('tab-btn-' + tabName).classList.add('tab-btn--active');

@@ -50,11 +50,13 @@ class ArticleSuggestionController extends Controller
             'content' => ['required', 'string', 'min:10', 'max:2000'],
         ]);
 
-        $article->suggestions()->create([
+        $suggestion = $article->suggestions()->create([
             'user_id' => auth()->id(),
             'content' => $request->content,
             'status'  => 'pending',
         ]);
+
+        app(\App\Services\NotificationService::class)->notifyNewSuggestion($suggestion);
 
         return back()->with('success', __('ui.suggestions.created_success'));
     }
@@ -97,10 +99,12 @@ class ArticleSuggestionController extends Controller
             'content' => ['required', 'string', 'min:5', 'max:1000'],
         ]);
 
-        $suggestion->comments()->create([
+        $comment = $suggestion->comments()->create([
             'user_id' => auth()->id(),
             'content' => $request->content,
         ]);
+
+        app(\App\Services\NotificationService::class)->notifyNewComment($comment);
 
         return back()->with('success', __('ui.suggestions.comment_created_success'));
     }

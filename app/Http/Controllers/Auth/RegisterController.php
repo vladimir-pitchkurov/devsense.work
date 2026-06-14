@@ -48,6 +48,7 @@ class RegisterController extends Controller
             'role' => User::ROLE_READER,
             'slug' => Str::slug($request->name),
             'is_approved' => false,
+            'locale' => app()->getLocale(),
         ]);
 
         event(new \Illuminate\Auth\Events\Registered($user));
@@ -98,6 +99,8 @@ class RegisterController extends Controller
             $request->session()->forget('pending_quiz');
             return redirect('/' . app()->getLocale() . '/quizzes/' . $slug);
         }
+
+        session(['needs_onboarding' => true]);
 
         return redirect('/' . app()->getLocale() . '/admin');
     }

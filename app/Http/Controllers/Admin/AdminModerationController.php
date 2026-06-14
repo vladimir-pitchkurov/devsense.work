@@ -18,6 +18,10 @@ class AdminModerationController extends Controller
      */
     public function approveAuthor(User $user)
     {
+        if ($user->email_verified_at === null) {
+            return back()->with('error', "Cannot approve user '{$user->name}' because their email is not verified.");
+        }
+
         $user->update(['is_approved' => true]);
 
         return back()->with('success', "Author '{$user->name}' has been approved and is now active.");
@@ -101,6 +105,11 @@ class AdminModerationController extends Controller
         }
 
         $pendingArticleTranslation->delete();
+
+        $article->load(['categories', 'author']);
+        if ($article->is_approved && $article->is_published) {
+            app(\App\Services\NotificationService::class)->notifyNewArticle($article);
+        }
 
         return back()->with('success', "Article '{$pendingArticleTranslation->title}' ({$pendingArticleTranslation->locale}) draft approved and published.");
     }

@@ -17,6 +17,10 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        if (session('needs_onboarding')) {
+            return redirect()->route('onboarding.show', ['locale' => app()->getLocale()]);
+        }
+
         if (!$user->isAdmin()) {
             $user->load(['badges.translations', 'quizzes']);
 
@@ -96,6 +100,7 @@ class DashboardController extends Controller
         $pendingProfiles = collect();
         $pendingArticles = collect();
         $reports = collect();
+        $openTickets = collect();
 
         if (auth()->user()->isAdmin()) {
             $pendingAuthors = \App\Models\User::where('is_approved', false)
@@ -103,6 +108,7 @@ class DashboardController extends Controller
             $pendingProfiles = \App\Models\PendingUserProfile::with('user')->get();
             $pendingArticles = \App\Models\PendingArticleTranslation::with(['article', 'article.author'])->get();
             $reports = \App\Models\Report::with(['user'])->where('status', 'pending')->orderBy('created_at', 'desc')->get();
+            $openTickets = \App\Models\SupportTicket::open()->orderBy('created_at', 'desc')->get();
         }
 
         return view('admin.dashboard', compact(
@@ -120,7 +126,8 @@ class DashboardController extends Controller
             'pendingAuthors',
             'pendingProfiles',
             'pendingArticles',
-            'reports'
+            'reports',
+            'openTickets'
         ));
     }
 }
