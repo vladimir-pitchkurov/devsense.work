@@ -23,6 +23,7 @@ class Article extends Model
         'is_approved',
         'category_id', // for backwards compatibility in tests/factories
         'points_awarded',
+        'notified',
     ];
 
     /**

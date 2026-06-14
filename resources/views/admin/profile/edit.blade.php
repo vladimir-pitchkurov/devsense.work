@@ -149,6 +149,55 @@
                 </div>
 
                 <div class="admin-card" style="margin-top: 1.5rem;">
+                    <h2 class="card-title">Notification Settings & Interests</h2>
+                    
+                    <!-- Email Language -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="locale" class="form-label">Preferred Email Language</label>
+                        <select name="locale" id="locale" class="form-input">
+                            <option value="en" {{ old('locale', $user->locale) === 'en' ? 'selected' : '' }}>English</option>
+                            <option value="ru" {{ old('locale', $user->locale) === 'ru' ? 'selected' : '' }}>Русский</option>
+                            <option value="ua" {{ old('locale', $user->locale) === 'ua' ? 'selected' : '' }}>Українська</option>
+                            <option value="bg" {{ old('locale', $user->locale) === 'bg' ? 'selected' : '' }}>Български</option>
+                            <option value="de" {{ old('locale', $user->locale) === 'de' ? 'selected' : '' }}>Deutsch</option>
+                            <option value="fr" {{ old('locale', $user->locale) === 'fr' ? 'selected' : '' }}>Français</option>
+                            <option value="es" {{ old('locale', $user->locale) === 'es' ? 'selected' : '' }}>Español</option>
+                            <option value="it" {{ old('locale', $user->locale) === 'it' ? 'selected' : '' }}>Italiano</option>
+                        </select>
+                    </div>
+
+                    <!-- Interests (Categories) -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label">Topics of Interest</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
+                            @foreach ($categories as $cat)
+                                <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 0.375rem; border: 1px solid var(--border-color); background: rgba(0,0,0,0.1); cursor: pointer; user-select: none;">
+                                    <input type="checkbox" name="interests[]" value="{{ $cat->id }}" {{ in_array($cat->id, old('interests', $user->interests->pluck('id')->toArray())) ? 'checked' : '' }} style="width: auto; transform: scale(1.1);">
+                                    <span style="font-size: 0.85rem; color: var(--text-color); font-weight: 500;">
+                                        {{ $cat->translate()?->name ?? $cat->slug }}
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Notification Toggles -->
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <input type="checkbox" name="notify_articles_quizzes" id="notify_articles_quizzes" value="1" {{ old('notify_articles_quizzes', $user->notify_articles_quizzes) ? 'checked' : '' }} style="width: auto; margin: 0; transform: scale(1.2);">
+                        <label for="notify_articles_quizzes" class="form-label" style="margin: 0; text-transform: none; font-size: 0.95rem; cursor: pointer; letter-spacing: normal;">
+                            Receive email notifications about new articles & quizzes
+                        </label>
+                    </div>
+
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                        <input type="checkbox" name="notify_comments" id="notify_comments" value="1" {{ old('notify_comments', $user->notify_comments) ? 'checked' : '' }} style="width: auto; margin: 0; transform: scale(1.2);">
+                        <label for="notify_comments" class="form-label" style="margin: 0; text-transform: none; font-size: 0.95rem; cursor: pointer; letter-spacing: normal;">
+                            Receive email notifications about comments & suggestion replies
+                        </label>
+                    </div>
+                </div>
+
+                <div class="admin-card" style="margin-top: 1.5rem;">
                     <h2 class="card-title">Portfolio Projects (Max 3 images per project)</h2>
                     <div id="portfolio-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 1.5rem;">
                         <!-- Populate dynamic projects -->

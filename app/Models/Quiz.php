@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Quiz extends Model
 {
-    protected $fillable = ['slug', 'points'];
+    protected $fillable = ['slug', 'points', 'category_id', 'notified'];
+
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function translations(): HasMany
     {
