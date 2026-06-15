@@ -1,0 +1,482 @@
+[
+  {
+    "question_text": "¿Qué sucede internamente cuando ejecutas `git init` en un directorio?",
+    "options": [
+      "Git crea un subdirectorio `.git` que contiene metadatos, configuración y estructuras de bases de datos de objetos, pero deja los archivos actuales sin seguimiento.",
+      "Git indexa y realiza el seguimiento inmediatamente de todos los archivos existentes en el directorio y los confirma como una confirmación (commit) inicial.",
+      "Git establece una conexión con un repositorio remoto predeterminado y envía (push) la estructura del directorio actual.",
+      "Git crea un archivo de base de datos localizado llamado `git.db` en el directorio temporal del sistema para realizar el seguimiento de los archivos."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ejecutar `git init` inicializa un repositorio de Git nuevo y vacío creando un directorio `.git` en la raíz del proyecto. Este directorio contiene referencias, bases de datos de objetos, archivos de configuración y hooks (ganchos), pero no prepara (stage) ni realiza el seguimiento automático de ningún archivo existente.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál de los siguientes comandos eliminará un archivo del área de preparación (Index) pero mantendrá las modificaciones en tu directorio de trabajo? (Git 2.23+)",
+    "options": [
+      "`git restore --staged <file>`",
+      "`git checkout -- <file>`",
+      "`git rm -f <file>`",
+      "`git revert <file>`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Desde Git 2.23, `git restore` es el comando preferido para restaurar archivos. La bandera `--staged` saca el archivo del área de preparación (eliminándolo del Index) mientras mantiene los cambios intactos en el directorio de trabajo. Históricamente, `git reset HEAD <file>` lograba lo mismo.",
+    "points": 10
+  },
+  {
+    "question_text": "Si deseas preparar (stage) únicamente los archivos que han sido modificados o eliminados, pero ignorar por completo los nuevos archivos sin seguimiento (untracked), ¿qué comando deberías usar?",
+    "options": [
+      "`git add .`",
+      "`git add -u`",
+      "`git add -A`",
+      "`git add *`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`git add -u` (o `--update`) prepara los archivos modificados y eliminados que ya están bajo seguimiento en el repositorio, pero no prepara ningún archivo nuevo sin seguimiento.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comando enumera todos los archivos actualmente bajo seguimiento por el index en tu repositorio de Git?",
+    "options": [
+      "`git status --short`",
+      "`git show-files`",
+      "`git ls-files`",
+      "`git list-tracked`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "`git ls-files` es un comando de bajo nivel (plumbing) que muestra información sobre los archivos en el index y el directorio de trabajo. Por defecto, enumera todos los archivos bajo seguimiento en el repositorio.",
+    "points": 10
+  },
+  {
+    "question_text": "Dada una estructura de carpetas en la que deseas ignorar todos los archivos dentro de `config/` excepto un archivo llamado `config/config.prod.yaml`. ¿Qué configuración de `.gitignore` logra esto?",
+    "options": [
+      "```text\nconfig/*\n!config/config.prod.yaml\n```",
+      "```text\nconfig/\n!config/config.prod.yaml\n```",
+      "```text\nconfig/config.prod.yaml\nconfig/*\n```",
+      "```text\n!config/config.prod.yaml\nconfig/\n```"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Para ignorar el contenido de una carpeta excepto un archivo específico, debes ignorar el contenido de la carpeta usando `config/*` y luego usar el patrón negativo `!config/config.prod.yaml`. Si ignoras el directorio en sí usando `config/`, Git no escaneará el directorio en absoluto y se ignorarán los patrones negativos dentro de él.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comando muestra el historial de confirmaciones como un gráfico limpio que presenta hashes abreviados, resúmenes en una sola línea y etiquetas de decoración (como HEAD y ramas)?",
+    "options": [
+      "`git log --oneline --graph --decorate --all`",
+      "`git history --compact --tree`",
+      "`git graph --all`",
+      "`git show-branch --linear`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git log --oneline --graph --decorate --all` es el comando clásico para imprimir una representación visual de todas las confirmaciones (commits), bifurcaciones de ramas y fusiones (merges) en un gráfico basado en texto directamente en la terminal.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el efecto principal de configurar `git config --global core.autocrlf true` en una máquina Windows?",
+    "options": [
+      "Convierte los finales de línea LF a CRLF al descargar (checkout) el código, y convierte CRLF a LF al confirmar (commit) el código en el repositorio.",
+      "Fuerza a Git a permitir únicamente la confirmación de archivos con finales de línea LF, lanzando un error en los archivos con CRLF.",
+      "Corrige automáticamente los errores de sangría y elimina los espacios en blanco finales durante las confirmaciones.",
+      "Convierte los finales de línea CRLF a LF al descargar el código, y LF a CRLF al realizar la confirmación."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Establecer `core.autocrlf` en `true` en Windows garantiza que los finales de línea se conviertan de LF (estándar en la base de datos de Git) a CRLF (estándar en Windows) al descargar el código (checkout), y se conviertan de nuevo a LF al confirmar el código.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo se crea y se cambia a una nueva rama que no tiene historial común (una rama huérfana) con la rama actual?",
+    "options": [
+      "`git branch --new-empty <branch_name>`",
+      "`git checkout --orphan <branch_name>`",
+      "`git switch --no-parent <branch_name>`",
+      "`git checkout -b <branch_name> --empty`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`git checkout --orphan <branch_name>` crea una nueva rama huérfana. La primera confirmación realizada en esta rama no tendrá padres y será la raíz de un historial nuevo y desconectado. Todos los archivos en el index se mantienen preparados (staged), y debes limpiarlos si deseas una rama vacía.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es la diferencia clave entre una fusión de avance rápido (fast-forward merge) y una fusión de tres vías (three-way merge, no fast-forward)?",
+    "options": [
+      "Una fusión de avance rápido simplemente mueve el puntero de la rama hacia adelante porque no hay confirmaciones divergentes; una fusión de tres vías crea una nueva confirmación de fusión que combina dos ramas divergentes.",
+      "Una fusión de avance rápido requiere una conexión al servidor remoto, mientras que una fusión de tres vías solo se puede realizar localmente.",
+      "Una fusión de avance rápido combina tres ramas a la vez, mientras que una fusión de tres vías solo combina dos.",
+      "Una fusión de tres vías es más rápida porque omite los hooks de pre-commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una fusión de avance rápido ocurre cuando la rama de destino no tiene nuevas confirmaciones desde que la rama de origen divergió. Git simplemente mueve el puntero. Si hay nuevas confirmaciones en ambas ramas, Git debe realizar una fusión de tres vías utilizando un ancestro común y crear una confirmación de fusión.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comando se utiliza para eliminar una rama llamada `feature-login` del repositorio remoto llamado `origin`?",
+    "options": [
+      "`git remote delete feature-login`",
+      "`git push origin -d feature-login`",
+      "`git push origin --remove-branch feature-login`",
+      "`git delete remote branch feature-login`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Para eliminar una rama remota, envías (push) la instrucción de eliminación al repositorio remoto. El comando `git push origin -d feature-login` (o `--delete`) envía esta instrucción para eliminar la rama en `origin`.",
+    "points": 10
+  },
+  {
+    "question_text": "Si deseas revertir una confirmación de fusión (`abc1234`) que unió una rama de características (feature branch) de vuelta a `main`, ¿qué opción debes proporcionar al comando `git revert`?",
+    "options": [
+      "Debes especificar el número de la rama del padre que deseas mantener utilizando la opción `-m` (o `--mainline`).",
+      "Debes pasar la bandera `--force-merge` para omitir las comprobaciones de seguridad.",
+      "Debes usar la bandera `--no-commit` para evitar un bucle en el historial.",
+      "Las confirmaciones de fusión no se pueden revertir; en su lugar, debes usar `git reset --hard`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Debido a que una confirmación de fusión tiene múltiples padres, Git no sabe qué rama padre debe tratarse como la línea principal ('mainline'). La bandera `-m 1` le dice a Git que revierta los cambios en relación con el padre 1 (normalmente la rama en la que realizaste la fusión).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué dos operaciones se ejecutan internamente al ejecutar un comando `git pull` estándar?",
+    "options": [
+      "`git fetch` seguido de `git merge` (o `git rebase` según la configuración)",
+      "`git remote update` seguido de `git checkout`",
+      "`git fetch` seguido de `git push --sync`",
+      "`git checkout` seguido de `git merge --ff-only`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git pull` es un comando de alto nivel que primero ejecuta `git fetch` para descargar los cambios del repositorio remoto y luego ejecuta inmediatamente `git merge` (o `git rebase` si está configurado) para integrar esos cambios en tu rama actual.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo se pueden visualizar todas las ramas locales que ya se han fusionado con éxito en la rama `main`?",
+    "options": [
+      "`git branch --merged main`",
+      "`git branch -a --status=merged`",
+      "`git show-merged --branch`",
+      "`git status --merged=main`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git branch --merged main` enumera todas las ramas locales cuyos cambios ya se han integrado en la rama `main`. Esto es muy útil para limpiar ramas locales obsoletas.",
+    "points": 10
+  },
+  {
+    "question_text": "Durante un conflicto de fusión, ¿qué comando detendrá instantáneamente el proceso de fusión y restaurará tu directorio de trabajo y el index de preparación a sus estados anteriores a la fusión?",
+    "options": [
+      "`git merge --abort`",
+      "`git merge --reset`",
+      "`git reset --hard HEAD`",
+      "`git checkout --force`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git merge --abort` finaliza el estado de conflicto de fusión e intenta reconstruir el estado anterior a la fusión del directorio de trabajo y del index.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el beneficio principal de configurar `git config pull.rebase true`?",
+    "options": [
+      "Evita que `git pull` cree confirmaciones de fusión desordenadas al reorganizar (rebase) tus confirmaciones locales sobre las confirmaciones remotas entrantes, manteniendo el historial lineal.",
+      "Acelera las transferencias de datos de red durante las descargas (fetches).",
+      "Resuelve automáticamente conflictos simples eligiendo los cambios remotos.",
+      "Bloquea la rama y evita que otros desarrolladores realicen envíos (push) mientras tú realizas descargas (pull)."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Por defecto, `git pull` utiliza merge, lo que puede crear una confirmación de fusión cada vez que descargas cambios. Configurar `pull.rebase true` hace que `git pull` ejecute `git rebase` en su lugar, preservando un historial de confirmaciones limpio y lineal.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo puedes cambiar el autor de la última confirmación sin modificar su mensaje de confirmación?",
+    "options": [
+      "`git commit --amend --author=\"John Doe <john@example.com>\" --no-edit`",
+      "`git commit --change-author=\"John Doe <john@example.com>\"`",
+      "`git config user.name \"John Doe\" && git commit --amend`",
+      "`git author set \"John Doe <john@example.com>\"`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La bandera `--amend` permite modificar la última confirmación. Al combinarla con `--author` y `--no-edit`, puedes sobrescribir la información del autor sin abrir un editor para modificar el mensaje de confirmación.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el comportamiento del comando `git reset --mixed <commit>`? (Nota: `--mixed` es el modo predeterminado de reset)",
+    "options": [
+      "Mueve el puntero HEAD a `<commit>` y actualiza el index (sacando los cambios del área de preparación), pero deja tu directorio de trabajo intacto.",
+      "Mueve HEAD a `<commit>` pero deja intactos tanto el index como el directorio de trabajo.",
+      "Mueve HEAD a `<commit>` y descarta todos los cambios tanto en el index como en el directorio de trabajo.",
+      "Elimina por completo las confirmaciones del historial y borra los archivos del disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un restablecimiento `--mixed` (por defecto) mueve el puntero HEAD y restablece el index de preparación para que coincida con la confirmación de destino, lo que significa que cualquier cambio realizado desde esa confirmación deja de estar preparado (unstaged). Los archivos de tu directorio de trabajo no se modifican.",
+    "points": 10
+  },
+  {
+    "question_text": "Si un desarrollador confirmó claves de API o credenciales sensibles en un repositorio público hace varias confirmaciones, ¿cuál es la herramienta más sólida para purgar ese archivo de todas las confirmaciones históricas?",
+    "options": [
+      "Usar `git-filter-repo` (o históricamente `git filter-branch`)",
+      "Ejecutar `git reset --hard` seguido de `git push --force`",
+      "Eliminar el archivo y realizar una nueva confirmación con el mensaje 'remove keys'",
+      "Añadir el archivo sensible a `.gitignore` y enviar el repositorio de nuevo"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Simplemente eliminar un archivo en una nueva confirmación no lo elimina del historial. Herramientas como `git-filter-repo` reescriben todas las confirmaciones históricas para eliminar por completo el archivo de la base de datos. Luego se requiere un envío forzado (force push) para actualizar el repositorio remoto.",
+    "points": 10
+  },
+  {
+    "question_text": "Supón que ejecutaste `git reset --hard HEAD~5` por error, perdiendo varias confirmaciones. ¿Qué herramienta de Git deberías usar para encontrar las confirmaciones perdidas y restaurarlas?",
+    "options": [
+      "`git reflog` para ver el historial de movimientos de HEAD, encontrar el hash de la confirmación perdida y descargarla o crear una rama a partir de ella.",
+      "`git fsck --lost-found` para comprobar todos los archivos.",
+      "`git log --all --graph` para enumerar las confirmaciones.",
+      "No se pueden recuperar confirmaciones después de un restablecimiento `--hard`; se eliminan inmediatamente del disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git reflog` realiza un seguimiento de cada movimiento de HEAD (descargas, confirmaciones, restablecimientos). Al ejecutar `git reflog`, puedes ver los hashes de las confirmaciones de dónde estaba HEAD antes del restablecimiento forzado y crear una rama o restablecer de nuevo a ese hash.",
+    "points": 10
+  },
+  {
+    "question_text": "Durante una reorganización interactiva (`git rebase -i`), ¿qué acción debes asignar a una confirmación para combinar sus cambios con la confirmación anterior manteniendo únicamente el mensaje de la confirmación anterior?",
+    "options": [
+      "`squash` (o `s`)",
+      "`fixup` (o `f`)",
+      "`reword` (o `r`)",
+      "`merge` (o `m`)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Tanto `squash` como `fixup` fusionan los cambios de la confirmación con la anterior. Sin embargo, `squash` te pide que fusiones los mensajes de confirmación, mientras que `fixup` descarta el mensaje de la confirmación actual y conserva únicamente el mensaje de la anterior.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué hace el comando `git rm --cached config.json`?",
+    "options": [
+      "Deja de realizar el seguimiento del archivo `config.json` (eliminándolo del index) pero conserva el archivo físico en tu directorio de trabajo.",
+      "Elimina el archivo `config.json` del disco pero lo mantiene indexado en Git.",
+      "Mueve temporalmente el archivo al stash de Git.",
+      "Limpia el contenido del archivo, dejándolo vacío en el disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git rm --cached` elimina el archivo del Index (el área de preparación), lo que significa que Git dejará de realizar su seguimiento en futuras confirmaciones. Sin embargo, el archivo físico permanece en tu carpeta local.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué significa un estado de 'HEAD desasociado' (detached HEAD) en Git?",
+    "options": [
+      "El puntero HEAD apunta directamente a un hash de confirmación específico en lugar de a una referencia de rama local.",
+      "El repositorio local ha perdido su enlace con el repositorio remoto.",
+      "El directorio de trabajo contiene conflictos que no se pueden fusionar automáticamente.",
+      "El puntero de la rama ha sido eliminado del repositorio remoto."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Normalmente, HEAD apunta a una rama (por ejemplo, `refs/heads/main`), la cual a su vez apunta a una confirmación. En un estado de HEAD desasociado, HEAD apunta directamente a un hash de confirmación (por ejemplo, al descargar una etiqueta específica o una confirmación antigua), por lo que las nuevas confirmaciones no actualizarán ninguna rama.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo representa Git los directorios (carpetas) internamente en su base de datos de objetos?",
+    "options": [
+      "Los directorios se representan como objetos **Tree** (árbol), que enumeran los hashes y nombres de los blobs (archivos) y otros árboles anidados.",
+      "Los directorios se representan como confirmaciones vacías con una bandera de directorio especial.",
+      "Git no almacena directorios en absoluto; solo almacena rutas relativas completas de archivos como metadatos de cadena en los Blobs.",
+      "Los directorios se guardan como archivos zip en el directorio `.git/folders`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En el modelo de objetos de Git, un objeto **Tree** corresponde a un directorio. Asocia nombres de archivos con hashes SHA-1 de blobs (que representan archivos) u otros árboles anidados (que representan subdirectorios).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuáles son los tres tipos principales de objetos almacenados en la base de datos de Git bajo `.git/objects/`?",
+    "options": [
+      "Commit, Tree y Blob",
+      "Branch, Tag y Head",
+      "Index, Diff y Config",
+      "Packfile, Delta y Reference"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "El modelo de objetos central de Git consta de: **Blobs** (que almacenan el contenido del archivo), **Trees** (que almacenan las estructuras de directorios y los nombres de archivos) y **Commits** (que almacenan metadatos como el autor, la fecha, el mensaje y apuntan a un árbol raíz).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo genera Git el identificador hash para una confirmación (commit)?",
+    "options": [
+      "Calculando un hash SHA (SHA-1 o SHA-256) del contenido de la confirmación, incluyendo el hash del árbol, el autor, la fecha, el mensaje y los hashes de los padres.",
+      "Utilizando un número de secuencia de base de datos incremental combinado con el ID de la máquina.",
+      "Realizando el hash únicamente de los archivos modificados en esa confirmación, ignorando el mensaje de confirmación y las confirmaciones padres.",
+      "Tomando la hora del sistema en el momento en que la confirmación se envió al servidor."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un hash de confirmación de Git es un hash criptográfico del contenido del objeto de confirmación. Debido a que incluye los hashes de las confirmaciones padres, cualquier cambio en el historial altera todos los hashes derivados (downstream), haciendo que el historial de Git sea inviolable.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comandos se pueden ejecutar para limpiar objetos inalcanzables y optimizar el almacenamiento del repositorio local?",
+    "options": [
+      "`git gc` y `git prune`",
+      "`git optimize` y `git clean`",
+      "`git fsck --repair`",
+      "`git remote prune origin`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git gc` (recolección de basura) comprime las revisiones de archivos y elimina objetos sueltos e inalcanzables. Ejecuta `git prune` internamente para eliminar objetos sueltos a los que ya no apunta ninguna referencia.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué se almacena bajo el directorio `.git/refs/` en un repositorio de Git?",
+    "options": [
+      "Punteros a hashes de confirmación, categorizados en heads (ramas locales), tags (etiquetas) y remotes (remotos).",
+      "La base de datos comprimida de todos los archivos históricos (blobs).",
+      "La lista de archivos del área de preparación y las cachés de diferencias de archivos.",
+      "Los scripts de hooks de Git ejecutados antes de las confirmaciones y fusiones."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "El directorio `.git/refs/` almacena referencias (refs), que son archivos de texto simples que contienen hashes de confirmación. Representan ramas locales (`refs/heads/`), etiquetas (`refs/tags/`) y ramas remotas (`refs/remotes/`).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo puedes guardar tus modificaciones actuales en el directorio de trabajo en el stash, incluyendo todos los nuevos archivos sin seguimiento?",
+    "options": [
+      "`git stash -u` (o `--include-untracked`)",
+      "`git stash --all-files`",
+      "`git stash push --force`",
+      "`git stash save -a`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Por defecto, `git stash` solo guarda los cambios realizados en archivos bajo seguimiento. Usar `git stash -u` (o `--include-untracked`) le indica a Git que también guarde en el stash cualquier archivo nuevo sin seguimiento en el directorio de trabajo.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comando aplica los cambios de un stash específico (por ejemplo, `stash@{2}`) a tu rama, pero deja ese stash en la lista de stashes?",
+    "options": [
+      "`git stash apply stash@{2}`",
+      "`git stash pop stash@{2}`",
+      "`git stash restore stash@{2}`",
+      "`git stash load stash@{2}`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git stash apply` integra los cambios del stash de vuelta en el directorio de trabajo pero mantiene el stash en el historial. En cambio, `git stash pop` aplica los cambios y elimina el stash de la lista.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué hace el comando `git cherry-pick <commit>`?",
+    "options": [
+      "Aplica los cambios introducidos por una confirmación específica de otra rama en tu rama actual, creando una nueva confirmación.",
+      "Fusiona únicamente los archivos que contienen la palabra 'cherry' de una rama especificada.",
+      "Resalta las líneas de código más activas en el historial del repositorio.",
+      "Compara dos ramas y enumera las confirmaciones que son únicas para cada una."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git cherry-pick` toma los cambios de una sola confirmación y los aplica a tu rama actual. Esto es útil para correcciones urgentes (hotfixes) o para incorporar cambios individuales sin fusionar ramas completas.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo ayuda `git bisect` a depurar regresiones de software?",
+    "options": [
+      "Utiliza una búsqueda binaria a través del historial de confirmaciones para encontrar la confirmación exacta que introdujo un error (bug).",
+      "Ejecuta automáticamente análisis estático de código para detectar errores de sintaxis en la última confirmación.",
+      "Divide una rama grande en ramas más pequeñas y fáciles de fusionar.",
+      "Analiza el rendimiento del código para encontrar cuellos de botella entre dos confirmaciones."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git bisect` es una herramienta de depuración que utiliza la búsqueda binaria para localizar la confirmación que rompió una característica. Marcas una confirmación conocida como 'buena' (good) y una 'mala' (bad), y Git descarga las confirmaciones intermedias para que las pruebes.",
+    "points": 10
+  },
+  {
+    "question_text": "Para ignorar confirmaciones grandes que solo contienen cambios de formato (por ejemplo, al ejecutar Prettier o ECS) al usar `git blame`, ¿qué archivo deberías configurar en Git?",
+    "options": [
+      "Un archivo que enumere los hashes de confirmación (por ejemplo, `.git-blame-ignore-revs`) registrado a través de `git config blame.ignoreRevsFile`.",
+      "Debes agregar los hashes de confirmación directamente al archivo `.gitignore`.",
+      "Debes agregar un bloque `[blame]` dentro del archivo `.editorconfig` de tu proyecto.",
+      "Git blame no puede ignorar confirmaciones específicas; debes filtrar la salida manualmente."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Puedes configurar Git para ignorar confirmaciones masivas de formato utilizando un archivo de texto que contenga los hashes de confirmación (tradicionalmente `.git-blame-ignore-revs`) y estableciendo la configuración `blame.ignoreRevsFile`.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el propósito principal del comando `git worktree`?",
+    "options": [
+      "Te permite descargar (checkout) y trabajar en múltiples ramas del mismo repositorio simultáneamente en directorios separados.",
+      "Genera un gráfico jerárquico del árbol de directorios del repositorio.",
+      "Crea ramas virtuales que existen solo en memoria para una compilación rápida.",
+      "Enumera todas las dependencias y paquetes externos en un monorepo."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git worktree` te permite tener múltiples árboles de trabajo vinculados al mismo repositorio. Esto significa que puedes descargar la rama B en un directorio separado y trabajar en ella sin necesidad de guardar en el stash o cambiar de rama en tu directorio principal.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué secuencia de comandos debes ejecutar para inicializar y descargar submódulos inmediatamente después de clonar un repositorio?",
+    "options": [
+      "`git submodule update --init --recursive`",
+      "`git submodule install --all`",
+      "`git fetch --submodules`",
+      "`git pull --recursive-modules`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Al clonar un repositorio con submódulos, las carpetas de los submódulos están inicialmente vacías. Ejecutar `git submodule update --init --recursive` inicializa los submódulos, los registra en la configuración y clona los repositorios anidados.",
+    "points": 10
+  },
+  {
+    "question_text": "En un monorepo muy grande, ¿cómo se puede configurar Git para que solo descargue y aplique un subdirectorio específico de archivos, ignorando todo lo demás?",
+    "options": [
+      "Usando `git sparse-checkout set <subdirectory>`",
+      "Añadiendo rutas a `.git/info/exclude` con una bandera `--sparse`",
+      "Usando `git clone --subfolder=<path>`",
+      "Marcando carpetas como de solo lectura en el archivo `.gitattributes`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La descarga selectiva (sparse checkout, `git sparse-checkout`) te permite limitar los archivos del directorio de trabajo. Git solo genera los archivos que coinciden con los patrones que especifiques, lo que acelera las operaciones en repositorios masivos.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué comando crea un clon superficial (shallow clone) que solo recupera la confirmación más reciente de cada rama, ahorrando tiempo y ancho de banda?",
+    "options": [
+      "`git clone --depth 1 <repository>`",
+      "`git clone --shallow <repository>`",
+      "`git clone --single-commit <repository>`",
+      "`git clone --no-history <repository>`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git clone --depth 1` crea un clon superficial. Trunca el historial al número especificado de confirmaciones (1), acelerando significativamente el comando clone para repositorios con historiales masivos.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo evita Git LFS (Large File Storage) que el directorio local `.git` se sature al realizar el seguimiento de archivos binarios grandes?",
+    "options": [
+      "Reemplaza los archivos grandes en el repositorio con pequeños punteros de texto, mientras almacena los archivos grandes reales en un servidor separado a través de HTTP.",
+      "Comprime automáticamente todos los archivos binarios en archivos ZIP de alta eficiencia al confirmar.",
+      "Excluye los archivos binarios del historial, realizando el seguimiento únicamente de los metadatos y del tamaño del archivo.",
+      "Segmenta los archivos grandes en fragmentos de 100 KB y los almacena en confirmaciones de Git como fragmentos de código."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Git LFS reemplaza archivos grandes (como imágenes, videos, zips) con punteros de texto que contienen metadatos y hashes. Los recursos reales se descargan bajo demanda desde un servidor LFS, manteniendo ligera la base de datos del repositorio de Git.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es la diferencia entre `git diff` y `git diff --staged`?",
+    "options": [
+      "`git diff` muestra las modificaciones entre el directorio de trabajo y el index; `git diff --staged` muestra las modificaciones entre el index y la última confirmación (HEAD).",
+      "`git diff` compara lo local con lo remoto; `git diff --staged` compara ramas locales.",
+      "`git diff` enumera únicamente los archivos; `git diff --staged` imprime los detalles completos del parche en paralelo.",
+      "`git diff` se ejecuta instantáneamente, mientras que `git diff --staged` ejecuta pruebas de pre-commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git diff` compara tu directorio de trabajo con el index de preparación (cambios que aún no has preparado). `git diff --staged` (alias `--cached`) compara tus cambios preparados con la última confirmación (lo que se confirmará).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es una diferencia arquitectónica importante entre Git Submodules y Git Subtree?",
+    "options": [
+      "Los submódulos almacenan solo un puntero a una confirmación específica en un repositorio externo; los subárboles (subtrees) fusionan todo el código y el historial del subproyecto directamente en tu repositorio.",
+      "Los submódulos se almacenan en formato de texto plano; los subárboles son archivos binarios encriptados.",
+      "Los submódulos solo se pueden usar en GitHub; los subárboles son compatibles con GitLab y Bitbucket.",
+      "Los submódulos no admiten directorios anidados, mientras que los subárboles sí."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Git Submodules mantiene el repositorio hijo separado, almacenando únicamente la URL remota y el hash de confirmación. Git Subtree fusiona los archivos del subproyecto directamente en el index del repositorio como archivos estándar, lo que facilita la clonación y la descarga para otros miembros del equipo.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo puedes especificar una clave privada SSH personalizada para un solo comando de Git sin modificar la configuración global de SSH?",
+    "options": [
+      "Configurando la variable de entorno `GIT_SSH_COMMAND=\"ssh -i /path/to/key\"` para el comando.",
+      "Ejecutando `git config ssh.key /path/to/key` antes del comando.",
+      "Pasando la opción `--ssh-key=/path/to/key` al comando de git.",
+      "Copiando la clave a la carpeta `.git/ssh_key` en tu repositorio."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La variable de entorno `GIT_SSH_COMMAND` permite invalidar el comando SSH predeterminado utilizado por Git. Al preceder tu comando con `GIT_SSH_COMMAND=\"ssh -i /path/to/key\"`, Git utilizará esa clave para la autenticación.",
+    "points": 10
+  }
+]
