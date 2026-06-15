@@ -32,7 +32,9 @@ php artisan migrate --force
 php artisan db:seed --class=QuizSeeder --force
 
 # Импорт статей из Markdown-файлов в базу данных (для админки)
-php artisan app:migrate-articles-to-database
+php artisan app:migrate-articles-to-database --update
+
+php artisan app:seed-translations --update
 
 # Обработка OG-изображений: очистка EXIF/AI-меток и публикация в public/images/og/
 #if [ -d "scripts/og-source" ] && ls scripts/og-source/*.png > /dev/null 2>&1; then
