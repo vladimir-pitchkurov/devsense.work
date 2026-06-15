@@ -297,6 +297,70 @@ class QuizSeeder extends Seeder
                     'es' => ['title' => 'Experto en JS Avanzado', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista de JavaScript avanzado.'],
                     'it' => ['title' => 'Esperto in JS Avanzato', 'description' => 'Ottenuto il 100% nel quiz di intervista su JavaScript advanced.'],
                 ]
+            ],
+            [
+                'slug' => 'git-bronze',
+                'quiz_slug' => 'git-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/git-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'Git Bronze', 'description' => 'Scored 50% or more on the Git Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: Git', 'description' => 'Набрано 50% или более правильных ответов в квизе по Git.'],
+                    'ua' => ['title' => 'Бронза: Git', 'description' => 'Набрано 50% або більше правильних відповідей у квізі з Git.'],
+                    'bg' => ['title' => 'Бронз: Git', 'description' => 'Резултат от 50% или больше на теста за Git.'],
+                    'de' => ['title' => 'Git Bronze', 'description' => 'Erreichte 50% oder mehr im Git-Interview-Quiz.'],
+                    'fr' => ['title' => 'Bronze Git', 'description' => 'Obtenu 50% ou plus au quiz d\'entretien sur Git.'],
+                    'es' => ['title' => 'Bronce en Git', 'description' => 'Obtuvo un 50% o más en el cuestionario de entrevista de Git.'],
+                    'it' => ['title' => 'Bronzo Git', 'description' => 'Ottenuto il 50% o più nel quiz di intervista su Git.'],
+                ]
+            ],
+            [
+                'slug' => 'git-silver',
+                'quiz_slug' => 'git-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/git-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'Git Silver', 'description' => 'Scored 70% or more on the Git Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: Git', 'description' => 'Набрано 70% или более правильных ответов в квизе по Git.'],
+                    'ua' => ['title' => 'Срібло: Git', 'description' => 'Набрано 70% або більше правильних відповідей у квізі з Git.'],
+                    'bg' => ['title' => 'Сребро: Git', 'description' => 'Резултат от 70% или больше на теста за Git.'],
+                    'de' => ['title' => 'Git Silber', 'description' => 'Erreichte 70% oder mehr im Git-Interview-Quiz.'],
+                    'fr' => ['title' => 'Argent Git', 'description' => 'Obtenu 70% ou plus au quiz d\'entretien sur Git.'],
+                    'es' => ['title' => 'Plata en Git', 'description' => 'Obtuvo un 70% o más en el cuestionario de entrevista de Git.'],
+                    'it' => ['title' => 'Argento Git', 'description' => 'Ottenuto il 70% o più nel quiz di intervista su Git.'],
+                ]
+            ],
+            [
+                'slug' => 'git-gold',
+                'quiz_slug' => 'git-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/git-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'Git Gold', 'description' => 'Scored 85% or more on the Git Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: Git', 'description' => 'Набрано 85% или более правильных ответов в квизе по Git.'],
+                    'ua' => ['title' => 'Золото: Git', 'description' => 'Набрано 85% або більше правильних відповідей у квізі з Git.'],
+                    'bg' => ['title' => 'Злато: Git', 'description' => 'Резултат от 85% или больше на теста за Git.'],
+                    'de' => ['title' => 'Git Gold', 'description' => 'Erreichte 85% oder mehr im Git-Interview-Quiz.'],
+                    'fr' => ['title' => 'Or Git', 'description' => 'Obtenu 85% ou plus au quiz d\'entretien sur Git.'],
+                    'es' => ['title' => 'Oro en Git', 'description' => 'Obtuvo un 85% o más en el cuestionario de entrevista de Git.'],
+                    'it' => ['title' => 'Oro Git', 'description' => 'Ottenuto l\'85% o più nel quiz di intervista su Git.'],
+                ]
+            ],
+            [
+                'slug' => 'git-expert',
+                'quiz_slug' => 'git-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/git-expert.svg',
+                'translations' => [
+                    'en' => ['title' => 'Git Expert', 'description' => 'Scored 100% on the Git Interview Quiz.'],
+                    'ru' => ['title' => 'Эксперт: Git', 'description' => 'Набрано 100% правильных ответов в квизе по Git.'],
+                    'ua' => ['title' => 'Експерт: Git', 'description' => 'Набрано 100% правильних відповідей у квізі з Git.'],
+                    'bg' => ['title' => 'Експерт: Git', 'description' => 'Резултат от 100% на теста за Git.'],
+                    'de' => ['title' => 'Git Experte', 'description' => 'Erreichte 100% im Git-Interview-Quiz.'],
+                    'fr' => ['title' => 'Expert Git', 'description' => 'Obtenu 100% au quiz d\'entretien sur Git.'],
+                    'es' => ['title' => 'Experto en Git', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista de Git.'],
+                    'it' => ['title' => 'Esperto Git', 'description' => 'Ottenuto il 100% nel quiz di intervista su Git.'],
+                ]
             ]
         ];
 
@@ -359,6 +423,18 @@ class QuizSeeder extends Seeder
             'it' => ['title' => 'Colloquio su JavaScript Avanzato', 'description' => 'Un test impegnativo di 100 domande che copre closure, catena di prototipi, programmazione asincrona, proxy, perdite di memoria, specifiche ES e interni dei motori JS.'],
         ];
         $this->seedQuiz('javascript-advanced-interview', 1000, $jsAdvancedQuizTrans, 'javascript-advanced-interview', 'javascript');
+
+        $gitQuizTrans = [
+            'en' => ['title' => 'Git Interview Prep', 'description' => 'A comprehensive preparation test of 40 questions covering Git commands, branching models, merging, rebasing, recovering commits, and monorepos.'],
+            'ru' => ['title' => 'Подготовка к собеседованию по Git', 'description' => 'Комплексный тест из 40 вопросов для подготовки к собеседованию: команды, ветвление, слияние и ребейз, восстановление коммитов и монорепозитории.'],
+            'ua' => ['title' => 'Підготовка до співбесіди з Git', 'description' => 'Комплексний тест із 40 питань для підготовки до співбесіди: команди, розгалуження, злиття та ребейз, відновлення коммітів та монорепозиторії.'],
+            'bg' => ['title' => 'Подготовка за интервю за Git', 'description' => 'Изчерпателен тест от 40 въпроса за подготовка за интервю: команди, клониране, сливане и рибейз, възстановяване на комити и монорепозитории.'],
+            'de' => ['title' => 'Git-Interview Vorbereitung', 'description' => 'Ein umfassender Test mit 40 Fragen zur Vorbereitung auf Git-Interviews: Befehle, Branching, Merging, Rebasing, Commit-Wiederherstellung und Monorepos.'],
+            'fr' => ['title' => 'Préparation à l\'entretien Git', 'description' => 'Un test complet de 40 questions pour se préparer aux entretiens sur Git : commandes, branchement, fusion, rebasage, récupération de commits et monorepos.'],
+            'es' => ['title' => 'Preparación de Entrevista de Git', 'description' => 'Un examen exhaustivo de 40 preguntas para preparar entrevistas de Git: comandos, ramificaciones, fusión, rebase, recuperación de commits y monorepos.'],
+            'it' => ['title' => 'Preparazione al Colloquio su Git', 'description' => 'Un test completo di 40 domande per la preparazione ai colloqui su Git: comandi, branching, merging, rebasing, recupero di commit e monorepo.'],
+        ];
+        $this->seedQuiz('git-interview', 400, $gitQuizTrans, 'git-interview', 'git');
     }
 
     private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir, string $categorySlug): void

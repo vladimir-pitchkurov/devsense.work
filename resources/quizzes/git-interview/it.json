@@ -1,0 +1,482 @@
+[
+  {
+    "question_text": "Cosa succede internamente quando si esegue `git init` in una directory?",
+    "options": [
+      "Git crea una sottodirectory `.git` contenente metadati, configurazioni e strutture del database degli oggetti, ma lascia i file correnti non tracciati.",
+      "Git indicizza e traccia immediatamente tutti i file esistenti nella directory e li inserisce in un commit iniziale.",
+      "Git stabilisce una connessione a un repository remoto predefinito e invia la struttura della directory corrente.",
+      "Git crea un file di database locale chiamato `git.db` nella directory temporanea di sistema per tracciare i file."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'esecuzione di `git init` inizializza un nuovo repository Git vuoto creando una directory `.git` nella radice del progetto. Questa directory contiene riferimenti (refs), database degli oggetti, file di configurazione e hook, ma non mette in staging o traccia automaticamente i file esistenti.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale dei seguenti comandi rimuove un file dall'area di staging (Index) ma mantiene le modifiche nella directory di lavoro? (Git 2.23+)",
+    "options": [
+      "`git restore --staged <file>`",
+      "`git checkout -- <file>`",
+      "`git rm -f <file>`",
+      "`git revert <file>`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A partire da Git 2.23, `git restore` è il comando preferito per ripristinare i file. L'opzione `--staged` rimuove il file dallo staging (rimuovendolo dall'Index) mantenendo intatte le modifiche nella directory di lavoro. Storicamente, `git reset HEAD <file>` otteneva lo stesso risultato.",
+    "points": 10
+  },
+  {
+    "question_text": "Se si desidera mettere in staging solo i file modificati o eliminati, ignorando completamente i nuovi file non tracciati, quale comando si dovrebbe usare?",
+    "options": [
+      "`git add .`",
+      "`git add -u`",
+      "`git add -A`",
+      "`git add *`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`git add -u` (o `--update`) mette in staging i file modificati ed eliminati che sono già tracciati nel repository, ma non mette in staging alcun nuovo file non tracciati.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale comando elenca tutti i file attualmente tracciati dall'indice nel repository Git?",
+    "options": [
+      "`git status --short`",
+      "`git show-files`",
+      "`git ls-files`",
+      "`git list-tracked`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "`git ls-files` è un comando plumbing che mostra informazioni sui file nell'indice e nella directory di lavoro. Per impostazione predefinita, elenca tutti i file tracciati nel repository.",
+    "points": 10
+  },
+  {
+    "question_text": "Data una struttura di cartelle in cui si desidera ignorare tutti i file all'interno di `config/` eccetto un file chiamato `config/config.prod.yaml`. Quale configurazione di `.gitignore` permette di ottenere questo risultato?",
+    "options": [
+      "```text\nconfig/*\n!config/config.prod.yaml\n```",
+      "```text\nconfig/\n!config/config.prod.yaml\n```",
+      "```text\nconfig/config.prod.yaml\nconfig/*\n```",
+      "```text\n!config/config.prod.yaml\nconfig/\n```"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Per ignorare il contenuto di una cartella ad eccezione di un file specifico, è necessario ignorare il contenuto della cartella usando `config/*` e poi usare il pattern negativo `!config/config.prod.yaml`. Se si ignora la directory stessa usando `config/`, Git non analizzerà affatto la directory e i pattern negativi al suo interno saranno ignorati.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale comando mostra la cronologia dei commit sotto forma di grafico pulito contenente hash abbreviati, riepiloghi su una sola riga e tag di decorazione (come HEAD e branch)?",
+    "options": [
+      "`git log --oneline --graph --decorate --all`",
+      "`git history --compact --tree`",
+      "`git graph --all`",
+      "`git show-branch --linear`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git log --oneline --graph --decorate --all` è il comando classico per stampare una rappresentazione visiva di tutti i commit, ramificazioni dei branch e merge in un grafico testuale direttamente nel terminale.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è l'effetto principale dell'impostazione `git config --global core.autocrlf true` su una macchina Windows?",
+    "options": [
+      "Converte i finali di riga da LF a CRLF quando si esegue il checkout del codice, e converte CRLF in LF quando si esegue il commit del codice nel repository.",
+      "Forza Git a consentire solo il commit di file con finali di riga LF, restituendo un errore per i file con CRLF.",
+      "Corregge automaticamente gli errori di indentazione e rimuove gli spazi vuoti a fine riga durante i commit.",
+      "Converte i finali di riga da CRLF a LF al checkout, e da LF a CRLF al commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Impostare `core.autocrlf` su `true` su Windows assicura che i finali di riga vengano convertiti da LF (standard nel database di Git) a CRLF (standard in Windows) al momento del checkout, e riconvertiti in LF quando si effettua il commit del codice.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si crea e si passa a un nuovo branch che non ha una cronologia comune (un branch orfano) con il branch corrente?",
+    "options": [
+      "`git branch --new-empty <branch_name>`",
+      "`git checkout --orphan <branch_name>`",
+      "`git switch --no-parent <branch_name>`",
+      "`git checkout -b <branch_name> --empty`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`git checkout --orphan <branch_name>` crea un nuovo branch orfano. Il primo commit effettuato su questo branch non avrà padri e sarà la radice di una nuova cronologia scollegata. Tutti i file nell'indice vengono mantenuti in staging, ed è necessario svuotarlo se si desidera un branch vuoto.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza fondamentale tra un merge fast-forward e un merge a tre vie (non-fast-forward)?",
+    "options": [
+      "Un merge fast-forward sposta semplicemente in avanti il puntatore del branch perché non ci sono commit divergenti; un merge a tre vie crea un nuovo commit di merge combinando due branch divergenti.",
+      "Un merge fast-forward richiede una connessione a un server remoto, mentre un merge a tre vie può essere eseguito solo localmente.",
+      "Un merge fast-forward combina tre branch contemporaneamente, mentre un merge a tre vie ne combina solo due.",
+      "Un merge a tre vie è più veloce perché bypassa gli hook di pre-commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un merge fast-forward si verifica quando il branch di destinazione non ha nuovi commit da quando il branch sorgente è divergente. Git sposta semplicemente il puntatore. Se ci sono nuovi commit su entrambi i branch, Git deve eseguire un merge a tre vie usando un predecessore comune e creare un commit di merge.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale comando viene utilizzato per eliminare un branch denominato `feature-login` dal repository remoto denominato `origin`?",
+    "options": [
+      "`git remote delete feature-login`",
+      "`git push origin -d feature-login`",
+      "`git push origin --remove-branch feature-login`",
+      "`git delete remote branch feature-login`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Per eliminare un branch remoto, si invia l'istruzione di eliminazione al repository remoto. Il comando `git push origin -d feature-login` (o `--delete`) invia questa istruzione per eliminare il branch su `origin`.",
+    "points": 10
+  },
+  {
+    "question_text": "Se si desidera ripristinare (revert) un commit di merge (`abc1234`) che ha riunito un branch di funzionalità (feature branch) in `main`, quale opzione si deve fornire al comando `git revert`?",
+    "options": [
+      "È necessario specificare il numero del lato padre da mantenere utilizzando l'opzione `-m` (o `--mainline`).",
+      "È necessario passare il flag `--force-merge` per bypassare i controlli di sicurezza.",
+      "È necessario utilizzare il flag `--no-commit` per evitare un loop nella cronologia.",
+      "I commit di merge non possono essere ripristinati; è necessario utilizzare invece `git reset --hard`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Poiché un commit di merge ha più padri, Git non sa quale branch padre debba essere considerato la linea principale ('mainline'). L'opzione `-m 1` indica a Git di ripristinare le modifiche relative al padre 1 (di solito il branch su cui è stato eseguito il merge).",
+    "points": 10
+  },
+  {
+    "question_text": "Quali due operazioni vengono eseguite internamente quando si esegue un comando `git pull` standard?",
+    "options": [
+      "`git fetch` seguito da `git merge` (o `git rebase` a seconda delle impostazioni)",
+      "`git remote update` seguito da `git checkout`",
+      "`git fetch` seguito da `git push --sync`",
+      "`git checkout` seguito da `git merge --ff-only`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git pull` è un comando ad alto livello che esegue prima `git fetch` per scaricare le modifiche dal repository remoto, e poi immediatamente `git merge` (o `git rebase` se configurato) per integrare tali modifiche nel branch corrente.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si possono visualizzare tutti i branch locali che sono già stati integrati con successo nel branch `main`?",
+    "options": [
+      "`git branch --merged main`",
+      "`git branch -a --status=merged`",
+      "`git show-merged --branch`",
+      "`git status --merged=main`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git branch --merged main` elenca tutti i branch locali le cui modifiche sono già state integrate nel branch `main`. Questo è molto utile per ripulire i branch locali obsoleti.",
+    "points": 10
+  },
+  {
+    "question_text": "Durante un conflitto di merge, quale comando interrompe istantaneamente il processo di merge e ripristina la directory di lavoro e l'indice di staging allo stato precedente al merge?",
+    "options": [
+      "`git merge --abort`",
+      "`git merge --reset`",
+      "`git reset --hard HEAD`",
+      "`git checkout --force`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git merge --abort` termina lo stato di conflitto del merge e tenta di ricostruire lo stato della directory di lavoro e dell'indice precedente al merge.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il vantaggio principale della configurazione `git config pull.rebase true`?",
+    "options": [
+      "Impedisce a `git pull` di creare commit di merge disordinati eseguendo il rebase dei commit locali sopra i commit remoti in arrivo, mantenendo la cronologia lineare.",
+      "Velocizza il trasferimento dei dati di rete durante i fetch.",
+      "Risolve automaticamente i conflitti semplici scegliendo le modifiche remote.",
+      "Blocca il branch e impedisce ad altri sviluppatori di effettuare push mentre si esegue il pull."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Per impostazione predefinita, `git pull` utilizza il merge, che può creare un commit di merge ogni volta che si scaricano modifiche. La configurazione `pull.rebase true` fa sì che `git pull` esegua invece `git rebase`, preservando una cronologia dei commit pulita e lineare.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si può modificare l'autore dell'ultimo commit senza cambiare il relativo messaggio di commit?",
+    "options": [
+      "`git commit --amend --author=\"John Doe <john@example.com>\" --no-edit`",
+      "`git commit --change-author=\"John Doe <john@example.com>\"`",
+      "`git config user.name \"John Doe\" && git commit --amend`",
+      "`git author set \"John Doe <john@example.com>\"`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Il flag `--amend` consente di modificare l'ultimo commit. Combinandolo con `--author` e `--no-edit`, è possibile sovrascrivere le informazioni sull'autore senza aprire un editor per modificare il messaggio di commit.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il comportamento del comando `git reset --mixed <commit>`? (Nota: `--mixed` è la modalità predefinita di reset)",
+    "options": [
+      "Sposta il puntatore HEAD a `<commit>` e aggiorna l'indice (rimuovendo le modifiche dallo staging), ma lascia intatta la directory di lavoro.",
+      "Sposta HEAD a `<commit>` ma lascia intatti sia l'indice che la directory di lavoro.",
+      "Sposta HEAD a `<commit>` e scarta tutte le modifiche sia nell'indice che nella directory di lavoro.",
+      "Elimina completamente i commit dalla cronologia e cancella i file dal disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un reset `--mixed` (predefinito) sposta il puntatore HEAD e ripristina l'indice di staging per farlo corrispondere al commit di destinazione, il che significa che tutte le modifiche successive a quel commit vengono rimosse dallo staging. I file della directory di lavoro non vengono modificati.",
+    "points": 10
+  },
+  {
+    "question_text": "Se uno sviluppatore ha eseguito il commit di chiavi API o credenziali sensibili in un repository pubblico diversi commit fa, qual è lo strumento più robusto per ripulire quel file da tutti i commit storici?",
+    "options": [
+      "L'uso di `git-filter-repo` (o storicamente `git filter-branch`)",
+      "L'esecuzione di `git reset --hard` seguito da `git push --force`",
+      "Eliminare il file ed eseguire un nuovo commit con il messaggio 'remove keys'",
+      "Aggiungere il file sensibile a `.gitignore` e inviare nuovamente il repository con un push"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La semplice eliminazione di un file in un nuovo commit non lo rimuove dalla cronologia. Strumenti come `git-filter-repo` riscrivono tutti i commit storici per eliminare completamente il file dal database. È quindi necessario un push forzato per aggiornare il server remoto.",
+    "points": 10
+  },
+  {
+    "question_text": "Supponiamo di aver eseguito per errore `git reset --hard HEAD~5`, perdendo diversi commit. Quale strumento di Git dovresti usare per trovare i commit perduti e ripristinarli?",
+    "options": [
+      "`git reflog` per visualizzare la cronologia dei movimenti di HEAD, trovare l'hash del commit perduto ed eseguire un checkout o creare un branch da esso.",
+      "`git fsck --lost-found` per controllare tutti i file.",
+      "`git log --all --graph` per elencare i commit.",
+      "Non è possibile recuperare i commit dopo un reset `--hard`; vengono immediatamente eliminati dal disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git reflog` tiene traccia di ogni movimento di HEAD (checkout, commit, reset). Eseguendo `git reflog`, è possibile vedere gli hash dei commit in cui si trovava HEAD prima del reset a caldo (hard reset) e creare un branch o ripristinare lo stato a quell'hash.",
+    "points": 10
+  },
+  {
+    "question_text": "Durante un rebase interattivo (`git rebase -i`), quale azione dovresti assegnare a un commit per unire le sue modifiche a quelle del commit precedente, mantenendo solo il messaggio del commit precedente?",
+    "options": [
+      "`squash` (o `s`)",
+      "`fixup` (o `f`)",
+      "`reword` (o `r`)",
+      "`merge` (o `m`)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Sia `squash` che `fixup` uniscono le modifiche del commit a quello precedente. Tuttavia, `squash` richiede di unire i messaggi di commit, mentre `fixup` scarta il messaggio del commit corrente e mantiene solo il messaggio di quello precedente.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa fa il comando `git rm --cached config.json`?",
+    "options": [
+      "Smette di tracciare il file `config.json` (rimuovendolo dall'indice) ma lascia il file fisico nella directory di lavoro.",
+      "Elimina il file `config.json` dal disco ma lo mantiene indicizzato in Git.",
+      "Sposta temporaneamente il file nello stash di Git.",
+      "Azzera il contenuto del file, lasciandolo vuoto sul disco."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git rm --cached` rimuove il file dall'indice (l'area di staging), il che significa che Git smetterà di tracciarlo nei commit futuri. Tuttavia, il file fisico rimane nella cartella locale.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa significa lo stato di 'HEAD distaccata' (detached HEAD) in Git?",
+    "options": [
+      "Il puntatore HEAD punta direttamente all'hash di un commit specifico anziché a un riferimento di un branch locale.",
+      "Il repository locale ha perso il collegamento con il repository remoto.",
+      "La directory di lavoro contiene conflitti che non possono essere risolti automaticamente.",
+      "Il puntatore del branch è stato eliminato dal repository remoto."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Normalmente, HEAD punta a un branch (ad esempio `refs/heads/main`), che a sua volta punta a un commit. In uno stato di HEAD distaccata, HEAD punta direttamente all'hash di un commit (ad esempio quando si esegue il checkout di un tag specifico o di un vecchio commit), quindi i nuovi commit non aggiorneranno alcun branch.",
+    "points": 10
+  },
+  {
+    "question_text": "Come rappresenta Git le directory (cartelle) internamente nel suo database degli oggetti?",
+    "options": [
+      "Le directory sono rappresentate come oggetti **Tree** (albero), che elencano gli hash e i nomi dei blob (file) e altri alberi annidati.",
+      "Le directory sono rappresentate come commit vuoti con uno speciale flag per le directory.",
+      "Git non memorizza affatto le directory; memorizza solo i percorsi completi relativi dei file come metadati stringa sui Blob.",
+      "Le directory vengono salvate come archivi zip nella cartella `.git/folders`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Nel modello degli oggetti di Git, un oggetto **Tree** corrisponde a una directory. Mappa i nomi dei file agli hash SHA-1 dei blob (che rappresentano i file) o di altri alberi annidati (che rappresentano le sottodirectory).",
+    "points": 10
+  },
+  {
+    "question_text": "Quali sono i tre tipi principali di oggetti memorizzati nel database di Git in `.git/objects/`?",
+    "options": [
+      "Commit, Tree e Blob",
+      "Branch, Tag e Head",
+      "Index, Diff e Config",
+      "Packfile, Delta e Reference"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Il modello a oggetti principale di Git è costituito da: **Blob** (che memorizzano il contenuto dei file), **Tree** (che memorizzano le strutture delle directory e i nomi dei file) e **Commit** (che memorizzano i metadati come autore, data, messaggio e puntano a un albero radice).",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo Git genera l'identificatore hash per un commit?",
+    "options": [
+      "Calcolando un hash SHA (SHA-1 o SHA-256) del contenuto del commit, inclusi l'hash dell'albero (tree), autore, data, messaggio e hash dei padri.",
+      "Utilizzando un numero sequenziale incrementale del database combinato con l'ID della macchina.",
+      "Eseguendo l'hashing dei soli file modificati in quel commit, ignorando il messaggio di commit e i commit padri.",
+      "Prendendo l'ora di sistema di quando il commit è stato inviato al server con un push."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'hash di un commit Git è un hash crittografico del contenuto dell'oggetto commit. Poiché include gli hash dei commit padri, qualsiasi modifica nella cronologia altera tutti gli hash a valle, rendendo la cronologia di Git a prova di manomissione.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali comandi possono essere eseguiti per ripulire gli oggetti non raggiungibili e ottimizzare lo spazio di archiviazione del repository locale?",
+    "options": [
+      "`git gc` e `git prune`",
+      "`git optimize` e `git clean`",
+      "`git fsck --repair`",
+      "`git remote prune origin`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git gc` (garbage collection) comprime le revisioni dei file e rimuove gli oggetti sciolti e non raggiungibili. Esegue internamente `git prune` per eliminare gli oggetti non collegati che non sono più puntati da alcun riferimento.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa viene memorizzato nella directory `.git/refs/` in un repository Git?",
+    "options": [
+      "Puntatori agli hash dei commit, suddivisi in heads (branch locali), tag e remoti.",
+      "Il database compresso di tutti i file storici (blob).",
+      "L'elenco dei file dell'area di staging e le cache delle differenze dei file.",
+      "Script degli hook di Git eseguiti prima di commit e merge."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La directory `.git/refs/` memorizza i riferimenti (refs), che sono semplici file di testo contenenti hash di commit. Essi rappresentano i branch locali (`refs/heads/`), i tag (`refs/tags/`) e i branch remoti (`refs/remotes/`).",
+    "points": 10
+  },
+  {
+    "question_text": "Come si possono salvare le modifiche correnti nella directory di lavoro nello stash, inclusi tutti i nuovi file non tracciati?",
+    "options": [
+      "`git stash -u` (o `--include-untracked`)",
+      "`git stash --all-files`",
+      "`git stash push --force`",
+      "`git stash save -a`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Per impostazione predefinita, `git stash` mette nello stash solo le modifiche apportate ai file tracciati. L'uso di `git stash -u` (o `--include-untracked`) indica a Git di mettere nello stash anche i nuovi file non tracciati presenti nella directory di lavoro.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale comando applica le modifiche di uno stash specifico (ad es. `stash@{2}`) al tuo branch, ma lo lascia nell'elenco degli stash?",
+    "options": [
+      "`git stash apply stash@{2}`",
+      "`git stash pop stash@{2}`",
+      "`git stash restore stash@{2}`",
+      "`git stash load stash@{2}`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git stash apply` integra le modifiche salvate nello stash all'interno della directory di lavoro, ma mantiene lo stash nella cronologia. Al contrario, `git stash pop` applica le modifiche e rimuove lo stash dall'elenco.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa fa il comando `git cherry-pick <commit>`?",
+    "options": [
+      "Applica le modifiche introdotte da un commit specifico di un altro branch sul branch corrente, creando un nuovo commit.",
+      "Esegue il merge solo dei file che contengono la parola 'cherry' da un branch specificato.",
+      "Evidenzia le linee di codice più attive nella cronologia del repository.",
+      "Confronta due branch ed elenca i commit univoci di ciascuno."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git cherry-pick` prende le modifiche da un singolo commit e le applica al branch corrente. Questo è utile per hotfix o per acquisire singole modifiche senza dover fare il merge di interi branch.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo `git bisect` aiuta nel debug delle regressioni del software?",
+    "options": [
+      "Utilizza la ricerca binaria nella cronologia dei commit per trovare il commit esatto che ha introdotto un bug.",
+      "Esegue automaticamente l'analisi statica del codice per rilevare errori di sintassi nell'ultimo commit.",
+      "Suddivide un branch di grandi dimensioni in branch più piccoli e facilmente integrabili.",
+      "Analizza il profilo del codice per trovare colli di bottiglia prestazionali tra due commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git bisect` è uno strumento di debug che utilizza la ricerca binaria per individuare il commit che ha introdotto un malfunzionamento. Si contrassegna un commit noto come funzionante ('good') e uno non funzionante ('bad'), e Git esegue il checkout dei commit intermedi consentendoti di testarli.",
+    "points": 10
+  },
+  {
+    "question_text": "Per ignorare i commit di sola formattazione di grandi dimensioni (ad es. esecuzione di Prettier o ECS) quando si usa `git blame`, quale file si dovrebbe configurare in Git?",
+    "options": [
+      "Un file che elenca gli hash dei commit (ad es. `.git-blame-ignore-revs`) registrato tramite `git config blame.ignoreRevsFile`.",
+      "È necessario aggiungere gli hash dei commit direttamente al file `.gitignore`.",
+      "È necessario aggiungere un blocco `[blame]` all'interno del file `.editorconfig` del progetto.",
+      "Git blame non può ignorare commit specifici; è necessario filtrare manualmente l'output."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "È possibile configurare Git affinché ignori i commit di formattazione massivi utilizzando un file di testo contenente gli hash dei commit (tradizionalmente `.git-blame-ignore-revs`) e definendo la configurazione `blame.ignoreRevsFile`.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è lo scopo principale del comando `git worktree`?",
+    "options": [
+      "Consente di eseguire il checkout e lavorare contemporaneamente su più branch dello stesso repository in directory separate.",
+      "Genera un diagramma gerarchico dell'albero delle directory del repository.",
+      "Crea branch virtuali esistenti solo in memoria per una compilazione rapida.",
+      "Elenca tutte le dipendenze e i pacchetti esterni in un monorepo."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git worktree` consente di avere più alberi di lavoro (working trees) collegati allo stesso repository. Ciò significa che è possibile eseguire il checkout del branch B in una directory separata e lavorarci senza dover salvare nello stash o cambiare branch nella directory principale.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale sequenza di comandi si dovrebbe eseguire per inizializzare e scaricare i sottomoduli (submodules) subito dopo aver clonato un repository?",
+    "options": [
+      "`git submodule update --init --recursive`",
+      "`git submodule install --all`",
+      "`git fetch --submodules`",
+      "`git pull --recursive-modules`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Quando si clona un repository con sottomoduli, le relative cartelle sono inizialmente vuote. L'esecuzione di `git submodule update --init --recursive` inizializza i sottomoduli, li registra nella configurazione e clona i repository annidati.",
+    "points": 10
+  },
+  {
+    "question_text": "In un monorepo molto grande, come si può configurare Git per scaricare ed eseguire il checkout solo di una specifica sottodirectory di file, ignorando tutto il resto?",
+    "options": [
+      "Utilizzando `git sparse-checkout set <subdirectory>`",
+      "Aggiungendo i percorsi a `.git/info/exclude` con l'opzione `--sparse`",
+      "Utilizzando `git clone --subfolder=<path>`",
+      "Contrassegnando le cartelle come di sola lettura nel file `.gitattributes`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Il checkout parziale (`git sparse-checkout`) consente di limitare i file presenti nella directory di lavoro. Git recupera solo i file che corrispondono ai pattern specificati, velocizzando le operazioni nei repository di grandi dimensioni.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale comando crea un clone superficiale (shallow clone) che recupera solo l'ultimo commit di ciascun branch, risparmiando tempo e larghezza di banda?",
+    "options": [
+      "`git clone --depth 1 <repository>`",
+      "`git clone --shallow <repository>`",
+      "`git clone --single-commit <repository>`",
+      "`git clone --no-history <repository>`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git clone --depth 1` crea un clone superficiale. Tronca la cronologia al numero specificato di commit (1), velocizzando significativamente il comando di clone per i repository con cronologie molto lunghe.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo Git LFS (Large File Storage) impedisce alla directory locale `.git` di ingrandirsi eccessivamente quando si tracciano file binari di grandi dimensioni?",
+    "options": [
+      "Sostituisce i file di grandi dimensioni nel repository con piccoli puntatori di testo, memorizzando i file effettivi su un server separato tramite HTTP.",
+      "Comprime automaticamente tutti i file binari in archivi ZIP ad alta efficienza al momento del commit.",
+      "Esclude i file binari dalla cronologia, tracciando solo i metadati e le dimensioni dei file.",
+      "Suddivide i file di grandi dimensioni in parti da 100 KB e li memorizza nei commit di Git sotto forma di frammenti di codice."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Git LFS sostituisce i file di grandi dimensioni (come immagini, video, file zip) con puntatori di testo contenenti metadati e hash. Le risorse reali vengono scaricate su richiesta da un server LFS, mantenendo leggero il database del repository Git.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza tra `git diff` e `git diff --staged`?",
+    "options": [
+      "`git diff` mostra le modifiche tra la directory di lavoro e l'indice; `git diff --staged` mostra le modifiche tra l'indice e l'ultimo commit (HEAD).",
+      "`git diff` confronta il locale con il remoto; `git diff --staged` confronta i branch locali.",
+      "`git diff` elenca solo i file; `git diff --staged` stampa i dettagli completi delle patch affiancati.",
+      "`git diff` viene eseguito all'istante, mentre `git diff --staged` esegue i test di pre-commit."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`git diff` confronta la directory di lavoro con l'indice di staging (le modifiche che non sono ancora state messe in staging). `git diff --staged` (sinonimo di `--cached`) confronta le modifiche messe in staging con l'ultimo commit (ciò che verrà inserito nel commit).",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la principale differenza architetturale tra Git Submodules (sottomoduli) e Git Subtree (sottoalberi)?",
+    "options": [
+      "I sottomoduli memorizzano solo un puntatore a un commit specifico in un repository esterno; i sottoalberi integrano l'intero codice e la cronologia del sottoprogetto direttamente nel tuo repository.",
+      "I sottomoduli sono memorizzati in formato testo normale; i sottoalberi sono file binari crittografati.",
+      "I sottomoduli possono essere utilizzati solo su GitHub; i sottoalberi sono supportati su GitLab e Bitbucket.",
+      "I sottomoduli non supportano le directory annidate, mentre i sottoalberi sì."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "I sottomoduli Git mantengono separato il repository figlio, memorizzando solo l'URL remoto e l'hash del commit. Git Subtree unisce i file del sottoprogetto direttamente nell'indice del repository come file standard, rendendo la clonazione e il pull più facili per gli altri membri del team.",
+    "points": 10
+  },
+  {
+    "question_text": "Come si può specificare una chiave privata SSH personalizzata per un singolo comando Git senza modificare la configurazione SSH globale?",
+    "options": [
+      "Impostando la variabile d'ambiente `GIT_SSH_COMMAND=\"ssh -i /path/to/key\"` per la durata del comando.",
+      "Eseguendo `git config ssh.key /path/to/key` prima del comando.",
+      "Passando l'opzione `--ssh-key=/path/to/key` al comando git.",
+      "Copiando la chiave nella cartella `.git/ssh_key` all'interno del repository."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La variabile d'ambiente `GIT_SSH_COMMAND` consente di sovrascrivere il comando SSH predefinito utilizzato da Git. Anteponendo al comando `GIT_SSH_COMMAND=\"ssh -i /path/to/key\"`, Git utilizzerà tale chiave per l'autenticazione.",
+    "points": 10
+  }
+]
