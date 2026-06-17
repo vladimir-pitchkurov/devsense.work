@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <form id="chapter-quiz-form" onsubmit="submitQuiz(event)">
+                    <form id="chapter-quiz-form" class="{{ $progress ? 'submitted' : '' }}" onsubmit="submitQuiz(event)">
                         @csrf
                         <div style="display: flex; flex-direction: column; gap: 2rem;">
                             @foreach($chapter->quiz->questions as $qIndex => $question)
@@ -65,12 +65,25 @@
                                     </h3>
 
                                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                        @foreach($qTrans?->options as $oIndex => $option)
+                                        @php
+                                            $shuffledOptions = [];
+                                            if ($qTrans?->options) {
+                                                foreach ($qTrans->options as $oIndex => $option) {
+                                                    $shuffledOptions[] = ['index' => $oIndex, 'text' => $option];
+                                                }
+                                                mt_srand($question->id);
+                                                shuffle($shuffledOptions);
+                                                mt_srand();
+                                            }
+                                        @endphp
+                                        @foreach($shuffledOptions as $opt)
                                             @php
+                                                $oIndex = $opt['index'];
+                                                $option = $opt['text'];
                                                 $isSelected = !is_null($savedAnswer) && (int)$savedAnswer === $oIndex;
                                             @endphp
-                                            <label class="option-label" style="display: flex; align-items: flex-start; gap: 0.75rem; background: var(--bg-color); border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; position: relative;">
-                                                <input type="radio" name="answers[{{ $question->id }}]" value="{{ $oIndex }}" style="margin-top: 0.2rem; cursor: pointer;" {{ $isSelected ? 'checked' : '' }} {{ $progress ? 'disabled' : '' }} required>
+                                            <label class="choice-card">
+                                                <input type="radio" name="answers[{{ $question->id }}]" value="{{ $oIndex }}" style="margin-top: 0.2rem; cursor: pointer;" {{ $isSelected ? 'checked' : '' }} onclick="return !isSubmitted;" onkeydown="return !isSubmitted;" required>
                                                 <span style="font-size: 0.95rem; color: var(--text-color);">{{ $option }}</span>
                                             </label>
                                         @endforeach
@@ -89,7 +102,15 @@
                         <div id="quiz-actions" style="margin-top: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                             <div id="status-message" style="font-size: 0.95rem; font-weight: 600;"></div>
                             
-                            <div style="display: flex; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                                <form action="{{ route('courses.chapter.reset', ['locale' => app()->getLocale(), 'course_slug' => $course->slug, 'chapter_slug' => $chapter->slug]) }}" method="POST" id="reset-form" style="display: {{ $progress ? 'inline' : 'none' }}; margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="btn-secondary" id="retake-btn" style="padding: 0.75rem 2rem; display: none;">
+                                        {{ app()->getLocale() === 'ru' ? 'Перепройти главу' : 'Retake Chapter' }}
+                                    </button>
+                                </form>
+                                <div id="cooldown-text" style="font-size: 0.9rem; color: var(--text-muted); display: none; align-self: center;"></div>
+
                                 @if(!$progress)
                                     <button type="submit" class="btn-primary glow-button" id="submit-btn" style="padding: 0.75rem 2rem;">
                                         {{ app()->getLocale() === 'ru' ? 'Проверить ответы' : 'Submit Answers' }}
@@ -206,36 +227,140 @@
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
         }
-        .option-label:hover {
-            background: var(--primary-glow) !important;
-            border-color: var(--primary-color) !important;
-        }
-        .option-label:has(input:checked) {
-            background: var(--primary-glow) !important;
-            border-color: var(--primary-color) !important;
-        }
-        .option-correct {
-            background: rgba(16, 185, 129, 0.1) !important;
-            border-color: #10B981 !important;
-        }
-        .option-incorrect {
-            background: rgba(239, 68, 68, 0.1) !important;
-            border-color: #EF4444 !important;
-        }
+
     </style>
 
     <!-- Quiz JS logic -->
     @if($chapter->quiz)
         <script>
             let isSubmitted = @json(!is_null($progress));
+            let lastCompletedTimestamp = @json($progress ? (\Carbon\Carbon::parse($progress->completed_at)->timestamp * 1000) : null);
+            let retakeTimer = null;
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (isSubmitted) {
                     showPregradedState();
                 }
+                updateRetakeButton();
             });
 
+            function updateRetakeButton() {
+                const retakeBtn = document.getElementById('retake-btn');
+                const cooldownText = document.getElementById('cooldown-text');
+                if (!retakeBtn) return;
+                if (!lastCompletedTimestamp) {
+                    retakeBtn.style.display = 'inline-block';
+                    if (cooldownText) cooldownText.style.display = 'none';
+                    return;
+                }
+
+                const now = Date.now();
+                const oneDay = 24 * 60 * 60 * 1000;
+                const elapsed = now - lastCompletedTimestamp;
+                const remaining = oneDay - elapsed;
+
+                if (remaining > 0) {
+                    retakeBtn.style.display = 'none';
+                    if (cooldownText) {
+                        const hours = Math.floor(remaining / (60 * 60 * 1000));
+                        const minutes = Math.ceil((remaining % (60 * 60 * 1000)) / (60 * 1000));
+                        const textRu = `Перепройти главу можно будет через ${hours} ч. ${minutes} мин.`;
+                        const textEn = `You can retake this chapter in ${hours}h ${minutes}m.`;
+                        cooldownText.innerText = "{{ app()->getLocale() === 'ru' }}" === "1" ? textRu : textEn;
+                        cooldownText.style.display = 'block';
+                    }
+                    if (!retakeTimer) {
+                        retakeTimer = setInterval(updateRetakeButton, 60000);
+                    }
+                } else {
+                    retakeBtn.style.display = 'inline-block';
+                    if (cooldownText) cooldownText.style.display = 'none';
+                    if (retakeTimer) {
+                        clearInterval(retakeTimer);
+                        retakeTimer = null;
+                    }
+                }
+            }
+
+            function triggerConfetti(element) {
+                const canvas = document.createElement('canvas');
+                canvas.style.position = 'fixed';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.width = '100vw';
+                canvas.style.height = '100vh';
+                canvas.style.pointerEvents = 'none';
+                canvas.style.zIndex = '99999';
+                document.body.appendChild(canvas);
+
+                const ctx = canvas.getContext('2d');
+                let width = canvas.width = window.innerWidth;
+                let height = canvas.height = window.innerHeight;
+
+                let startX = width / 2;
+                let startY = height / 2;
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    startX = rect.left + rect.width / 2;
+                    startY = rect.top + rect.height / 2;
+                }
+
+                const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#f97316'];
+                const particles = [];
+
+                for (let i = 0; i < 80; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 10 + 5;
+                    particles.push({
+                        x: startX,
+                        y: startY,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 4,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        radius: Math.random() * 4 + 3,
+                        alpha: 1,
+                        decay: Math.random() * 0.015 + 0.01
+                    });
+                }
+
+                function animate() {
+                    let alive = false;
+                    ctx.clearRect(0, 0, width, height);
+
+                    particles.forEach(p => {
+                        if (p.alpha > 0) {
+                            p.x += p.vx;
+                            p.y += p.vy;
+                            p.vy += 0.22;
+                            p.vx *= 0.98;
+                            p.alpha -= p.decay;
+
+                            ctx.save();
+                            ctx.globalAlpha = p.alpha;
+                            ctx.fillStyle = p.color;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.restore();
+
+                            if (p.alpha > 0) {
+                                alive = true;
+                            }
+                        }
+                    });
+
+                    if (alive) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        canvas.remove();
+                    }
+                }
+
+                animate();
+            }
+
             function showPregradedState() {
+                document.getElementById('chapter-quiz-form').classList.add('submitted');
                 // If already submitted, color correctly
                 const correctIndexes = {
                     @foreach($chapter->quiz->questions as $question)
@@ -251,20 +376,21 @@
                 const savedAnswers = @json($progress ? $progress->answers : []);
 
                 Object.keys(correctIndexes).forEach(qId => {
-                    const correctIdx = correctIndexes[qId];
+                    const correctIdx = parseInt(correctIndexes[qId]);
                     const chosenIdx = savedAnswers[qId] !== undefined ? parseInt(savedAnswers[qId]) : -1;
                     
                     const qItem = document.querySelector(`.question-item[data-question-id="${qId}"]`);
                     const options = qItem.querySelectorAll('input[type="radio"]');
 
-                    options.forEach((opt, idx) => {
+                    options.forEach((opt) => {
                         const lbl = opt.parentElement;
-                        opt.disabled = true;
+                        const optVal = parseInt(opt.value);
+                        lbl.classList.add('checked-disabled');
                         
-                        if (idx === correctIdx) {
-                            lbl.classList.add('option-correct');
-                        } else if (idx === chosenIdx) {
-                            lbl.classList.add('option-incorrect');
+                        if (optVal === correctIdx) {
+                            lbl.classList.add('choice-correct');
+                        } else if (optVal === chosenIdx) {
+                            lbl.classList.add('choice-incorrect');
                         }
                     });
 
@@ -314,23 +440,38 @@
                 .then(data => {
                     if (data.success) {
                         isSubmitted = true;
+                        document.getElementById('chapter-quiz-form').classList.add('submitted');
+
+                        const resetForm = document.getElementById('reset-form');
+                        if (resetForm) {
+                            resetForm.style.display = 'inline';
+                        }
+                        lastCompletedTimestamp = Date.now();
+                        updateRetakeButton();
                         
+                        let allCorrect = true;
+
                         // Highlight answers based on response
                         Object.keys(data.correct_indexes).forEach(qId => {
-                            const correctIdx = data.correct_indexes[qId];
+                            const correctIdx = parseInt(data.correct_indexes[qId]);
                             const chosenIdx = answers[qId] !== undefined ? parseInt(answers[qId]) : -1;
                             const isCorrect = data.correct_answers[qId];
                             
+                            if (!isCorrect) {
+                                allCorrect = false;
+                            }
+
                             const qItem = document.querySelector(`.question-item[data-question-id="${qId}"]`);
                             const options = qItem.querySelectorAll('input[type="radio"]');
 
-                            options.forEach((opt, idx) => {
+                            options.forEach((opt) => {
                                 const lbl = opt.parentElement;
-                                opt.disabled = true;
-                                if (idx === correctIdx) {
-                                    lbl.classList.add('option-correct');
-                                } else if (idx === chosenIdx && !isCorrect) {
-                                    lbl.classList.add('option-incorrect');
+                                const optVal = parseInt(opt.value);
+                                lbl.classList.add('checked-disabled');
+                                if (optVal === correctIdx) {
+                                    lbl.classList.add('choice-correct');
+                                } else if (optVal === chosenIdx && !isCorrect) {
+                                    lbl.classList.add('choice-incorrect');
                                 }
                             });
 
@@ -350,6 +491,11 @@
                         // Show next button and hide submit button
                         submitBtn.style.display = 'none';
                         document.getElementById('next-btn').style.display = 'inline-block';
+
+                        // Trigger Confetti if all correct
+                        if (allCorrect) {
+                            triggerConfetti(status);
+                        }
 
                         // Handle Badge Unlock modal if unlocked
                         if (data.new_badges && data.new_badges.length > 0) {

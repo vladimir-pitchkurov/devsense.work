@@ -237,6 +237,7 @@ Route::prefix('{locale}')
             Route::get('/{course_slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('courses.show')->middleware('auth');
             Route::get('/{course_slug}/{chapter_slug}', [\App\Http\Controllers\CourseController::class, 'showChapter'])->name('courses.chapter')->middleware('auth');
             Route::post('/{course_slug}/{chapter_slug}/complete', [\App\Http\Controllers\CourseController::class, 'completeChapter'])->name('courses.chapter.complete')->middleware('auth');
+            Route::post('/{course_slug}/{chapter_slug}/reset', [\App\Http\Controllers\CourseController::class, 'resetChapter'])->name('courses.chapter.reset')->middleware('auth');
         });
 
         Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');

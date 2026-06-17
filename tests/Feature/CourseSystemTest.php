@@ -227,4 +227,57 @@ class CourseSystemTest extends TestCase
         // Check for Jobs links in header/footer
         $response->assertSee('/en/jobs');
     }
+
+    public function test_user_cannot_reset_progress_before_cooldown_expires(): void
+    {
+        $questions = $this->quiz->questions;
+
+        // Complete the quiz
+        $this->actingAs($this->user)->postJson('/en/courses/advanced-sql/cte-recursion/complete', [
+            'answers' => [
+                $questions[0]->id => 0,
+                $questions[1]->id => 1,
+            ]
+        ]);
+
+        // Attempt to reset progress immediately (0 hours elapsed)
+        $response = $this->actingAs($this->user)->post('/en/courses/advanced-sql/cte-recursion/reset');
+
+        // Should redirect back (status 302) and not delete progress
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('user_chapter_progress', [
+            'user_id' => $this->user->id,
+            'course_chapter_id' => $this->chapter->id,
+        ]);
+    }
+
+    public function test_user_can_reset_progress_after_cooldown_expires(): void
+    {
+        // Dynamically insert progress that was completed 25 hours ago
+        UserChapterProgress::create([
+            'user_id' => $this->user->id,
+            'course_chapter_id' => $this->chapter->id,
+            'score' => 40,
+            'answers' => [123 => 1],
+            'completed_at' => now()->subHours(25),
+        ]);
+
+        // Verify it is in database
+        $this->assertDatabaseHas('user_chapter_progress', [
+            'user_id' => $this->user->id,
+            'course_chapter_id' => $this->chapter->id,
+        ]);
+
+        // Reset progress
+        $response = $this->actingAs($this->user)->post('/en/courses/advanced-sql/cte-recursion/reset');
+
+        // Should redirect to the chapter page (status 302)
+        $response->assertRedirect('/en/courses/advanced-sql/cte-recursion');
+
+        // Progress record should be deleted
+        $this->assertDatabaseMissing('user_chapter_progress', [
+            'user_id' => $this->user->id,
+            'course_chapter_id' => $this->chapter->id,
+        ]);
+    }
 }

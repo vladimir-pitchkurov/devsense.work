@@ -230,4 +230,37 @@ class CourseController extends Controller
             'new_badges' => $unlockedBadges,
         ]);
     }
+
+    /**
+     * Reset a completed chapter quiz to allow retaking it.
+     */
+    public function resetChapter(string $course_slug, string $chapter_slug)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            abort(401);
+        }
+        $course = Course::where('slug', $course_slug)->firstOrFail();
+        $chapter = CourseChapter::where('course_id', $course->id)
+            ->where('slug', $chapter_slug)
+            ->firstOrFail();
+
+        $progress = UserChapterProgress::where('user_id', $user->id)
+            ->where('course_chapter_id', $chapter->id)
+            ->first();
+
+        if ($progress) {
+            $cooldownEnd = $progress->completed_at->copy()->addDay();
+            if (now()->lessThan($cooldownEnd)) {
+                return back()->with('error', 'Cooldown period is still active.');
+            }
+            $progress->delete();
+        }
+
+        return redirect()->route('courses.chapter', [
+            'locale' => app()->getLocale(),
+            'course_slug' => $course->slug,
+            'chapter_slug' => $chapter->slug,
+        ]);
+    }
 }
