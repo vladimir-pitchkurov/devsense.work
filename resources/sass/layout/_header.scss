@@ -157,13 +157,17 @@
         transition: transform 0.3s ease;
     }
 
-    &:hover {
+    &:hover, &.active {
         color: var(--text-color);
 
         &::after {
             transform: scaleX(1);
             transform-origin: left;
         }
+    }
+
+    &.active {
+        font-weight: 600;
     }
 }
 

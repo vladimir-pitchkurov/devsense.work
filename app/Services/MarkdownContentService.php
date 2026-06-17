@@ -65,7 +65,7 @@ class MarkdownContentService
                 $isDraft = $translation instanceof \App\Models\PendingArticleTranslation;
                 $cacheKey = "db_content_meta_v4_{$locale}_{$category}_{$slug}_{$modified}" . ($isDraft ? '_draft' : '');
 
-                $data = Cache::rememberForever($cacheKey, function () use ($translation, $modified) {
+                $data = Cache::rememberForever($cacheKey, function () use ($translation, $modified, $locale) {
                     $environment = new Environment([
                         'html_input' => 'allow',
                     ]);
@@ -92,13 +92,22 @@ class MarkdownContentService
 
                     $html = $result->getContent();
 
-                    // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT]
+                    // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT], > [!TIP], > [!CAUTION]
                     $html = preg_replace_callback(
-                        '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT)\]([\s\S]*?)<\/blockquote>/i',
-                        function ($matches) {
+                        '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT|TIP|CAUTION)\]([\s\S]*?)<\/blockquote>/i',
+                        function ($matches) use ($locale) {
                             $type = strtoupper($matches[1]);
                             $cleanType = strtolower($type);
-                            $label = ucfirst($cleanType);
+                            
+                            $labels = [
+                                'note' => ['ru' => 'Заметка', 'ua' => 'Примітка', 'en' => 'Note', 'bg' => 'Забележка', 'de' => 'Hinweis', 'fr' => 'Remarque', 'es' => 'Nota', 'it' => 'Nota'],
+                                'warning' => ['ru' => 'Внимание', 'ua' => 'Увага', 'en' => 'Warning', 'bg' => 'Внимание', 'de' => 'Warnung', 'fr' => 'Avertissement', 'es' => 'Advertencia', 'it' => 'Avvertimento'],
+                                'important' => ['ru' => 'Важно', 'ua' => 'Важливо', 'en' => 'Important', 'bg' => 'Важно', 'de' => 'Wichtig', 'fr' => 'Important', 'es' => 'Importante', 'it' => 'Importante'],
+                                'tip' => ['ru' => 'Совет', 'ua' => 'Порада', 'en' => 'Tip', 'bg' => 'Съвет', 'de' => 'Tipp', 'fr' => 'Conseil', 'es' => 'Consejo', 'it' => 'Suggerimento'],
+                                'caution' => ['ru' => 'Осторожно', 'ua' => 'Обережно', 'en' => 'Caution', 'bg' => 'Внимание', 'de' => 'Achtung', 'fr' => 'Attention', 'es' => 'Precaución', 'it' => 'Attenzione'],
+                            ];
+                            
+                            $label = $labels[$cleanType][$locale] ?? $labels[$cleanType]['en'] ?? ucfirst($cleanType);
                             $content = trim($matches[2]);
                             
                             return '<div class="markdown-alert markdown-alert-' . $cleanType . '">' .
@@ -140,7 +149,7 @@ class MarkdownContentService
         $modified = File::lastModified($path);
         $cacheKey = "content_meta_v4_{$locale}_{$category}_{$slug}_{$modified}";
 
-        $data = Cache::rememberForever($cacheKey, function () use ($path) {
+        $data = Cache::rememberForever($cacheKey, function () use ($path, $locale) {
             $environment = new Environment([
                 'html_input' => 'allow',
             ]);
@@ -167,13 +176,22 @@ class MarkdownContentService
 
             $html = $result->getContent();
 
-            // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT]
+            // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT], > [!TIP], > [!CAUTION]
             $html = preg_replace_callback(
-                '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT)\]([\s\S]*?)<\/blockquote>/i',
-                function ($matches) {
+                '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT|TIP|CAUTION)\]([\s\S]*?)<\/blockquote>/i',
+                function ($matches) use ($locale) {
                     $type = strtoupper($matches[1]);
                     $cleanType = strtolower($type);
-                    $label = ucfirst($cleanType);
+                    
+                    $labels = [
+                        'note' => ['ru' => 'Заметка', 'ua' => 'Примітка', 'en' => 'Note', 'bg' => 'Забележка', 'de' => 'Hinweis', 'fr' => 'Remarque', 'es' => 'Nota', 'it' => 'Nota'],
+                        'warning' => ['ru' => 'Внимание', 'ua' => 'Увага', 'en' => 'Warning', 'bg' => 'Внимание', 'de' => 'Warnung', 'fr' => 'Avertissement', 'es' => 'Advertencia', 'it' => 'Avvertimento'],
+                        'important' => ['ru' => 'Важно', 'ua' => 'Важливо', 'en' => 'Important', 'bg' => 'Важно', 'de' => 'Wichtig', 'fr' => 'Important', 'es' => 'Importante', 'it' => 'Importante'],
+                        'tip' => ['ru' => 'Совет', 'ua' => 'Порада', 'en' => 'Tip', 'bg' => 'Съвет', 'de' => 'Tipp', 'fr' => 'Conseil', 'es' => 'Consejo', 'it' => 'Suggerimento'],
+                        'caution' => ['ru' => 'Осторожно', 'ua' => 'Обережно', 'en' => 'Caution', 'bg' => 'Внимание', 'de' => 'Achtung', 'fr' => 'Attention', 'es' => 'Precaución', 'it' => 'Attenzione'],
+                    ];
+                    
+                    $label = $labels[$cleanType][$locale] ?? $labels[$cleanType]['en'] ?? ucfirst($cleanType);
                     $content = trim($matches[2]);
                     
                     return '<div class="markdown-alert markdown-alert-' . $cleanType . '">' .
@@ -216,5 +234,58 @@ class MarkdownContentService
             },
             $html
         );
+    }
+
+    /**
+     * Parse raw markdown string to HTML.
+     */
+    public function parseMarkdown(string $markdown, ?string $locale = null): string
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        $environment = new Environment([
+            'html_input' => 'allow',
+        ]);
+
+        $environment->addExtension(new CommonMarkCoreExtension);
+        $environment->addExtension(new TableExtension);
+        $environment->addExtension(new FrontMatterExtension);
+
+        $environment->addRenderer(
+            \League\CommonMark\Extension\CommonMark\Node\Block\FencedCode::class,
+            new \App\Support\CommonMark\CustomCodeBlockRenderer(),
+            100
+        );
+
+        $converter = new MarkdownConverter($environment);
+        $result = $converter->convert($markdown);
+        $html = $result->getContent();
+
+        // Convert GitHub-style alerts: > [!NOTE], > [!WARNING], > [!IMPORTANT], > [!TIP], > [!CAUTION]
+        $html = preg_replace_callback(
+            '/<blockquote>\s*<p>\s*\[!(NOTE|WARNING|IMPORTANT|TIP|CAUTION)\]([\s\S]*?)<\/blockquote>/i',
+            function ($matches) use ($locale) {
+                $type = strtoupper($matches[1]);
+                $cleanType = strtolower($type);
+                
+                $labels = [
+                    'note' => ['ru' => 'Заметка', 'ua' => 'Примітка', 'en' => 'Note', 'bg' => 'Забележка', 'de' => 'Hinweis', 'fr' => 'Remarque', 'es' => 'Nota', 'it' => 'Nota'],
+                    'warning' => ['ru' => 'Внимание', 'ua' => 'Увага', 'en' => 'Warning', 'bg' => 'Внимание', 'de' => 'Warnung', 'fr' => 'Avertissement', 'es' => 'Advertencia', 'it' => 'Avvertimento'],
+                    'important' => ['ru' => 'Важно', 'ua' => 'Важливо', 'en' => 'Important', 'bg' => 'Важно', 'de' => 'Wichtig', 'fr' => 'Important', 'es' => 'Importante', 'it' => 'Importante'],
+                    'tip' => ['ru' => 'Совет', 'ua' => 'Порада', 'en' => 'Tip', 'bg' => 'Съвет', 'de' => 'Tipp', 'fr' => 'Conseil', 'es' => 'Consejo', 'it' => 'Suggerimento'],
+                    'caution' => ['ru' => 'Осторожно', 'ua' => 'Обережно', 'en' => 'Caution', 'bg' => 'Внимание', 'de' => 'Achtung', 'fr' => 'Attention', 'es' => 'Precaución', 'it' => 'Attenzione'],
+                ];
+                
+                $label = $labels[$cleanType][$locale] ?? $labels[$cleanType]['en'] ?? ucfirst($cleanType);
+                $content = trim($matches[2]);
+                
+                return '<div class="markdown-alert markdown-alert-' . $cleanType . '">' .
+                       '<p class="markdown-alert-title">' . $label . '</p>' .
+                       '<p>' . $content . '</div>';
+            },
+            $html
+        );
+
+        return $this->localizeLinks($html, $locale);
     }
 }

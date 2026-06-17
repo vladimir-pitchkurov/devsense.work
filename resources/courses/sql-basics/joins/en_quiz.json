@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is the key functional difference between an `INNER JOIN` and a `LEFT JOIN`?",
+    "options": [
+      "`INNER JOIN` returns only rows that have matching values in both tables; `LEFT JOIN` returns all rows from the left table regardless of matches in the right table.",
+      "`LEFT JOIN` returns only matching rows; `INNER JOIN` returns all rows from the left table and pads the right table with NULLs.",
+      "An `INNER JOIN` will throw an error if no matching keys are found, whereas a `LEFT JOIN` will fail silently by returning an empty set.",
+      "There is no difference in their output, but `INNER JOIN` is heavily optimized for primary keys."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "An `INNER JOIN` filters out rows that do not have matching values in both tables. A `LEFT JOIN` retains all rows from the left table, bringing in matching rows from the right table, and filling in `NULL` values if no match is found.",
+    "points": 10
+  },
+  {
+    "question_text": "How do MySQL and PostgreSQL differ in their support for the `FULL OUTER JOIN` operation?",
+    "options": [
+      "PostgreSQL supports `FULL OUTER JOIN` natively, while MySQL does not support it and requires combining `LEFT JOIN` and `RIGHT JOIN` with `UNION`.",
+      "MySQL supports `FULL OUTER JOIN` natively, while PostgreSQL requires the use of `UNION`.",
+      "Both engines support native `FULL OUTER JOIN` with the same standard SQL syntax.",
+      "Neither engine supports `FULL OUTER JOIN` because it is excluded from the standard SQL specification."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL lacks native support for `FULL OUTER JOIN`. To emulate it, MySQL developers must write a `LEFT JOIN` and a `RIGHT JOIN` query and merge their results using `UNION`. PostgreSQL supports `FULL JOIN` natively.",
+    "points": 10
+  },
+  {
+    "question_text": "When is it appropriate to use the `USING` clause instead of `ON` for join conditions?",
+    "options": [
+      "When the columns being joined have the exact same name in both tables.",
+      "When you are joining tables on columns with different names.",
+      "When performing a `CROSS JOIN` that does not require key relationships.",
+      "When you need to specify complex matching expressions containing mathematical operators."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The `USING` clause is a shorthand syntax. You can use it (e.g. `USING (department_id)`) only when the joining columns share the exact same name and data type in both tables. Otherwise, you must use `ON`.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens if you run a `CROSS JOIN` between a table with 10,000 rows and a table with 5,000 rows?",
+    "options": [
+      "It generates a Cartesian product containing 50,000,000 (50 million) rows, potentially causing high memory consumption and server lag.",
+      "It returns 15,000 rows representing the combined total of both tables.",
+      "The database engine throws a syntax error because cross joins are not allowed without an index.",
+      "It returns a result set containing only the 5,000 matching rows between the two tables."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A `CROSS JOIN` creates a Cartesian product, pairing every row of the first table with every row of the second. The result size is the product of both table sizes (10,000 * 5,000 = 50,000,000 rows). This can easily crash or degrade database performance.",
+    "points": 10
+  }
+]

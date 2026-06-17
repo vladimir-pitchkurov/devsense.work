@@ -89,6 +89,23 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Generate a unique slug based on name.
+     */
+    public static function generateUniqueSlug(string $name): string
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug ?: 'user';
+        $counter = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    /**
      * Social link helper — returns an array of non-empty social links.
      *
      * @return array<string, string>

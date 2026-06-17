@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is the key storage and performance difference between PostgreSQL's json and jsonb data types?",
+    "options": [
+      "The json type is compressed using LZ4 while jsonb is uncompressed.",
+      "The json type stores a plain text copy of the JSON and requires parsing on each read; jsonb stores a parsed binary format that allows faster query lookups and supports indexing.",
+      "The jsonb type only allows storing arrays, whereas json supports arbitrary key-value nested objects.",
+      "PostgreSQL deprecated the json type in version 12, making jsonb the only operational data type."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `json` type stores data as plain text. This preserves whitespace and formatting but requires parsing the text on every retrieval. The `jsonb` type decomposes the document into a binary representation, sorting keys and stripping whitespace, which allows direct lookups and GIN indexing.",
+    "points": 10
+  },
+  {
+    "question_text": "Which pair of operators/functions is used to perform containment searches (checking if JSON document A contains JSON document B) in PostgreSQL and MySQL, respectively?",
+    "options": [
+      "PostgreSQL: `->` | MySQL: `JSON_EXTRACT()`",
+      "PostgreSQL: `?` | MySQL: `MEMBER OF`",
+      "PostgreSQL: `@>` | MySQL: `JSON_CONTAINS()`",
+      "PostgreSQL: `#>` | MySQL: `JSON_SEARCH()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In PostgreSQL, the `@>` operator is used for containment checks on `jsonb` fields. In MySQL, the `JSON_CONTAINS(target, candidate)` function checks if the target JSON document contains the candidate value or document.",
+    "points": 10
+  },
+  {
+    "question_text": "In MySQL, what is the standard method to index a specific scalar key nested inside a JSON column (e.g. `$.status`) using standard B-Tree indexes?",
+    "options": [
+      "Create a functional index directly on the column using `CREATE INDEX ... ON my_table((data->'$.status'))` or create a Virtual Generated Column extracting the key and indexing it.",
+      "MySQL automatically generates B-Tree index nodes for all JSON keys upon column creation.",
+      "Configure `SET GLOBAL json_index_mode = BTREE` before run queries.",
+      "It is impossible; MySQL only supports indexing JSON using full-text searches."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL does not support indexing JSON columns directly with B-Tree indexes. You must either create a virtual generated column that extracts the nested key (e.g., using `data->>'$.status'`) and index that column, or create a functional B-Tree index directly referencing the path expression.",
+    "points": 10
+  },
+  {
+    "question_text": "How do PostgreSQL's two GIN index classes (`jsonb_ops` and `jsonb_path_ops`) compare when indexing jsonb columns?",
+    "options": [
+      "The `jsonb_ops` class is much smaller than `jsonb_path_ops` because it only indexes keys.",
+      "The `jsonb_path_ops` class is the default, and it supports both key-existence and containment queries.",
+      "The `jsonb_path_ops` class creates smaller, faster indexes optimized specifically for containment (`@>`) queries, but does not support key-existence operators like `?`.",
+      "The `jsonb_ops` class is deprecated, and users should only use `jsonb_path_ops`."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The default GIN operator class `jsonb_ops` indexes all keys, values, and paths. The alternative class `jsonb_path_ops` indexes only path-value pairs, which results in a smaller index size and faster lookup performance for containment queries (`@>`), but it cannot answer key-existence queries (like `?`).",
+    "points": 10
+  }
+]

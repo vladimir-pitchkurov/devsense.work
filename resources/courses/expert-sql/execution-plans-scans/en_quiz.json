@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is the critical difference between running EXPLAIN and EXPLAIN ANALYZE on a query?",
+    "options": [
+      "EXPLAIN prints the execution path in JSON format, whereas EXPLAIN ANALYZE formats it as a plain-text tree.",
+      "EXPLAIN displays only the optimizer's estimated plan costs and row counts without running the query; EXPLAIN ANALYZE actually executes the query and returns real execution runtimes and counts.",
+      "EXPLAIN locks the target tables, while EXPLAIN ANALYZE runs inside an isolated read-only transaction sandbox.",
+      "EXPLAIN is supported by MySQL and PostgreSQL, but EXPLAIN ANALYZE is exclusive to Oracle and SQL Server."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Standard `EXPLAIN` parses the query and generates estimates without executing it, making it fast and safe. Adding `ANALYZE` forces the database engine to run the query, measuring actual timings, buffer reads, and row counts.",
+    "points": 10
+  },
+  {
+    "question_text": "Why might a PostgreSQL Index Only Scan still perform physical read operations on the table heap pages?",
+    "options": [
+      "The index has experienced internal node splitting and requires physical rebalancing.",
+      "The Visibility Map indicates that the target pages contain un-vacuumed tuples, forcing the engine to inspect the heap to confirm transaction visibility.",
+      "The query planner defaults to standard Index Scans if the query runs outside a transaction block.",
+      "PostgreSQL does not support Index Only Scins on B-Tree indexes."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "An `Index Only Scan` retrieves all requested columns from the index. However, to ensure MVCC visibility, PostgreSQL consults the Visibility Map. If a page is marked as containing modified, un-vacuumed tuples, the planner must fetch the page from the table heap to verify if the tuples are visible to the current transaction.",
+    "points": 10
+  },
+  {
+    "question_text": "In a MySQL EXPLAIN plan, what is the meaning of the `index` access type, and how does it differ from the `ALL` access type?",
+    "options": [
+      "The `index` type is a single-row index lookup, whereas `ALL` retrieves all pages from memory.",
+      "The `index` type represents a full scan of the index tree, which avoids reading the entire tablespace but still reads all index records; `ALL` represents a full scan of the table heap.",
+      "The `index` type indicates that a clustered index was ignored, forcing a table scan.",
+      "MySQL uses `index` to denote functional indexes, while `ALL` refers to standard B-Tree indexes."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In MySQL, the `index` join type represents a Full Index Scan (similar to Index Only Scan in PostgreSQL). The engine traverses the entire index tree. While faster than `ALL` (Full Table Scan) because index blocks are usually smaller than data blocks, it still scans all entries and is not a key lookup.",
+    "points": 10
+  },
+  {
+    "question_text": "How does PostgreSQL's Bitmap Index Scan optimize disk I/O compared to a standard Index Scan?",
+    "options": [
+      "It bypasses the buffer pool and writes directly to disk pages.",
+      "It generates a bitmap of matching heap pages in memory and sorts them by physical block location on disk, allowing the Bitmap Heap Scan to read data sequentially and avoid random I/O.",
+      "It converts the index keys to md5 hashes to perform single-cycle integer comparisons.",
+      "It disables MVCC row versioning for the duration of the scan to avoid reading dead tuples."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A standard `Index Scan` can cause random I/O bottlenecks if it repeatedly visits the same heap pages in index order. A `Bitmap Index Scan` collects all tuple pointers, groups them into a bitmap sorted by physical disk addresses, and passes them to a `Bitmap Heap Scan` which retrieves pages sequentially, avoiding random disk seeks.",
+    "points": 10
+  }
+]

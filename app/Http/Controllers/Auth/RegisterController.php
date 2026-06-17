@@ -46,7 +46,7 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => User::ROLE_READER,
-            'slug' => Str::slug($request->name),
+            'slug' => User::generateUniqueSlug($request->name),
             'is_approved' => false,
             'locale' => app()->getLocale(),
         ]);

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Why does standard OFFSET pagination (e.g., LIMIT 10 OFFSET 100000) experience severe performance degradation as the offset increases?",
+    "options": [
+      "The database locks all 100,000 rows in shared mode, preventing concurrent writes.",
+      "The query optimizer ignores B-Tree indexes when an OFFSET clause is present.",
+      "The database engine must read and discard all 100,000 preceding rows to reach the starting point of the requested page, resulting in high CPU and disk I/O.",
+      "The database generates a massive temporary table on disk for every single page request."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Standard OFFSET pagination forces the database engine to traverse the index and read all rows up to the offset value, discarding them before returning the requested page. This makes response times scale linearly with page depth, causing severe bottlenecks on large tables.",
+    "points": 10
+  },
+  {
+    "question_text": "In both MySQL and PostgreSQL, what is the mandatory requirement for defining a Primary Key or Unique Constraint on a partitioned table?",
+    "options": [
+      "The primary key must be an auto-incrementing integer of type BIGINT.",
+      "The primary key or unique constraint must include all columns used in the partition key expression.",
+      "You cannot define primary keys on partitioned tables; they must rely on unique indexes instead.",
+      "The partition key column must not be part of the primary key to prevent partition locking."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To enforce uniqueness across the entire table without scanning every single partition on every insert, relational databases require that the partition key columns be included in all unique constraints and primary keys. This ensures uniqueness can be validated locally within a single partition.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Keyset (Cursor-Based) Pagination achieve O(1) performance regardless of how deep the pagination request is?",
+    "options": [
+      "By loading the entire table keyset into the database's shared memory buffer pool.",
+      "By using index seeks to jump directly to the starting point of the page based on the values of the last row from the previous page (e.g. WHERE created_at < last_seen_value).",
+      "By disabling transaction isolation checks for all read operations.",
+      "By converting the B-Tree index into a Hash index dynamically."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "By filtering rows based on the values of the last row retrieved from the previous page (keyset), the database can use a B-Tree index to perform a direct lookup (index seek) to locate the starting row of the page, completely avoiding scanning the pages that precede it.",
+    "points": 10
+  },
+  {
+    "question_text": "Which feature, supported in PostgreSQL 9.3+ and MySQL 8.0.14+, allows you to efficiently query and paginate a subquery for each row of the outer query (e.g., retrieving the top 3 products per category)?",
+    "options": [
+      "Recursive CTEs",
+      "LATERAL Joins (using INNER JOIN LATERAL or CROSS APPLY syntax)",
+      "Window functions using PARTITION BY",
+      "Index-Merged UNION ALL queries"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A `LATERAL` join acts like a SQL `foreach` loop. It allows a subquery to reference columns from preceding tables in the `FROM` clause. This is highly efficient for retrieving the top N items per category, as it can perform an index-driven seek for each category row.",
+    "points": 10
+  }
+]

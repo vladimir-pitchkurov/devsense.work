@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is the primary difference in data storage and execution between a standard view and a materialized view?",
+    "options": [
+      "A standard view is a virtual query shortcut that stores no physical data, whereas a materialized view physically saves the query results on disk and must be refreshed.",
+      "A standard view stores data in temporary RAM buffers, while a materialized view writes data to a permanent tablespace on disk.",
+      "A materialized view can only reference a single base table, while a standard view is allowed to join multiple tables.",
+      "Standard views are compiled into binary format at creation, whereas materialized views are interpreted dynamically at runtime."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A standard view is purely a virtual table representing a stored query; every time you select from it, the database runs the query. A materialized view physically caches the query results in a table-like structure on disk, offering much faster read performance but requiring manual or scheduled updates (refreshes) to stay up to date.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, what is a strict prerequisite to successfully execute the `REFRESH MATERIALIZED VIEW CONCURRENTLY` statement?",
+    "options": [
+      "The materialized view must have at least one unique index defined on its columns.",
+      "The underlying query must not contain any aggregate functions or subqueries.",
+      "The database user running the refresh must have superuser administrative privileges.",
+      "The materialized view must have been created using the `WITH CHECK OPTION` clause."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "To refresh a materialized view concurrently (without locking out concurrent select queries), PostgreSQL requires a unique index on the materialized view. This unique index is used to determine which rows have changed so that updates can be applied in-place.",
+    "points": 10
+  },
+  {
+    "question_text": "Since MySQL does not natively support materialized views, what is a common database-level workaround to simulate one?",
+    "options": [
+      "Create a physical cache table and use the MySQL Event Scheduler (`CREATE EVENT`) to periodically truncate and repopulate it.",
+      "Define a standard view with the `ALGORITHM = TEMPTABLE` option and a `REFRESH INTERVAL` clause.",
+      "Create a virtual view and link it to a MySQL Memory Engine table using a foreign key constraint.",
+      "MySQL cannot simulate materialized views at the database level; the caching logic must be handled in application code."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In MySQL, you can simulate a materialized view by creating a physical table to cache the query output, then creating a scheduled event (`CREATE EVENT`) to periodically run a script that truncates the cache table and inserts fresh records from the source query.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the purpose of appending the `WITH CHECK OPTION` clause to an updatable view definition?",
+    "options": [
+      "It prevents users from inserting or updating rows that would fail to satisfy the view's filtering (`WHERE`) condition.",
+      "It forces the database to perform schema integrity checks on the underlying tables before writing.",
+      "It checks that the current database user has read and write privileges on all referenced columns.",
+      "It ensures that concurrent transactions modifying the view are run using the SERIALIZABLE isolation level."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The `WITH CHECK OPTION` clause guarantees that any row added or updated through the view conforms to the view's `WHERE` clause. Without it, a user could update a row to values that make it disappear from the view's results, which can cause consistency issues.",
+    "points": 10
+  }
+]

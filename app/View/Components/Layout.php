@@ -54,6 +54,7 @@ class Layout extends Component
             'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
             'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
             'jobs.index', 'jobs.show', 'authors.index', 'authors.show',
+            'courses.index', 'courses.show', 'courses.chapter',
         ];
         if (! in_array($name, $routable, true)) {
             return URL::current();
@@ -133,6 +134,7 @@ class Layout extends Component
             'home', 'php.index', 'php.show', 'tools.index', 'tools.show', 
             'microservices.index', 'microservices.show', 'architecture.index', 'architecture.show',
             'jobs.index', 'jobs.show', 'authors.index', 'authors.show',
+            'courses.index', 'courses.show', 'courses.chapter',
         ];
         if (! in_array($name, $allowed, true)) {
             return [];
@@ -289,6 +291,21 @@ class Layout extends Component
             'tags.show' => $this->breadcrumbCurrent !== null ? [
                 ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
                 ['label' => __('ui.seo.breadcrumb_tags') ?? 'Tags', 'url' => SiteUrl::route('tags.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'courses.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_courses') ?: ($locale === 'ru' ? 'Курсы' : 'Courses'), 'url' => null],
+            ],
+            'courses.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_courses') ?: ($locale === 'ru' ? 'Курсы' : 'Courses'), 'url' => SiteUrl::route('courses.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'courses.chapter' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_courses') ?: ($locale === 'ru' ? 'Курсы' : 'Courses'), 'url' => SiteUrl::route('courses.index', ['locale' => $locale])],
+                ['label' => request()->route('course_slug') ? ucwords(str_replace('-', ' ', request()->route('course_slug'))) : ($locale === 'ru' ? 'Силлабус' : 'Syllabus'), 'url' => request()->route('course_slug') ? SiteUrl::route('courses.show', ['locale' => $locale, 'course_slug' => request()->route('course_slug')]) : null],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
             default => [],

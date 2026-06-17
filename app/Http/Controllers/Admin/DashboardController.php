@@ -26,7 +26,8 @@ class DashboardController extends Controller
 
             // Get incomplete quizzes (quizzes not completed yet)
             $completedQuizIds = $user->quizzes->pluck('id')->toArray();
-            $incompleteQuizzes = \App\Models\Quiz::whereNotIn('id', $completedQuizIds)
+            $incompleteQuizzes = \App\Models\Quiz::whereDoesntHave('chapter')
+                ->whereNotIn('id', $completedQuizIds)
                 ->with('translations')
                 ->get();
 

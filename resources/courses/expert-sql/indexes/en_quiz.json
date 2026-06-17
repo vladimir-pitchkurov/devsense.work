@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "In MySQL's InnoDB engine, what does a leaf node of a Secondary Index store, and what query execution step does this trigger?",
+    "options": [
+      "It stores the physical memory address of the row, enabling direct index-to-heap jumps.",
+      "It stores the Primary Key value of the row, triggering a secondary search in the Clustered Index (Bookmark Lookup) to fetch the actual row data if non-indexed columns are queried.",
+      "It stores a compressed copy of the entire row, eliminating the need to ever visit the primary key table space.",
+      "It stores the logical row offset from the start of the tablespace page."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In InnoDB, tables are clustered by their Primary Key. Secondary indexes store the Primary Key value at their leaf nodes rather than row pointers. If the query requires columns not covered by the secondary index, MySQL must perform a second lookup in the clustered index (bookmark lookup) to fetch the row.",
+    "points": 10
+  },
+  {
+    "question_text": "Under what circumstances should you choose a BRIN (Block Range Index) over a standard B-Tree index in PostgreSQL?",
+    "options": [
+      "When indexing high-cardinality random strings (such as UUIDs) that are updated frequently.",
+      "When indexing extremely large tables (hundreds of gigabytes) where the data is physically ordered on disk according to the indexed column (such as timestamps or auto-incrementing keys).",
+      "When you need to enforce a UNIQUE constraint on a column.",
+      "When the indexed column contains rich nested JSON structures requiring key containment searches."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A BRIN index divides a table into page ranges and only stores the minimum and maximum values for each range. It is extremely compact (often 1000x smaller than a B-Tree) but relies on the data being physically ordered on disk to be effective. It cannot enforce uniqueness.",
+    "points": 10
+  },
+  {
+    "question_text": "How do PostgreSQL and MySQL differ in how they implement a covering index containing payload columns that do not need to be sorted?",
+    "options": [
+      "PostgreSQL allows appending payload columns to the leaf nodes using the `INCLUDE` clause; MySQL does not have an `INCLUDE` clause and requires defining them as part of a composite index key.",
+      "MySQL supports the `INCLUDE` clause for B-Tree indexes, whereas PostgreSQL requires using the GIN index type.",
+      "Neither database supports covering indexes; all queries must fetch data from the base table.",
+      "PostgreSQL automatically includes all table columns in B-Tree index leaves by default."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL supports the `INCLUDE` clause (e.g., `CREATE INDEX ... ON table (key) INCLUDE (payload)`), which stores the payload columns in the leaf nodes for quick retrieval without using them to sort the index. MySQL lacks this clause, forcing you to define a multi-column composite index key where all columns are part of the index sorting structure.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary benefit of creating a Partial Index (using a `WHERE` clause) in PostgreSQL?",
+    "options": [
+      "It allows the index to automatically switch between B-Tree and GIN layouts depending on row counts.",
+      "It excludes rows that do not match the filter condition, keeping the index size small, reducing disk utilization, and minimizing index update overhead during writes.",
+      "It enables the query to bypass transaction visibility checks (MVCC) entirely.",
+      "It allows indexing expressions and functions rather than raw column values."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A partial index (e.g., `CREATE INDEX ... WHERE status = 'active'`) only contains entries for rows matching the specified condition. This saves significant disk space and reduces the write overhead because the index does not need to be updated when rows that do not match the condition are inserted or updated.",
+    "points": 10
+  }
+]
