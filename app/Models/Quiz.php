@@ -25,6 +25,11 @@ class Quiz extends Model
         return $this->hasMany(QuizQuestion::class);
     }
 
+    public function chapter(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CourseChapter::class, 'quiz_id');
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_quizzes')

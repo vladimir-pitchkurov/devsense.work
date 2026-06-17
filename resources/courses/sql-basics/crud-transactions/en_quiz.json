@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is the consequence of executing an `UPDATE` or `DELETE` statement without a `WHERE` clause?",
+    "options": [
+      "The query will execute and apply the changes or deletion to all rows in the table.",
+      "The database engine will reject the query and throw a syntax/safety error.",
+      "The query will run but affect zero rows to prevent accidental data loss.",
+      "The database will automatically initiate a rollback and close the connection."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "If no `WHERE` clause is provided in an `UPDATE` or `DELETE` statement, the SQL engine will apply the modification or deletion to every single record in the target table.",
+    "points": 10
+  },
+  {
+    "question_text": "Under the ACID transaction model, what does Atomicity guarantee?",
+    "options": [
+      "Either all operations in the transaction block succeed, or the entire transaction is rolled back (all-or-nothing).",
+      "The database will automatically transform all text columns to atomic ASCII values.",
+      "Concurrently executing transactions will run in isolation and never block each other.",
+      "Once a transaction is committed, the changes are guaranteed to survive system crashes."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Atomicity ensures that a transaction is treated as a single, indivisible unit. If any part of the transaction fails, the entire transaction is rolled back, leaving the database state unchanged.",
+    "points": 10
+  },
+  {
+    "question_text": "How do MySQL and PostgreSQL differ when running DDL statements (e.g. `ALTER TABLE`, `DROP TABLE`) inside a transaction block?",
+    "options": [
+      "PostgreSQL supports transactional DDL and can roll back structure changes; MySQL does not support it and triggers an implicit commit.",
+      "MySQL supports transactional DDL and can roll back structure changes; PostgreSQL does not support it and triggers an implicit commit.",
+      "Both engines support full transaction rollback of schema modifications (DDL).",
+      "Neither engine allows executing DDL statements inside a transaction block."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL has full support for transactional DDL, allowing table modifications to be rolled back. MySQL does not support this; executing DDL inside a transaction causes an automatic implicit commit, meaning the transaction cannot be rolled back.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following syntax pairs represents the correct way to perform an \"upsert\" (insert-or-update) in MySQL and PostgreSQL?",
+    "options": [
+      "MySQL uses `ON DUPLICATE KEY UPDATE`, and PostgreSQL uses `ON CONFLICT (...) DO UPDATE`.",
+      "MySQL uses `ON CONFLICT (...) DO UPDATE`, and PostgreSQL uses `ON DUPLICATE KEY UPDATE`.",
+      "Both engines use the standard `UPSERT INTO` syntax.",
+      "Both engines use the `INSERT OR REPLACE` statement."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL performs upserts using the `ON DUPLICATE KEY UPDATE` clause at the end of an `INSERT` statement. PostgreSQL uses `ON CONFLICT (conflict_target) DO UPDATE`.",
+    "points": 10
+  }
+]

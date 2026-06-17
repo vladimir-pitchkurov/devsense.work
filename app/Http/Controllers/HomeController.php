@@ -36,7 +36,8 @@ class HomeController extends Controller
             ->get();
 
         // Latest 3 quizzes
-        $latestQuizzes = \App\Models\Quiz::with(['translations'])
+        $latestQuizzes = \App\Models\Quiz::whereDoesntHave('chapter')
+            ->with(['translations'])
             ->latest()
             ->limit(3)
             ->get();

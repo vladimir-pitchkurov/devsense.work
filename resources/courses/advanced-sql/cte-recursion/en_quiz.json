@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "How did PostgreSQL's default optimization behavior for Common Table Expressions (CTEs) change in version 12?",
+    "options": [
+      "Before PostgreSQL 12, all CTEs were materialized (acting as optimization fences); in 12+, CTEs referenced only once are not materialized (inlined) by default unless forced with AS MATERIALIZED.",
+      "Before PostgreSQL 12, CTEs were always inlined; in 12+, all CTEs are materialized by default to speed up sequential access.",
+      "PostgreSQL 12 introduced support for CTEs; earlier versions only supported nested subqueries.",
+      "PostgreSQL 12 deprecated the AS MATERIALIZED clause, forcing all CTEs to be handled dynamically."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Prior to PostgreSQL 12, CTEs were always materialized (evaluated once and stored as a temporary table), which acted as an optimization fence and prevented pushing outer filters down. Since version 12, CTEs that are referenced only once are inlined by default (`NOT MATERIALIZED`) to allow optimization.",
+    "points": 10
+  },
+  {
+    "question_text": "Which database engine supports data-modifying operations (such as INSERT, UPDATE, or DELETE with RETURNING) within a CTE to chain writes in a single query?",
+    "options": [
+      "MySQL 8.0 only",
+      "PostgreSQL only",
+      "Both MySQL 8.0 and PostgreSQL",
+      "Neither; SQL standards prohibit modifying data within CTEs"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL allows using data-modifying statements (`INSERT`, `UPDATE`, `DELETE`) in CTEs, often combined with `RETURNING` to chain operations. MySQL 8.0 only supports read-only statements inside CTEs.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you natively prevent infinite loops in a recursive CTE when querying data that contains circular references in PostgreSQL?",
+    "options": [
+      "By appending the `CYCLE` clause at the end of the CTE definition to keep track of visited keys.",
+      "By configuring the `SET max_sp_recursion_depth` system variable.",
+      "By adding a `WHERE NOT EXISTS` subquery referencing the CTE inside the Anchor Member.",
+      "PostgreSQL automatically detects cycle loops at compile time and throws a syntax error."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL provides the standard `CYCLE` clause (e.g., `CYCLE id SET is_cycle USING path`) which automatically tracks visited IDs in a path and stops recursion if a duplicate is found. MySQL does not support the `CYCLE` clause and relies on limits like `cte_max_recursion_depth` or execution time limits.",
+    "points": 10
+  },
+  {
+    "question_text": "In a query with multiple comma-separated CTEs, what are the referencing rules regarding order of definition?",
+    "options": [
+      "A CTE can reference any other CTE defined before it in the same WITH clause, but cannot reference CTEs defined after it (forward referencing is not allowed).",
+      "Any CTE in a WITH clause can reference any other CTE in the same clause regardless of the order they are declared in.",
+      "CTEs cannot reference each other at all; they must be completely independent.",
+      "A CTE can only reference another CTE if the `RECURSIVE` keyword is used on all CTEs in the block."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In standard SQL (both MySQL and PostgreSQL), sequential CTEs are evaluated in order. A later CTE can reference any previously defined CTE in the same `WITH` clause, but a CTE cannot reference one defined later in the query.",
+    "points": 10
+  }
+]

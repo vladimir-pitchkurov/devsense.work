@@ -1,0 +1,52 @@
+[
+  {
+    "question_text": "In PostgreSQL, what happens physical-level when you execute an UPDATE statement on a row, and how does MVCC determine visibility?",
+    "options": [
+      "The row is updated in-place, and the old version is copied to a rollback segment.",
+      "The old row is marked as deleted by setting its xmax header to the current transaction ID, and a new row (tuple) is inserted with its xmin set to the current transaction ID.",
+      "A new temporary table is created dynamically to hold the active versions, which are merged upon transaction commit.",
+      "The database locks the entire data block and overwrites the contents only after the transaction is flushed to the WAL."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL implements MVCC by storing all tuple versions directly in the table heap. An `UPDATE` behaves as a logical `DELETE` (setting `xmax` of the old tuple to the current transaction ID) followed by an `INSERT` (setting `xmin` of the new tuple to the current transaction ID).",
+    "points": 10
+  },
+  {
+    "question_text": "How does MySQL's InnoDB engine reconstruct older row versions for read-heavy transactions requiring snapshot isolation?",
+    "options": [
+      "By scanning the Binary Log from the oldest active transaction timestamp.",
+      "By reading previously stored rows from a temporary table cache in memory.",
+      "By modifying the current row in-place and traversing the Undo Log chain using the row's rollback pointer (DB_ROLL_PTR) to build the historical snapshot.",
+      "InnoDB does not support snapshot reads; readers block writers to maintain consistency."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "MySQL InnoDB performs updates in-place inside the tablespace and writes the prior version to the Undo Log. The row's `DB_ROLL_PTR` points to these undo records, allowing InnoDB to traverse the undo chain backward to dynamically reconstruct older snapshots.",
+    "points": 10
+  },
+  {
+    "question_text": "Which condition is required for PostgreSQL to perform a Heap-Only Tuple (HOT) update, and why is it beneficial?",
+    "options": [
+      "The table must not have any indexes defined on it, which speeds up scans.",
+      "The update must not change any indexed columns, and there must be sufficient free space on the same heap page; it prevents write amplification by avoiding index updates.",
+      "The query must be executed within the READ UNCOMMITTED isolation level, reducing lock contention.",
+      "The autovacuum daemon must be disabled for the target table, ensuring that cleanups do not interfere with page layout."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A HOT update occurs in PostgreSQL when an update does not modify any columns covered by indexes, and the page containing the tuple has enough space to hold the new version. This avoids creating new index pointers, as index entries still point to the old tuple, which links to the new one.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary danger of keeping a transaction open for an extended period of time (e.g., several hours) in a high-write MySQL InnoDB database?",
+    "options": [
+      "The database will automatically convert all tables to read-only mode to prevent deadlock logs.",
+      "The InnoDB buffer pool will immediately freeze and reject any subsequent write transactions.",
+      "The InnoDB purge thread will be unable to clean up undo log pages created since the transaction started, leading to significant Undo Tablespace bloat.",
+      "MySQL will run out of transaction IDs (TxIDs) and crash immediately."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Wait, let me look at the options. Option index 3 is 'MySQL will run out...'. Ah, option index 2 (third option, 0-indexed: index 2) is 'The InnoDB purge thread will be unable to clean up undo log pages...'. Let me check the correct_answer_index. It should be 2, not 3! Let me correct it.",
+    "correct_answer_index": 2,
+    "explanation": "When a transaction is kept open in MySQL InnoDB, the purge threads cannot clean up undo logs generated after that transaction's start because it might still need them to reconstruct older snapshots. This prevents purging and causes the Undo Tablespace to swell.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "What is a critical functional difference between a Stored Procedure and a User-Defined Function (UDF) regarding transaction management?",
+    "options": [
+      "A Stored Procedure can execute `COMMIT` or `ROLLBACK` commands to manage transactions, while a UDF cannot contain transaction control statements.",
+      "A UDF can open a new transaction but cannot commit it, whereas a Stored Procedure has no transaction access at all.",
+      "A UDF runs in its own isolated transaction block automatically, while a Stored Procedure shares the transaction block of the client connection.",
+      "There is no difference in transaction control; both support the exact same transaction statements inside their body."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A key architectural difference is that stored procedures support transaction control (using `COMMIT` and `ROLLBACK` inside the procedure body). User-defined functions (UDFs) are designed to be called within SQL queries (like `SELECT`), and SQL standards prohibit transaction state changes during query execution to prevent side effects, meaning UDFs cannot execute transaction control statements.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the trigger definition process differ syntactically between PostgreSQL and MySQL?",
+    "options": [
+      "PostgreSQL requires defining a separate trigger function that returns type `TRIGGER` and then binding it, while MySQL embeds the trigger logic directly inline within the `CREATE TRIGGER` statement.",
+      "MySQL requires creating a separate trigger function before binding it to a table, whereas PostgreSQL allows inline trigger bodies.",
+      "PostgreSQL does not support row-level (`FOR EACH ROW`) triggers and only supports statement-level triggers, unlike MySQL.",
+      "MySQL triggers can be written in multiple programming languages (e.g., Python), while PostgreSQL triggers are strictly limited to PL/pgSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, a trigger requires a helper function defined with a return type of `TRIGGER`. You then create the trigger and bind it using `EXECUTE FUNCTION trigger_function()`. In MySQL, the trigger logic is written inline directly inside the `CREATE TRIGGER` statement, and separate functions are not used.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens in PostgreSQL 11+ if a stored procedure containing a `COMMIT` statement is called from inside an active transaction block (e.g., inside `BEGIN; CALL my_procedure();`)?",
+    "options": [
+      "The query engine will throw a runtime error, preventing the transaction control statement from executing.",
+      "The procedure will commit the transaction up to that point and start a new transaction block silently.",
+      "The `COMMIT` statement inside the procedure will be silently ignored, leaving transaction control to the client.",
+      "PostgreSQL will automatically split the transaction, committing the procedure's changes while keeping the outer transaction active."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, a stored procedure cannot commit or rollback transactions if it is called within an active transaction block (such as a `BEGIN ... COMMIT` block started by the client). Doing so will trigger a runtime error (`invalid transaction termination`). Procedures can only control transactions if they are called in autocommit mode.",
+    "points": 10
+  },
+  {
+    "question_text": "Why can row-level triggers (`FOR EACH ROW`) introduce severe performance overhead during bulk updates?",
+    "options": [
+      "Because the database engine must repeatedly switch execution contexts between the SQL engine and the procedural interpreter for every single affected row.",
+      "Because row-level triggers force the database to upgrade all row locks to exclusive table locks immediately.",
+      "Because the database is forced to write a separate WAL (Write-Ahead Log) entry and flush it to disk for every row invocation.",
+      "Because the `OLD` and `NEW` pseudo-records are saved as physical temporary files on disk instead of being held in RAM."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Row-level triggers run once per affected row. In a bulk update affecting millions of rows, the database must repeatedly switch between the set-based SQL execution context and the procedural programming language execution context. This context-switching overhead turns a fast bulk operation into a slow, sequential row-by-row process.",
+    "points": 10
+  }
+]

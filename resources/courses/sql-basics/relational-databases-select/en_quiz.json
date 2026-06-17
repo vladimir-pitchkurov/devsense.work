@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Which of the following is considered a database query anti-pattern when writing SQL for production applications?",
+    "options": [
+      "Using `SELECT *` to retrieve all columns from a table.",
+      "Specifying explicit column names in the `SELECT` clause.",
+      "Renaming columns in the output using the `AS` keyword.",
+      "Filtering records with a `WHERE` clause instead of retrieving all rows."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Using `SELECT *` in production is an anti-pattern. It forces the database to perform unnecessary disk I/O, increases network payload size, and can break application code if columns are added or removed in the schema.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, what happens if you use double quotes (`\"`) instead of single quotes (`'`) for a text value, such as: `WHERE username = \"alice\"`?",
+    "options": [
+      "PostgreSQL treats `\"alice\"` as a column identifier and throws a \"column 'alice' does not exist\" error.",
+      "PostgreSQL parses it perfectly as a string literal since double and single quotes are interchangeable.",
+      "The database automatically converts it to a string literal but issues a deprecation warning.",
+      "The query executes but fails to match any records because double quotes imply a null constraint."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, single quotes (`'`) are used for string literals, whereas double quotes (`\"`) are reserved for identifiers (like table or column names). Writing `\"alice\"` tells PostgreSQL to look for a column named `alice`.",
+    "points": 10
+  },
+  {
+    "question_text": "How do PostgreSQL and MySQL differ when using the `LIKE` operator for pattern matching?",
+    "options": [
+      "PostgreSQL's `LIKE` is case-sensitive (requiring `ILIKE` for case-insensitivity), while MySQL's `LIKE` is case-insensitive by default under typical collations.",
+      "MySQL's `LIKE` is case-sensitive, while PostgreSQL's `LIKE` is case-insensitive by default.",
+      "Both databases treat `LIKE` as case-sensitive and do not offer any case-insensitive alternatives.",
+      "PostgreSQL supports `LIKE` and `ILIKE`, whereas MySQL only supports `ILIKE` for case-insensitive queries."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL implements a case-sensitive `LIKE` and provides `ILIKE` for case-insensitive searches. MySQL's `LIKE` is case-insensitive by default under standard case-insensitive collations (like `utf8mb4_0900_ai_ci`).",
+    "points": 10
+  },
+  {
+    "question_text": "What is the standard way to concatenate strings in PostgreSQL vs. MySQL by default?",
+    "options": [
+      "PostgreSQL uses the `||` operator, while MySQL uses the `CONCAT()` function.",
+      "PostgreSQL uses the `CONCAT()` function, while MySQL uses the `||` operator.",
+      "Both engines use the `+` operator to join strings.",
+      "Both engines use the `CONCAT()` function, and the `||` operator is completely unsupported in both."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL follows the ANSI SQL standard using the `||` operator for string concatenation. MySQL treats `||` as a logical `OR` operator by default and requires the `CONCAT()` function unless the `PIPES_AS_CONCAT` SQL mode is active.",
+    "points": 10
+  }
+]

@@ -63,7 +63,7 @@ class GoogleAuthController extends Controller
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
                     'role' => User::ROLE_READER,
-                    'slug' => Str::slug($googleUser->getName()),
+                    'slug' => User::generateUniqueSlug($googleUser->getName()),
                     'is_approved' => false,
                 ]);
 

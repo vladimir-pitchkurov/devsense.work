@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "How do standard SQL aggregate functions (like `SUM`, `AVG`, `MIN`, `MAX`) handle `NULL` values?",
+    "options": [
+      "They completely ignore `NULL` values in their calculations (except `COUNT(*)` which counts all rows).",
+      "They treat `NULL` values as `0` for numeric columns and empty strings for text columns.",
+      "They throw a runtime database execution error if a `NULL` is encountered.",
+      "They propagate the `NULL` value, causing the entire aggregate result to become `NULL`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Standard aggregate functions like `SUM` and `AVG` ignore `NULL` values when performing calculations. `COUNT(column)` only counts non-NULL values, while `COUNT(*)` counts all records regardless of NULLs.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary difference between the `WHERE` and `HAVING` clauses?",
+    "options": [
+      "`WHERE` filters individual rows before grouping occurs; `HAVING` filters aggregated groups after the `GROUP BY` clause is processed.",
+      "`HAVING` filters individual rows; `WHERE` filters aggregated groups.",
+      "`WHERE` allows the use of aggregate functions, whereas `HAVING` does not.",
+      "They are syntactically and functionally identical, but `HAVING` is only supported in PostgreSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WHERE` is applied to rows before the `GROUP BY` stage, so it cannot contain aggregate functions. `HAVING` is applied after grouping and is specifically designed to filter groups based on aggregate conditions.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens if you execute `SELECT category, brand, AVG(price) FROM products GROUP BY category;` in PostgreSQL?",
+    "options": [
+      "It fails with a syntax error because `brand` is in the `SELECT` list but not in the `GROUP BY` clause.",
+      "It runs successfully, returning a random `brand` value for each category.",
+      "It automatically groups by both `category` and `brand` without throwing an error.",
+      "It runs successfully, returning `NULL` for the `brand` column in all rows."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL strictly enforces standard SQL grouping rules. Any non-aggregated column in the `SELECT` list must be included in the `GROUP BY` clause. Since `brand` is neither aggregated nor in the `GROUP BY`, the query fails.",
+    "points": 10
+  },
+  {
+    "question_text": "Which functions are used to concatenate string values from grouped rows into a single separated list in MySQL and PostgreSQL?",
+    "options": [
+      "MySQL uses `GROUP_CONCAT()`, and PostgreSQL uses `string_agg()`.",
+      "MySQL uses `string_agg()`, and PostgreSQL uses `GROUP_CONCAT()`.",
+      "Both databases use `CONCAT()` for this operation.",
+      "Both databases use `LIST_AGG()` for this operation."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL uses the built-in `GROUP_CONCAT()` function to concatenate strings from grouped rows. PostgreSQL uses the `string_agg()` function, which requires a separator argument and optionally an order specification.",
+    "points": 10
+  }
+]

@@ -18,7 +18,7 @@ class PublicQuizController extends Controller
     public function index()
     {
         $locale = app()->getLocale();
-        $quizzes = Quiz::with(['translations' => function ($q) use ($locale) {
+        $quizzes = Quiz::whereDoesntHave('chapter')->with(['translations' => function ($q) use ($locale) {
             $q->where('locale', $locale);
         }])->get();
 

@@ -175,6 +175,15 @@
                 color: var(--alert-important-border);
             }
         }
+        
+        &.markdown-alert-tip,
+        &.markdown-alert-caution {
+            border-left-color: var(--alert-tip-border);
+            background-color: var(--alert-tip-bg);
+            .markdown-alert-title {
+                color: var(--alert-tip-border);
+            }
+        }
     }
 
     /* Quizzes / Spoilers styling */

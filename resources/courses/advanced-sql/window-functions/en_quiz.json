@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Given three rows with identical values that tie for the first place, which window function assigns the rank sequence 1, 1, 1, 4 to the rows in the partition?",
+    "options": [
+      "RANK()",
+      "DENSE_RANK()",
+      "ROW_NUMBER()",
+      "NTILE(4)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`RANK()` assigns identical ranks to duplicate values, but skips subsequent ranks, resulting in `1, 1, 1, 4`. In contrast, `DENSE_RANK()` would assign `1, 1, 1, 2` (no gaps), and `ROW_NUMBER()` would assign `1, 2, 3, 4` (unique sequence).",
+    "points": 10
+  },
+  {
+    "question_text": "Why does the expression `LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary)` return the current row's salary instead of the maximum salary in the department?",
+    "options": [
+      "Because when `ORDER BY` is present, the default window frame is `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, which restricts the frame to rows up to the current one.",
+      "Because `LAST_VALUE()` requires a `DESC` sorting order to be specified in the `ORDER BY` clause.",
+      "Because `LAST_VALUE()` is only evaluated within the scope of the first two rows of a partition.",
+      "Because the database engine automatically disables looking forward to optimize memory usage unless `LOOKAHEAD` is enabled."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "When an `ORDER BY` clause is used within `OVER()`, the default window frame is dynamically set to `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. Therefore, the 'last value' in the current frame is always the value of the current row (or its duplicate peers). To get the actual last value of the partition, the frame must be explicitly set to `RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (or `ROWS` equivalent).",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following syntax options is valid in PostgreSQL to aggregate only specific rows inside a window partition without resorting to a `CASE WHEN` conditional expression?",
+    "options": [
+      "Using the `FILTER (WHERE query_condition)` clause appended directly to the aggregate function (e.g., `COUNT(id) FILTER (WHERE salary > 5000) OVER(...)`).",
+      "Specifying a `WHERE` condition directly inside the `PARTITION BY` clause (e.g., `PARTITION BY department_id WHERE salary > 5000`).",
+      "Using a nested `HAVING` statement inside the `OVER(...)` window definition block.",
+      "PostgreSQL does not support selective window aggregation natively and requires `CASE WHEN` just like MySQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL supports the SQL-standard `FILTER (WHERE condition)` clause for aggregate functions. This allows for clean, readable selective aggregates within window functions. MySQL 8.0 does not support this and requires writing a `CASE WHEN` expression inside the aggregate function.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following statements is true regarding frame exclusion capabilities (such as excluding the current row or group from the window frame calculation)?",
+    "options": [
+      "PostgreSQL 11+ supports frame exclusion clauses like `EXCLUDE CURRENT ROW` and `EXCLUDE GROUP`, whereas MySQL 8.0 does not support frame exclusions.",
+      "Both MySQL 8.0 and PostgreSQL support the ANSI-standard `EXCLUDE` clauses in window framing.",
+      "MySQL 8.0 supports frame exclusions, but PostgreSQL does not support them and requires self-joins.",
+      "Neither PostgreSQL nor MySQL supports frame exclusion; it is only available in commercial databases like Oracle and SQL Server."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL 11+ supports the ANSI SQL `EXCLUDE` options (`EXCLUDE CURRENT ROW`, `EXCLUDE GROUP`, `EXCLUDE TIES`, and `EXCLUDE NO OTHERS`) within the window frame clause. MySQL 8.0 does not support any frame exclusions, so workarounds (like subqueries or mathematical offsets) must be used.",
+    "points": 10
+  }
+]

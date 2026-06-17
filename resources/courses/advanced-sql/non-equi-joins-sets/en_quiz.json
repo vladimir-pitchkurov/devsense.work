@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Which of the following query examples is classified as a non-equi join?",
+    "options": [
+      "SELECT * FROM products p JOIN shipping_rates s ON p.weight BETWEEN s.min_weight AND s.max_weight",
+      "SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id",
+      "SELECT * FROM customer_orders o JOIN clients c ON o.client_id = c.id AND c.status = 'active'",
+      "SELECT * FROM sales_2025 s UNION ALL SELECT * FROM sales_2026 s2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A non-equi join is defined as a join that uses comparison operators other than the equals sign (`=`). The join using `BETWEEN` uses inequality conditions (`>=` and `<=`), making it a non-equi join. The others are standard equi-joins or set operations.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the execution performance of `UNION` compare to `UNION ALL`?",
+    "options": [
+      "`UNION` is slower because the database must perform sorting or hashing to identify and remove duplicate records from the combined set.",
+      "`UNION ALL` is slower because it must validate foreign key integrity constraints across both datasets.",
+      "Both operators perform identically because modern database query optimizers inline them using the same execution plan.",
+      "`UNION` is faster because it reduces the overall volume of data that needs to be transferred to the client application."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`UNION` is inherently slower than `UNION ALL` because it performs a duplicate removal step. To achieve this, the query engine has to sort the combined results or construct a temporary hash table. `UNION ALL` simply concatenates the datasets without checking for duplicates, requiring minimal processing.",
+    "points": 10
+  },
+  {
+    "question_text": "If you are working with MySQL 5.7 or an older MySQL 8.0 version that does not support the `EXCEPT` set operator, how can you simulate `Query_A EXCEPT Query_B`?",
+    "options": [
+      "Use a `LEFT JOIN` on the matching key and filter using a `WHERE b.key IS NULL` condition.",
+      "Use an `INNER JOIN` with an inequality operator (`A.key != B.key`).",
+      "Use a `CROSS JOIN` and filter matching rows using a `HAVING COUNT(*) = 0` clause.",
+      "Older versions of MySQL cannot perform this logic and require executing multiple queries in application code."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "An `EXCEPT` query returns all unique rows from the first query that are not present in the second query. This can be efficiently simulated in any SQL database (including older MySQL versions) using a `LEFT JOIN` combined with a `WHERE second_table.key IS NULL` filter, which identifies records in table A that have no matching record in table B.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, if Query 1 returns the rows `[A, A, B]` and Query 2 returns `[A, B, B]`, what is the exact output of `Query 1 EXCEPT ALL Query 2`?",
+    "options": [
+      "A single row: `[A]`",
+      "Two rows: `[A, A]`",
+      "An empty result set",
+      "Three rows: `[A, B, B]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The `EXCEPT ALL` operator calculates the difference in cardinality for each row value. If value X appears N times in the first query and M times in the second, the result will contain X exactly `N - M` times (only if `N - M > 0`). Here, value 'A' appears `2 - 1 = 1` time. Value 'B' appears `1 - 2 = -1` (0 times). Thus, the final output contains a single row: `[A]`.",
+    "points": 10
+  }
+]

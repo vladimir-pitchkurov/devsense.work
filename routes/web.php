@@ -232,6 +232,13 @@ Route::prefix('{locale}')
             Route::post('/{slug}/progress', [\App\Http\Controllers\PublicQuizController::class, 'saveProgress'])->name('quizzes.progress')->middleware('auth');
         });
 
+        Route::prefix('courses')->group(function () {
+            Route::get('/', [\App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
+            Route::get('/{course_slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('courses.show')->middleware('auth');
+            Route::get('/{course_slug}/{chapter_slug}', [\App\Http\Controllers\CourseController::class, 'showChapter'])->name('courses.chapter')->middleware('auth');
+            Route::post('/{course_slug}/{chapter_slug}/complete', [\App\Http\Controllers\CourseController::class, 'completeChapter'])->name('courses.chapter.complete')->middleware('auth');
+        });
+
         Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');
         Route::post('/features/{feature}/vote', [\App\Http\Controllers\FeatureController::class, 'vote'])->name('features.vote')->middleware('auth');
 
