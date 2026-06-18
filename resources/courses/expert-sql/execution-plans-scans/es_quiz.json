@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál es la diferencia crítica entre ejecutar EXPLAIN y EXPLAIN ANALYZE en una consulta?",
+    "options": [
+      "EXPLAIN imprime la ruta de ejecución en formato JSON, mientras que EXPLAIN ANALYZE le da formato de árbol de texto plano.",
+      "EXPLAIN muestra únicamente los costos del plan estimado y los recuentos de filas del optimizador sin ejecutar la consulta; EXPLAIN ANALYZE ejecuta realmente la consulta y devuelve los tiempos y recuentos de ejecución reales.",
+      "EXPLAIN bloquea las tablas de destino, mientras que EXPLAIN ANALYZE se ejecuta dentro de un entorno aislado de transacción de solo lectura.",
+      "EXPLAIN es compatible con MySQL y PostgreSQL, pero EXPLAIN ANALYZE es exclusivo de Oracle y SQL Server."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "El comando `EXPLAIN` estándar analiza la consulta y genera estimaciones sin ejecutarla, lo que lo hace rápido y seguro. Añadir `ANALYZE` obliga al motor de la base de datos a ejecutar la consulta, midiendo los tiempos reales, lecturas de búfer y recuentos de filas.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Por qué un Index Only Scan de PostgreSQL podría realizar operaciones de lectura física en las páginas heap de la tabla?",
+    "options": [
+      "El índice ha experimentado una división interna de nodos y requiere un reequilibrio físico.",
+      "El Visibility Map indica que las páginas de destino contienen tuplas no limpiadas por vacuum, lo que obliga al motor a inspeccionar el heap para confirmar la visibilidad de la transacción.",
+      "El planificador de consultas recurre de forma predeterminada a Index Scans estándar si la consulta se ejecuta fuera de un bloque de transacción.",
+      "PostgreSQL no admite Index Only Scans en índices B-Tree."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un `Index Only Scan` recupera todas las columnas solicitadas del índice. Sin embargo, para garantizar la visibilidad de MVCC, PostgreSQL consulta el Visibility Map. Si una página está marcada como que contiene tuplas modificadas y no limpiadas por vacuum, el planificador debe recuperar la página del heap de la tabla para verificar si las tuplas son visibles para la transacción actual.",
+    "points": 10
+  },
+  {
+    "question_text": "En un plan EXPLAIN de MySQL, ¿cuál es el significado del tipo de acceso `index` y en qué se diferencia del tipo de acceso `ALL`?",
+    "options": [
+      "El tipo `index` es una búsqueda de índice de una sola fila, mientras que `ALL` recupera todas las páginas de la memoria.",
+      "El tipo `index` representa un escaneo completo del árbol de índices, lo que evita leer todo el espacio de la tabla pero sigue leyendo todos los registros del índice; `ALL` representa un escaneo completo del heap de la tabla.",
+      "El tipo `index` indica que se ignoró un índice agrupado (clustered index), lo que forzó un escaneo de la tabla.",
+      "MySQL utiliza `index` para denotar índices funcionales, mientras que `ALL` se refiere a índices B-Tree estándar."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "En MySQL, el tipo de unión `index` representa un escaneo completo de índice (Full Index Scan, similar a Index Only Scan en PostgreSQL). El motor recorre todo el árbol de índices. Aunque es más rápido que `ALL` (escaneo completo de tabla) porque los bloques de índice suelen ser más pequeños que los bloques de datos, sigue escaneando todas las entradas y no es una búsqueda por clave.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo optimiza el Bitmap Index Scan de PostgreSQL la E/S de disco en comparación con un Index Scan estándar?",
+    "options": [
+      "Omite el buffer pool y escribe directamente en las páginas de disco.",
+      "Genera un mapa de bits de las páginas heap coincidentes en memoria y las ordena por ubicación física del bloque en el disco, lo que permite al Bitmap Heap Scan leer los datos secuencialmente y evitar la E/S aleatoria.",
+      "Convierte las claves del índice en hashes md5 para realizar comparaciones de enteros de un solo ciclo.",
+      "Desactiva el versionado de filas MVCC durante la duración del escaneo para evitar leer tuplas muertas."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un `Index Scan` estándar puede causar cuellos de botella de E/S aleatoria si visita repetidamente las mismas páginas heap en el orden del índice. Un `Bitmap Index Scan` recopila todos los punteros de tuplas, los agrupa en un mapa de bits ordenado por direcciones físicas en disco y los pasa a un `Bitmap Heap Scan`, el cual recupera las páginas de forma secuencial, evitando búsquedas aleatorias en el disco.",
+    "points": 10
+  }
+]

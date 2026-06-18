@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál es una diferencia funcional crítica entre un procedimiento almacenado y una función definida por el usuario (UDF) con respecto a la gestión de transacciones?",
+    "options": [
+      "Un procedimiento almacenado puede ejecutar comandos `COMMIT` o `ROLLBACK` para gestionar transacciones, mientras que una UDF no puede contener sentencias de control de transacciones.",
+      "Una UDF puede abrir una nueva transacción pero no puede confirmarla, mientras que un procedimiento almacenado no tiene acceso a las transacciones en absoluto.",
+      "Una UDF se ejecuta automáticamente en su propio bloque de transacción aislado, mientras que un procedimiento almacenado comparte el bloque de transacción de la conexión del cliente.",
+      "No hay diferencia en el control de transacciones; ambos admiten exactamente las mismas sentencias de transacción dentro de su cuerpo."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una diferencia arquitectónica clave es que los procedimientos almacenados admiten el control de transacciones (utilizando `COMMIT` y `ROLLBACK` dentro del cuerpo del procedimiento). Las funciones definidas por el usuario (UDFs) están diseñadas para ser llamadas dentro de consultas SQL (como `SELECT`), y los estándares SQL prohíben cambios en el estado de la transacción durante la ejecución de la consulta para evitar efectos secundarios, lo que significa que las UDFs no pueden ejecutar sentencias de control de transacciones.",
+    "points": 10
+  },
+  {
+    "question_text": "¿En qué se diferencia el proceso de definición de disparadores (triggers) sintácticamente entre PostgreSQL y MySQL?",
+    "options": [
+      "PostgreSQL requiere definir una función disparadora independiente que devuelva el tipo `TRIGGER` y luego vincularla, mientras que MySQL inserta la lógica del disparador directamente en línea dentro de la sentencia `CREATE TRIGGER`.",
+      "MySQL requiere crear una función disparadora independiente antes de vincularla a una tabla, mientras que PostgreSQL permite cuerpos de disparadores en línea.",
+      "PostgreSQL no admite disparadores a nivel de fila (`FOR EACH ROW`) y solo admite disparadores a nivel de sentencia, a diferencia de MySQL.",
+      "Los disparadores de MySQL se pueden escribir en múltiples lenguajes de programación (por ejemplo, Python), mientras que los disparadores de PostgreSQL están estrictamente limitados a PL/pgSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En PostgreSQL, un disparador requiere una función auxiliar definida con un tipo de retorno de `TRIGGER`. Luego creas el disparador y lo vinculas utilizando `EXECUTE FUNCTION funcion_disparadora()`. En MySQL, la lógica del disparador se escribe en línea directamente dentro de la sentencia `CREATE TRIGGER` y no se utilizan funciones independientes.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué sucede en PostgreSQL 11+ si se llama a un procedimiento almacenado que contiene una sentencia `COMMIT` desde el interior de un bloque de transacción activo (por ejemplo, dentro de `BEGIN; CALL mi_procedimiento();`)?",
+    "options": [
+      "El motor de consultas lanzará un error en tiempo de ejecución, evitando que se ejecute la sentencia de control de transacciones.",
+      "El procedimiento confirmará la transacción hasta ese momento e iniciará un nuevo bloque de transacción silenciosamente.",
+      "La sentencia `COMMIT` dentro del procedimiento se ignorará silenciosamente, dejando el control de la transacción al cliente.",
+      "PostgreSQL dividirá automáticamente la transacción, confirmando los cambios del procedimiento mientras mantiene activa la transacción externa."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En PostgreSQL, un procedimiento almacenado no puede confirmar o revertir transacciones si se llama dentro de un bloque de transacción activo (como un bloque `BEGIN ... COMMIT` iniciado por el cliente). Hacerlo provocará un error en tiempo de ejecución (`invalid transaction termination`). Los procedimientos solo pueden controlar transacciones si se llaman en modo de confirmación automática (autocommit).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Por qué los disparadores a nivel de fila (`FOR EACH ROW`) pueden introducir una sobrecarga de rendimiento grave durante las actualizaciones masivas?",
+    "options": [
+      "Logrando que el motor de la base de datos cambie repetidamente el contexto de ejecución entre el motor SQL y el intérprete procedimental por cada fila afectada.",
+      "Porque los disparadores a nivel de fila obligan a la base de datos a actualizar todos los bloqueos de fila a bloqueos de tabla exclusivos inmediatamente.",
+      "Porque la base de datos se ve obligada a escribir una entrada de WAL (Write-Ahead Log) independiente y vaciarla en el disco por cada invocación de fila.",
+      "Porque los registros virtuales `OLD` y `NEW` se guardan como archivos temporales físicos en el disco en lugar de mantenerse en RAM."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Los disparadores a nivel de fila se ejecutan una vez por cada fila afectada. En una actualización masiva que afecta a millones de filas, la base de datos debe cambiar repetidamente entre el contexto de ejecución SQL basado en conjuntos y el contexto de ejecución del lenguaje procedimental. Esta sobrecarga de cambio de contexto convierte una operación masiva rápida en un proceso secuencial lento fila por fila.",
+    "points": 10
+  }
+]

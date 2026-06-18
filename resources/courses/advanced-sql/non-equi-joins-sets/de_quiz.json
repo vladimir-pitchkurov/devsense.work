@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Welches der folgenden Abfragebeispiele wird als Non-Equi Join klassifiziert?",
+    "options": [
+      "SELECT * FROM products p JOIN shipping_rates s ON p.weight BETWEEN s.min_weight AND s.max_weight",
+      "SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id",
+      "SELECT * FROM customer_orders o JOIN clients c ON o.client_id = c.id AND c.status = 'active'",
+      "SELECT * FROM sales_2025 s UNION ALL SELECT * FROM sales_2026 s2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ein Non-Equi Join ist definiert als ein Join, der andere Vergleichsoperatoren als das Gleichheitszeichen (`=`) verwendet. Die Verknüpfung mit `BETWEEN` verwendet Ungleichheitsbedingungen (`>=` und `<=`), was sie zu einem Non-Equi Join macht. Die anderen sind Standard-Equi-Joins oder Mengenoperationen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheidet sich die Ausführungsleistung von `UNION` im Vergleich zu `UNION ALL`?",
+    "options": [
+      "`UNION` ist langsamer, weil die Datenbank Sortierungen oder Hashing durchführen muss, um doppelte Datensätze aus der kombinierten Menge zu identifizieren und zu entfernen.",
+      "`UNION ALL` ist langsamer, weil es die Integrität von Fremdschlüsseln über beide Datensätze hinweg validieren muss.",
+      "Beide Operatoren verhalten sich identisch, da moderne Abfrageoptimierer sie im selben Ausführungsplan inline einbinden.",
+      "`UNION` ist schneller, da es die Gesamtdatenmenge verringert, die an die Client-Anwendung übertragen werden muss."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`UNION` ist von Natur aus langsamer als `UNION ALL`, da ein Schritt zur Duplikatentfernung durchgeführt wird. Dazu muss die Query-Engine die kombinierten Ergebnisse sortieren oder eine temporäre Hash-Tabelle aufbauen. `UNION ALL` verkettet die Datensätze einfach ohne Prüfung auf Duplikate, was minimalen Verarbeitungsaufwand erfordert.",
+    "points": 10
+  },
+  {
+    "question_text": "Wenn Sie mit MySQL 5.7 oder einer älteren MySQL 8.0-Version arbeiten, die den Mengenoperator `EXCEPT` nicht unterstützt, wie können Sie `Abfrage_A EXCEPT Abfrage_B` simulieren?",
+    "options": [
+      "Verwenden Sie einen `LEFT JOIN` auf den übereinstimmenden Schlüssel und filtern Sie mit einer `WHERE b.key IS NULL`-Bedingung.",
+      "Verwenden Sie einen `INNER JOIN` mit einem Ungleichheitsoperator (`A.key != B.key`).",
+      "Verwenden Sie einen `CROSS JOIN` und filtern Sie übereinstimmende Zeilen mit einer `HAVING COUNT(*) = 0`-Klausel.",
+      "Ältere Versionen von MySQL können diese Logik nicht ausführen und erfordern das Ausführen mehrerer Abfragen im Anwendungscode."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Eine `EXCEPT`-Abfrage gibt alle eindeutigen Zeilen aus der ersten Abfrage zurück, die in der zweiten Abfrage nicht vorhanden sind. Dies kann in jeder SQL-Datenbank (einschließlich älterer MySQL-Versionen) effizient durch einen `LEFT JOIN` in Kombination mit einem Filter `WHERE second_table.key IS NULL` simuliert werden, welcher Datensätze in Tabelle A identifiziert, die keinen passenden Datensatz in Tabelle B besitzen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wenn in PostgreSQL Abfrage 1 die Zeilen `[A, A, B]` und Abfrage 2 die Zeilen `[A, B, B]` zurückgibt, wie lautet die exakte Ausgabe von `Abfrage 1 EXCEPT ALL Abfrage 2`?",
+    "options": [
+      "Eine einzelne Zeile: `[A]`",
+      "Zwei Zeilen: `[A, A]`",
+      "Eine leere Ergebnismenge",
+      "Drei Zeilen: `[A, B, B]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Der Operator `EXCEPT ALL` berechnet die Differenz der Kardinalität für jeden Zeilenwert. Wenn der Wert X in der ersten Abfrage N-mal und in der zweiten M-mal vorkommt, enthält das Ergebnis X genau `N - M`-mal (nur wenn `N - M > 0` ist). Hier kommt der Wert 'A' genau `2 - 1 = 1`-mal vor. Der Wert 'B' kommt `1 - 2 = -1`-mal vor (also 0-mal). Somit enthält die endgültige Ausgabe eine einzige Zeile: `[A]`.",
+    "points": 10
+  }
+]

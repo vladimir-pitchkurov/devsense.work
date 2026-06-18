@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la différence critique entre l'exécution d'un EXPLAIN et d'un EXPLAIN ANALYZE sur une requête ?",
+    "options": [
+      "EXPLAIN affiche le chemin d'exécution au format JSON, tandis qu'EXPLAIN ANALYZE le formate sous forme d'arbre de texte brut.",
+      "EXPLAIN affiche uniquement les coûts et les nombres de lignes estimés par l'optimiseur sans exécuter la requête ; EXPLAIN ANALYZE exécute réellement la requête et renvoie les temps d'exécution et nombres de lignes réels.",
+      "EXPLAIN verrouille les tables cibles, tandis qu'EXPLAIN ANALYZE s'exécute dans un bac à sable de transaction en lecture seule isolé.",
+      "EXPLAIN est pris en charge par MySQL et PostgreSQL, mais EXPLAIN ANALYZE est exclusif à Oracle et SQL Server."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "L'instruction EXPLAIN standard analyse la requête et génère des estimations sans l'exécuter, ce qui la rend rapide et sûre. L'ajout d'un ANALYZE force le moteur de base de données à exécuter la requête, mesurant les temps réels, les lectures de tampons (buffers) et les nombres de lignes.",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi un balayage d'index seul (Index Only Scan) sous PostgreSQL peut-il tout de même effectuer des opérations de lecture physique sur les pages du tas de la table ?",
+    "options": [
+      "L'index a subi un fractionnement de nœud interne et nécessite un rééquilibrage physique.",
+      "La carte de visibilité (Visibility Map) indique que les pages cibles contiennent des tuples non nettoyés par le vacuum, ce qui oblige le moteur à inspecter le tas pour confirmer la visibilité de la transaction.",
+      "Le planificateur de requêtes utilise par défaut des balayages d'index standards si la requête s'exécute en dehors d'un bloc de transaction.",
+      "PostgreSQL ne prend pas en charge les Index Only Scans sur les index B-Tree."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un Index Only Scan récupère toutes les colonnes demandées à partir de l'index. Cependant, pour garantir la visibilité MVCC, PostgreSQL consulte la carte de visibilité (Visibility Map). Si une page est marquée comme contenant des tuples modifiés et non nettoyés par le vacuum, le planificateur doit aller chercher la page dans le tas de la table pour vérifier si les tuples sont visibles pour la transaction en cours.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans un plan EXPLAIN de MySQL, quelle est la signification du type d'accès index, et en quoi diffère-t-il du type d'accès ALL ?",
+    "options": [
+      "Le type index correspond à une recherche d'index sur une seule ligne, tandis que ALL récupère toutes les pages de la mémoire.",
+      "Le type index représente un balayage complet de l'arborescence de l'index, ce qui évite de lire tout l'espace de table mais lit tout de même tous les enregistrements de l'index ; ALL représente un balayage complet du tas de la table.",
+      "Le type index indique qu'un index clusterisé a été ignoré, forçant un balayage de table.",
+      "MySQL utilise index pour désigner des index fonctionnels, tandis que ALL fait référence à des index B-Tree standards."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Dans MySQL, le type de jointure index représente un balayage complet de l'index (Full Index Scan, similaire à l'Index Only Scan de PostgreSQL). Le moteur parcourt tout l'arbre de l'index. Bien que plus rapide que ALL (Full Table Scan) car les blocs d'index sont généralement plus petits que les blocs de données, il parcourt tout de même toutes les entrées et ne constitue pas une recherche par clé.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment le balayage d'index Bitmap (Bitmap Index Scan) de PostgreSQL optimise-t-il les E/S disque par rapport à un balayage d'index (Index Scan) standard ?",
+    "options": [
+      "Il contourne le pool de tampons et écrit directement dans les pages du disque.",
+      "Il génère une carte de bits (bitmap) des pages du tas correspondantes en mémoire et les trie par emplacement physique des blocs sur le disque, permettant au Bitmap Heap Scan de lire les données séquentiellement et d'éviter les E/S aléatoires.",
+      "Il convertit les clés d'index en hachages md5 pour effectuer des comparaisons d'entiers en un seul cycle.",
+      "Il désactive le versionnage de ligne MVCC pendant toute la durée du balayage afin d'éviter de lire les tuples morts."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un Index Scan standard peut provoquer des goulots d'étranglement d'E/S aléatoires s'il visite de manière répétée les mêmes pages du tas dans l'ordre de l'index. Un Bitmap Index Scan collecte tous les pointeurs de tuples, les regroupe dans un bitmap trié par adresses physiques sur le disque, et les transmet à un Bitmap Heap Scan qui récupère les pages de manière séquentielle, évitant ainsi les recherches aléatoires sur le disque.",
+    "points": 10
+  }
+]

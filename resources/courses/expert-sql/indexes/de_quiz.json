@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was speichert ein Blattknoten eines Secondary Index in der InnoDB-Engine von MySQL und welchen Ausführungsschritt löst dies bei Abfragen aus?",
+    "options": [
+      "Er speichert die physische Speicheradresse der Zeile, was direkte Sprünge vom Index zum Heap ermöglicht.",
+      "Er speichert den Primärschlüsselwert der Zeile, was eine sekundäre Suche im Clustered Index (Bookmark Lookup) auslöst, um die eigentlichen Zeilendaten abzurufen, falls nicht-indizierte Spalten abgefragt werden.",
+      "Er speichert eine komprimierte Kopie der gesamten Zeile, wodurch ein Zugriff auf den Tablespace des Primärschlüssels überflüssig wird.",
+      "Er speichert den logischen Zeilen-Offset vom Beginn der Tablespace-Seite."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In InnoDB sind Tabellen nach ihrem Primärschlüssel sortiert (Clustered). Sekundärindizes speichern den Primärschlüsselwert an ihren Blattknoten anstelle von Zeilen-Pointern. Wenn die Abfrage Spalten benötigt, die nicht durch den Sekundärindex abgedeckt sind, muss MySQL eine zweite Suche im Clustered Index (Bookmark Lookup) durchführen, um die Zeile abzurufen.",
+    "points": 10
+  },
+  {
+    "question_text": "Unter welchen Umständen sollten Sie in PostgreSQL einen BRIN-Index (Block Range Index) einem Standard-B-Tree-Index vorziehen?",
+    "options": [
+      "Beim Indizieren von hochkardinalen Zufalls-Strings (wie UUIDs), die häufig aktualisiert werden.",
+      "Beim Indizieren extrem großer Tabellen (Hunderte von Gigabytes), bei denen die Daten physisch auf der Festplatte entsprechend der indizierten Spalte geordnet sind (z. B. Zeitstempel oder Auto-Increment-Schlüssel).",
+      "Wenn Sie eine UNIQUE-Einschränkung für eine Spalte erzwingen müssen.",
+      "Wenn die indizierte Spalte reichhaltig verschachtelte JSON-Strukturen enthält, die Suchen auf Schlüssel-Enthaltensein erfordern."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein BRIN-Index unterteilt eine Tabelle in Seitenbereiche und speichert nur die Minimal- und Maximalwerte für jeden Bereich. Er ist extrem kompakt (oft 1000-mal kleiner als ein B-Tree), setzt aber voraus, dass die Daten physisch auf der Festplatte geordnet vorliegen, um effektiv zu sein. Er kann keine Eindeutigkeit erzwingen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich PostgreSQL und MySQL bei der Implementierung eines Covering Index, der Nutzdaten-Spalten (Payload) enthält, nach denen nicht sortiert werden muss?",
+    "options": [
+      "PostgreSQL ermöglicht das Anhängen von Nutzdaten-Spalten an die Blattknoten mittels der `INCLUDE`-Klausel; MySQL hat keine `INCLUDE`-Klausel und erfordert deren Definition als Teil eines zusammengesetzten Indexschlüssels.",
+      "MySQL unterstützt die `INCLUDE`-Klausel für B-Tree-Indizes, während PostgreSQL die Verwendung des GIN-Indextyps erfordert.",
+      "Keine der beiden Datenbanken unterstützt Covering Indizes; alle Abfragen müssen Daten aus der Basistabelle abrufen.",
+      "PostgreSQL schließt standardmäßig automatisch alle Tabellenspalten in B-Tree-Indexblätter ein."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL unterstützt die `INCLUDE`-Klausel (z. B. `CREATE INDEX ... ON tabelle (schluessel) INCLUDE (nutzdaten)`), welche die Nutzdaten-Spalten in den Blattknoten für eine schnelle Abfrage speichert, ohne sie zur Sortierung des Index zu verwenden. MySQL fehlt diese Klausel, was Sie dazu zwingt, einen mehrspaltigen zusammengesetzten Indexschlüssel zu definieren, bei dem alle Spalten Teil der Sortierstruktur des Index sind.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptvorteil beim Erstellen eines Teil-Index (Partial Index unter Verwendung einer `WHERE`-Klausel) in PostgreSQL?",
+    "options": [
+      "Er ermöglicht es dem Index, je nach Zeilenanzahl automatisch zwischen B-Tree- und GIN-Layouts zu wechseln.",
+      "Er schließt Zeilen aus, die die Filterbedingung nicht erfüllen, wodurch die Indexgröße klein gehalten, die Festplattennutzung reduziert und der Index-Aktualisierungs-Overhead bei Schreibvorgängen minimiert wird.",
+      "Er ermöglicht es der Abfrage, die Transaktions-Sichtbarkeitsprüfungen (MVCC) vollständig zu umgehen.",
+      "Er ermöglicht das Indizieren von Ausdrücken und Funktionen anstelle von rohen Spaltenwerten."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein Teil-Index (z. B. `CREATE INDEX ... WHERE status = 'active'`) enthält nur Einträge für Zeilen, die die angegebene Bedingung erfüllen. Dies spart erheblich Speicherplatz und reduziert den Schreib-Overhead, da der Index nicht aktualisiert werden muss, wenn Zeilen eingefügt oder aktualisiert werden, die die Bedingung nicht erfüllen.",
+    "points": 10
+  }
+]

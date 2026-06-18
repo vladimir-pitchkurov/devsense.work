@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál de las siguientes opciones se considera un antipatrón de consulta de base de datos al escribir SQL para aplicaciones de producción?",
+    "options": [
+      "Utilizar `SELECT *` para recuperar todas las columnas de una tabla.",
+      "Especificar nombres de columnas explícitos en la cláusula `SELECT`.",
+      "Renombrar columnas en el resultado utilizando la palabra clave `AS`.",
+      "Filtrar registros con una cláusula `WHERE` en lugar de recuperar todas las filas."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Utilizar `SELECT *` en producción es un antipatrón. Fuerza a la base de datos a realizar operaciones de E/S de disco innecesarias, incrementa el tamaño de la carga útil de red y puede romper el código de la aplicación si se añaden o eliminan columnas en el esquema.",
+    "points": 10
+  },
+  {
+    "question_text": "En PostgreSQL, ¿qué sucede si utilizas comillas dobles (`\"`) en lugar de comillas simples (`'`) para un valor de texto, como por ejemplo: `WHERE username = \"alice\"`?",
+    "options": [
+      "PostgreSQL trata `\"alice\"` como un identificador de columna y lanza un error \"column 'alice' does not exist\".",
+      "PostgreSQL lo procesa perfectamente como un literal de cadena, ya que las comillas dobles y simples son intercambiables.",
+      "La base de datos lo convierte automáticamente en un literal de cadena, pero emite una advertencia de obsolescencia (deprecation warning).",
+      "La consulta se ejecuta pero no coincide con ningún registro porque las comillas dobles implican una restricción nula."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "En PostgreSQL, las comillas simples (`'`) se utilizan para los literales de cadena, mientras que las comillas dobles (`\"`) están reservadas para los identificadores (como nombres de tablas o columnas). Escribir `\"alice\"` le indica a PostgreSQL que busque una columna llamada `alice`.",
+    "points": 10
+  },
+  {
+    "question_text": "¿En qué se diferencian PostgreSQL y MySQL al utilizar el operador `LIKE` para la búsqueda de patrones?",
+    "options": [
+      "El operador `LIKE` de PostgreSQL es sensible a mayúsculas y minúsculas (requiriendo `ILIKE` para insensibilidad), mientras que el `LIKE` de MySQL es insensible a mayúsculas y minúsculas por defecto bajo colaciones típicas.",
+      "El operador `LIKE` de MySQL es sensible a mayúsculas y minúsculas, mientras que el `LIKE` de PostgreSQL es insensible a mayúsculas y minúsculas por defecto.",
+      "Ambas bases de datos tratan `LIKE` como sensible a mayúsculas y minúsculas y no ofrecen alternativas insensibles a mayúsculas y minúsculas.",
+      "PostgreSQL admite `LIKE` e `ILIKE`, mientras que MySQL solo admite `ILIKE` para consultas insensibles a mayúsculas y minúsculas."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL implementa un `LIKE` sensible a mayúsculas y minúsculas y proporciona `ILIKE` para búsquedas insensibles a mayúsculas y minúsculas. El `LIKE` de MySQL es insensible a mayúsculas y minúsculas por defecto bajo colaciones estándar insensibles a mayúsculas y minúsculas (como `utf8mb4_0900_ai_ci`).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es la forma estándar de concatenar cadenas en PostgreSQL frente a MySQL por defecto?",
+    "options": [
+      "PostgreSQL utiliza el operador `||`, mientras que MySQL utiliza la función `CONCAT()`.",
+      "PostgreSQL utiliza la función `CONCAT()`, mientras que MySQL utiliza el operador `||`.",
+      "Ambos motores utilizan el operador `+` para unir cadenas.",
+      "Ambos motores utilizan la función `CONCAT()` y el operador `||` no es compatible en absoluto en ninguno de los dos."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL sigue el estándar ANSI SQL utilizando el operador `||` para la concatenación de cadenas. MySQL trata `||` como un operador lógico `OR` por defecto y requiere la función `CONCAT()`, a menos que el modo SQL `PIPES_AS_CONCAT` esté activo.",
+    "points": 10
+  }
+]

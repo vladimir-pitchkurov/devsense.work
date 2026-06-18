@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Wie hat sich das standardmäßige Optimierungsverhalten von PostgreSQL für Common Table Expressions (CTEs) in Version 12 geändert?",
+    "options": [
+      "Vor PostgreSQL 12 wurden alle CTEs materialisiert (sie wirkten als Optimierungsbarrieren); ab Version 12 werden nur einmal referenzierte CTEs standardmäßig nicht materialisiert (inline eingefügt), sofern dies nicht mit AS MATERIALIZED erzwungen wird.",
+      "Vor PostgreSQL 12 wurden CTEs immer inline eingefügt; ab Version 12 werden alle CTEs standardmäßig materialisiert, um den sequentiellen Zugriff zu beschleunigen.",
+      "PostgreSQL 12 führte die Unterstützung für CTEs ein; frühere Versionen unterstützten nur verschachtelte Unterabfragen.",
+      "PostgreSQL 12 hat die AS MATERIALIZED-Klausel abgekündigt (deprecated) und erzwingt, dass alle CTEs dynamisch verarbeitet werden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Vor PostgreSQL 12 wurden CTEs immer materialisiert (einmal ausgewertet und als temporäre Tabelle gespeichert), was als Optimierungsbarriere wirkte und das Herabreichen äußere Filter verhinderte. Seit Version 12 werden CTEs, die nur einmal referenziert werden, standardmäßig inline eingefügt (`NOT MATERIALIZED`), um die Optimierung zu ermöglichen.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Datenbank-Engine unterstützt datenverändernde Operationen (wie INSERT, UPDATE oder DELETE mit RETURNING) innerhalb einer CTE, um Schreibvorgänge in einer einzigen Abfrage zu verketten?",
+    "options": [
+      "Nur MySQL 8.0",
+      "Nur PostgreSQL",
+      "Sowohl MySQL 8.0 als auch PostgreSQL",
+      "Keine von beiden; SQL-Standards verbieten das Ändern von Daten innerhalb von CTEs"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL erlaubt die Verwendung von datenverändernden Anweisungen (`INSERT`, `UPDATE`, `DELETE`) in CTEs, oft kombiniert mit `RETURNING`, um Operationen zu verketten. MySQL 8.0 unterstützt in CTEs nur Leseanweisungen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie können Sie Endlosschleifen in einer rekursiven CTE bei der Abfrage von Daten mit Zirkelbezügen in PostgreSQL nativ verhindern?",
+    "options": [
+      "Durch Anhängen der `CYCLE`-Klausel am Ende der CTE-Definition, um besuchte Schlüssel nachzuverfolgen.",
+      "Durch Konfigurieren der Systemvariable `SET max_sp_recursion_depth`.",
+      "Durch Hinzufügen einer `WHERE NOT EXISTS`-Unterabfrage, die im Anker-Element auf die CTE verweist.",
+      "PostgreSQL erkennt Zyklen-Schleifen automatisch zur Kompilierzeit und wirft einen Syntaxfehler."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL bietet die standardmäßige `CYCLE`-Klausel (z. B. `CYCLE id SET is_cycle USING path`), die besuchte IDs in einem Pfad automatisch verfolgt und die Rekursion stoppt, wenn ein Duplikat gefunden wird. MySQL unterstützt die `CYCLE`-Klausel nicht und verlässt sich auf Limits wie `cte_max_recursion_depth` oder Ausführungszeit-Limits.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Referenzierungsregeln gelten hinsichtlich der Reihenfolge der Definition in einer Abfrage mit mehreren durch Kommata getrennten CTEs?",
+    "options": [
+      "Eine CTE kann jede andere CTE referenzieren, die vor ihr in derselben `WITH`-Klausel definiert wurde, kann jedoch keine CTEs referenzieren, die nach ihr definiert wurden (Vorwärtsreferenzierung ist nicht zulässig).",
+      "Jede CTE in einer `WITH`-Klausel kann jede andere CTE in derselben Klausel referenzieren, unabhängig von der Reihenfolge, in der sie deklariert wurden.",
+      "CTEs können sich überhaupt nicht gegenseitig referenzieren; sie müssen völlig unabhängig sein.",
+      "Eine CTE kann eine andere CTE nur referenzieren, wenn das Schlüsselwort `RECURSIVE` für alle CTEs im Block verwendet wird."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Im Standard-SQL (sowohl bei MySQL als auch bei PostgreSQL) werden sequentielle CTEs der Reihe nach ausgewertet. Eine spätere CTE kann jede zuvor definierte CTE in derselben `WITH`-Klausel referenzieren, aber eine CTE kann nicht auf eine weiter hinten in der Abfrage definierte CTE verweisen.",
+    "points": 10
+  }
+]

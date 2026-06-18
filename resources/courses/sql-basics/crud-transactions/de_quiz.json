@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was ist die Folge der Ausführung einer `UPDATE`- oder `DELETE`-Anweisung ohne `WHERE`-Klausel?",
+    "options": [
+      "Die Abfrage wird ausgeführt und wendet die Änderungen oder Löschungen auf alle Zeilen in der Tabelle an.",
+      "Die Datenbank-Engine lehnt die Abfrage ab und wirft einen Syntax-/Sicherheitsfehler.",
+      "Die Abfrage wird ausgeführt, betrifft jedoch null Zeilen, um versehentlichen Datenverlust zu verhindern.",
+      "Die Datenbank leitet automatisch ein Rollback ein und schließt die Verbindung."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn in einer `UPDATE`- oder `DELETE`-Anweisung keine `WHERE`-Klausel angegeben ist, wendet die SQL-Engine die Änderung oder Löschung auf jeden einzelnen Datensatz in der Zieltabelle an.",
+    "points": 10
+  },
+  {
+    "question_text": "Was garantiert die Atomarität (Atomicity) unter dem ACID-Transaktionsmodell?",
+    "options": [
+      "Entweder sind alle Operationen im Transaktionsblock erfolgreich, oder die gesamte Transaktion wird zurückgerollt (Alles-oder-nichts).",
+      "Die Datenbank wandelt automatisch alle Textspalten in atomare ASCII-Werte um.",
+      "Gleichzeitig ausgeführte Transaktionen werden isoliert ausgeführt und blockieren sich niemals gegenseitig.",
+      "Sobald eine Transaktion festgeschrieben (committed) ist, überstehen die Änderungen garantiert Systemabstürze."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Atomarität stellt sicher, dass eine Transaktion als eine einzige, unteilbare Einheit behandelt wird. Wenn ein Teil der Transaktion fehlschlägt, wird die gesamte Transaktion zurückgerollt, wodurch der Zustand der Datenbank unverändert bleibt.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich MySQL und PostgreSQL beim Ausführen von DDL-Anweisungen (z. B. `ALTER TABLE`, `DROP TABLE`) innerhalb eines Transaktionsblocks?",
+    "options": [
+      "PostgreSQL unterstützt transaktionales DDL und kann Strukturänderungen zurückrollen; MySQL unterstützt dies nicht und löst ein implizites Commit aus.",
+      "MySQL unterstützt transaktionales DDL und kann Strukturänderungen zurückrollen; PostgreSQL unterstützt dies nicht und löst ein implizites Commit aus.",
+      "Beide Engines unterstützen ein vollständiges Transaktions-Rollback von Schemaänderungen (DDL).",
+      "Keine der beiden Engines erlaubt das Ausführen von DDL-Anweisungen innerhalb eines Transaktionsblocks."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL bietet volle Unterstützung für transaktionales DDL, wodurch Tabellenänderungen zurückgerollt werden können. MySQL unterstützt dies nicht; das Ausführen von DDL innerhalb einer Transaktion führt zu einem automatischen impliziten Commit, was bedeutet, dass die Transaktion nicht zurückgerollt werden kann.",
+    "points": 10
+  },
+  {
+    "question_text": "Welches der folgenden Syntaxpaare stellt die korrekte Methode zur Durchführung eines „Upserts“ (Insert-or-Update) in MySQL und PostgreSQL dar?",
+    "options": [
+      "MySQL verwendet `ON DUPLICATE KEY UPDATE` und PostgreSQL verwendet `ON CONFLICT (...) DO UPDATE`.",
+      "MySQL verwendet `ON CONFLICT (...) DO UPDATE` und PostgreSQL verwendet `ON DUPLICATE KEY UPDATE`.",
+      "Beide Engines verwenden die standardmäßige `UPSERT INTO`-Syntax.",
+      "Beide Engines verwenden die `INSERT OR REPLACE`-Anweisung."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL führt Upserts mithilfe der `ON DUPLICATE KEY UPDATE`-Klausel am Ende einer `INSERT`-Anweisung aus. PostgreSQL verwendet `ON CONFLICT (conflict_target) DO UPDATE`.",
+    "points": 10
+  }
+]

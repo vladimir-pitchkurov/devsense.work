@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Comment les fonctions d'agrégation SQL standard (comme `SUM`, `AVG`, `MIN`, `MAX`) gèrent-elles les valeurs `NULL` ?",
+    "options": [
+      "Elles ignorent complètement les valeurs `NULL` dans leurs calculs (sauf `COUNT(*)` qui compte toutes les lignes).",
+      "Elles traitent les valeurs `NULL` comme `0` pour les colonnes numériques et comme des chaînes vides pour les colonnes textuelles.",
+      "Elles lèvent une erreur d'exécution de la base de données si une valeur `NULL` est rencontrée.",
+      "Elles propagent la valeur `NULL`, rendant le résultat de l'agrégation globale `NULL`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les fonctions d'agrégation standard comme `SUM` et `AVG` ignorent les valeurs `NULL` lors des calculs. `COUNT(column)` compte uniquement les valeurs non-NULL, tandis que `COUNT(*)` compte tous les enregistrements, indépendamment des NULL.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle est la différence principale entre les clauses `WHERE` et `HAVING` ?",
+    "options": [
+      "`WHERE` filtre les lignes individuelles avant le regroupement ; `HAVING` filtre les groupes agrégés après le traitement de la clause `GROUP BY`.",
+      "`HAVING` filtre les lignes individuelles ; `WHERE` filtre les groupes agrégés.",
+      "`WHERE` permet l'utilisation de fonctions d'agrégation, contrairement à `HAVING`.",
+      "Elles sont syntaxiquement et fonctionnellement identiques, mais `HAVING` n'est pris en charge que dans PostgreSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WHERE` est appliqué aux lignes avant l'étape de regroupement `GROUP BY`, il ne peut donc pas contenir de fonctions d'agrégation. `HAVING` est appliqué après le regroupement et est spécifiquement conçu pour filtrer les groupes en fonction de conditions d'agrégation.",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il si vous exécutez `SELECT category, brand, AVG(price) FROM products GROUP BY category;` dans PostgreSQL ?",
+    "options": [
+      "Elle échoue avec une erreur de syntaxe car `brand` est dans la liste `SELECT` mais pas dans la clause `GROUP BY`.",
+      "Elle s'exécute correctement, en renvoyant une valeur aléatoire pour `brand` pour chaque catégorie.",
+      "Elle regroupe automatiquement à la fois par `category` et `brand` sans lever d'erreur.",
+      "Elle s'exécute correctement, en renvoyant `NULL` pour la colonne `brand` dans toutes les lignes."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL applique strictement les règles de regroupement SQL standard. Toute colonne non agrégée dans la liste `SELECT` doit être incluse dans la clause `GROUP BY`. Comme `brand` n'est ni agrégée ni dans le `GROUP BY`, la requête échoue.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelles fonctions sont utilisées pour concaténer des valeurs de chaîne provenant de lignes regroupées en une seule liste séparée dans MySQL et PostgreSQL ?",
+    "options": [
+      "MySQL utilise `GROUP_CONCAT()` et PostgreSQL utilise `string_agg()`.",
+      "MySQL utilise `string_agg()` et PostgreSQL utilise `GROUP_CONCAT()`.",
+      "Les deux bases de données utilisent `CONCAT()` pour cette opération.",
+      "Les deux bases de données utilisent `LIST_AGG()` pour cette opération."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL utilise la fonction intégrée `GROUP_CONCAT()` pour concaténer les chaînes à partir de lignes regroupées. PostgreSQL utilise la fonction `string_agg()`, qui nécessite un argument séparateur et éventuellement une spécification de tri.",
+    "points": 10
+  }
+]

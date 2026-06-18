@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Parmi les exemples de requêtes suivants, lequel est classé comme une jointure non équivalente (non-equi join) ?",
+    "options": [
+      "SELECT * FROM products p JOIN shipping_rates s ON p.weight BETWEEN s.min_weight AND s.max_weight",
+      "SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id",
+      "SELECT * FROM customer_orders o JOIN clients c ON o.client_id = c.id AND c.status = 'active'",
+      "SELECT * FROM sales_2025 s UNION ALL SELECT * FROM sales_2026 s2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une jointure non équivalente est définie comme une jointure qui utilise des opérateurs de comparaison autres que le signe égal (`=`). La jointure utilisant `BETWEEN` utilise des conditions d'inégalité (`>=` et `<=`), ce qui en fait une jointure non équivalente. Les autres sont des jointures équivalentes standards ou des opérations sur les ensembles.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment se comparent les performances d'exécution de `UNION` par rapport à `UNION ALL` ?",
+    "options": [
+      "`UNION` est plus lent car la base de données doit effectuer un tri ou un hachage pour identifier et supprimer les enregistrements dupliqués de l'ensemble combiné.",
+      "`UNION ALL` est plus lent car il doit valider les contraintes d'intégrité de clé étrangère sur les deux jeux de données.",
+      "Les deux opérateurs fonctionnent de manière identique car les optimiseurs de requêtes des bases de données modernes les intègrent en ligne en utilisant le même plan d'exécution.",
+      "`UNION` est plus rapide car il réduit le volume global de données à transférer vers l'application cliente."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`UNION` est intrinsèquement plus lent que `UNION ALL` car il effectue une étape de suppression des doublons. Pour y parvenir, le moteur de requête doit trier les résultats combinés ou construire une table de hachage temporaire. `UNION ALL` se contente de concaténer les jeux de données sans vérifier les doublons, ce qui nécessite un traitement minimal.",
+    "points": 10
+  },
+  {
+    "question_text": "Si vous travaillez avec MySQL 5.7 ou une ancienne version de MySQL 8.0 qui ne prend pas en charge l'opérateur d'ensemble `EXCEPT`, comment pouvez-vous simuler `Requete_A EXCEPT Requete_B` ?",
+    "options": [
+      "Utiliser un `LEFT JOIN` sur la clé de correspondance et filtrer avec une condition `WHERE b.key IS NULL`.",
+      "Utiliser un `INNER JOIN` avec un opérateur d'inégalité (`A.key != B.key`).",
+      "Utiliser un `CROSS JOIN` et filtrer les lignes correspondantes en utilisant une clause `HAVING COUNT(*) = 0`.",
+      "Les anciennes versions de MySQL ne peuvent pas exécuter cette logique et nécessitent d'exécuter plusieurs requêtes dans le code applicatif."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une requête `EXCEPT` renvoie toutes les lignes uniques de la première requête qui ne sont pas présentes dans la seconde requête. Cela peut être simulé efficacement dans n'importe quelle base de données SQL (y compris les anciennes versions de MySQL) à l'aide d'un `LEFT JOIN` combiné à un filtre `WHERE table_b.key IS NULL`, ce qui permet d'identifier les enregistrements de la table A qui n'ont pas d'enregistrement correspondant dans la table B.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans PostgreSQL, si la Requête 1 renvoie les lignes `[A, A, B]` et la Requête 2 renvoie `[A, B, B]`, quel est le résultat exact de `Query 1 EXCEPT ALL Query 2` ?",
+    "options": [
+      "Une seule ligne : `[A]`",
+      "Deux lignes : `[A, A]`",
+      "Un jeu de résultats vide",
+      "Trois lignes : `[A, B, B]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'opérateur `EXCEPT ALL` calcule la différence de cardinalité pour chaque valeur de ligne. Si la valeur X apparaît N fois dans la première requête et M fois dans la seconde, le résultat contiendra X exactement `N - M` fois (uniquement si `N - M > 0`). Ici, la valeur 'A' apparaît `2 - 1 = 1` fois. La valeur 'B' apparaît `1 - 2 = -1` (0 fois). Ainsi, le résultat final contient une seule ligne : `[A]`.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la principale différence en termes de stockage et de performance entre les types de données json et jsonb de PostgreSQL ?",
+    "options": [
+      "Le type json est compressé en utilisant LZ4 alors que le type jsonb n'est pas compressé.",
+      "Le type json stocke une copie en texte brut du JSON et nécessite une analyse (parsing) à chaque lecture ; le type jsonb stocke un format binaire analysé qui permet des recherches de requête plus rapides et prend en charge l'indexation.",
+      "Le type jsonb permet uniquement de stocker des tableaux, tandis que le type json prend en charge des objets imbriqués clés-valeurs arbitraires.",
+      "PostgreSQL a déprécié le type json dans la version 12, faisant de jsonb le seul type de données opérationnel."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Le type json stocke les données sous forme de texte brut. Cela préserve les espaces et le formatage, mais nécessite d'analyser le texte à chaque récupération. Le type jsonb décompose le document dans une représentation binaire, triant les clés et supprimant les espaces, ce qui permet des recherches directes et l'indexation GIN.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle paire d'opérateurs/fonctions est utilisée pour effectuer des recherches d'inclusion (vérifier si le document JSON A contient le document JSON B) dans PostgreSQL et MySQL, respectivement ?",
+    "options": [
+      "PostgreSQL : `->` | MySQL : `JSON_EXTRACT()`",
+      "PostgreSQL : `?` | MySQL : `MEMBER OF`",
+      "PostgreSQL : `@>` | MySQL : `JSON_CONTAINS()`",
+      "PostgreSQL : `#>` | MySQL : `JSON_SEARCH()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Dans PostgreSQL, l'opérateur `@>` est utilisé pour les vérifications d'inclusion sur les champs jsonb. Dans MySQL, la fonction JSON_CONTAINS(target, candidate) vérifie si le document JSON cible contient la valeur ou le document candidat.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans MySQL, quelle est la méthode standard pour indexer une clé scalaire spécifique imbriquée dans une colonne JSON (par exemple $.status) en utilisant des index B-Tree standards ?",
+    "options": [
+      "Créer un index fonctionnel directement sur la colonne à l'aide de `CREATE INDEX ... ON my_table((data->'$.status'))` ou créer une colonne générée virtuelle extrayant la clé et l'indexer.",
+      "MySQL génère automatiquement des nœuds d'index B-Tree pour toutes les clés JSON lors de la création de la colonne.",
+      "Configurer `SET GLOBAL json_index_mode = BTREE` avant d'exécuter des requêtes.",
+      "C'est impossible ; MySQL ne prend en charge l'indexation du JSON qu'à l'aide de recherches en texte intégral (full-text search)."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL ne prend pas en charge l'indexation directe des colonnes JSON avec des index B-Tree. Vous devez soit créer une colonne générée virtuelle qui extrait la clé imbriquée (par exemple, en utilisant data->>'$.status') et indexer cette colonne, soit créer un index B-Tree fonctionnel faisant directement référence à l'expression de chemin.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment se comparent les deux classes d'opérateurs GIN de PostgreSQL (jsonb_ops et jsonb_path_ops) lors de l'indexation des colonnes jsonb ?",
+    "options": [
+      "La classe jsonb_ops est beaucoup plus petite que jsonb_path_ops car elle n'indexe que les clés.",
+      "La classe jsonb_path_ops est la classe par défaut, et elle prend en charge à la fois les requêtes d'existence de clé et d'inclusion.",
+      "La classe jsonb_path_ops crée des index plus petits et plus rapides, optimisés spécifiquement pour les requêtes d'inclusion (@>) , mais ne prend pas en charge les opérateurs d'existence de clé comme ?.",
+      "La classe jsonb_ops est dépréciée et les utilisateurs ne devraient utiliser que jsonb_path_ops."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La classe d'opérateurs GIN par défaut jsonb_ops indexe toutes les clés, valeurs et chemins. L'autre classe jsonb_path_ops indexe uniquement les paires chemin-valeur, ce qui réduit la taille de l'index et accélère les performances de recherche pour les requêtes d'inclusion (@>), mais elle ne peut pas répondre aux requêtes d'existence de clé (comme ?).",
+    "points": 10
+  }
+]

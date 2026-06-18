@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál es la diferencia clave de almacenamiento y rendimiento entre los tipos de datos json y jsonb de PostgreSQL?",
+    "options": [
+      "El tipo json se comprime mediante LZ4 mientras que jsonb no se comprime.",
+      "El tipo json almacena una copia en texto plano del JSON y requiere su análisis (parsing) en cada lectura; jsonb almacena un formato binario ya analizado que permite búsquedas de consulta más rápidas y admite indexación.",
+      "El tipo jsonb solo permite almacenar matrices (arrays), mientras que json admite objetos anidados de clave-valor arbitrarios.",
+      "PostgreSQL declaró obsoleto el tipo json en la versión 12, convirtiendo a jsonb en el único tipo de datos operativo."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "El tipo `json` almacena los datos como texto plano. Esto conserva los espacios en blanco y el formato, pero requiere analizar el texto en cada recuperación. El tipo `jsonb` descompone el documento en una representación binaria, ordenando las claves y eliminando los espacios en blanco, lo que permite búsquedas directas e indexación GIN.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué par de operadores/funciones se utiliza para realizar búsquedas de contención (comprobar si el documento JSON A contiene al documento JSON B) en PostgreSQL y MySQL, respectivamente?",
+    "options": [
+      "PostgreSQL: `->` | MySQL: `JSON_EXTRACT()`",
+      "PostgreSQL: `?` | MySQL: `MEMBER OF`",
+      "PostgreSQL: `@>` | MySQL: `JSON_CONTAINS()`",
+      "PostgreSQL: `#>` | MySQL: `JSON_SEARCH()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "En PostgreSQL, el operador `@>` se utiliza para las comprobaciones de contención en campos `jsonb`. En MySQL, la función `JSON_CONTAINS(target, candidate)` comprueba si el documento JSON de destino contiene el valor o documento candidato.",
+    "points": 10
+  },
+  {
+    "question_text": "En MySQL, ¿cuál es el método estándar para indexar una clave escalar específica anidada dentro de una columna JSON (por ejemplo, `$.status`) utilizando índices B-Tree estándar?",
+    "options": [
+      "Crear un índice funcional directamente en la columna usando `CREATE INDEX ... ON mi_tabla((data->'$.status'))` o crear una columna generada virtual que extraiga la clave y la indexe.",
+      "MySQL genera automáticamente nodos de índice B-Tree para todas las claves JSON al crear la columna.",
+      "Configurar `SET GLOBAL json_index_mode = BTREE` antes de ejecutar consultas.",
+      "Es imposible; MySQL solo admite la indexación de JSON mediante búsquedas de texto completo (full-text)."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL no admite la indexación directa de columnas JSON con índices B-Tree. Debes crear una columna generada virtual que extraiga la clave anidada (por ejemplo, usando `data->>'$.status'`) e indexar esa columna, o bien crear un índice B-Tree funcional que haga referencia directa a la expresión de la ruta.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo se comparan las dos clases de índice GIN de PostgreSQL (`jsonb_ops` y `jsonb_path_ops`) al indexar columnas jsonb?",
+    "options": [
+      "La clase `jsonb_ops` es mucho más pequeña que `jsonb_path_ops` porque solo indexa claves.",
+      "La clase `jsonb_path_ops` es la predeterminada y admite consultas tanto de existencia de claves como de contención.",
+      "La clase `jsonb_path_ops` crea índices más pequeños y rápidos optimizados específicamente para consultas de contención (`@>`), pero no admite operadores de existencia de claves como `?`.",
+      "La clase `jsonb_ops` está obsoleta y los usuarios solo deberían utilizar `jsonb_path_ops`."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La clase de operador GIN predeterminada `jsonb_ops` indexa todas las claves, valores y rutas. La clase alternativa `jsonb_path_ops` indexa únicamente pares de ruta-valor, lo que resulta en un tamaño de índice menor y un rendimiento de búsqueda más rápido para consultas de contención (`@>`), pero no puede resolver consultas de existencia de claves (como `?`).",
+    "points": 10
+  }
+]

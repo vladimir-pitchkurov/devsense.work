@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Wie lautet die boolesche Auswertung des Ausdrucks `column_name = NULL` im Standard-SQL?",
+    "options": [
+      "Er wird als `NULL` (unknown) ausgewertet.",
+      "Er wird als `false` ausgewertet.",
+      "Er wird als `true` ausgewertet.",
+      "Er löst einen Syntaxfehler bei der Datenbankkompilierung aus."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Da `NULL` einen unbekannten Wert darstellt, werden Vergleiche mit Standardoperatoren wie `=` oder `!=` mit `NULL` als `NULL` (unbekannt) ausgewertet, anstatt `true` oder `false` zu ergeben. Um auf NULL zu prüfen, müssen Sie den Operator `IS NULL` verwenden.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich MySQL und PostgreSQL standardmäßig beim Sortieren von Spalten mit `NULL`-Werten in aufsteigender (`ASC`) Reihenfolge?",
+    "options": [
+      "MySQL platziert `NULL`-Werte zuerst, während PostgreSQL sie zuletzt platziert.",
+      "PostgreSQL platziert `NULL`-Werte zuerst, während MySQL sie zuletzt platziert.",
+      "Beide Datenbank-Engines platzieren `NULL`-Werte zuerst.",
+      "Beide Datenbank-Engines platzieren `NULL`-Werte zuletzt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL behandelt `NULL` als den kleinstmöglichen Wert und platziert sie an erster Stelle bei der `ASC`-Sortierung. PostgreSQL behandelt `NULL` als den größtmöglichen Wert und platziert sie standardmäßig an letzter Stelle bei der `ASC`-Sortierung (sofern nicht durch `NULLS FIRST` überschrieben).",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Abfragestrukturen ist sowohl in MySQL als auch in PostgreSQL syntaktisch gültig, um 20 Zeilen zu überspringen und die nächsten 10 zurückzugeben?",
+    "options": [
+      "`SELECT * FROM products ORDER BY price LIMIT 10 OFFSET 20;`",
+      "`SELECT * FROM products ORDER BY price LIMIT 20, 10;`",
+      "`SELECT * FROM products ORDER BY price OFFSET 20 LIMIT 10;`",
+      "`SELECT * FROM products ORDER BY price SKIP 20 LIMIT 10;`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die von beiden Engines unterstützte Standard-ANSI-SQL-Syntax für die Seitennummerierung lautet `LIMIT zeilenanzahl OFFSET offset_wert`. Die MySQL-Kurzschreibweise `LIMIT offset, zeilenanzahl` ist nicht standardisiert und führt in PostgreSQL zu Syntaxfehlern.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum ist eine tiefe Seitennummerierung mit hohen Offsets (z. B. `LIMIT 10 OFFSET 500000`) ein Performance-Anti-Pattern?",
+    "options": [
+      "Die Datenbank muss alle 500.000 vorhergehenden Zeilen scannen und sortieren, nur um sie vor der Rückgabe der 10 Zeilen zu verwerfen.",
+      "Hohe Offset-Werte führen dazu, dass die Datenbank die Tabelle sperrt und Schreibvorgänge verhindert.",
+      "Datenbank-Engines materialisieren Tabellen immer auf der Festplatte, wenn Offsets 10.000 überschreiten.",
+      "Es führt dazu, dass der Abfrage-Cache vollständig ungültig wird, was die globale Leseleistung beeinträchtigt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Obwohl nur 10 Zeilen zurückgegeben werden, muss die Engine alle 500.000 Offset-Datensätze durchlaufen und verarbeiten. Dies verbraucht erhebliche CPU- und Festplatten-I/O-Ressourcen. Stattdessen sollte eine Keyset-Pagination (cursorbasiert) verwendet werden.",
+    "points": 10
+  }
+]

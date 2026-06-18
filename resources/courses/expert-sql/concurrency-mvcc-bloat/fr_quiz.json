@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Dans PostgreSQL, que se passe-t-il au niveau physique lorsque vous exécutez une instruction UPDATE sur une ligne, et comment MVCC détermine-t-il la visibilité ?",
+    "options": [
+      "La ligne est mise à jour sur place et l'ancienne version est copiée dans un segment d'annulation (rollback segment).",
+      "L'ancienne ligne est marquée comme supprimée en définissant son en-tête xmax sur l'identifiant de la transaction en cours, et une nouvelle ligne (tuple) est insérée avec son xmin défini sur l'identifiant de la transaction en cours.",
+      "Une nouvelle table temporaire est créée dynamiquement pour contenir les versions actives, qui sont fusionnées lors de la validation (commit) de la transaction.",
+      "La base de données verrouille l'ensemble du bloc de données et n'écrase le contenu qu'une fois la transaction enregistrée dans le journal WAL."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL implémente MVCC en stockant toutes les versions de tuples directement dans le tas de la table (heap). Un UPDATE se comporte comme un DELETE logique (définissant le xmax de l'ancien tuple sur l'identifiant de transaction actuel) suivi d'un INSERT (définissant le xmin du nouveau tuple sur l'identifiant de transaction actuel).",
+    "points": 10
+  },
+  {
+    "question_text": "Comment le moteur InnoDB de MySQL reconstruit-il les anciennes versions de lignes pour les transactions à forte lecture nécessitant une isolation par instantané (snapshot isolation) ?",
+    "options": [
+      "En scannant le journal binaire (Binary Log) à partir de l'horodatage de la plus ancienne transaction active.",
+      "En lisant les lignes précédemment stockées dans un cache de table temporaire en mémoire.",
+      "En modifiant la ligne actuelle sur place et en parcourant la chaîne du journal d'annulation (Undo Log) à l'aide du pointeur de rollback (DB_ROLL_PTR) de la ligne pour construire dynamiquement l'instantané historique.",
+      "InnoDB ne prend pas en charge les lectures d'instantanés ; les lecteurs bloquent les rédacteurs pour maintenir la cohérence."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "MySQL InnoDB effectue les mises à jour sur place à l'intérieur de l'espace de table et écrit la version précédente dans l'Undo Log. Le pointeur DB_ROLL_PTR de la ligne pointe vers ces enregistrements d'annulation, ce qui permet à InnoDB de parcourir la chaîne d'annulation vers l'arrière pour reconstruire dynamiquement les instantanés plus anciens.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle condition est requise pour que PostgreSQL effectue une mise à jour HOT (Heap-Only Tuple), et pourquoi est-ce bénéfique ?",
+    "options": [
+      "La table ne doit avoir aucun index défini, ce qui accélère les analyses.",
+      "La mise à jour ne doit modifier aucune colonne indexée, et il doit y avoir suffisamment d'espace libre sur la même page du tas ; cela évite l'amplification d'écriture en évitant les mises à jour d'index.",
+      "La requête doit être exécutée dans le niveau d'isolation READ UNCOMMITTED, réduisant ainsi les conflits de verrouillage.",
+      "Le démon autovacuum doit être désactivé pour la table cible, garantissant que les nettoyages n'interfèrent pas avec la disposition des pages."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Une mise à jour HOT se produit dans PostgreSQL lorsqu'une mise à jour ne modifie aucune colonne couverte par des index, et que la page contenant le tuple a suffisamment d'espace pour contenir la nouvelle version. Cela évite de créer de nouveaux pointeurs d'index, car les entrées d'index pointent toujours vers l'ancien tuple, qui est lié au nouveau.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le principal danger de maintenir une transaction ouverte pendant une période prolongée (par exemple, plusieurs heures) dans une base de données MySQL InnoDB subissant beaucoup d'écritures ?",
+    "options": [
+      "La base de données convertira automatiquement toutes les tables en mode lecture seule pour empêcher les journaux d'interblocage.",
+      "Le pool de tampons InnoDB gèlera immédiatement et rejettera toutes les transactions d'écriture ultérieures.",
+      "Le thread de purge d'InnoDB ne pourra pas nettoyer les pages des journaux d'annulation (undo logs) créées depuis le démarrage de la transaction, ce qui entraînera un gonflement important de l'espace de table d'annulation (Undo Tablespace).",
+      "MySQL manquera d'identifiants de transaction (TxID) et plantera immédiatement."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Lorsqu'une transaction est maintenue ouverte dans MySQL InnoDB, les threads de purge ne peuvent pas nettoyer les journaux d'annulation générés après le début de cette transaction car elle pourrait encore en avoir besoin pour reconstruire des instantanés plus anciens. Cela empêche la purge et provoque le gonflement de l'Undo Tablespace.",
+    "points": 10
+  }
+]

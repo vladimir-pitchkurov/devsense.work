@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quale delle seguenti opzioni è considerata un anti-pattern per le query del database quando si scrive codice SQL per applicazioni in produzione?",
+    "options": [
+      "L'uso di `SELECT *` per recuperare tutte le colonne da una tabella.",
+      "La specifica di nomi di colonna espliciti nella clausola `SELECT`.",
+      "La ridenominazione delle colonne nell'output utilizzando la parola chiave `AS`.",
+      "Il filtraggio dei record con una clausola `WHERE` invece del recupero di tutte le righe."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'uso di `SELECT *` in produzione è un anti-pattern. Costringe il database a eseguire I/O su disco non necessario, aumenta la dimensione del payload di rete e può compromettere il codice dell'applicazione se vengono aggiunte o rimosse colonne nello schema.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, cosa succede se si usano le virgolette doppie (`\"`) al posto delle virgolette singole (`'`) per un valore testuale, come ad esempio: `WHERE username = \"alice\"`?",
+    "options": [
+      "PostgreSQL tratta `\"alice\"` come identificatore di colonna e restituisce un errore \"column 'alice' does not exist\".",
+      "PostgreSQL lo analizza perfettamente come valore letterale stringa poiché le virgolette doppie e singole sono intercambiabili.",
+      "Il database lo converte automaticamente in un valore letterale stringa ma emette un avviso di deprecazione.",
+      "La query viene eseguita ma non trova alcun record perché le virgolette doppie implicano un vincolo null."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, le virgolette singole (`'`) si usano per i valori letterali stringa, mentre le virgolette doppie (`\"`) sono riservate agli identificatori (como nomi di tabelle o colonne). Scrivere `\"alice\"` indica a PostgreSQL di cercare una colonna denominata `alice`.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo PostgreSQL e MySQL si differenziano nell'uso dell'operatore `LIKE` per la ricerca di pattern?",
+    "options": [
+      "Il `LIKE` di PostgreSQL è sensibile alle maiuscole/minuscole (richiede `ILIKE` per la ricerca case-insensitive), mentre il `LIKE` di MySQL non fa distinzione tra maiuscole e minuscole per impostazione predefinita con le regole di confronto tipiche.",
+      "Il `LIKE` di MySQL fa distinzione tra maiuscole e minuscole, mentre il `LIKE` di PostgreSQL è insensibile alle maiuscole/minuscole per impostazione predefinita.",
+      "Entrambi i database considerano il `LIKE` sensibile alle maiuscole/minuscole e non offrono alternative insensibili alle maiuscole/minuscole.",
+      "PostgreSQL supporta `LIKE` e `ILIKE`, mentre MySQL supporta solo `ILIKE` per le query insensibili alle maiuscole/minuscole."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL implementa un `LIKE` sensibile alle maiuscole/minuscole e fornisce `ILIKE` per le ricerche insensibili alle maiuscole/minuscole. Il `LIKE` di MySQL non fa distinzione tra maiuscole e minuscole per impostazione predefinita con le regole di confronto standard (come `utf8mb4_0900_ai_ci`).",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la modalità standard per concatenare le stringhe in PostgreSQL rispetto a MySQL per impostazione predefinita?",
+    "options": [
+      "PostgreSQL utilizza l'operatore `||`, mentre MySQL utilizza la funzione `CONCAT()`.",
+      "PostgreSQL utilizza la funzione `CONCAT()`, mentre MySQL utilizza l'operatore `||`.",
+      "Entrambi i motori utilizzano l'operatore `+` per unire le stringhe.",
+      "Entrambi i motori utilizzano la funzione `CONCAT()` e l'operatore `||` non è affatto supportato in nessuno dei due."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL segue lo standard ANSI SQL utilizzando l'operatore `||` per la concatenazione di stringhe. MySQL tratta `||` come un operatore logico `OR` per impostazione predefinita e richiede la funzione `CONCAT()` a meno che non sia attiva la modalità SQL `PIPES_AS_CONCAT`.",
+    "points": 10
+  }
+]

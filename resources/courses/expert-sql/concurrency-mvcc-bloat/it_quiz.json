@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "In PostgreSQL, cosa succede a livello fisico quando si esegue un'istruzione UPDATE su una riga, e in che modo il sistema MVCC determina la visibilità?",
+    "options": [
+      "La riga viene aggiornata sul posto e la vecchia versione viene copiata in un segmento di rollback.",
+      "La vecchia riga viene contrassegnata come eliminata impostando il campo xmax della sua intestazione all'ID della transazione corrente, e viene inserita una nuova riga (tupla) con il campo xmin impostato all'ID della transazione corrente.",
+      "Viene creata dinamicamente una nuova tabella temporanea per contenere le versioni attive, che vengono unite al momento del commit della transazione.",
+      "Il database blocca l'intero blocco di dati e sovrascrive i contenuti solo dopo che la transazione è stata salvata nel WAL."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL implementa il sistema MVCC memorizzando tutte le versioni delle tuple direttamente nell'heap della tabella. Un UPDATE si comporta come un DELETE logico (impostando il campo xmax della vecchia tupla all'ID della transazione corrente) seguito da un INSERT (impostando il campo xmin della nuova tupla all'ID della transazione corrente).",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo il motore InnoDB di MySQL ricostruisce le versioni precedenti delle righe per le transazioni ad alta intensità di lettura che richiedono l'isolamento dello snapshot?",
+    "options": [
+      "Scansionando il Binary Log a partire dal timestamp della transazione attiva più vecchia.",
+      "Leggendo le righe precedentemente memorizzate da una cache di tabelle temporanee in memoria.",
+      "Modificando la riga corrente sul posto e scorrendo la catena degli Undo Log tramite il puntatore di rollback della riga (DB_ROLL_PTR) per creare lo snapshot storico in tempo reale.",
+      "InnoDB non supporta le letture di snapshot; i lettori bloccano gli scrittori per mantenere la coerenza."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "MySQL InnoDB esegue gli aggiornamenti sul posto all'interno del tablespace e scrive la versione precedente nell'Undo Log. Il campo DB_ROLL_PTR della riga punta a questi record di undo, consentendo a InnoDB di scorrere a ritroso la catena di undo per ricostruire dinamicamente gli snapshot più vecchi.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale condizione è richiesta a PostgreSQL per eseguire un aggiornamento HOT (Heap-Only Tuple), e perché è vantaggioso?",
+    "options": [
+      "La tabella non deve avere alcun indice definito su di essa, velocizzando così le scansioni.",
+      "L'aggiornamento non deve modificare alcuna colonna indicizzata e deve esserci sufficiente spazio libero nella stessa pagina heap; ciò previene l'amplificazione della scrittura evitando gli aggiornamenti degli indici.",
+      "La query deve essere eseguita all'interno del livello di isolamento READ UNCOMMITTED, riducendo la contesa dei blocchi.",
+      "Il demone autovacuum deve essere disabilitato per la tabella di destinazione, garantendo che le operazioni di pulizia non interferiscano con il layout della pagina."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un aggiornamento HOT si verifica in PostgreSQL quando un aggiornamento non modifica alcuna colonna coperta da indici e la pagina contenente la tupla ha spazio sufficiente per ospitare la nuova versione. Questo evita la creazione di nuovi puntatori di indice, poiché le voci dell'indice puntano ancora alla vecchia tupla, che a sua volta si collega a quella nuova.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il pericolo principale del mantenere una transazione aperta per un lungo periodo di tempo (ad es. diverse ore) in un database MySQL InnoDB ad alta intensità di scrittura?",
+    "options": [
+      "Il database convertirà automaticamente tutte le tabelle in modalità di sola lettura per evitare i log di deadlock.",
+      "Il buffer pool di InnoDB si bloccherà immediatamente rifiutando qualsiasi transazione di scrittura successiva.",
+      "Il thread di purge di InnoDB non sarà in grado di ripulire le pagine dell'undo log create dall'avvio della transazione, causando un notevole bloat dell'Undo Tablespace.",
+      "MySQL esaurirà gli ID di transazione (TxID) e andrà in crash immediatamente."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Quando una transazione viene lasciata aperta in MySQL InnoDB, i thread di purge non possono pulire i log di undo generati a partire dall'avvio di quella transazione perché quest'ultima potrebbe ancora averne bisogno per ricostruire snapshot precedenti. Ciò impedisce la pulizia e causa il rigonfiamento dell'Undo Tablespace.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was passiert in PostgreSQL auf physischer Ebene, wenn Sie eine `UPDATE`-Anweisung auf einer Zeile ausführen, und wie bestimmt MVCC die Sichtbarkeit?",
+    "options": [
+      "Die Zeile wird direkt vor Ort (in-place) aktualisiert und die alte Version in ein Rollback-Segment kopiert.",
+      "Die alte Zeile wird als gelöscht markiert, indem ihr `xmax`-Header auf die aktuelle Transaktions-ID gesetzt wird, und eine neue Zeile (Tupel) wird eingefügt, deren `xmin` auf die aktuelle Transaktions-ID gesetzt ist.",
+      "Eine neue temporäre Tabelle wird dynamisch erstellt, um die aktiven Versionen zu halten, die beim Commit der Transaktion zusammengeführt werden.",
+      "Die Datenbank sperrt den gesamten Datenblock und überschreibt den Inhalt erst, nachdem die Transaktion in das WAL geschrieben wurde."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL implementiert MVCC, indem alle Tupelversionen direkt im Tabellen-Heap gespeichert werden. Ein `UPDATE` verhält sich wie ein logisches `DELETE` (wodurch das `xmax` des alten Tupels auf die aktuelle Transaktions-ID gesetzt wird), gefolgt von einem `INSERT` (wodurch das `xmin` des neuen Tupels auf die aktuelle Transaktions-ID gesetzt wird).",
+    "points": 10
+  },
+  {
+    "question_text": "Wie rekonstruiert die InnoDB-Engine von MySQL ältere Zeilenversionen für leseintensive Transaktionen, die Snapshot-Isolation erfordern?",
+    "options": [
+      "Durch Scannen des Binärlogs (Binary Log) ab dem Zeitstempel der ältesten aktiven Transaktion.",
+      "Durch Lesen zuvor gespeicherter Zeilen aus einem temporären Tabellen-Cache im Speicher.",
+      "Durch Ändern der aktuellen Zeile vor Ort (in-place) und Durchlaufen der Undo-Log-Kette mithilfe des Rollback-Pointers (DB_ROLL_PTR) der Zeile, um den historischen Snapshot dynamisch aufzubauen.",
+      "InnoDB unterstützt keine Snapshot-Reads; Leser blockieren Schreiber, um die Konsistenz zu wahren."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "MySQL InnoDB führt Aktualisierungen vor Ort (in-place) im Tablespace durch und schreibt die vorherige Version in das Undo Log. Der `DB_ROLL_PTR` der Zeile zeigt auf diese Undo-Datensätze, sodass InnoDB die Undo-Kette rückwärts durchlaufen kann, um ältere Snapshots dynamisch zu rekonstruieren.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Bedingung ist erforderlich, damit PostgreSQL ein Heap-Only-Tuple-Update (HOT-Update) durchführen kann, und warum ist dies vorteilhaft?",
+    "options": [
+      "Für die Tabelle dürfen keine Indizes definiert sein, was Scans beschleunigt.",
+      "Die Aktualisierung darf keine indizierten Spalten ändern, und es muss ausreichend freier Speicherplatz auf derselben Heap-Seite vorhanden sein; dies verhindert Schreib-Verstärkung (Write Amplification), indem Index-Updates vermieden werden.",
+      "Die Abfrage muss innerhalb des Isolationslevels READ UNCOMMITTED ausgeführt werden, was Sperrkonflikte reduziert.",
+      "Der Autovacuum-Daemon muss für die Zieltabelle deaktiviert sein, um sicherzustellen, dass Bereinigungen das Seiten-Layout nicht stören."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein HOT-Update tritt in PostgreSQL auf, wenn ein Update keine Spalten modifiziert, die von Indizes abgedeckt sind, und die Seite, die das Tupel enthält, genügend Platz für die neue Version bietet. Dies vermeidet die Erstellung neuer Index-Pointer, da Indexeinträge weiterhin auf das alte Tupel zeigen, das wiederum auf das neue verweist.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist die Hauptgefahr, wenn eine Transaktion in einer MySQL-InnoDB-Datenbank mit hoher Schreiblast über einen längeren Zeitraum (z. B. mehrere Stunden) offen gehalten wird?",
+    "options": [
+      "Die Datenbank konvertiert automatisch alle Tabellen in den schreibgeschützten Modus (read-only), um Deadlock-Logs zu verhindern.",
+      "Der InnoDB-Buffer-Pool friert sofort ein und lehnt alle nachfolgenden Schreibtransaktionen ab.",
+      "Der InnoDB-Purge-Thread kann keine Undo-Log-Seiten bereinigen, die seit dem Start der Transaktion erstellt wurden, was zu einem erheblichen Bloat des Undo-Tablespaces führt.",
+      "MySQL gehen die Transaktions-IDs (TxIDs) aus und es stürzt sofort ab."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Wenn eine Transaktion in MySQL InnoDB offen gehalten wird, können die Purge-Threads die nach dem Start dieser Transaktion erzeugten Undo-Logs nicht bereinigen, da sie möglicherweise noch zur Rekonstruktion älterer Snapshots benötigt werden. Dies verhindert die Bereinigung und führt zum Anschwellen des Undo-Tablespaces.",
+    "points": 10
+  }
+]

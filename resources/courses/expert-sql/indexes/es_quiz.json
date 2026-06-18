@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "En el motor InnoDB de MySQL, ¿qué almacena un nodo hoja de un índice secundario y qué paso de ejecución de consulta desencadena esto?",
+    "options": [
+      "Almacena la dirección de memoria física de la fila, lo que permite saltos directos de índice a heap.",
+      "Almacena el valor de la clave primaria (Primary Key) de la fila, desencadenando una búsqueda secundaria en el índice agrupado (Bookmark Lookup) para recuperar los datos reales de la fila si se consultan columnas no indexadas.",
+      "Almacena una copia comprimida de toda la fila, eliminando la necesidad de visitar alguna vez el espacio de tablas de la clave primaria.",
+      "Almacena el desplazamiento lógico de la fila desde el inicio de la página del espacio de tablas."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "En InnoDB, las tablas están agrupadas por su clave primaria. Los índices secundarios almacenan el valor de la clave primaria en sus nodos hoja en lugar de punteros de fila. Si la consulta requiere columnas que no están cubiertas por el índice secundario, MySQL debe realizar una segunda búsqueda en el índice agrupado (bookmark lookup) para recuperar la fila.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Bajo qué circunstancias deberías elegir un índice BRIN (Block Range Index) sobre un índice B-Tree estándar en PostgreSQL?",
+    "options": [
+      "Al indexar cadenas aleatorias de alta cardinalidad (como UUIDs) que se actualizan con frecuencia.",
+      "Al indexar tablas extremadamente grandes (cientos de gigabytes) donde los datos están ordenados físicamente en el disco de acuerdo con la columna indexada (como marcas de tiempo o claves autoincrementales).",
+      "Cuando necesitas imponer una restricción UNIQUE en una columna.",
+      "Cuando la columna indexada contiene estructuras JSON anidadas y ricas que requieren búsquedas de contención de claves."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un índice BRIN divide una tabla en rangos de páginas y solo almacena los valores mínimo y máximo de cada rango. Es extremadamente compacto (a menudo 1000 veces más pequeño que un B-Tree), pero depende de que los datos estén ordenados físicamente en el disco para ser efectivo. No puede imponer unicidad.",
+    "points": 10
+  },
+  {
+    "question_text": "¿En qué se diferencian PostgreSQL y MySQL a la hora de implementar un índice de cobertura que contenga columnas de carga útil (payload) que no necesitan ser ordenadas?",
+    "options": [
+      "PostgreSQL permite añadir columnas de carga útil a los nodos hoja utilizando la cláusula `INCLUDE`; MySQL no tiene una cláusula `INCLUDE` y requiere definirlas como parte de una clave de índice compuesto.",
+      "MySQL admite la cláusula `INCLUDE` para índices B-Tree, mientras que PostgreSQL requiere el uso del tipo de índice GIN.",
+      "Ninguna base de datos admite índices de cobertura; todas las consultas deben recuperar los datos de la tabla base.",
+      "PostgreSQL incluye automáticamente todas las columnas de la tabla en las hojas del índice B-Tree por defecto."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL admite la cláusula `INCLUDE` (por ejemplo, `CREATE INDEX ... ON tabla (clave) INCLUDE (carga_util)`), la cual almacena las columnas de carga útil en los nodos hoja para una recuperación rápida sin utilizarlas para ordenar el índice. MySQL carece de esta cláusula, obligándote a definir una clave de índice compuesto de múltiples columnas donde todas las columnas forman parte de la estructura de ordenación del índice.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el beneficio principal de crear un índice parcial (utilizando una cláusula `WHERE`) en PostgreSQL?",
+    "options": [
+      "Permite que el índice cambie automáticamente entre diseños B-Tree y GIN según los recuentos de filas.",
+      "Excluye las filas que no coinciden con la condición del filtro, manteniendo el tamaño del índice pequeño, reduciendo la utilización del disco y minimizando la sobrecarga de actualización del índice durante las escrituras.",
+      "Permite que la consulta omita por completo las comprobaciones de visibilidad de transacciones (MVCC).",
+      "Permite indexar expresiones y funciones en lugar de valores de columna crudos."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un índice parcial (por ejemplo, `CREATE INDEX ... WHERE status = 'active'`) solo contiene entradas para las filas que coinciden con la condición especificada. Esto ahorra un espacio en disco significativo y reduce la sobrecarga de escritura debido a que el índice no necesita actualizarse cuando se insertan o actualizan filas que no coinciden con la condición.",
+    "points": 10
+  }
+]

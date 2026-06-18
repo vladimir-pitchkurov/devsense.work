@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Por qué la paginación estándar con OFFSET (por ejemplo, LIMIT 10 OFFSET 100000) experimenta una grave degradación del rendimiento a medida que aumenta el desplazamiento (offset)?",
+    "options": [
+      "La base de datos bloquea las 100,000 filas en modo compartido, impidiendo las escrituras concurrentes.",
+      "El optimizador de consultas ignora los índices B-Tree cuando hay una cláusula OFFSET presente.",
+      "El motor de la base de datos debe leer y descartar las 100,000 filas precedentes para llegar al punto de inicio de la página solicitada, lo que provoca un alto uso de CPU y de E/S de disco.",
+      "La base de datos genera una tabla temporal masiva en el disco para cada solicitud de página."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La paginación estándar con OFFSET obliga al motor de la base de datos a recorrer el índice y leer todas las filas hasta el valor del offset, descartándolas antes de devolver la página solicitada. Esto hace que los tiempos de respuesta escalen linealmente con la profundidad de la página, provocando graves cuellos de botella en tablas grandes.",
+    "points": 10
+  },
+  {
+    "question_text": "Tanto en MySQL como en PostgreSQL, ¿cuál es el requisito obligatorio para definir una clave primaria o restricción única en una tabla particionada?",
+    "options": [
+      "La clave primaria debe ser un entero autoincremental de tipo BIGINT.",
+      "La clave primaria o restricción única debe incluir todas las columnas utilizadas en la expresión de la clave de partición.",
+      "No se pueden definir claves primarias en tablas particionadas; en su lugar, deben depender de índices únicos.",
+      "La columna de la clave de partición no debe formar parte de la clave primaria para evitar el bloqueo de particiones."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Para imponer la unicidad en toda la tabla sin escanear cada una de las particiones en cada inserción, las bases de datos relacionales requieren que las columnas de la clave de partición se incluyan en todas las restricciones únicas y claves primarias. Esto garantiza que la unicidad se pueda validar localmente dentro de una sola partición.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo logra la paginación Keyset (basada en cursores) un rendimiento O(1) independientemente de cuán profunda sea la solicitud de paginación?",
+    "options": [
+      "Cargando todo el keyset de la tabla en el buffer pool de memoria compartida de la base de datos.",
+      "Mediante el uso de búsquedas de índice (index seeks) para saltar directamente al punto de inicio de la página basándose en los valores de la última fila de la página anterior (por ejemplo, WHERE created_at < valor_ultimo_visto).",
+      "Desactivando las comprobaciones de aislamiento de transacciones para todas las operaciones de lectura.",
+      "Convirtiendo dinámicamente el índice B-Tree en un índice Hash."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Al filtrar las filas en función de los valores de la última fila recuperada de la página anterior (keyset), la base de datos puede utilizar un índice B-Tree para realizar una búsqueda directa (index seek) para localizar la fila inicial de la página, evitando por completo escanear las páginas que la preceden.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué característica, compatible con PostgreSQL 9.3+ y MySQL 8.0.14+, te permite consultar y paginar de manera eficiente una subconsulta para cada fila de la consulta externa (por ejemplo, recuperar los 3 mejores productos por categoría)?",
+    "options": [
+      "CTEs recursivas",
+      "Uniones laterales (LATERAL Joins, utilizando la sintaxis INNER JOIN LATERAL o CROSS APPLY)",
+      "Funciones de ventana utilizando PARTITION BY",
+      "Consultas UNION ALL combinadas por índice"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Una unión `LATERAL` actúa como un bucle `foreach` de SQL. Permite que una subconsulta haga referencia a columnas de tablas precedentes en la cláusula `FROM`. Esto es sumamente eficiente para recuperar los N mejores elementos por categoría, ya que puede realizar una búsqueda impulsada por índices para cada fila de categoría.",
+    "points": 10
+  }
+]

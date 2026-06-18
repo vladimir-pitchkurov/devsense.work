@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "En PostgreSQL, ¿qué sucede a nivel físico cuando ejecutas una sentencia UPDATE en una fila, y cómo determina MVCC la visibilidad?",
+    "options": [
+      "La fila se actualiza directamente (in-place) y la versión antigua se copia a un segmento de reversión.",
+      "La fila antigua se marca como eliminada estableciendo su encabezado xmax con el ID de la transacción actual, y se inserta una nueva fila (tupla) con su xmin establecido con el ID de la transacción actual.",
+      "Se crea dinámicamente una nueva tabla temporal para albergar las versiones activas, las cuales se fusionan al confirmar la transacción.",
+      "La base de datos bloquea todo el bloque de datos y sobrescribe el contenido solo después de que la transacción se escriba en el WAL."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL implementa MVCC almacenando todas las versiones de tuplas directamente en el heap de la tabla. Un `UPDATE` se comporta como un `DELETE` lógico (estableciendo el `xmax` de la tupla antigua con el ID de la transacción actual) seguido de un `INSERT` (estableciendo el `xmin` de la tupla nueva con el ID de la transacción actual).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo reconstruye el motor InnoDB de MySQL las versiones antiguas de filas para transacciones de lectura intensiva que requieren aislamiento de instantánea (snapshot isolation)?",
+    "options": [
+      "Escaneando el registro binario (Binary Log) a partir de la marca de tiempo de la transacción activa más antigua.",
+      "Leyendo filas previamente almacenadas desde una caché de tabla temporal en memoria.",
+      "Modificando la fila actual directamente (in-place) y recorriendo la cadena del Undo Log utilizando el puntero de reversión de la fila (DB_ROLL_PTR) para construir la instantánea histórica.",
+      "InnoDB no admite lecturas de instantánea; los lectores bloquean a los escritores para mantener la consistencia."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "MySQL InnoDB realiza las actualizaciones directamente (in-place) dentro del espacio de tablas y escribe la versión anterior en el Undo Log. El `DB_ROLL_PTR` de la fila apunta a estos registros de deshacer, lo que permite a InnoDB recorrer la cadena de deshacer hacia atrás para reconstruir dinámicamente las instantáneas antiguas.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué condición es necesaria para que PostgreSQL realice una actualización de tupla solo en Heap (HOT), y por qué es beneficiosa?",
+    "options": [
+      "La tabla no debe tener ningún índice definido en ella, lo que acelera los escaneos.",
+      "La actualización no debe cambiar ninguna columna indexada y debe haber suficiente espacio libre en la misma página de heap; evita la amplificación de escritura al omitir actualizaciones de índices.",
+      "La consulta debe ejecutarse dentro del nivel de aislamiento READ UNCOMMITTED, reduciendo la contención de bloqueos.",
+      "El demonio autovacuum debe desactivarse para la tabla de destino, asegurando que las limpiezas no interfieran con la disposición de la página."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Una actualización HOT ocurre en PostgreSQL cuando una actualización no modifica ninguna columna cubierta por índices y la página que contiene la tupla tiene espacio suficiente para albergar la nueva versión. Esto evita crear nuevos punteros de índice, ya que las entradas de índice todavía apuntan a la tupla antigua, que a su vez enlaza con la nueva.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál es el peligro principal de mantener una transacción abierta durante un período prolongado de tiempo (por ejemplo, varias horas) en una base de datos MySQL InnoDB con alta tasa de escritura?",
+    "options": [
+      "La base de datos convertirá automáticamente todas las tablas a modo de solo lectura para evitar registros de interbloqueo.",
+      "El buffer pool de InnoDB se congelará inmediatamente y rechazará cualquier transacción de escritura posterior.",
+      "El hilo de depuración de InnoDB no podrá limpiar las páginas del undo log creadas desde que se inició la transacción, lo que provocará una obsolescencia significativa en el Undo Tablespace.",
+      "MySQL se quedará sin IDs de transacción (TxIDs) y se colapsará inmediatamente."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Espera, déjame mirar las opciones. El índice de opción 3 es 'MySQL se quedará sin...'. Ah, el índice de opción 2 (tercera opción, indexada en 0: índice 2) es 'El hilo de depuración de InnoDB no podrá limpiar las páginas del undo log...'. ¡Déjame verificar el correct_answer_index. Debería ser 2, no 3! Déjame corregirlo.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Étant donné trois lignes avec des valeurs identiques qui se disputent la première place, quelle fonction de fenêtrage attribue la séquence de classement 1, 1, 1, 4 aux lignes de la partition ?",
+    "options": [
+      "RANK()",
+      "DENSE_RANK()",
+      "ROW_NUMBER()",
+      "NTILE(4)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`RANK()` attribue des classements identiques aux valeurs dupliquées, mais ignore les classements suivants, ce qui donne `1, 1, 1, 4`. En revanche, `DENSE_RANK()` attribuerait `1, 1, 1, 2` (sans sauts) et `ROW_NUMBER()` attribuerait `1, 2, 3, 4` (séquence unique).",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi l'expression `LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary)` renvoie-t-elle le salaire de la ligne actuelle au lieu du salaire maximum du département ?",
+    "options": [
+      "Parce que lorsque `ORDER BY` est présent, le cadre de fenêtre par défaut est `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, ce qui limite le cadre aux lignes allant jusqu'à la ligne actuelle.",
+      "Parce que `LAST_VALUE()` nécessite qu'un ordre de tri `DESC` soit spécifié dans la clause `ORDER BY`.",
+      "Parce que `LAST_VALUE()` est uniquement évaluée dans la portée des deux premières lignes d'une partition.",
+      "Parce que le moteur de base de données désactive automatiquement l'anticipation pour optimiser l'utilisation de la mémoire, sauf si `LOOKAHEAD` est activé."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Lorsqu'une clause `ORDER BY` est utilisée au sein de `OVER()`, le cadre de fenêtre par défaut est défini dynamiquement sur `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. Par conséquent, la « dernière valeur » dans le cadre actuel est toujours la valeur de la ligne actuelle (ou de ses paires ex-æquo). Pour obtenir la véritable dernière valeur de la partition, le cadre doit être explicitement défini sur `RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (ou son équivalent `ROWS`).",
+    "points": 10
+  },
+  {
+    "question_text": "Laquelle des options de syntaxe suivantes est valide dans PostgreSQL pour agréger uniquement des lignes spécifiques à l'intérieur d'une partition de fenêtre sans recourir à une expression conditionnelle `CASE WHEN` ?",
+    "options": [
+      "L'utilisation de la clause `FILTER (WHERE condition_de_requete)` directement ajoutée à la fonction d'agrégation (par exemple, `COUNT(id) FILTER (WHERE salary > 5000) OVER(...)`).",
+      "La spécification d'une condition `WHERE` directement à l'intérieur de la clause `PARTITION BY` (par exemple, `PARTITION BY department_id WHERE salary > 5000`).",
+      "L'utilisation d'une instruction `HAVING` imbriquée dans le bloc de définition de fenêtre `OVER(...)`.",
+      "PostgreSQL ne prend pas en charge l'agrégation sélective de fenêtre de manière native et nécessite `CASE WHEN` tout comme MySQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL prend en charge la clause `FILTER (WHERE condition)` du standard SQL pour les fonctions d'agrégation. Cela permet d'obtenir des agrégations sélectives propres et lisibles au sein des fonctions de fenêtrage. MySQL 8.0 ne prend pas en charge cette clause et nécessite l'écriture d'une expression `CASE WHEN` à l'intérieur de la fonction d'agrégation.",
+    "points": 10
+  },
+  {
+    "question_text": "Laquelle des affirmations suivantes est vraie concernant les capacités d'exclusion de cadre (comme l'exclusion de la ligne actuelle ou du groupe actuel du calcul du cadre de la fenêtre) ?",
+    "options": [
+      "PostgreSQL 11+ prend en charge les clauses d'exclusion de cadre comme `EXCLUDE CURRENT ROW` and `EXCLUDE GROUP`, alors que MySQL 8.0 ne prend pas en charge les exclusions de cadre.",
+      "MySQL 8.0 et PostgreSQL prennent tous deux en charge les clauses `EXCLUDE` du standard ANSI dans le cadrage de fenêtre.",
+      "MySQL 8.0 prend en charge les exclusions de cadre, mais PostgreSQL ne les prend pas en charge et nécessite des jointures sur soi-même.",
+      "Ni PostgreSQL ni MySQL ne prennent en charge l'exclusion de cadre ; elle est uniquement disponible dans les bases de données commerciales comme Oracle et SQL Server."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL 11+ prend en charge les options `EXCLUDE` du standard SQL ANSI (`EXCLUDE CURRENT ROW`, `EXCLUDE GROUP`, `EXCLUDE TIES` et `EXCLUDE NO OTHERS`) au sein de la clause de cadre de la fenêtre. MySQL 8.0 ne prend en charge aucune exclusion de cadre, de sorte que des solutions de contournement (comme des sous-requêtes ou des décalages mathématiques) doivent être utilisées.",
+    "points": 10
+  }
+]

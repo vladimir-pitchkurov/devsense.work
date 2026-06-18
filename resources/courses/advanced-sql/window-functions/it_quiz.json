@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Date tre righe con valori identici che si contendono a pari merito il primo posto, quale funzione finestra assegna la sequenza di classificazione (rank) 1, 1, 1, 4 alle righe nella partizione?",
+    "options": [
+      "RANK()",
+      "DENSE_RANK()",
+      "ROW_NUMBER()",
+      "NTILE(4)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`RANK()` assegna ranghi identici ai valori duplicati ma salta i ranghi successivi, ottenendo la sequenza `1, 1, 1, 4`. Al contrario, `DENSE_RANK()` assegnerebbe `1, 1, 1, 2` (senza salti) e `ROW_NUMBER()` assegnerebbe `1, 2, 3, 4` (sequenza univoca).",
+    "points": 10
+  },
+  {
+    "question_text": "Perché l'espressione `LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary)` restituisce lo stipendio della riga corrente anziché lo stipendio massimo nel dipartimento?",
+    "options": [
+      "Perché quando è presente `ORDER BY`, il frame predefinito della finestra è `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, che limita il frame alle righe fino a quella corrente.",
+      "Perché `LAST_VALUE()` richiede che venga specificato un ordine di ordinamento `DESC` nella clausola `ORDER BY`.",
+      "Perché `LAST_VALUE()` viene valutata solo nell'ambito delle prime due righe di una partizione.",
+      "Perché il motore di database disabilita automaticamente la ricerca in avanti per ottimizzare l'uso della memoria a meno che non sia abilitato `LOOKAHEAD`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Quando si utilizza una clausola `ORDER BY` all'interno di `OVER()`, il frame predefinito della finestra viene impostato dinamicamente su `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. Pertanto, l'ultimo valore ('last value') nel frame corrente è sempre il valore della riga corrente (o dei suoi duplicati a pari merito). Per ottenere l'effettivo ultimo valore della partizione, il frame deve essere impostato esplicitamente su `RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (o equivalente in `ROWS`).",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti opzioni di sintassi è valida in PostgreSQL to aggregare solo righe specifiche all'interno di una partizione di finestra, senza ricorrere a un'espressione condizionale `CASE WHEN`?",
+    "options": [
+      "Utilizzando la clausola `FILTER (WHERE condizione_query)` aggiunta direttamente alla funzione di aggregazione (ad es., `COUNT(id) FILTER (WHERE salary > 5000) OVER(...)`).",
+      "Specificando una condizione `WHERE` direttamente all'interno della clausola `PARTITION BY` (ad es., `PARTITION BY department_id WHERE salary > 5000`).",
+      "Utilizzando un'istruzione nidificata `HAVING` all'interno del blocco di definizione della finestra `OVER(...)`.",
+      "PostgreSQL non supporta nativamente l'aggregazione selettiva della finestra e richiede `CASE WHEN` proprio come MySQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL supporta la clausola `FILTER (WHERE condizione)` conforme allo standard SQL per le funzioni di aggregazione. Ciò consente di scrivere aggregazioni selettive pulite e leggibili all'interno delle funzioni finestra. MySQL 8.0 non supporta questa clausola e richiede la scrittura di un'espressione `CASE WHEN` all'interno della funzione di aggregazione.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti affermazioni è vera riguardo alle capacità di esclusione del frame (come l'esclusione della riga o del gruppo corrente dal calcolo del frame della finestra)?",
+    "options": [
+      "PostgreSQL 11+ supporta le clausole di esclusione del frame come `EXCLUDE CURRENT ROW` e `EXCLUDE GROUP`, mentre MySQL 8.0 non supporta le esclusioni di frame.",
+      "Sia MySQL 8.0 che PostgreSQL supportano le clausole standard ANSI `EXCLUDE` nella definizione del frame della finestra.",
+      "MySQL 8.0 supporta le esclusioni di frame, ma PostgreSQL non le supporta e richiede dei self-join.",
+      "Né PostgreSQL nor MySQL supportano l'esclusione del frame; è disponibile solo nei database commerciali come Oracle e SQL Server."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL 11+ supporta le opzioni ANSI SQL `EXCLUDE` (`EXCLUDE CURRENT ROW`, `EXCLUDE GROUP`, `EXCLUDE TIES` e `EXCLUDE NO OTHERS`) all'interno della clausola del frame della finestra. MySQL 8.0 non supporta alcuna esclusione di frame, pertanto devono essere utilizzate soluzioni alternative (como sottoquery o offset matematici).",
+    "points": 10
+  }
+]

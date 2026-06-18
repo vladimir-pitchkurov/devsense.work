@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Dans le moteur InnoDB de MySQL, que stocke un nœud feuille d'un index secondaire, et quelle étape d'exécution de requête cela déclenche-t-il ?",
+    "options": [
+      "Il stocke l'adresse mémoire physique de la ligne, ce qui permet des sauts directs de l'index vers le tas.",
+      "Il stocke la valeur de la clé primaire de la ligne, déclenchant une recherche secondaire dans l'index clusterisé (Bookmark Lookup) pour récupérer les données réelles de la ligne si des colonnes non indexées sont interrogées.",
+      "Il stocke une copie compressée de la ligne entière, éliminant ainsi le besoin de visiter l'espace de table de la clé primaire.",
+      "Il stocke le décalage de ligne logique (offset) par rapport au début de la page de l'espace de table."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Dans InnoDB, les tables sont clusterisées par leur clé primaire. Les index secondaires stockent la valeur de la clé primaire au niveau de leurs nœuds feuilles plutôt que des pointeurs de lignes. Si la requête nécessite des colonnes non couvertes par l'index secondaire, MySQL doit effectuer une seconde recherche dans l'index clusterisé (bookmark lookup) pour récupérer la ligne.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans quelles circonstances devriez-vous choisir un index BRIN (Block Range Index) plutôt qu'un index B-Tree standard dans PostgreSQL ?",
+    "options": [
+      "Lors de l'indexation de chaînes aléatoires à cardinalité élevée (telles que des UUID) qui sont mises à jour fréquemment.",
+      "Lors de l'indexation de tables extrêmement volumineuses (centaines de gigaoctets) où les données sont physiquement triées sur le disque selon la colonne indexée (comme des horodatages ou des clés auto-incrémentées).",
+      "Lorsque vous devez appliquer une contrainte UNIQUE sur une colonne.",
+      "Lorsque la colonne indexée contient des structures JSON imbriquées riches nécessitant des recherches d'inclusion de clés."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un index BRIN divise une table en plages de pages et stocke uniquement les valeurs minimales et maximales pour chaque plage. Il est extrêmement compact (souvent 1000 fois plus petit qu'un B-Tree) mais dépend du fait que les données soient physiquement ordonnées sur le disque pour être efficaces. Il ne peut pas appliquer de contrainte d'unicité.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi PostgreSQL et MySQL diffèrent-ils dans leur implémentation d'un index couvrant contenant des colonnes de données qui n'ont pas besoin d'être triées ?",
+    "options": [
+      "PostgreSQL permet d'ajouter des colonnes de données aux nœuds feuilles à l'aide de la clause `INCLUDE` ; MySQL n'a pas de clause `INCLUDE` et nécessite de les définir dans le cadre d'une clé d'index composite.",
+      "MySQL prend en charge la clause `INCLUDE` pour les index B-Tree, tandis que PostgreSQL nécessite d'utiliser le type d'index GIN.",
+      "Aucune de ces bases de données ne prend en charge les index couvrants ; toutes les requêtes doivent récupérer les données à partir de la table de base.",
+      "PostgreSQL inclut automatiquement toutes les colonnes de la table dans les feuilles d'index B-Tree par défaut."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL prend en charge la clause `INCLUDE` (par exemple, `CREATE INDEX ... ON table (key) INCLUDE (payload)`), qui stocke les colonnes de données dans les nœuds feuilles pour une récupération rapide sans les utiliser pour trier l'index. MySQL ne dispose pas de cette clause, ce qui oblige à définir une clé d'index composite multi-colonne où toutes les colonnes font partie de la structure de tri de l'index.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le principal avantage de créer un index partiel (en utilisant une clause `WHERE`) dans PostgreSQL ?",
+    "options": [
+      "Il permet à l'index de basculer automatiquement entre les configurations B-Tree et GIN en fonction du nombre de lignes.",
+      "Il exclut les lignes qui ne correspondent pas à la condition de filtrage, ce qui maintient la taille de l'index petite, réduit l'utilisation du disque et minimise la surcharge de mise à jour de l'index lors des écritures.",
+      "Il permet à la requête de contourner complètement les vérifications de visibilité des transactions (MVCC).",
+      "Il permet d'indexer des expressions et des fonctions plutôt que les valeurs brutes de la colonne."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un index partiel (par exemple, `CREATE INDEX ... WHERE status = 'active'`) ne contient que des entrées pour les lignes correspondant à la condition spécifiée. Cela permet d'économiser un espace disque important et de réduire la surcharge d'écriture, car l'index n'a pas besoin d'être mis à jour lorsque des lignes qui ne correspondent pas à la condition sont insérées ou mises à jour.",
+    "points": 10
+  }
+]
