@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "Consider the following class definition in PHP 8.0:\n\n```php\nclass User {\n    public function __construct(\n        public string $name,\n        private int $age = 18\n    ) {}\n}\n```\n\nWhich of the following statements is true regarding Constructor Property Promotion?",
+    "options": [
+      "It is not allowed to mix promoted properties with non-promoted properties in the constructor.",
+      "Promoted properties can only be declared with the `public` visibility modifier.",
+      "PHP automatically declares and assigns the properties `$name` and `$age` with their corresponding visibility and values.",
+      "Promoted properties cannot have default values."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Constructor property promotion (introduced in PHP 8.0) allows defining a constructor parameter and a class property at the same time. PHP automatically declares the class property and assigns the parameter value to it.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a key difference between the `match` expression (PHP 8.0) and the `switch` statement?",
+    "options": [
+      "The `match` expression uses loose comparison (`==`), while `switch` uses strict comparison (`===`).",
+      "The `match` expression returns a value and evaluates its arms using strict type comparison (`===`), whereas `switch` uses loose comparison (`==`) and does not return a value.",
+      "A `match` expression requires a `break` statement at the end of each arm to prevent fallthrough.",
+      "The `match` expression does not throw any exceptions if no condition matches and there is no default arm."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `match` expression uses identity comparison (`===`), returns a value directly, does not require `break` statements (no fallthrough), and throws an `UnhandledMatchError` if no arm matches and no default arm is provided.",
+    "points": 10
+  },
+  {
+    "question_text": "Given the following code using named arguments (PHP 8.0):\n\n```php\nfunction setConfig(string $host, int $port = 80, bool $secure = false) {}\nsetConfig(secure: true, host: 'localhost');\n```\n\nWhat is the behavior of this code?",
+    "options": [
+      "It throws a Compile Error because arguments are passed out of order.",
+      "It executes successfully, using the default value of `80` for `$port`.",
+      "It throws a ArgumentCountError because `$port` was omitted.",
+      "It interprets the second parameter as `$port` and casts `true` to `1`."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Named arguments allow passing arguments to a function based on the parameter name rather than position. Omitted parameters with default values will use their defaults.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following is true about union types and the `mixed` type in PHP 8.0?",
+    "options": [
+      "The `mixed` type can be combined with other types in a union, e.g., `mixed|int`.",
+      "The `mixed` type represents `string|int|float|bool|null|array|object|resource`.",
+      "Union types can contain both `iterable` and `array` together, like `array|iterable`.",
+      "The `mixed` type already includes `null`, meaning a nullable mixed type `?mixed` is redundant and triggers a compile-time error."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "The `mixed` type is equivalent to `object|resource|array|string|int|float|bool|null`. Since it already includes `null`, declaring a type as `?mixed` is redundant and causes a syntax/compile error.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP 8.2, a class can be marked as `readonly`. Which of the following is a consequence of declaring a class as `readonly`?",
+    "options": [
+      "All properties of the class are implicitly marked as `readonly` and must be typed.",
+      "The class can still contain dynamic properties if they are not typed.",
+      "You can extend a `readonly` class with a normal, non-readonly class.",
+      "Properties in a `readonly` class cannot have default values, even if they are static."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In a `readonly` class, all properties are implicitly marked as `readonly` and must be typed. Additionally, dynamic properties are not allowed, and any child class extending a `readonly` class must also be `readonly`.",
+    "points": 10
+  },
+  {
+    "question_text": "Given the following code block using the nullsafe operator in PHP 8.0:\n\n```php\n$country = $session?->user?->getAddress()?->country;\n```\n\nWhat happens if the `$session` variable is `null`?",
+    "options": [
+      "A Warning is emitted, but execution continues with `$country` set to null.",
+      "A TypeError is thrown because you cannot call methods on null.",
+      "The expression immediately short-circuits and evaluates to `null` without executing subsequent checks.",
+      "An E_NOTICE is thrown because `$session` is null."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The nullsafe operator `?->` provides short-circuiting. If any element in the chain is null, the evaluation of the rest of the chain is skipped, and the entire expression immediately returns null.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following describes the behavior of variance (covariance and contravariance) in PHP 7.4+?",
+    "options": [
+      "A child class method can change a parameter type to a more specific type (covariance).",
+      "A child class method can change the return type to a wider, less specific type (contravariance).",
+      "Parameter types are contravariant (can be widened in child classes), and return types are covariant (can be narrowed/made more specific in child classes).",
+      "PHP does not support parameter or return type variance for object types, only for scalar types."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP 7.4 introduced full support for covariance (return types can be narrowed/more specific) and contravariance (parameter types can be widened/less specific).",
+    "points": 10
+  },
+  {
+    "question_text": "Consider the following code demonstrating Late Static Binding:\n\n```php\nclass ParentClass {\n    public static function getClassName() {\n        return self::class;\n    }\n    public static function getStaticClassName() {\n        return static::class;\n    }\n}\nclass ChildClass extends ParentClass {}\n\necho ChildClass::getClassName() . ' ' . ChildClass::getStaticClassName();\n```\n\nWhat is the output of this code?",
+    "options": [
+      "ParentClass ParentClass",
+      "ParentClass ChildClass",
+      "ChildClass ChildClass",
+      "ChildClass ParentClass"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The keyword `self` binds to the class in which the method was defined (ParentClass). The keyword `static` references the class that was called at runtime (ChildClass), demonstrating Late Static Binding.",
+    "points": 10
+  },
+  {
+    "question_text": "If two traits define a method with the same name, how does PHP resolve the conflict in a class that uses both traits?",
+    "options": [
+      "PHP automatically uses the method from the trait listed first in the `use` statement.",
+      "It results in a compile-time fatal error unless the conflict is explicitly resolved using the `insteadof` and/or `as` operators.",
+      "PHP resolves the conflict by calling both methods in sequence.",
+      "The class method overrides trait methods, but if no class method is defined, the last trait in the `use` statement wins."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If two traits insert a method with the same name, a fatal error is produced if the conflict is not explicitly resolved. You must use the `insteadof` operator to choose one, and optionally the `as` operator to alias the other.",
+    "points": 10
+  },
+  {
+    "question_text": "What are the rules regarding abstract methods in traits in PHP?",
+    "options": [
+      "Traits cannot declare abstract methods; only interfaces and abstract classes can.",
+      "The class using the trait must implement the abstract method, and the signature of the concrete method must match the signature of the abstract method (respecting covariance/contravariance).",
+      "Abstract methods in traits must be declared static.",
+      "Abstract methods in traits do not require an implementation in the using class if the class is also marked abstract."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Traits can declare abstract methods to enforce requirements on the using class. The class using the trait must implement these abstract methods, and their signatures must match the trait's declaration.",
+    "points": 10
+  },
+  {
+    "question_text": "Which magic methods are triggered when invoking inaccessible or non-existing methods in object context and static context respectively?",
+    "options": [
+      "`__get` and `__set`",
+      "`__call` and `__callStatic`",
+      "`__invoke` and `__callStatic`",
+      "`__call` and `__invoke``"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`__call()` is triggered when invoking an inaccessible method in an object context. `__callStatic()` is triggered when invoking an inaccessible method in a static context.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP 7.4+, which pair of magic methods is preferred for custom serialization and deserialization of objects over `serialize` and `unserialize` (which relied on `__sleep` and `__wakeup`)?",
+    "options": [
+      "`__sleep` and `__wakeup` are still preferred; there is no new alternative.",
+      "`__serialize` and `__unserialize`",
+      "`jsonSerialize` and `jsonDeserialize`",
+      "`__toString` and `__construct`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 7.4 introduced `__serialize` and `__unserialize` magic methods. If present, they are preferred over `__sleep` and `__wakeup` for custom serialization because they are more robust and return/consume plain arrays.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the behavior of the `__clone` magic method when cloning an object in PHP?",
+    "options": [
+      "It is called before the properties are copied, allowing you to intercept the copy process.",
+      "It performs a deep copy of all object properties automatically without any manual intervention.",
+      "It is called on the newly cloned object once the shallow copy of properties has been completed, allowing manual deep-copying of referenced objects.",
+      "It returns a new instance of the class, overriding the default cloning mechanism."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "When an object is cloned, PHP does a shallow copy of its properties. After the copy is complete, the `__clone()` magic method is called on the *new* object, allowing developers to clone internal object references or modify properties to ensure a deep copy.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following is true about anonymous classes in PHP?",
+    "options": [
+      "Anonymous classes cannot implement interfaces or use traits.",
+      "An anonymous class cannot extend other classes.",
+      "They are compiled once and can be instantiated dynamically. Two different declarations of anonymous classes with the exact same structure will produce instances of the exact same class.",
+      "They can extend a class, implement interfaces, use traits, and pass arguments to their constructor."
+    ],
+    "correct_answer_index": 3,
+    "explanation": "Anonymous classes behave like normal classes: they can inherit from a parent class, implement interfaces, use traits, and receive arguments in their constructor. However, each anonymous class declaration creates a unique class.",
+    "points": 10
+  },
+  {
+    "question_text": "What methods must be implemented to fulfill the `ArrayAccess` interface contract in PHP?",
+    "options": [
+      "`offsetExists`, `offsetGet`, `offsetSet`, `offsetUnset`",
+      "`get`, `set`, `has`, `delete`",
+      "`key`, `current`, `next`, `rewind`, `valid`",
+      "`count`, `serialize`, `unserialize`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The `ArrayAccess` interface requires implementation of four methods: `offsetExists($offset)`, `offsetGet($offset)`, `offsetSet($offset, $value)`, and `offsetUnset($offset)` to allow objects to be accessed as arrays.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the key difference between implementing `Iterator` versus `IteratorAggregate` in PHP?",
+    "options": [
+      "`IteratorAggregate` requires you to implement 5 methods, while `Iterator` only requires 1.",
+      "`Iterator` allows iterating over database resources, while `IteratorAggregate` only works on arrays.",
+      "`Iterator` requires implementing iteration state methods (`current`, `key`, `next`, `rewind`, `valid`), while `IteratorAggregate` delegates this responsibility by returning a Traversable object via `getIterator()`.",
+      "There is no difference; they are aliases of each other."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The `Iterator` interface requires implementing five methods to manage loop state directly. `IteratorAggregate` simplifies this by requiring only one method, `getIterator()`, which returns another object (usually an instance of `ArrayIterator` or a generator) that implements `Traversable`.",
+    "points": 10
+  },
+  {
+    "question_text": "When a class implements `Countable`, how does it change the behavior of the built-in `count()` function on instances of this class?",
+    "options": [
+      "It forces `count()` to always return `1` unless the object is cast to an array.",
+      "It allows `count()` to return the value returned by the object's `count()` method instead of returning `1` for objects.",
+      "It throws a TypeError unless you pass `COUNT_RECURSIVE` to `count()`.",
+      "It registers the class into PHP's internal array counter, enabling direct array conversion."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "By default, calling `count()` on an object returns 1. If the class implements `Countable`, the `count()` function will invoke the class's `count()` method and return its return value.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary purpose of the `FilterIterator` class in the Standard PHP Library (SPL)?",
+    "options": [
+      "To sanitize values using the PHP filter extension during iteration.",
+      "To act as an outer iterator that filters out values from an inner iterator by implementing the abstract `accept()` method.",
+      "To allow sorting of elements before they are yielded.",
+      "To filter out duplicate keys in associative arrays."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`FilterIterator` is an abstract class that extends `IteratorIterator`. It wraps around another iterator (the inner iterator) and filters its elements. Subclasses must implement the `accept()` method, which returns true or false to include/exclude elements.",
+    "points": 10
+  },
+  {
+    "question_text": "Why would you choose to use `SplFixedArray` instead of a standard PHP array?",
+    "options": [
+      "Because `SplFixedArray` supports non-integer keys.",
+      "Because it has lower memory overhead and is faster for index-based access of fixed-size collections, as it uses C-style arrays internally.",
+      "Because it implements automatic resizing when elements exceed the initial capacity.",
+      "Because it allows mixing types, whereas standard arrays do not."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`SplFixedArray` uses a contiguous block of memory to store elements and only supports integer keys. It offers significantly lower memory overhead and faster index-based lookup compared to standard PHP associative/hash table arrays.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the internal ordering of elements in `SplStack` compared to `SplQueue`?",
+    "options": [
+      "`SplStack` is FIFO (First-In, First-Out), while `SplQueue` is LIFO (Last-In, First-Out).",
+      "`SplStack` is LIFO (Last-In, First-Out), while `SplQueue` is FIFO (First-In, First-Out).",
+      "Both are LIFO, but `SplQueue` keeps keys sorted.",
+      "Both are FIFO, but `SplStack` uses double-linked list iteration directions."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`SplStack` extends `SplDoublyLinkedList` and enforces LIFO (Last-In, First-Out) behavior. `SplQueue` also extends it but enforces FIFO (First-In, First-Out) behavior.",
+    "points": 10
+  },
+  {
+    "question_text": "How does `SplMinHeap` differ from `SplMaxHeap` in terms of sorting order during iteration?",
+    "options": [
+      "`SplMinHeap` yields elements in descending order, while `SplMaxHeap` yields them in ascending order.",
+      "`SplMinHeap` yields elements in ascending order (smallest first), while `SplMaxHeap` yields them in descending order (largest first).",
+      "Both yield elements in the order they were inserted, but `SplMinHeap` has faster retrieval times.",
+      "`SplMinHeap` sorts elements lexicographically, whereas `SplMaxHeap` sorts them numerically."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`SplMinHeap` sorts elements so that the minimum value is always at the top (ascending order on extraction). `SplMaxHeap` sorts them so that the maximum value is at the top (descending order on extraction).",
+    "points": 10
+  },
+  {
+    "question_text": "What is a main structural difference between `SplPriorityQueue` and `SplMaxHeap` in PHP?",
+    "options": [
+      "`SplPriorityQueue` does not support custom comparisons, while `SplMaxHeap` does.",
+      "`SplMaxHeap` extracts elements based only on the value itself, while `SplPriorityQueue` associates each value with a separate priority value and sorts based on that priority.",
+      "`SplPriorityQueue` is a FIFO structure, whereas `SplMaxHeap` is a LIFO structure.",
+      "`SplPriorityQueue` is implemented as a binary tree, whereas `SplMaxHeap` is implemented as a hash table."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "While both use heaps internally, `SplMaxHeap` compares the values directly. `SplPriorityQueue` takes a separate priority parameter when inserting elements, sorting values by their associated priority.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you implement nested transactions using PDO in MySQL, since MySQL itself does not support nested database transactions?",
+    "options": [
+      "PDO automatically emulates nested transactions by serializing queries in application memory.",
+      "You must manually generate SQL savepoints (e.g. `SAVEPOINT name`, `ROLLBACK TO name`) and manage them within your code.",
+      "You can call `beginTransaction()` multiple times, and PDO will internally handle savepoints automatically without SQL execution.",
+      "Nested transactions are not possible under any circumstances and will always throw a PDOException."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Calling `beginTransaction()` when a transaction is already active in PDO will trigger a PDOException. To implement nested transactions, you must manually use database savepoints (`SAVEPOINT sp_name`) via SQL queries (`$pdo->exec('SAVEPOINT ...')`).",
+    "points": 10
+  },
+  {
+    "question_text": "What happens when you establish a PDO connection and do not explicitly call `beginTransaction()` but execute multiple updates?",
+    "options": [
+      "All updates are stored in a buffer and only committed when the PHP script finishes.",
+      "Updates are executed in autocommit mode, meaning each query is treated as an individual transaction and committed immediately.",
+      "PDO will throw a PDOException because it requires a transaction for any write operation.",
+      "The queries are executed but will be rolled back immediately unless you call `$pdo->commit()`."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "By default, databases and PDO operate in autocommit mode. Every single query is executed and committed in its own implicit transaction immediately, unless you disable autocommit or start an explicit transaction via `beginTransaction()`.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a security and performance risk of setting the PDO attribute `PDO::ATTR_EMULATE_PREPARES` to `true`?",
+    "options": [
+      "It prevents PDO from connecting to any database other than MySQL.",
+      "PDO will construct the query string locally by interpolating values before sending it to the database, potentially risking SQL injection if the charset is misconfigured, and bypassing the database's query plan caching.",
+      "It completely disables parameter binding, throwing a TypeError on `execute()`.",
+      "It forces the database to compile the query on every single execution, which decreases memory usage but increases CPU usage."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When `PDO::ATTR_EMULATE_PREPARES` is `true`, PDO emulates prepared statements by interpolating values directly into the query string before sending it to the database. If charset configuration is mismatched between the PHP client and MySQL, SQL injection might still be possible, and the database does not benefit from native statement parsing/caching.",
+    "points": 10
+  },
+  {
+    "question_text": "When using native prepared statements (`PDO::ATTR_EMULATE_PREPARES => false`), what occurs on the database server during the `prepare()` and `execute()` phases?",
+    "options": [
+      "The database parses and caches the query template during `prepare()`, and only sends raw data parameters during `execute()`, saving parsing overhead and ensuring strict separation of code and data.",
+      "Nothing occurs during `prepare()`; the query and parameters are sent together during `execute()`.",
+      "The database executes the query during `prepare()` and returns cached results during `execute()`.",
+      "The database compiles the query and locks all affected tables during `prepare()`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "With native prepared statements, the `prepare()` call sends the query template (without values) to the DB server to be compiled and optimized. Then, `execute()` sends only the bound parameters. This improves performance for repeated queries and eliminates SQL injection because parameter values are never interpreted as SQL commands.",
+    "points": 10
+  },
+  {
+    "question_text": "According to PSR-4 autoloading rules, how must namespaces and class names map to file structures?",
+    "options": [
+      "Namespaces are mapped directly to lowercase directory names, and all class files must reside in a single flat directory.",
+      "The fully qualified class name must map to a corresponding file path where namespace prefixes map to base directories, and sub-namespaces map to subdirectories, preserving case-sensitivity of class names.",
+      "A class name must contain the prefix `PSR4_` to be picked up by the autoloader.",
+      "Classes must be loaded manually via `include_once` before namespaces can be resolved."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PSR-4 specifies that a fully qualified class name maps to a file path. The namespace prefix corresponds to a base directory, and any sub-namespace names map to subdirectories, ending with the exact case-sensitive class name followed by `.php`.",
+    "points": 10
+  },
+  {
+    "question_text": "What does running Composer with the `--optimize-autoloader` (or `-o`) flag do to improve autoload performance?",
+    "options": [
+      "It compiles all PHP classes into a single file to reduce disk I/O.",
+      "It builds a direct map of all classes to their file paths (classmap), allowing Composer to bypass looking up PSR-4 directory structures dynamically on disk.",
+      "It caches class definitions inside OPCache memory dynamically.",
+      "It removes all namespace declarations from the source files to speed up parsing."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Optimizing the autoloader converts PSR-4/PSR-0 rules into a flat classmap array. Instead of searching filesystem paths on class loading, Composer does a quick array lookup, significantly reducing disk I/O operations.",
+    "points": 10
+  },
+  {
+    "question_text": "In a `composer.json` file, what is the purpose of the `files` autoloading mechanism compared to `classmap`?",
+    "options": [
+      "It is used to load binary assets such as images and text files.",
+      "It is used to load files that contain global functions or helper logic that cannot be autoloaded via class-based lookup, forcing Composer to require them on every request.",
+      "It is a deprecated version of the `classmap` autoloader.",
+      "It loads files asynchronously using multi-threading."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `files` autoloading mechanism is used for non-class PHP files (e.g. files containing global functions or helper logic). Since functions cannot be autoloaded on-demand, these files are explicitly required on every request via Composer's autoloader.",
+    "points": 10
+  },
+  {
+    "question_text": "What benefit does Composer's APCu autoload optimization (`--apcu-autoloader`) bring in production environments?",
+    "options": [
+      "It replaces the local filesystem autoloader with a remote APCu server load balancer.",
+      "It caches the results of found and missing classes in the APCu user cache, preventing redundant disk lookups for classes that cannot be resolved.",
+      "It compiles PHP code into C extensions stored directly in APCu memory.",
+      "It disables the need for OPCache entirely by caching AST (Abstract Syntax Trees) in APCu."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "APCu autoloader optimization caches both successful and failed class lookups in the APCu user cache. This prevents the autoloader from scanning the filesystem on subsequent requests, boosting performance in high-load production environments.",
+    "points": 10
+  },
+  {
+    "question_text": "Why are HTTP Messages in PSR-7 defined as immutable objects?",
+    "options": [
+      "To allow PHP to compile them directly into static machine code.",
+      "To prevent side effects and preserve the state of requests/responses as they pass through multiple independent middleware layers.",
+      "To ensure they can be saved in JSON format without serialization filters.",
+      "Because immutable structures use less memory in PHP Zend Engine."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PSR-7 HTTP requests and responses are immutable. Modifying them returns a new instance. This prevents unexpected side effects when a request passes through multiple middleware layers, as each layer gets a clean copy without silently mutating shared state.",
+    "points": 10
+  },
+  {
+    "question_text": "In PSR-7, how is the message body represented, and why?",
+    "options": [
+      "As a plain string, because HTTP messages are text-based.",
+      "As an implementation of `Psr\\Http\\Message\\StreamInterface`, wrapping a PHP stream resource to allow streaming of large payloads without buffering them completely in memory.",
+      "As a temporary file path on disk, to prevent memory overflows.",
+      "As an array of lines, to make body filtering faster."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The PSR-7 message body is represented by `StreamInterface`, which wraps a PHP stream resource (like `php://temp` or `php://input`). This allows handling very large request or response bodies (such as file uploads) sequentially without loading the entire content into RAM.",
+    "points": 10
+  },
+  {
+    "question_text": "According to the PSR-15 specification, what is the exact signature and role of the `MiddlewareInterface` method?",
+    "options": [
+      "`public function handle(ServerRequestInterface $request): ResponseInterface`; it resolves requests.",
+      "`public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface`; it processes an incoming server request, producing a response or delegating to the handler.",
+      "`public function run(RequestInterface $request, callable $next): ResponseInterface`; it acts as an event handler wrapper.",
+      "`public function execute(ResponseInterface $response, RequestHandlerInterface $handler): RequestInterface`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PSR-15 defines `MiddlewareInterface` with a single method: `process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface`. A middleware processes the request and either returns a response itself or delegates processing to the `$handler` (representing the next layer).",
+    "points": 10
+  },
+  {
+    "question_text": "How does `RequestHandlerInterface` interact with `MiddlewareInterface` in PSR-15 server request processing?",
+    "options": [
+      "The request handler creates middleware instances dynamically.",
+      "The request handler receives a middleware chain and executes them via `eval()`.",
+      "The middleware calls `$handler->handle($request)` to delegate processing to the next middleware or request handler in the stack.",
+      "The request handler inherits from the middleware interface and overrides its main loop."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In PSR-15, the request handler's `handle(ServerRequestInterface $request): ResponseInterface` is called by middleware. The middleware passes the mutated/original request to the handler to fetch the response from downstream components.",
+    "points": 10
+  },
+  {
+    "question_text": "What are Fibers, introduced in PHP 8.1?",
+    "options": [
+      "A mechanism for multi-threaded parallel execution in the Zend Engine using CPU cores.",
+      "Full-stack coroutines that allow pausing execution of a PHP function, returning control to the caller code, and resuming from the exact point of suspension later.",
+      "An optimized compilation pass in OPCache JIT.",
+      "A high-level network stream socket wrapper."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Fibers are lightweight concurrency primitives (coroutines) that allow block/suspend execution of a function without blocking the entire OS thread, letting applications yield control back to an event loop and resume later.",
+    "points": 10
+  },
+  {
+    "question_text": "How do values flow in and out of a suspended PHP Fiber using `suspend()` and `resume()`?",
+    "options": [
+      "Fibers can only exchange values by writing to global variables.",
+      "`Fiber::suspend($val)` returns `$val` to the `resume()` caller, and `Fiber::resume($val)` passes `$val` back as the return value of the `suspend()` call inside the Fiber.",
+      "Fibers use local named pipes to stream serializable values.",
+      "Values can only be passed to the constructor when the Fiber is created."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Fibers support two-way communication: `Fiber::suspend($x)` pauses the fiber and returns `$x` to the external `resume()` call. When the outer code calls `$fiber->resume($y)`, the suspension ends, and the call to `Fiber::suspend()` inside the fiber returns `$y`.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following syntax patterns represents an intersection type in PHP 8.1?",
+    "options": [
+      "`Countable|Iterator`",
+      "`Countable&Iterator`",
+      "`Countable?Iterator`",
+      "`Countable||Iterator`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Intersection types are defined using the ampersand `&` syntax. A value matching type `Countable&Iterator` must satisfy both types (be an instance of `Countable` AND implement `Iterator`).",
+    "points": 10
+  },
+  {
+    "question_text": "What is Disjunctive Normal Form (DNF) types, introduced in PHP 8.2?",
+    "options": [
+      "It is a database design standard implemented directly within PDO.",
+      "It allows combining union and intersection types in a formal syntax where intersection types must be grouped with parentheses, such as `(A&B)|C`.",
+      "It is an expression language used to filter variables inside matching patterns.",
+      "It is a runtime mode that disables type validation to speed up execution."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "DNF types allow developers to combine union and intersection types. The rule is that intersection types must be grouped with parentheses, like `(A&B)|C` (representing 'A and B, or C').",
+    "points": 10
+  },
+  {
+    "question_text": "What is the difference between returning `void` and `never` in PHP 8.1?",
+    "options": [
+      "`void` forces the function to return a default integer value, while `never` returns null.",
+      "`never` indicates that the function will never return control back to the caller (it either throws an exception, calls `exit()`, or loops infinitely), while `void` indicates the function returns no value but terminates normally.",
+      "There is no difference; `never` is simply an alias of `void`.",
+      "`never` is used for class properties, while `void` is used only for methods."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A return type of `void` means the function returns no value but completes successfully. A return type of `never` indicates a non-returning function, which must exit the program flow (e.g. throw an exception or call `exit()`), preventing any subsequent code execution in the caller scope.",
+    "points": 10
+  },
+  {
+    "question_text": "What changes regarding dynamic properties were introduced in PHP 8.2?",
+    "options": [
+      "Dynamic properties are now strictly required to be defined with the `dynamic` keyword.",
+      "Dynamic properties are deprecated and will emit a deprecation warning unless the class is marked with the `#[AllowDynamicProperties]` attribute or inherits from `stdClass`.",
+      "Dynamic properties have been completely removed and throw a fatal error on access.",
+      "Dynamic properties are now only allowed for static properties."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 8.2 deprecated dynamic properties (properties set on an object without being declared in the class definition). It will emit a deprecation warning unless the class is decorated with `#[AllowDynamicProperties]` or inherits from `stdClass` (which allows dynamic properties implicitly).",
+    "points": 10
+  },
+  {
+    "question_text": "Under what circumstances can a `readonly` property be modified after initialization, in PHP 8.1?",
+    "options": [
+      "It can be modified at any time inside the class methods using the `unserialize()` function.",
+      "It can be modified during object cloning in the `__clone()` magic method.",
+      "It cannot be modified under any circumstances; once initialized, it is permanently locked, and attempting to re-assign it throws an Error.",
+      "It can be modified using reflection by calling `ReflectionProperty::setValue()` without throwing any errors."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In PHP 8.1, a readonly property can only be initialized once from the scope where it was declared. Once initialized, it cannot be modified, even via reflection (`setValue` will throw an Error) or in `__clone()`. (Note: PHP 8.3 allows re-initializing readonly properties during cloning inside `__clone()`, but in PHP 8.1 it was strictly forbidden).",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following describes the type-hinting possibilities for class constants introduced in PHP 8.3?",
+    "options": [
+      "Class constants cannot be type-hinted; type safety is handled automatically based on values.",
+      "You can declare types for class constants (e.g. `const string VERSION = '1.0';`), enforcing type compatibility in subclasses.",
+      "Class constants can only be typed with scalar types like `int` or `float`.",
+      "Only interface constants can be typed, whereas class constants remain untyped."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 8.3 added support for class, interface, trait, and enum constant type declarations. For example: `const string VERSION = '1.0';`. This enforces type checks during compilation and child classes must match the parent's constant types.",
+    "points": 10
+  },
+  {
+    "question_text": "What syntax feature was introduced in PHP 8.3 to fetch a class constant dynamically?",
+    "options": [
+      "Using `constant(\"ClassName::{$name}\")` is now the only allowed way.",
+      "Using variables as constant names directly: `ClassName::{$constantName}`.",
+      "Calling `ClassName::getConstant($name)` dynamically.",
+      "Constants cannot be fetched dynamically without using Reflection."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 8.3 introduced a syntax to fetch class constants dynamically using a variable name directly, such as `ClassName::{$constantName}` instead of having to call the `constant()` function.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary benefit of the `json_validate()` function introduced in PHP 8.3?",
+    "options": [
+      "It formats invalid JSON strings to make them valid.",
+      "It checks if a string is syntactically valid JSON without parsing it and building the parsed structure in memory, using less memory and CPU than `json_decode()`.",
+      "It validates JSON structures against a JSON Schema file.",
+      "It throws a `JsonException` automatically if the JSON is invalid, bypassing the need for error checking."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`json_validate()` checks if a string is valid JSON without generating the parsed array/object representation. It is significantly faster and uses less memory than running `json_decode()` just to see if a string is valid.",
+    "points": 10
+  },
+  {
+    "question_text": "How does PHP 8.3 improve readonly property modifications within the `__clone()` magic method?",
+    "options": [
+      "It allows readonly properties to be completely unset during cloning.",
+      "It allows readonly properties to be re-initialized or modified exactly once inside the `__clone()` method of the class where they were declared, enabling deep cloning.",
+      "It removes the readonly restriction entirely once an object is cloned.",
+      "It allows readonly properties to be modified inside clone hooks in subclasses."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 8.3 allows readonly properties to be re-initialized or modified inside the `__clone()` magic method. This allows developers to clone nested objects stored in readonly properties, making deep cloning possible.",
+    "points": 10
+  },
+  {
+    "question_text": "Which attribute target is used to specify that a custom attribute class can only be applied to methods, in PHP 8.0?",
+    "options": [
+      "`#[Attribute(Attribute::TARGET_METHOD)]`",
+      "`#[Attribute('method')]`",
+      "`#[Attribute(Attribute::IS_METHOD)]`",
+      "`#[Attribute(Attribute::METHOD_ONLY)]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "When defining an attribute class in PHP 8.0, you can specify its targets by passing a bitmask of target flags to the `#[Attribute]` declaration. For methods, `Attribute::TARGET_METHOD` is used.",
+    "points": 10
+  },
+  {
+    "question_text": "Given the following attribute check using Reflection in PHP 8.0:\n\n```php\n$reflection = new ReflectionClass(MyController::class);\n$attributes = $reflection->getAttributes(Route::class);\n```\n\nHow do you instantiate the first found `Route` attribute class?",
+    "options": [
+      "`$routeInstance = $attributes[0]->newInstance();`",
+      "`$routeInstance = new ($attributes[0]->getName());`",
+      "`$routeInstance = $attributes[0]->getInstance();`",
+      "`$routeInstance = unserialize($attributes[0]->getSerialized());`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The `ReflectionAttribute::newInstance()` method is used to instantiate the attribute class with the arguments passed in the attribute declaration.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary difference between a `ValueError` and a `TypeError` in PHP 8.0?",
+    "options": [
+      "`TypeError` is only thrown by user code, while `ValueError` is thrown by PHP internal functions.",
+      "`TypeError` indicates the type of an argument is invalid, whereas `ValueError` is thrown when the type is correct, but the value itself is unacceptable (e.g. out of range or containing invalid characters).",
+      "`ValueError` is a subclass of `TypeError` and behaves identically.",
+      "`ValueError` is thrown during compile-time, while `TypeError` is thrown only during runtime."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP 8.0 introduced `ValueError`. A `TypeError` is thrown when the parameter type does not match the declaration. A `ValueError` is thrown when the type is correct but the value itself violates constraints (e.g., passing a negative number to a function expecting a positive integer).",
+    "points": 10
+  },
+  {
+    "question_text": "How does the `Stringable` interface behave in PHP 8.0?",
+    "options": [
+      "Classes must implement it explicitly to use string casting.",
+      "Any class that defines the `__toString()` magic method is automatically considered to implement `Stringable`, even if it is not explicitly declared in the class definition.",
+      "It is a deprecated interface replaced by `StringInterface`.",
+      "It is only available for scalar string variables, not objects."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `Stringable` interface is automatically added to any class that implements the `__toString()` magic method, making it easy to type-hint `string|Stringable` without requiring manual interface implementation.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary advantage of using a `WeakMap` (PHP 8.0) over a standard array for caching object metadata?",
+    "options": [
+      "A `WeakMap` is faster and uses less CPU during serialization.",
+      "A `WeakMap` does not prevent the object keys from being garbage collected. Once an object used as a key has no other references, it is removed from the `WeakMap` and memory is freed immediately.",
+      "A `WeakMap` can store scalar keys like integers and strings without converting them to hashes.",
+      "A `WeakMap` resides in PHP's shared memory area, persisting between HTTP requests."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.0, `WeakMap` uses objects as keys. It holds weak references to these objects. When an object used as a key is garbage collected (no other references to it exist), the entry in the `WeakMap` is automatically removed, preventing memory leaks.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the behavior of a `WeakReference` in PHP 7.4+?",
+    "options": [
+      "It prevents an object from being garbage collected until the weak reference is destroyed.",
+      "It allows programmer to keep a reference to an object that does not prevent the object from being destroyed, returning `null` when `get()` is called after the object is garbage collected.",
+      "It acts as a symlink to files on disk.",
+      "It clones the object automatically to avoid original object mutations."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`WeakReference` allows keeping a reference to an object without preventing its garbage collection. Calling `get()` returns the object, or `null` if the object has already been destroyed/collected.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP generators, what is the role of `yield from`?",
+    "options": [
+      "It imports generator classes from external files.",
+      "It delegates the generation of values to another Traversable object or array, yielding values from the outer generator as if they were declared directly.",
+      "It terminates the current generator loop immediately.",
+      "It converts a generator into a standard array."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `yield from` expression allows a generator to delegate value yielding to another generator, a Traversable object, or an array, avoiding nested foreach loops and simplifying generator composition.",
+    "points": 10
+  },
+  {
+    "question_text": "Which interface should be implemented to replace PHP's default file-based session handler with a custom database-backed session storage handler?",
+    "options": [
+      "`SessionInterface`",
+      "`SessionHandlerInterface`",
+      "`SessionStorageInterface`",
+      "`SessionWrapperInterface`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To register a custom session handler using `session_set_save_handler()`, you should implement the built-in `SessionHandlerInterface` which defines methods such as `open`, `close`, `read`, `write`, `destroy`, and `gc`.",
+    "points": 10
+  },
+  {
+    "question_text": "What function is used to register a custom stream wrapper in PHP to handle custom protocols (like `myproto://`)?",
+    "options": [
+      "`stream_wrapper_register()`",
+      "`register_stream_protocol()`",
+      "`stream_protocol_add()`",
+      "`stream_register_wrapper()`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`stream_wrapper_register($protocol, $classname)` registers a user-defined class as a stream wrapper to handle operations for a specific protocol scheme.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you append a stream filter (such as a string transformation or compression filter) to an active PHP stream resource?",
+    "options": [
+      "By calling `stream_filter_append($stream, $filtername)`",
+      "By adding the filter name to the `fopen()` mode parameter.",
+      "By modifying the stream metadata using `stream_set_meta_data()`.",
+      "It is not possible to add filters to streams after they are opened."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`stream_filter_append()` appends a named filter (like `string.rot13` or `zlib.deflate`) to a stream. Any data read from or written to the stream will pass through this filter.",
+    "points": 10
+  },
+  {
+    "question_text": "Which PHP function is best suited to execute shell commands with support for separate read/write pipes for STDIN, STDOUT, and STDERR, allowing interactive processes?",
+    "options": [
+      "`exec()`",
+      "`shell_exec()`",
+      "`system()`",
+      "`proc_open()`"
+    ],
+    "correct_answer_index": 3,
+    "explanation": "`proc_open()` runs a command and opens file pointers for input/output. This gives the script fine-grained control over standard input (STDIN), output (STDOUT), and error stream (STDERR), making interactive process execution possible.",
+    "points": 10
+  },
+  {
+    "question_text": "Which password hashing algorithm is widely recommended for modern PHP applications, utilizing memory-hard properties to mitigate GPU/ASIC brute force attacks?",
+    "options": [
+      "`PASSWORD_BCRYPT`",
+      "`PASSWORD_ARGON2ID`",
+      "`PASSWORD_DEFAULT` (which resolves to MD5)",
+      "`PASSWORD_SHA256`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`PASSWORD_ARGON2ID` (Argon2id) is a modern, secure password hashing algorithm recommended by OWASP. It uses memory-hard and time-hard designs to protect against hardware-accelerated brute-force attacks.",
+    "points": 10
+  },
+  {
+    "question_text": "Which PHP function should be used to generate secure pseudo-random bytes suitable for cryptographic purposes (such as generating salts or API tokens)?",
+    "options": [
+      "`rand()`",
+      "`mt_rand()`",
+      "`random_bytes()`",
+      "`uniqid()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "`random_bytes()` generates cryptographically secure pseudo-random bytes using the operating system's CSPRNG (like `/dev/urandom` or CryptGenRandom). `rand()`, `mt_rand()`, and `uniqid()` are not cryptographically secure.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the result of applying the `readonly` modifier to a class property that has no declared type, in PHP 8.1?",
+    "options": [
+      "The property is implicitly typed as `mixed`.",
+      "It results in a Compile Error, because all readonly properties must be explicitly typed.",
+      "It defaults to a string type.",
+      "It is allowed but will trigger a deprecation warning."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.1+, readonly properties must have an explicit type declaration. If you try to declare a readonly property without a type (e.g. `public readonly $prop;`), PHP will throw a Compile Error.",
+    "points": 10
+  },
+  {
+    "question_text": "Given a class constant definition in PHP 8.3: `public const int|float RATIO = 1.5;` - what happens if a subclass overrides this constant with: `public const string RATIO = '1.5';`?",
+    "options": [
+      "It compiles successfully and overrides the value.",
+      "It throws a Compile Error because subclasses cannot narrow or change constant types in a way that violates type compatibility.",
+      "It converts the string `'1.5'` to a float automatically without warning.",
+      "Subclasses are not allowed to override constants under any circumstances in PHP 8.3."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.3, class constant types are checked during compilation. A subclass constant type must be compatible with the parent's constant type. Changing `int|float` to `string` violates covariance, causing a Compile Error.",
+    "points": 10
+  },
+  {
+    "question_text": "To prevent session hijacking, which of the following is considered a best practice when a user authenticates or changes privileges?",
+    "options": [
+      "Unset all session variables manually using `session_unset()`.",
+      "Regenerate the session ID using `session_regenerate_id(true)` to delete the old session file and assign a new session ID.",
+      "Change the session cookie name using `session_name()` without changing the ID.",
+      "Disable session cookies entirely and pass the session ID in the URL query string."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Regenerating the session ID with `session_regenerate_id(true)` replaces the current session ID with a new one and deletes the old session file, protecting the user from session fixation and hijacking attacks.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the security difference between `htmlspecialchars()` and `htmlentities()` in PHP when mitigating Cross-Site Scripting (XSS)?",
+    "options": [
+      "`htmlentities()` only translates HTML tags, whereas `htmlspecialchars()` translates all non-ASCII characters.",
+      "`htmlspecialchars()` converts only a special set of characters (`&`, `\"`, `'`, `<`, `>`) to HTML entities, which is sufficient for escaping inside standard HTML body tags, while `htmlentities()` translates all characters that have HTML entity equivalents.",
+      "`htmlspecialchars()` is insecure because it does not support escaping of quotes.",
+      "There is no difference; they are identical aliases."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`htmlspecialchars()` is generally preferred and sufficient for escaping output in HTML body contexts because it converts only the characters that can break HTML structure (`&`, `\"`, `'`, `<`, `>`). `htmlentities()` converts all characters with entity representations (like accented letters), which is often unnecessary for modern UTF-8 encoded applications.",
+    "points": 10
+  },
+  {
+    "question_text": "Why does using native prepared statements (via PDO) prevent SQL Injection attacks?",
+    "options": [
+      "It sanitizes the input string by escaping dangerous characters.",
+      "It sends the query template and the parameter data separately to the database engine. The database compiles the template first and then binds the parameters purely as values, making it impossible for parameter values to alter the query structure.",
+      "It encrypts the parameters before sending them to the database server.",
+      "It forces the database to check the data types using PHP's strict type mode."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Native prepared statements split query compilation and execution. The SQL structure is parsed and compiled by the database before parameters are bound. Bound parameters are treated strictly as data, never as executable SQL code, completely neutralizing SQL injection.",
+    "points": 10
+  },
+  {
+    "question_text": "Which configuration setting or call is recommended to prevent XML External Entity (XXE) injection attacks when parsing XML using libxml in PHP versions prior to PHP 8.0?",
+    "options": [
+      "`libxml_disable_entity_loader(true)`",
+      "`ini_set('xml.disable_entities', 1)`",
+      "`xml_parser_set_option($parser, XML_OPTION_DISABLE_ENTITIES, 1)`",
+      "XXE protection is enabled by default and cannot be configured in PHP."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Prior to PHP 8.0, custom entity loading in libxml-based functions was enabled by default. Calling `libxml_disable_entity_loader(true)` disables loading of external entities, which is the primary defense against XXE. In PHP 8.0+, external entity loading is disabled by default.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the PHP garbage collector handle circular references in object graphs?",
+    "options": [
+      "PHP does not handle circular references, causing memory leaks for any circular structures.",
+      "It uses a cycle collecting algorithm that runs when the buffer of root suspects reaches a limit (normally 10,000). It performs a simulation run to decrement refcounts and identify isolated cycles.",
+      "It immediately destroys any object that points to itself.",
+      "It forces all circular references to be converted to WeakReferences automatically."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP uses a cycle-detection algorithm based on reference counting. When the buffer of potential garbage roots reaches 10,000, PHP runs a cycle detection pass. It temporarily decrements refcounts on objects in the cycle to see if they fall to zero, identifying garbage cycles.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the autoloader queue work when multiple autoloaders are registered using `spl_autoload_register()`?",
+    "options": [
+      "Only the last registered autoloader is executed; previous ones are overwritten.",
+      "Autoloaders are executed sequentially in the order they were registered. If an autoloader loads the class, the queue execution stops.",
+      "All registered autoloaders run in parallel using system threads.",
+      "PHP executes autoloaders in alphabetical order of their function names."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`spl_autoload_register()` manages an autoload queue. When a class is requested, PHP runs registered autoloaders sequentially in the order of registration. Once an autoloader loads the class successfully, the execution of the queue stops.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens if a custom stream wrapper does not implement the `dir_opendir()` method, but the developer tries to use `opendir()` on a stream URL matching that protocol?",
+    "options": [
+      "PHP falls back to listing the local filesystem directory.",
+      "The operation fails and PHP emits a warning because the stream wrapper does not support directory operations.",
+      "PHP automatically simulates directory listing based on file reads.",
+      "It throws a Fatal Compile Error."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A custom stream wrapper must implement the corresponding methods for different filesystem functions. If `dir_opendir()` is not implemented in the wrapper class, directory listing functions like `opendir()` or `scandir()` on URLs matching that protocol will fail and emit a warning.",
+    "points": 10
+  },
+  {
+    "question_text": "How do you pass HTTP headers and a timeout value to a `file_get_contents()` request?",
+    "options": [
+      "By modifying global variables in `php.ini`.",
+      "By creating a stream context using `stream_context_create()` with the configuration options and passing it as the third argument to `file_get_contents()`.",
+      "By passing a custom configuration array as the second argument to `file_get_contents()`.",
+      "It is not possible; `file_get_contents()` does not support headers or custom timeouts."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`file_get_contents()` accepts a stream context as its third parameter. You create this context using `stream_context_create($options)` where `$options` is an associative array containing wrapper-specific options (such as `http` containing headers and timeout).",
+    "points": 10
+  },
+  {
+    "question_text": "What is the purpose of the `PSR-11` interface standard?",
+    "options": [
+      "It defines a standard for writing secure database migration scripts.",
+      "It defines a common interface for Dependency Injection Containers, introducing standard methods `get()` and `has()` and two specific exception interfaces.",
+      "It provides standard structures for logging errors in async engines.",
+      "It defines standard PSR structures for autoloading helper functions."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PSR-11 (Container Interface) establishes a common interface for dependency injection containers. It defines `ContainerInterface` with `get($id)` and `has($id)` methods, allowing library developers to build container-agnostic applications.",
+    "points": 10
+  },
+  {
+    "question_text": "Which design pattern is implemented by defining an interface for an algorithm family and switching concrete implementations at runtime based on context requirements?",
+    "options": [
+      "Observer Pattern",
+      "Strategy Pattern",
+      "Decorator Pattern",
+      "Adapter Pattern"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it.",
+    "points": 10
+  },
+  {
+    "question_text": "Which built-in SPL interfaces should be used to implement the Observer pattern in PHP?",
+    "options": [
+      "`Iterator` and `IteratorAggregate`",
+      "`SplSubject` and `SplObserver`",
+      "`ArrayAccess` and `Countable`",
+      "`OuterIterator` and `RecursiveIterator`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Standard PHP Library (SPL) provides the `SplSubject` (representing the subject) and `SplObserver` (representing the observer) interfaces to implement the Observer pattern out-of-the-box.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Decorator pattern, how does the decorator class interact with the original component?",
+    "options": [
+      "The decorator class inherits from the component and overrides all methods to change their behavior.",
+      "The decorator class implements the same interface as the component, accepts an instance of the component in its constructor, and delegates methods to this instance while adding custom logic before or after.",
+      "The decorator class uses reflection to inject code directly into the component's methods.",
+      "The decorator class intercepts class loading via the autoloader."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A Decorator implements the same interface as the target component and wraps it (accepts via composition in constructor). When methods are called, it adds custom behavior and calls the wrapped component's original methods.",
+    "points": 10
+  },
+  {
+    "question_text": "To prevent instantiation, cloning, and unserialization of a Singleton class in PHP, which methods must be declared private or final?",
+    "options": [
+      "Only the `__construct()` method.",
+      "`__construct()`, `__clone()`, and `__wakeup()` (or `__unserialize()`)",
+      "Only `__clone()` and `__wakeup()`.",
+      "No methods need to be private; the class simply must not have a return value in its constructor."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A robust Singleton implementation must make `__construct` private to prevent direct instantiation, `__clone` private/final to prevent cloning, and `__wakeup`/`__unserialize` private/final to prevent reconstruction via deserialization.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the behavior of PDO when the error mode is set to `PDO::ERRMODE_SILENT`?",
+    "options": [
+      "PDO immediately throws a PDOException on any query error.",
+      "PDO does not throw exceptions or emit warnings; it simply sets error codes which must be manually checked using `errorCode()` and `errorInfo()` on the statement or connection object.",
+      "PDO suppresses all database operation logging but still throws warnings.",
+      "PDO redirects errors to the system syslog file and terminates execution."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`PDO::ERRMODE_SILENT` is the default error mode. PDO will not throw exceptions or warnings. To detect errors, you must manually inspect `$connection->errorCode()` and `$connection->errorInfo()` after query execution.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the return type of the `yield` keyword in a PHP generator when there is no value returned using the `return` statement?",
+    "options": [
+      "`null`",
+      "`void`",
+      "`Generator`",
+      "`mixed`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Calling a function that contains a `yield` statement does not execute its body immediately; instead, it always returns an instance of the built-in `Generator` class (which implements the `Iterator` interface).",
+    "points": 10
+  },
+  {
+    "question_text": "What is the difference between `__get()` and `__set()` magic methods in PHP?",
+    "options": [
+      "`__get()` is called when reading static properties, while `__set()` is for instance properties.",
+      "`__get()` is triggered when reading data from inaccessible (protected or private) or non-existing properties, while `__set()` is triggered when writing data to them.",
+      "`__get()` returns references, whereas `__set()` always returns a copy.",
+      "There is no difference; they are alternative names for property accessors."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The magic method `__get($name)` is invoked when reading an inaccessible or non-existing property. The `__set($name, $value)` method is invoked when writing a value to an inaccessible or non-existing property.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you implement a read-only property in PHP versions prior to PHP 8.1?",
+    "options": [
+      "By using the `readonly` keyword directly; it has been supported since PHP 7.0.",
+      "By declaring the property as `private` or `protected` and providing a public getter method without a corresponding setter method.",
+      "By prefixing the property name with `_const`.",
+      "It was not possible to have read-only properties in PHP prior to 8.1."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Prior to PHP 8.1's native `readonly` modifier, read-only properties were emulated by hiding properties using private/protected visibility and exposing them only via getter methods (or using a magic `__get` accessor that prevents modification).",
+    "points": 10
+  },
+  {
+    "question_text": "Which configuration option in `php.ini` determines if session cookies should only be sent over secure (HTTPS) connections?",
+    "options": [
+      "`session.cookie_secure`",
+      "`session.secure_only`",
+      "`session.use_only_https`",
+      "`session.cookie_https`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Setting `session.cookie_secure` to `1` or `On` in `php.ini` (or via `ini_set()`) instructs the browser that session cookies should only be sent back over secure HTTPS connections, preventing session ID exposure over plaintext HTTP.",
+    "points": 10
+  },
+  {
+    "question_text": "What does setting `session.cookie_httponly` to `1` in `php.ini` achieve?",
+    "options": [
+      "It prevents PHP scripts from reading session data.",
+      "It instructs the browser that session cookies should not be accessible through client-side scripts (like JavaScript `document.cookie`), mitigating session theft via XSS.",
+      "It forces session data to be stored on an external HTTP server.",
+      "It restricts session cookies to be sent only to HTTP/2 servers."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Setting `session.cookie_httponly` to `1` (or true) marks session cookies as HTTP-only. Browsers will prevent client-side scripts (e.g. JavaScript) from accessing the cookie, protecting it from theft during Cross-Site Scripting (XSS) attacks.",
+    "points": 10
+  },
+  {
+    "question_text": "Given the interface declaration:\n\n```php\ninterface Loggable {\n    public function log(string $msg): void;\n}\n```\n\nIf you use a Trait in a class, and that Trait implements a method `log(string $msg): void`, does the class automatically satisfy the `Loggable` interface requirements?",
+    "options": [
+      "No, because traits cannot implement interfaces.",
+      "Yes, as long as the class explicitly declares `implements Loggable`, the methods provided by the trait will satisfy the interface contract.",
+      "No, the class must redefine the method directly in its body.",
+      "Yes, traits automatically inject interface declarations into classes."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Yes. A trait is essentially a compiler copy-paste mechanism. If a class declares that it implements an interface, any methods required by the interface can be supplied by traits used within that class.",
+    "points": 10
+  },
+  {
+    "question_text": "In PSR-7, how are HTTP headers retrieved from a message, and how is case sensitivity handled?",
+    "options": [
+      "Headers are retrieved using case-sensitive keys; e.g. `$message->getHeader('Content-Type')` differs from `$message->getHeader('content-type')`.",
+      "Headers are case-insensitive. Calling `$message->getHeader('content-type')` returns the same value as `$message->getHeader('Content-Type')`, preserving the header's original casing when retrieving all headers.",
+      "Header keys must be converted to uppercase strings before lookup.",
+      "Headers can only be accessed by index numbers."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PSR-7 HTTP message headers are case-insensitive. Methods like `getHeader()` or `hasHeader()` resolve headers regardless of casing, but the message preserves the original casing of the headers as they were set.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a major conceptual difference between `ArrayIterator` and `ArrayObject` in the SPL?",
+    "options": [
+      "`ArrayIterator` is used to iterate over databases, while `ArrayObject` iterates over local files.",
+      "`ArrayObject` is a container object that can be treated like an array, which implements `IteratorAggregate` and delegates iteration to `ArrayIterator`. `ArrayIterator` is the actual iterator doing the traversal.",
+      "`ArrayIterator` is a deprecated class replaced by `ArrayObject`.",
+      "`ArrayObject` has a fixed size, while `ArrayIterator` Resizes dynamically."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`ArrayObject` is an object representation of an array, allowing you to manipulate arrays in an object-oriented way. It implements `IteratorAggregate`, which means it creates and returns an `ArrayIterator` instance when looped over in a foreach loop.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the memory and resource behavior of the `SplTempFileObject` class in the SPL?",
+    "options": [
+      "It always writes temporary files to the local disk inside the `/tmp` folder.",
+      "It stores data in memory up to a configurable size limit (default 2MB) before automatically writing data to a temporary file on disk, abstracting this completely from the application.",
+      "It is a read-only stream wrapper for internal PHP memory allocations.",
+      "It automatically compresses all data using gzip to save RAM."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`SplTempFileObject` wraps around `php://temp`. It stores data in memory. If the size of the data exceeds a set limit (usually 2MB), it automatically and transparently switches to writing to a temporary file on disk.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the purpose of committing a `composer.lock` file to version control in a team environment?",
+    "options": [
+      "To define the autoload namespaces for the application.",
+      "To lock the exact dependency versions that were installed, ensuring that every developer and deployment environment installs the exact same packages down to the specific commit hash.",
+      "To encrypt licensing credentials for third-party packages.",
+      "To compile vendor PHP classes into optimized byte-code."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `composer.lock` file stores the exact version, source repository, and commit hash of every dependency. Committing it ensures consistency across development environments and production deployments by forcing `composer install` to download these exact versions.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Composer handle custom scripts defined under the `scripts` key in `composer.json`?",
+    "options": [
+      "They are run in isolated sandbox Docker containers.",
+      "They are PHP or shell commands registered to trigger automatically before or after specific lifecycle events (like `post-install-cmd` or `post-autoload-dump`), or run manually via `composer run-script`.",
+      "They are compiled to C extensions on package installation.",
+      "They are used to overwrite global Composer configurations."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Composer allows defining scripts under `scripts`. These can be CLI commands or PHP static method callbacks. They run during Composer events (like post-install/update) or can be invoked on-demand via `composer run <script-name>`.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following describes the inheritance rules for method parameters (contravariance) in child classes in PHP?",
+    "options": [
+      "A child class method cannot change the type of parameters at all.",
+      "A child class method can widen the type of a parameter (e.g. changing `int` in the parent to `int|float` in the child) because the child is less restrictive (contravariance).",
+      "A child class method can only narrow the parameter type to a more specific type (covariance).",
+      "A child class method can change parameters types arbitrarily without checks."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP supports parameter contravariance. A child class method can widen a parameter type (e.g., adding a type to a union or replacing a specific class with a parent class) because any value accepted by the parent will still be accepted by the child.",
+    "points": 10
+  },
+  {
+    "question_text": "What are the OOP constructor signature inheritance rules in PHP?",
+    "options": [
+      "A child class constructor must strictly match the signature of the parent class constructor, adhering to covariance and contravariance rules.",
+      "Constructors are exempt from signature compatibility rules; a child class constructor can declare completely different parameters compared to the parent constructor.",
+      "A child class constructor cannot have more parameters than the parent constructor.",
+      "Constructors cannot be defined in a child class if the parent class has one."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP, constructors are not subject to standard LSP signature compatibility rules. A child class can implement a constructor with a completely different signature than the parent class constructor.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens when you attempt to clone a `readonly` class in PHP 8.2?",
+    "options": [
+      "It throws a Compile Error immediately.",
+      "It successfully creates a shallow copy, but all properties are reset to uninitialized state.",
+      "It is allowed; a shallow copy of the object is created, but the properties of the cloned object cannot be modified because they are readonly.",
+      "Cloning is blocked and throws a Runtime Error."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Cloning a readonly class is allowed in PHP 8.2. It creates a shallow copy. However, because all properties of a readonly class are readonly, they cannot be modified afterwards (except starting in PHP 8.3 inside the `__clone()` magic method).",
+    "points": 10
+  },
+  {
+    "question_text": "What security vulnerability can occur if untrusted user input is passed directly to the `unserialize()` function, and how can it be mitigated?",
+    "options": [
+      "It causes buffer overflows. It can be mitigated by disabling `php.ini` memory limits.",
+      "It enables PHP Object Injection, potentially leading to Remote Code Execution (RCE) via magic destructors or wakeups. It is mitigated by avoiding `unserialize()` on untrusted input, or restricting class deserialization using the `allowed_classes` option set to `false` or specific safe classes.",
+      "It leaks database connection details. It is mitigated by using PDO prepared statements.",
+      "It allows Cross-Site Scripting. It is mitigated by calling `htmlspecialchars()`."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Passing untrusted data to `unserialize()` causes PHP Object Injection. When objects are instantiated, their magic methods (like `__destruct` or `__wakeup`) run automatically, allowing attackers to execute code if exploit chains exist. Mitigation involves using JSON instead, or setting `'allowed_classes' => false` to deserialize only scalar data.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the correct way to register a custom stream filter class in PHP to perform data modifications on the fly?",
+    "options": [
+      "`stream_filter_register($filtername, $classname)`",
+      "`register_stream_filter($filtername, $classname)`",
+      "`stream_filter_append($stream, $filtername)`",
+      "Stream filters are compiled directly in the Zend Engine and cannot be custom-defined."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`stream_filter_register($filtername, $classname)` associates a custom filter name with a class extending `php_user_filter`. Once registered, the filter can be attached to any stream using `stream_filter_append()` or `stream_filter_prepend()`.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP 8.1+, if a class property is declared as `public readonly string $title;`, what happens if a child class attempts to override it and remove the `readonly` modifier?",
+    "options": [
+      "It compiles successfully and the property becomes mutable in the child class.",
+      "It throws a Compile Error because a readonly property cannot be overridden to make it writeable.",
+      "It triggers a deprecation warning but works at runtime.",
+      "It converts the property to a static variable."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.1+, you cannot override a readonly property to make it non-readonly (mutable) in a child class. Attempting to do so triggers a Compile Error to enforce consistency.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the difference between defining a constant using the `const` keyword versus the `define()` function in PHP?",
+    "options": [
+      "`define()` can only define integer constants, while `const` supports all types.",
+      "`const` defines constants at compile-time (meaning they cannot be declared conditionally inside loops or if-statements), whereas `define()` defines constants at runtime (allowing conditional and dynamic names/values).",
+      "`const` constants are global, whereas `define()` constants are scoped to the class they are defined in.",
+      "There is no difference; they are exact aliases."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `const` keyword defines constants at compile-time, making it faster but restricting its placement to top-level scopes (outside control structures). `define()` operates at runtime, allowing you to define constants conditionally or with dynamic names, but cannot be used for class constants.",
+    "points": 10
+  },
+  {
+    "question_text": "Consider the following code using Late Static Binding on static properties:\n\n```php\nclass A {\n    public static string $name = 'A';\n    public static function printName() {\n        echo static::$name;\n    }\n}\nclass B extends A {\n    public static string $name = 'B';\n}\nB::printName();\n```\n\nWhat is the output of this code?",
+    "options": [
+      "A",
+      "B",
+      "Compile Error",
+      "Notice: Undefined property"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Using Late Static Binding via `static::$name` resolves the property of the class that was actually called at runtime (`B`), rather than the class containing the method definition (`A`), printing 'B'.",
+    "points": 10
+  },
+  {
+    "question_text": "Given a match expression in PHP 8.0:\n\n```php\n$result = match($value) {\n    1 => fn() => 'One',\n    2 => fn() => 'Two',\n    default => fn() => 'Other'\n};\n```\n\nIf `$value` is `1`, what is the type and value of `$result`?",
+    "options": [
+      "It is the string `'One'`.",
+      "It is a Closure returning `'One'`.",
+      "It is the boolean `true`.",
+      "It throws a TypeError."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The match arm evaluates and returns the value of the expression on the right. In this case, the expression is a closure (`fn() => 'One'`). The match does not execute the closure automatically, so `$result` contains the closure itself.",
+    "points": 10
+  },
+  {
+    "question_text": "What does a custom stream filter implementation's `filter()` method return on success to indicate output status?",
+    "options": [
+      "It must return `true`.",
+      "`PSFS_PASS_ON` or `PSFS_FEED_ME` or `PSFS_ERR_FATAL`",
+      "A string containing the modified data.",
+      "An array of buckets."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A stream filter's `filter()` method, which extends `php_user_filter`, returns status constants: `PSFS_PASS_ON` (data successfully filtered and passed to bucket brigade), `PSFS_FEED_ME` (needs more data before it can output), or `PSFS_ERR_FATAL` (fatal filter error).",
+    "points": 10
+  },
+  {
+    "question_text": "What happens if you define a trait with a public property `$x` and a class uses this trait and also defines a public property `$x`?",
+    "options": [
+      "It throws a Compile Error immediately.",
+      "It is allowed if the properties have the same type, visibility, and default value; otherwise, it throws a Compile Error.",
+      "The class property overrides the trait property silently.",
+      "The trait property overrides the class property silently."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP, if a trait and the using class declare a property with the same name, they must be fully compatible (same visibility, type, and default value). If there is any mismatch, a Compile Error is thrown.",
+    "points": 10
+  },
+  {
+    "question_text": "Which of the following is true about how abstract methods defined in traits are validated in PHP?",
+    "options": [
+      "Abstract trait methods are only checked when the class is instantiated at runtime.",
+      "The class implementing the abstract trait method must declare compatible types, but visibility can be widened (e.g. from protected in trait to public in class).",
+      "The abstract method in the trait must have its signature matched exactly in the implementing class, including parameter count, types, and return types.",
+      "Abstract trait methods cannot have parameters."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Abstract methods declared in traits must be implemented by the using class with an exactly matching signature (compatibility rules of covariance/contravariance apply, but PHP enforces strict signature match for trait-defined abstract methods to ensure consistency).",
+    "points": 10
+  },
+  {
+    "question_text": "Given the code:\n\n```php\n$f = fn(int $x) => fn(int $y) => $x + $y;\n$addFive = $f(5);\necho $addFive(10);\n```\n\nWhat is printed by this script?",
+    "options": [
+      "15",
+      "Compile Error",
+      "Object of class Closure could not be converted to string",
+      "5"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The outer arrow function returns another arrow function. Calling `$f(5)` returns a closure capturing `$x = 5`. Calling `$addFive(10)` invokes this inner closure, adding 5 and 10 to output 15.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the result of applying a logical comparison operator (`==`) between two separate objects of the same class in PHP?",
+    "options": [
+      "They are equal if they point to the exact same instance in memory.",
+      "They are equal if they are instances of the same class and have the same properties and values (compared recursively).",
+      "It always returns `false`.",
+      "It throws a TypeError."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP, the comparison operator (`==`) treats two object instances as equal if they are of the same class and all their properties have equal values. The identity operator (`===`) checks if they point to the exact same instance in memory.",
+    "points": 10
+  },
+  {
+    "question_text": "Which method in the custom stream wrapper class handles requests to write data to a stream, and what is its return signature?",
+    "options": [
+      "`public function stream_write(string $data): int`; returns the number of bytes successfully written.",
+      "`public function write(string $data): bool`; returns true on success.",
+      "`public function stream_put(string $data): void`",
+      "`public function write_stream(string $data): string`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A stream wrapper's `stream_write` method accepts the data string and must return the exact number of bytes successfully written (as an integer). Returning less or false indicates write errors.",
+    "points": 10
+  }
+]

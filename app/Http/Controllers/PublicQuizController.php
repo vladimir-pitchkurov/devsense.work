@@ -110,6 +110,7 @@ class PublicQuizController extends Controller
                 'correct_answers' => $correctAnswers,
                 'correct_indexes' => $correctIndexes,
                 'explanations' => $explanations,
+                'user_answers' => $answers,
                 'new_badges' => ($user && $user->hasVerifiedEmail()) ? session('quiz_new_badges', []) : [],
             ];
         }
@@ -214,6 +215,7 @@ class PublicQuizController extends Controller
             'correct_answers' => $correctAnswers,
             'correct_indexes' => $correctIndexes,
             'explanations' => $explanations,
+            'user_answers' => $answers,
             'new_badges' => $unlockedBadges,
         ]);
     }

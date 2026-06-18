@@ -231,3 +231,48 @@ class MyService {
 3. **Кликабельность карточек статей**: Сделать так, чтобы переход на статью происходил по клику в любую область карточки статьи, а не только по маленькой стрелке «читать».
 4. **Ссылки на вход/регистрацию**: Вывести в публичную часть сайта кнопки/ссылки для перехода в кабинет автора (`/login` / `/register`).
 5. **Публичность авторов**: Интегрировать проверку поля `is_public`. Если автор сделал страницу непубличной, скрыть её из поиска, списков авторов, а при прямой попытке открыть `/authors/{slug}` отдавать ошибку `404`.
+
+---
+
+## 9. План-беклог статей по паттернам и антипаттернам проектирования
+
+Для наполнения ресурса DevSense качественным контентом запланирована серия из 6 подробных статей, охватывающих классические паттерны GoF, общие антипаттерны, а также паттерны и антипаттерны в микросервисной архитектуре. Все статьи должны быть переведены на 8 языков (`en`, `ru`, `ua`, `bg`, `de`, `fr`, `es`, `it`).
+
+### Беклог статей:
+
+1. **Порождающие паттерны GoF (GoF Creational Design Patterns)**
+   - **Категория**: `architecture`
+   - **Slug**: `creational-design-patterns`
+   - **Темы**: Singleton, Factory Method, Abstract Factory, Builder, Prototype.
+   - **Статус**: Завершено.
+
+2. **Структурные паттерны GoF (GoF Structural Design Patterns)**
+   - **Категория**: `architecture`
+   - **Slug**: `structural-design-patterns`
+   - **Темы**: Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy.
+   - **Статус**: Завершено.
+
+3. **Поведенческие паттерны GoF (GoF Behavioral Design Patterns)**
+   - **Категория**: `architecture`
+   - **Slug**: `behavioral-design-patterns`
+   - **Темы**: Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor, Interpreter.
+   - **Статус**: Запланировано.
+
+4. **Антипаттерны проектирования ПО (Software Design Antipatterns)**
+   - **Категория**: `architecture`
+   - **Slug**: `design-antipatterns`
+   - **Темы**: Spaghetti Code, God Object, Golden Hammer, Premature Optimization, Copy-Paste Programming, Cargo Cult.
+   - **Статус**: Запланировано.
+
+5. **Архитектурные паттерны в микросервисах (Microservice Architectural Patterns)**
+   - **Категория**: `microservices`
+   - **Slug**: `microservice-patterns`
+   - **Темы**: Saga Pattern, CQRS, Event Sourcing, Circuit Breaker, Service Discovery, Database-per-service.
+   - **Статус**: Запланировано.
+
+6. **Антипаттерны микросервисной архитектуры (Microservice Antipatterns)**
+   - **Категория**: `microservices`
+   - **Slug**: `microservice-antipatterns`
+   - **Темы**: Distributed Monolith, Shared Database, Nano-services, Mega-gateways, Chatty Services.
+   - **Статус**: Запланировано.
+
