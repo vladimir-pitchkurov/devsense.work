@@ -1,0 +1,1202 @@
+[
+  {
+    "question_text": "In PHP 7+, how was the internal `zval` structure optimized to reduce memory allocation compared to PHP 5?",
+    "options": [
+      "By moving all values to the heap and using pointers for reference resolution.",
+      "By storing simple types (like integers, floats, and booleans) directly inside the `zval` struct value union rather than allocating them separately on the heap, and removing the refcount from these simple types.",
+      "By converting all scalar variables into objects automatically.",
+      "By eliminating type flags entirely to save 4 bytes per variable."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 7+, the `zval` structure was reduced from 24 bytes to 16 bytes. Simple types (integers, floats, booleans, null) store their values directly in the `zval` structure. They are not heap-allocated and do not use reference counting, which significantly reduces allocation overhead and improves CPU cache locality.",
+    "points": 10
+  },
+  {
+    "question_text": "Under what conditions does a PHP array participate in the Copy-on-Write (COW) mechanism when passed to a function?",
+    "options": [
+      "It is always copied immediately upon passing, regardless of modification.",
+      "It is passed by reference unless modified, but if the parameter has a type hint, a copy is made instantly.",
+      "It is passed as a shared zval pointer. A copy of the array's internal hash table is only created if the function attempts to modify the array, provided the array's refcount is greater than 1.",
+      "Arrays never participate in COW; they are always passed by value via complete duplication."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP uses Copy-on-Write (COW) for arrays. When an array is assigned or passed to a function, the internal zval pointer is shared and its refcount is incremented. Duplication of the array structure only occurs at the moment a write/modification operation is attempted, and only if the array's refcount is > 1.",
+    "points": 10
+  },
+  {
+    "question_text": "What are 'interned strings' in the Zend Engine, and how do they impact memory usage?",
+    "options": [
+      "Strings that are automatically translated to different languages at runtime.",
+      "Strings created during compilation (like class names, function names, and literal values) that are stored in a single immutable table, sharing a single zval across the entire request without refcounting.",
+      "Strings stored in a local SQLite database for faster regex matching.",
+      "Binary strings representing serialized class definitions."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Interned strings are stored in a single global table within the Zend Engine. All occurrences of the same string literal, function name, or class name point to a single memory address. They do not use reference counting (`IS_STR_INTERNED`) and are never duplicated during the request, saving memory.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Zend Garbage Collector's cycle detection algorithm mark nodes during its analysis phase?",
+    "options": [
+      "It uses a mark-and-sweep algorithm coloring suspected roots: Purple (possible root), Grey (suspected trash), White (confirmed garbage), and Black (in use/not garbage).",
+      "It marks nodes as either Active or Dead using binary flags.",
+      "It serializes suspected objects to see if their size decreases.",
+      "It moves suspected nodes to a separate OS thread for validation."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "The Zend GC uses colors to manage states during cycle collection. Potential roots are colored Purple and added to the root buffer. During analysis, it performs a simulation decrementing refcounts, coloring suspects Grey. Roots with refcounts > 0 are reverted to Black, while nodes with refcount 0 are marked White (garbage) and swept/freed.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the role of OPCache preloading (`opcache.preload`), introduced in PHP 7.4, in improving application performance?",
+    "options": [
+      "It preloads database queries into memory before HTTP requests arrive.",
+      "It compiles specified PHP files on server startup and loads their classes/functions directly into the persistent Zend persistent symbol table, making them globally available to all requests without compile or load overhead.",
+      "It compiles PHP code into native binary executables on disk.",
+      "It pre-allocates HTTP connections using high-performance socket layers."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "OPCache preloading compiles PHP files on server startup and injects class and function definitions directly into PHP's permanent execution memory. These definitions are shared across all worker processes, eliminating the need to compile or resolve them on subsequent requests.",
+    "points": 10
+  },
+  {
+    "question_text": "The OPCache JIT compiler configuration option `opcache.jit` takes a 4-digit integer value (e.g., `1254`). What does the third digit (e.g. `5` in `1254`) represent?",
+    "options": [
+      "The CPU architecture optimizations (Intel vs AMD).",
+      "The optimization pass level, defining how aggressively JIT compiles code (e.g. 0 = none, 5 = trace JIT).",
+      "The trigger mode for when JIT compilation occurs (e.g. on hot function call, on first request, on request limit).",
+      "The maximum memory size JIT can allocate in megabytes."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "The 4-digit configuration `CRTO` for JIT represents: C (CPU optimization), R (Register allocation), T (Trigger mode), and O (Optimization level). The third digit 'T' is the trigger mode: e.g. 0 = compile all on load, 1 = compile on first execution, 2 = profile on first request, 3 = profile hot functions, 4 = profile hot function segments, 5 = trace JIT.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the Zend Memory Manager (ZMM) allocate memory blocks internally compared to standard system `malloc`?",
+    "options": [
+      "ZMM bypasses all OS layers and writes variables directly to physical RAM blocks.",
+      "ZMM allocates large chunks (usually 2MB) from the OS, subdivides them into smaller slots based on fixed size classes, and manages allocations internally to avoid frequent system malloc calls and fragmentation.",
+      "ZMM is a wrapper that calls C standard library `malloc()` for every single variable allocation.",
+      "ZMM allocates memory page-by-page directly into the processor's L2 cache."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To optimize performance, Zend Memory Manager allocates memory in large chunks (usually 2MB). ZMM maintains lists of free blocks grouped by size classes (small, large, huge). This custom memory management minimizes the overhead of invoking kernel-level `malloc`/`free` calls for small, short-lived variables.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a common cause of memory growth (leaks) in long-running PHP CLI processes (like queue workers or daemons)?",
+    "options": [
+      "The Zend Memory Manager automatically increases the memory limits for CLI requests over time.",
+      "Uncontrolled accumulation of objects in static class properties or global variables, and circular references that cannot be collected because the root suspect buffer hasn't filled up or GC is disabled.",
+      "Executing commands via `exec()` which allocates memory in the parent process.",
+      "Using PHP 8.1 Fibers which leak C stack allocations on every invocation."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In long-running PHP CLI applications, references to objects stored in global arrays, static properties, or dependency containers persist. Even if they are no longer needed, they are not garbage collected because they are still reachable from the global roots, leading to memory leaks.",
+    "points": 10
+  },
+  {
+    "question_text": "What output file format does Xdebug use for profiling, and which tool is commonly used to visualize it?",
+    "options": [
+      "JSON format, visualized using Chrome DevTools.",
+      "Cachegrind format (`cachegrind.out.*`), visualized using KCachegrind or Webgrind.",
+      "Binary heap dumps, visualized using Eclipse Memory Analyzer.",
+      "Plaintext CSV format, visualized using Microsoft Excel."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Xdebug generates execution profiles in the standard Valgrind/Cachegrind format. Tools like KCachegrind (desktop) or Webgrind (web interface) parse these files and visualize the call tree, execution time, and call counts.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Blackfire.io profile PHP applications with minimal runtime overhead compared to Xdebug?",
+    "options": [
+      "It compiles the entire PHP application to C before executing it.",
+      "It uses a browser extension that simulates user requests at high speed.",
+      "It utilizes a custom PHP extension that compiles statistics only when triggered dynamically by a special HTTP header or command-line flag, and forwards payload data to an agent process asynchronously.",
+      "It runs profiling as a separate OS process that hooks into CPU registers directly."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Blackfire works by using a custom PHP probe extension. Profiling is not enabled for all requests. Instead, it is triggered selectively (via special tokens in headers or CLI commands). The probe gathers resource metrics and forwards them to a local daemon agent, minimizing request overhead.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Swoole's coroutine scheduler achieve asynchronous execution of PHP code?",
+    "options": [
+      "It creates a new OS thread for every single PHP function call.",
+      "It compiles PHP code to JavaScript to run in a Node.js event loop.",
+      "It runs PHP code in user-space coroutines. When a blocking I/O operation (like a database query or network request) occurs, Swoole suspends the current coroutine, registers the event to its internal event loop (epoll/kqueue), executes other coroutines, and resumes the suspended one once the I/O event is ready.",
+      "It schedules coroutines using the Linux system cron manager."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Swoole runs on a single thread event loop. Coroutines are managed in user-space. When blocking I/O occurs, Swoole intercepts it (using hooks), suspends the coroutine, and yields control back to the event loop. The OS event loop (epoll) notifies Swoole when the I/O completes, prompting it to resume the coroutine.",
+    "points": 10
+  },
+  {
+    "question_text": "What architecture model does RoadRunner use to serve PHP applications, and how does it avoid bootstrapping overhead?",
+    "options": [
+      "It compiles PHP files into shared object libraries loaded by Apache.",
+      "It runs a Go-based process manager that keeps a pool of PHP worker processes alive. Roadrunner sends HTTP requests to these workers via fast binary protocols (IPC/pipes/sockets) and keeps workers running in loop, eliminating bootstrap and configuration parsing overhead per request.",
+      "It acts as a reverse proxy that caches HTML responses on disk.",
+      "It runs PHP workers as separate serverless AWS Lambda instances."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "RoadRunner is a Go-based application server. It pre-forks a pool of PHP worker processes and keeps them warm in memory. Instead of boot-strapping the framework on every request (like CGI/FPM), workers run in a loop, processing requests received from Go via IPC (sockets or pipes), which reduces response times.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a main conceptual difference between ReactPHP and Amp in terms of coroutine syntax in their older vs newer versions?",
+    "options": [
+      "ReactPHP uses threads, while Amp uses processes.",
+      "Amp has historically focused on generator-based coroutines and native Fiber-based concurrency in v3+ (allowing sync-like syntax), while ReactPHP traditionally relied on Promise chain resolution and callbacks, though both now support Fibers.",
+      "ReactPHP runs only under Windows, while Amp is Linux-only.",
+      "There is no difference; both are wrappers around the exact same Swoole extension."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Historically, ReactPHP relied on callbacks and Promise chains (`$promise->then()`). Amp used Generator-based coroutines (using `yield` to wait for promises). With the introduction of Fibers in PHP 8.1, both frameworks have updated to support fiber-based synchronous-looking async programming without callbacks or generators.",
+    "points": 10
+  },
+  {
+    "question_text": "How do PHP 8.1 Fibers differ from Generator-based coroutines (like those used in older Amp/ReactPHP)?",
+    "options": [
+      "Fibers run in separate OS threads, while Generator coroutines run in a single thread.",
+      "Fibers are stackful coroutines, meaning they can be suspended from deep within nested function calls and call stacks, whereas Generator-based coroutines can only be suspended if every function in the call stack yields values back to the event loop.",
+      "Fibers require the JIT compiler to be enabled, whereas Generators do not.",
+      "Generators are much faster than Fibers because they are compiled to C."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Fibers are stackful coroutines. When `Fiber::suspend()` is called, the Zend Engine pauses execution and preserves the entire C call stack. Generators are stackless; they can only yield from the immediate function body, requiring every function in the stack to return a generator to support async execution.",
+    "points": 10
+  },
+  {
+    "question_text": "How do you load and call a standard C library function (e.g. `printf`) using PHP FFI?",
+    "options": [
+      "By calling `FFI::load('printf')` directly.",
+      "By defining the C function prototype using `FFI::cdef(\"int printf(const char *format, ...);\", \"libc.so.6\")`, which returns an FFI object through which you can call the function.",
+      "By compiling the PHP file with GCC compiler flags.",
+      "By using the `dl()` function to load the C source code."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `FFI::cdef($code, $lib)` method parses C declarations (prototypes) and loads the specified shared library. It returns an instance of the `FFI` class, allowing you to call the declared C functions as if they were PHP methods.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a major memory management rule when creating C data structures using `FFI::new()` in PHP?",
+    "options": [
+      "The created C data structure is managed by the operating system kernel and must be freed by restarting PHP.",
+      "The returned FFI\\CData object is managed by PHP's garbage collector. Its memory is automatically freed when the PHP variable goes out of scope and has no references, although manual management is possible for persistent allocations.",
+      "You must call `FFI::free()` on every CData object manually, or PHP will crash with a core dump.",
+      "FFI structures are stored in PHP's session memory."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "FFI CData objects returned by `FFI::new()` are subject to PHP's reference counting and garbage collection. When the PHP variable is collected, the underlying C memory allocation is freed automatically. However, FFI also supports unmanaged persistent allocations that require manual freeing.",
+    "points": 10
+  },
+  {
+    "question_text": "Why is FFI access to C variables and functions generally slower than native PHP extensions compiled in C?",
+    "options": [
+      "Because FFI compiles C code to WebAssembly at runtime.",
+      "Because FFI calls involve significant overhead due to dynamic binding, parameter conversion (marshalling) between PHP zvals and C data types, and checking C structures at runtime rather than compile-time.",
+      "Because FFI forces PHP to run in single-byte evaluation mode.",
+      "Because FFI disables the CPU's instruction cache."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Although FFI provides low-level C access, calling FFI functions involves overhead because PHP must dynamically parse and map arguments (data marshalling), translate zvals to raw C memory layouts, and make dynamic calls. Native C extensions are pre-compiled and do not have this dynamic overhead.",
+    "points": 10
+  },
+  {
+    "question_text": "Why is comparing cryptographic signatures or hashes using the standard comparison operator (`==` or `===`) vulnerable to timing attacks?",
+    "options": [
+      "Because standard operators automatically convert hashes to integer values.",
+      "Because standard string comparisons return immediately upon finding the first mismatched character. An attacker can determine how many characters of their guess match by measuring the tiny differences in execution time.",
+      "Because standard comparisons bypass OPCache JIT compiling.",
+      "Because it triggers automatic deserialization of the strings."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Standard string comparison compares characters sequentially and returns false as soon as it finds a mismatch. A timing attack measures how long the server takes to respond. If the first character matches, it takes slightly longer than if it doesn't match, allowing an attacker to reconstruct the signature byte-by-byte.",
+    "points": 10
+  },
+  {
+    "question_text": "How does `hash_equals()` mitigate timing attacks during cryptographic string comparison?",
+    "options": [
+      "It encrypts both strings using SHA-256 before comparing them.",
+      "It runs the comparison in a separate non-blocking worker thread.",
+      "It compares all characters in constant time, meaning it processes all bytes of the strings regardless of where a mismatch occurs, ensuring the execution time is identical.",
+      "It injects random sleep delays into the execution flow."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "`hash_equals()` performs a constant-time comparison. It uses a bitwise OR accumulation of the differences across all characters. It processes every byte of the inputs, ensuring the execution time depends only on the length of the strings, not the position of any mismatch.",
+    "points": 10
+  },
+  {
+    "question_text": "In a PHP Object Injection vulnerability, why is the attacker limited to utilizing classes that are already loaded or autoloadable by the application?",
+    "options": [
+      "Because PHP only allows deserialization of classes defined in `php.ini`.",
+      "Because `unserialize()` cannot execute code directly; it reconstructs object properties, meaning code execution relies on triggering existing magic methods (`__wakeup`, `__destruct`, `__toString`) in classes available in the codebase (known as POP chains).",
+      "Because SQL databases block foreign class structures.",
+      "Because FFI blocks classes not registered in the system library."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Deserialization does not transmit code, only data representing object properties. To execute code, the attacker must find existing classes in the codebase with magic methods that do actions (like delete files, write logs, evaluate code) based on property values. This sequence of classes is called a Property-Oriented Programming (POP) chain.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the Billion Laughs attack (XML entity expansion), and how is it mitigated in PHP's libxml?",
+    "options": [
+      "An attack that floods the network socket with recursive HTTP redirects.",
+      "A denial-of-service attack where nested XML entities refer to each other recursively, expanding exponentially in memory. It is mitigated by disabling entity substitution using `LIBXML_NOENT` or configuring parser limits.",
+      "An injection attack targeting SQL prepared statements via XML fields.",
+      "A buffer overflow attack in the PHP ZipArchive extension."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Billion Laughs attack uses nested entity definitions (e.g., entity 9 contains 10 entity 8s, which contain 10 entity 7s, etc.). When parsed, a 1KB XML file expands to gigabytes in memory. Mitigations include avoiding `LIBXML_NOENT` (which enables entity expansion) or using parser flags like `LIBXML_PARSEHUGE` with care, and keeping libxml updated.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the difference between `random_int()` and `mt_rand()` in terms of security and entropy source?",
+    "options": [
+      "`mt_rand()` is cryptographically secure, whereas `random_int()` uses a simple time-based seed.",
+      "`random_int()` is a cryptographically secure pseudo-random number generator (CSPRNG) that gathers entropy from the OS kernel, whereas `mt_rand()` uses the Mersenne Twister algorithm, which is predictable and unsafe for cryptography.",
+      "There is no difference; both use the exact same algorithm under the hood.",
+      "`random_int()` is faster than `mt_rand()` because it bypasses OS system calls."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`random_int()` uses the OS CSPRNG source (like `/dev/urandom` or CryptGenRandom) and is suitable for cryptographic keys. `mt_rand()` uses the Mersenne Twister algorithm, which is fast and good for simulations, but its internal state can be fully reconstructed after observing a small sequence of outputs, making it insecure.",
+    "points": 10
+  },
+  {
+    "question_text": "How do modern mocking frameworks (like PHPUnit Mocks or Mockery) dynamically generate mock objects at runtime?",
+    "options": [
+      "They write PHP code to temporary files on disk and include them.",
+      "They utilize the `eval()` function to compile a dynamically generated class structure that extends the original class (or implements the target interface) and overrides its methods to intercept calls.",
+      "They register a custom stream wrapper that intercepts class definitions.",
+      "They modify compilation opcodes inside OPCache directly."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To create a mock, mocking libraries generate a class definition string (extending the parent class/interface and overriding methods to route calls to the mock controller). They compile this class dynamically into the PHP runtime using `eval()`, then instantiate it.",
+    "points": 10
+  },
+  {
+    "question_text": "How do static analysis tools like PHPStan or Psalm analyze type safety without executing the PHP code?",
+    "options": [
+      "They run the code in a background Docker container and capture errors.",
+      "They parse the PHP code into an Abstract Syntax Tree (AST) using a parser, read PHPDoc annotations, perform type inference across the AST, and validate it against strict type rules.",
+      "They monitor memory usage during compilation.",
+      "They check the code against a local regex database."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Static analysis tools use parsers (like `nikic/php-parser`) to build an AST of the code. They then traverse the tree, infer variable types based on definitions and control flow, read docblock annotations (like generics or shapes), and detect type violations without running the script.",
+    "points": 10
+  },
+  {
+    "question_text": "What is mutation testing, and what does the 'mutation score' measure in a suite like Infection PHP?",
+    "options": [
+      "It checks if tests run faster after modifying the code.",
+      "It introduces small modifications (mutants) into the source code and runs the test suite. If the tests fail, the mutant is 'killed'; if they pass, the mutant 'escaped'. The mutation score is the percentage of killed mutants, representing test suite effectiveness.",
+      "It is a test that measures code performance under heavy memory limits.",
+      "It checks if database records change state correctly during test runs."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Mutation testing assesses test quality. Infection PHP modifies the AST of the source code (e.g. changing `>` to `>=`). If the tests fail, they caught the bug (mutant is killed). If the tests pass, the bug went unnoticed (mutant escaped). A higher mutation score indicates a more thorough test suite.",
+    "points": 10
+  },
+  {
+    "question_text": "If a PHP process crashes with a segmentation fault, how can you debug it using a core dump and GDB?",
+    "options": [
+      "By running `gdb php` and reading the text log file.",
+      "By opening the core file inside GDB with the PHP executable (`gdb /usr/bin/php core`), loading the debug symbols, and running `bt` (backtrace) to examine the call stack at the moment of the crash.",
+      "By converting the core dump to a JSON format using Xdebug.",
+      "By executing `php -r \"debug_core_dump();\"`."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To inspect a segmentation fault, load the core dump inside the GNU Debugger (GDB) alongside the exact binary that crashed: `gdb php core`. Using the command `bt` (backtrace) or `t a a bt` (thread apply all backtrace) prints the call stack, showing exactly which C function in the PHP source or extension crashed.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the benefit of using `FFI::load()` and FFI preloading in PHP 7.4+ production environments?",
+    "options": [
+      "It compiles C headers into PHP source files dynamically.",
+      "It parses C header files once during PHP startup (preloading) and registers the C bindings globally. Subsequent requests can access the bindings instantly without the overhead of parsing headers on every request.",
+      "It speeds up database connections by caching headers in Redis.",
+      "It allows FFI to bypass PHP memory limit controls."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`FFI::load()` parses C definitions from a header file. By calling it during preloading (`opcache.preload`), the C declarations are compiled and loaded into memory on server startup. PHP workers can then access the preloaded FFI bindings instantly, avoiding header parsing overhead during HTTP requests.",
+    "points": 10
+  },
+  {
+    "question_text": "In a Swoole application server, what is the role division between Master, Manager, and Worker processes?",
+    "options": [
+      "The Worker manages threads, the Manager handles database connection pools, and the Master runs PHP code.",
+      "The Master process manages the event loop and network connections, the Manager process forks and monitors the lifecycle of PHP Workers, and the Worker processes execute the actual PHP application code.",
+      "The Master compiles code, the Manager caches objects, and the Worker handles CLI requests.",
+      "All three processes are identical and share CPU cores equally using round-robin scheduling."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Swoole uses a multi-process architecture. The Master process is the main entry point and handles TCP/UDP network connections using threads. The Manager process manages workers (forking new ones if they crash). The Worker processes are where PHP code runs, handling requests dispatched by the Master.",
+    "points": 10
+  },
+  {
+    "question_text": "How does RoadRunner handle remote call invocations (RPC) from the PHP worker back to the Go-based application server?",
+    "options": [
+      "Go listens on an RPC socket (e.g. TCP/Unix) using a protocol like Goridge, allowing PHP workers to invoke Go methods and exchange structured data asynchronously.",
+      "PHP workers write SQL commands to a shared database that Go polls periodically.",
+      "PHP workers call Go code directly using FFI bindings.",
+      "RoadRunner uses standard curl requests to send commands back to the Go server."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "RoadRunner includes a high-performance RPC protocol called Goridge. The Go parent process exposes service methods (like caching, metrics, or queue triggers) over a socket, and the PHP worker can invoke them using a lightweight PHP RPC client, sending and receiving structured payloads.",
+    "points": 10
+  },
+  {
+    "question_text": "What performance impact does the Xdebug extension have on PHP execution even when profiling/debugging are not actively triggered, and why?",
+    "options": [
+      "It has no impact at all unless a debugger connects.",
+      "It has a significant overhead (slowing down execution and increasing memory usage) because once loaded, Xdebug overrides Zend Engine execute pointers to monitor opcode execution and compile-time structures, disabling various engine optimizations.",
+      "It compiles PHP code to C, speeding up execution.",
+      "It forces memory allocation to bypass the Zend Memory Manager, reducing RAM usage."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Loading Xdebug hooks into the Zend Engine's compilation and execution handlers to monitor variable states, call stacks, and opcodes. This prevents internal Zend optimizations (like function inlining or JIT compilation) and adds execution overhead, even if debugging/profiling triggers are not active.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you prevent memory leaks when managing asynchronous loops with Fibers where callbacks refer to suspended Fibers?",
+    "options": [
+      "By disabling the garbage collector during loop execution.",
+      "By utilizing weak references (or WeakMaps) in your event registries, ensuring that the event loop does not retain strong references to suspended Fibers that are no longer reachable by other application components.",
+      "By running `gc_collect_cycles()` after every Fiber suspension.",
+      "Fibers cannot cause memory leaks because their stacks are managed by the OS."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If a Fiber is suspended and registered in an event loop registry via a callback, the callback holds a strong reference to the Fiber. If the Fiber is aborted or abandoned, it will leak memory because the registry keeps it alive. Storing Fibers as keys in a WeakMap or wrapping them in WeakReferences prevents this.",
+    "points": 10
+  },
+  {
+    "question_text": "What type of optimizations are performed by OPCache Optimization Passes during PHP compilation?",
+    "options": [
+      "They translate PHP code directly to assembly files before executing.",
+      "They perform abstract syntax tree (AST) optimizations, control flow graph (CFG) analysis, dead code elimination, constant folding, and Static Single Assignment (SSA) optimizations on the compiled oparrays.",
+      "They compress oparrays using gzip to save shared memory.",
+      "They replace all function calls with inline C macros."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "OPCache optimizes oparrays (Zend byte-code). It performs optimization passes that analyze the Control Flow Graph (CFG), combine constants (constant folding), eliminate unreachable blocks (dead code elimination), and convert code representation to SSA form to optimize variable usage before compilation/JIT.",
+    "points": 10
+  },
+  {
+    "question_text": "What does assigning a variable by reference in a `foreach` loop (e.g. `foreach ($array as &$value)`) do to the array's copy-on-write behavior?",
+    "options": [
+      "It speeds up execution by allocating the array in shared memory.",
+      "It forces PHP to immediately duplicate the array and marks the array elements as references, breaking future Copy-on-Write optimizations on this array, and requires unsetting `$value` afterwards to avoid accidental mutations.",
+      "It converts the array elements into WeakReferences.",
+      "It has no impact on copy-on-write."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Using a reference in a foreach loop converts array elements into references (zval type is changed to `IS_REFERENCE`). This breaks Copy-on-Write because any future assignments of the array will duplicate the array structure immediately to protect reference scope. Also, the iterator variable `$value` remains bound to the last array element, risking bugs unless unset.",
+    "points": 10
+  },
+  {
+    "question_text": "What are the performance implications of manually calling `gc_collect_cycles()` frequently in a PHP script?",
+    "options": [
+      "It speeds up execution by freeing CPU registers.",
+      "It has a high CPU cost because it forces the Zend Engine to traverse the entire buffer of potential garbage roots and perform cycle analysis, which can freeze the execution path for several milliseconds.",
+      "It compiles PHP variables to static types, improving execution speed.",
+      "It has no performance impact and should be run after every line of code."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Manually invoking `gc_collect_cycles()` forces the cycle collector to analyze all roots in the buffer. This requires traversing the object graphs, decrementing refcounts in simulation, and sweeping garbage. In CPU-bound loops, running this frequently adds significant CPU overhead and can cause noticeable lag.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the key difference between Tracing JIT and Function JIT compilation modes in OPCache JIT?",
+    "options": [
+      "Function JIT compiles only database functions, while Tracing JIT compiles array functions.",
+      "Function JIT compiles entire PHP functions individually, while Tracing JIT compiles hot execution paths (traces) across functions, loops, and files based on runtime profiling, generating highly optimized code for frequent paths.",
+      "Tracing JIT runs on Linux only, while Function JIT is Windows-only.",
+      "Function JIT compiles code to C, while Tracing JIT compiles to assembly directly."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Function JIT JIT-compiles whole functions. Tracing JIT profiles execution at runtime to identify hot code flows (traces) which can span loops, function boundaries, or multiple files, and compiles only these hot traces. Tracing JIT is generally more effective and is the default mode.",
+    "points": 10
+  },
+  {
+    "question_text": "In a Swoole application, how is state/data isolated between different concurrent requests running in coroutines?",
+    "options": [
+      "Swoole uses PHP thread-local storage globally.",
+      "Swoole provides a Coroutine Context API (e.g. `Swoole\\Coroutine::getContext()`), which returns a request-specific storage object unique to the current coroutine ID, preventing state leakage between requests.",
+      "By serializing request data to disk for each request.",
+      "By spawning a new PHP worker process for every coroutine."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Because multiple coroutines run on the same PHP process and share memory, global/static variables can leak state between requests. Swoole solves this with `Coroutine::getContext()` which retrieves a dedicated storage array for the current coroutine, isolating data for each concurrent request.",
+    "points": 10
+  },
+  {
+    "question_text": "In RoadRunner, what are the configurations `max_jobs` and `max_memory` used for, and why are they important?",
+    "options": [
+      "They set limits on CPU core usage and MySQL connections.",
+      "They restrict the Go parent process memory allocation sizes.",
+      "They command RoadRunner to recycle/destroy a PHP worker process after it processes a certain number of jobs or exceeds a RAM limit, mitigating memory leaks in application code.",
+      "They are configurations for the built-in OPCache compiler."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "PHP application code (especially third-party packages) might have minor memory leaks. To prevent worker processes from consuming too much RAM over time, RoadRunner allows setting limits (e.g., restart worker after 1000 requests (`max_jobs`) or after exceeding 200MB (`max_memory`)).",
+    "points": 10
+  },
+  {
+    "question_text": "How does ReactPHP decide which loop implementation (e.g. `StreamSelectLoop`, `EpollLoop`, `UvLoop`) to instantiate when using the event loop factory?",
+    "options": [
+      "It defaults to the slow `StreamSelectLoop` unless the operating system is Windows.",
+      "It automatically detects the available PHP extensions on the system (like `ext-ev`, `ext-event`, or `ext-uv`), selecting the most performant driver, and falling back to the native `stream_select` loop if no extensions are installed.",
+      "It uses Swoole's event loop driver by default.",
+      "The developer must compile their own C extension to run any ReactPHP loop."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "ReactPHP's loop factory automatically detects system capabilities. It checks for highly efficient non-blocking I/O extensions like `event` (libevent wrapper), `ev` (libev wrapper), or `uv` (libuv wrapper) and instantiates the matching loop driver. If none are present, it falls back to native PHP `stream_select()`-based polling.",
+    "points": 10
+  },
+  {
+    "question_text": "In Amp v3+, what is the purpose of the `Future` and `Suspension` APIs?",
+    "options": [
+      "They are configurations for the Amp code compiler.",
+      "They represent asynchronous operations. A `Future` represents an eventual result of an async task, and a `Suspension` is used by the event loop to pause and resume execution contexts using Fibers, allowing synchronous-looking code execution.",
+      "They are used to execute database transactions asynchronously.",
+      "They are wrappers around standard curl requests."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In Amp v3, concurrent execution uses PHP Fibers. A `Future` represents a placeholder for an asynchronous operation's result. Under the hood, Amp uses a `Suspension` (which wraps Fiber suspension mechanisms) to pause the current fiber execution until the Future resolves, returning control to the loop.",
+    "points": 10
+  },
+  {
+    "question_text": "How do you implement FFI Preloading using `FFI::scope()` in PHP 7.4+?",
+    "options": [
+      "By declaring the FFI scope inside class properties using attributes.",
+      "By defining the scope in a C header with `#define FFI_SCOPE \"scope_name\"` and loading it during preloading. In requests, you can access the scope instantly using `FFI::scope(\"scope_name\")` without reloading the header.",
+      "By calling `FFI::scope()` in the controller constructor.",
+      "FFI scopes are declared globally inside `php.ini` using system file paths."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To preload FFI, you define `define FFI_SCOPE \"my_scope\"` in a header file, and load it during PHP startup (in the script defined in `opcache.preload` using `FFI::load()`). After startup, PHP workers can instantiate the binding dynamically by calling `FFI::scope(\"my_scope\")` without parsing C headers again.",
+    "points": 10
+  },
+  {
+    "question_text": "When encrypting data using OpenSSL in PHP, why is Authenticated Encryption with Associated Data (AEAD) modes (like GCM or CCM) preferred over older modes (like CBC)?",
+    "options": [
+      "Because GCM compresses the payload automatically before encryption.",
+      "Because AEAD modes provide both confidentiality and integrity verification (using an authentication tag), protecting the ciphertext from being modified or tampered with by attackers (mitigating padding oracle attacks).",
+      "Because CBC mode does not support secret keys.",
+      "Because GCM runs directly on the network interface card."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "AEAD modes (like GCM/CCM) generate an authentication tag during encryption. During decryption, OpenSSL validates this tag. This ensures that the ciphertext was not modified in transit, protecting against padding oracle attacks and bit-flipping attacks that plague CBC/CFB modes.",
+    "points": 10
+  },
+  {
+    "question_text": "In static analysis tools like PHPStan, how can you write a custom rule using AST nodes?",
+    "options": [
+      "By adding regular expressions inside a JSON config file.",
+      "By implementing PHPStan's `Rule` interface, specifying the class of the AST node to target (e.g. `MethodCall`), and writing logic inside the `processNode()` method to analyze the node's properties and return errors.",
+      "By overriding the PHP compiler global variables.",
+      "By registering a custom parser class in PHPUnit."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To write a custom PHPStan rule, you implement the `PHPStan\\Rules\\Rule` interface. You specify the target AST node class (via `getNodeType()`). PHPStan will pass all matching nodes to your `processNode(Node $node, Scope $scope)` method where you write validation logic.",
+    "points": 10
+  },
+  {
+    "question_text": "In mutation testing, if a mutant 'escapes' (tests still pass after modifying source code), how should the developer resolve it?",
+    "options": [
+      "By deleting the test case that corresponds to the mutated code.",
+      "By writing a new test case or adding stricter assertions that target the specific boundary condition modified by the mutant, ensuring the tests fail if the logic is altered.",
+      "By configuring Infection to ignore all escaped mutants.",
+      "By disabling OPCache optimization passes during test runs."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "An escaped mutant means the test suite did not detect a change in application logic, indicating a gap in test coverage. The developer should write additional test cases or improve existing assertions (e.g. replacing general assertions with specific/strict ones) to catch the mutation.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the role of the DBGp protocol in Xdebug step debugging?",
+    "options": [
+      "It is a protocol for transferring database records between MySQL and PHP.",
+      "It is a standardized XML-based protocol used by Xdebug to communicate debugging commands (like step in, step over, variable inspection) with the IDE (like PhpStorm or VS Code) over a network socket.",
+      "It is a protocol used to compile PHP AST code.",
+      "It manages session cookies during HTTP requests."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "DBGp is a common debugging protocol. Xdebug acting as a DBGp client establishes a socket connection to the IDE (which acts as a DBGp server). They communicate over TCP using XML payloads representing debug state and control commands.",
+    "points": 10
+  },
+  {
+    "question_text": "What are the internal Zend Engine variables `EG` and `CG` representing in C code?",
+    "options": [
+      "Engine Garbage and Compiler Garbage collectors.",
+      "Executor Globals (storing runtime states like active symbol tables, class tables, functions) and Compiler Globals (storing compiler states during compilation phases).",
+      "Event Groups and Callback Groups.",
+      "Encryption Keys and Cryptographic Salts."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In Zend Engine internals, `EG` refers to Executor Globals (containing active runtime structures, exception states, function tables, loaded files). `CG` refers to Compiler Globals (containing variables used during source compilation into oparrays, such as syntax parameters).",
+    "points": 10
+  },
+  {
+    "question_text": "How can you write a test case to detect memory leaks in a PHP class using `memory_get_usage()`?",
+    "options": [
+      "By checking if `memory_get_usage()` returns zero after script execution.",
+      "By executing the target code in a loop multiple times (e.g. 1000 times) and asserting that the memory usage difference before and after the loop is zero (or within a minor constant threshold after garbage collection is triggered).",
+      "By analyzing the code compile size.",
+      "Memory leaks cannot be detected using PHP code."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To detect leaks programmatically, isolate the target logic, trigger GC (`gc_collect_cycles()`), measure baseline memory (`memory_get_usage()`), run the logic in a loop, trigger GC again, and measure memory. If memory grew significantly, it indicates a reference leak.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHP FFI, how can you cast an unmanaged C pointer to a specific C type, for instance casting a `void *` pointer to a `char *` pointer?",
+    "options": [
+      "By using standard PHP type casting: `(string)$pointer`.",
+      "By calling `FFI::cast(\"char *\", $pointer)`, which returns a new `FFI\\CData` object pointing to the same memory location but interpreted as the new type.",
+      "By executing `FFI::pointer_cast($pointer, 'char')`.",
+      "Casting is not supported in FFI due to safety concerns."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `FFI::cast($type, $cdata)` method is used to cast C data types. It creates a new `FFI\\CData` object pointing to the same memory address as `$cdata` but bound to the C type specified in `$type`.",
+    "points": 10
+  },
+  {
+    "question_text": "When hashing passwords using `password_hash()` with the Argon2id algorithm, what do the parameters `memory_cost`, `time_cost`, and `threads` determine?",
+    "options": [
+      "Database execution timeout limits.",
+      "`memory_cost` sets the memory limit in bytes, `time_cost` sets the execution duration in seconds, and `threads` sets the number of CPU cores.",
+      "`memory_cost` sets the maximum RAM in kibibytes, `time_cost` sets the number of hashing iterations, and `threads` sets the number of parallel threads used during computation.",
+      "They set string padding patterns to protect against SQL injections."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In Argon2id hashing: `memory_cost` defines the memory usage (in KiB) during calculation, `time_cost` sets the number of iterations (passes over the memory blocks), and `threads` specifies the number of parallel threads to use. Adjusting these increases the difficulty for offline hardware cracking.",
+    "points": 10
+  },
+  {
+    "question_text": "Why does using global arrays or static properties as request-data registries inside a Swoole or RoadRunner server cause memory leakage and data corruption?",
+    "options": [
+      "Because Swoole disables the Zend Memory Manager.",
+      "Because these processes persist across multiple HTTP requests. Storing request-specific data in static/global variables will persist in memory between requests, causing memory to grow indefinitely and exposing one user's data to subsequent requests.",
+      "Because global variables are encrypted after every request.",
+      "Because PHP automatically deletes global variables on every coroutine switch."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP-FPM, request state is wiped because the process is recycled or state is reset. Under persistent servers like Swoole or RoadRunner, the PHP process stays alive. Global arrays and static properties do not get cleared between requests, leading to memory leaks and security issues (data leakage between users).",
+    "points": 10
+  },
+  {
+    "question_text": "What does the PHP directive `fiber.stack_size` determine, and what are the trade-offs of setting it too high?",
+    "options": [
+      "It sets the database connection buffer size.",
+      "It determines the memory stack size allocated for each Fiber's execution context. Setting it too high increases the memory usage of every instantiated Fiber, limiting the number of concurrent Fibers that can run on a single machine.",
+      "It sets the maximum recursion limit for standard PHP functions.",
+      "It determines the number of CPU instructions executed before switching."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Every Fiber requires its own memory stack to store execution state (C-stack). The size is configured via `fiber.stack_size` (default is usually 256KB). If set too high, each fiber consumes more RAM, reducing the maximum density of concurrent fibers on the server.",
+    "points": 10
+  },
+  {
+    "question_text": "Why is it impossible to mock static or private methods natively using standard PHPUnit mock objects?",
+    "options": [
+      "Because PHPUnit compiles all classes to static binary files.",
+      "Because mocks are generated as subclasses of the target class. Private methods cannot be overridden in subclasses, and static methods are bound to the class type at compile-time rather than resolved dynamically on the object instance.",
+      "Because mocking private methods is forbidden by the OS kernel.",
+      "Because static methods do not use the zval structure."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHPUnit mocks subclass the target. Private methods are not accessible or overridable in child classes, so they cannot be intercepted. Static methods belong to the class, not the instance, and cannot be intercepted dynamically using standard object delegation or method overriding.",
+    "points": 10
+  },
+  {
+    "question_text": "In static analysis tools like PHPStan or Psalm, what is the purpose of template annotations (e.g. `@template T`)?",
+    "options": [
+      "To define HTML template paths for MVC applications.",
+      "To enable generics support, allowing tools to infer types dynamically based on arguments passed to a class or method, ensuring type safety without duplicate class definitions.",
+      "To cache OPCache JIT opcodes.",
+      "To automatically generate class getters and setters."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Since PHP lacks native generics, static analysis tools use docblock annotations. The `@template T` annotation defines a generic type parameter. The tool tracks the actual type passed during instantiation or call, ensuring type safety in collections or factory methods.",
+    "points": 10
+  },
+  {
+    "question_text": "What occurs when the Zend Engine's `zend_compile_file` function is executed during script execution?",
+    "options": [
+      "It decompiles binary code back to PHP source strings.",
+      "It compiles PHP source code from a file into Zend bytecode (oparrays) which can then be cached by OPCache or executed directly by the Zend VM Executor.",
+      "It runs the code in an isolated sandbox to detect runtime errors.",
+      "It uploads the file to a remote server for validation."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`zend_compile_file` is the compiler hook in Zend Engine. It takes a file, parses the source code using the Lexer and Parser, builds the AST, compiles it into Zend bytecode instructions (oparrays), and returns them for execution. OPCache hooks this function to return cached oparrays instead.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Zend Engine, how is the `zend_string` structure optimized in PHP 7+ to avoid redundant string hashing?",
+    "options": [
+      "It stores the string as a static C array.",
+      "It includes a precalculated hash value member (`h`) within the `zend_string` struct. The hash is calculated once (e.g. during compilation or first array insertion) and cached inside this member for instant subsequent lookups.",
+      "It encodes all string keys using Base64.",
+      "It converts all string hashes to double values."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The `zend_string` struct has a member `zend_ulong h`. This member caches the string's hash key. When a string is used as an array key, the engine reads the precalculated `h` value, avoiding recalculation of the hash (which is expensive for long strings).",
+    "points": 10
+  },
+  {
+    "question_text": "What keys are returned by calling the built-in `gc_status()` function in PHP 8.0+, representing garbage collection statistics?",
+    "options": [
+      "`memory_limit`, `peak_memory`",
+      "`runs`, `collected`, `threshold`, `buffer_size`",
+      "`active`, `inactive`, `garbage`",
+      "`freed_bytes`, `allocated_chunks`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In PHP 8.0+, `gc_status()` returns detailed statistics including: `runs` (number of GC runs), `collected` (number of variables freed), `threshold` (GC trigger limit), and `buffer_size` (current number of elements in the GC root buffer).",
+    "points": 10
+  },
+  {
+    "question_text": "What is `Swoole\\Table` and why is it preferred for sharing data between worker processes over standard PHP arrays?",
+    "options": [
+      "It is a database table format.",
+      "It is a high-performance memory storage table implemented in shared memory, with row-level locks. It allows concurrent read/write operations from different Swoole worker processes without conflicts, bypassing PHP memory isolation.",
+      "It is an HTML table generator.",
+      "It stores data on a fast local Redis server."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Because Swoole processes run in separate memory spaces (due to fork), they cannot share PHP arrays. `Swoole\\Table` allocates a fixed block of shared memory outside of individual worker heap spaces. It implements row-level locking, enabling workers to read and write shared data safely and at high speeds.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the Zend VM Executor dispatch bytecode instruction execution internally?",
+    "options": [
+      "It uses a browser JavaScript engine to parse opcodes.",
+      "It executes opcodes sequentially using a main dispatch loop that can compile to a direct call loop, a jump table (using labels as values in GCC), or a threaded loop depending on the platform and compilation flags.",
+      "It translates every opcode into an OS system process.",
+      "It writes opcodes to local files and calls `include` in a loop."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Zend Virtual Machine Executor uses an execution loop. Opcode dispatching is implemented either as a switch-statement (standard), a jump-table (utilizing GCC's 'labels as values' extension, known as direct threading), or a direct-call mechanism. Direct threading is the fastest on supported platforms because it minimizes branch misprediction.",
+    "points": 10
+  },
+  {
+    "question_text": "What happens when the Zend GC root buffer (defined by `gc.buffer_size` or default 10,000) overflows?",
+    "options": [
+      "The application terminates immediately with a fatal out-of-memory error.",
+      "The GC automatically triggers a cycle collection run to free up space in the buffer. If no garbage is collected, subsequent new suspected objects are simply not tracked for cycle analysis until space is freed.",
+      "The buffer size is doubled automatically in memory.",
+      "All active variables are deleted to prevent memory overflow."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "When the GC root buffer fills up (reaches 10,000 entries by default), the engine automatically executes cycle collection. It tries to identify and sweep garbage. If the buffer remains full because no cyclic garbage is found, new potential roots are not added to the buffer, which might delay garbage detection.",
+    "points": 10
+  },
+  {
+    "question_text": "How can you implement Communicating Sequential Processes (CSP) concurrency patterns in Swoole using channels (`Swoole\\Coroutine\\Channel`)?",
+    "options": [
+      "By writing and reading files concurrently.",
+      "By utilizing a Channel to pass data between concurrent coroutines. One coroutine writes to the channel (`push`), and another reads from it (`pop`), blocking and yielding control automatically if the channel is empty or full.",
+      "By using standard PHP global variables inside lock blocks.",
+      "Channels are not supported in Swoole; you must use system message queues."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Swoole\\Coroutine\\Channel` allows safe data exchange between coroutines. The channel has a configurable buffer size. If a coroutine tries to pop from an empty channel, it suspends and yields control to the event loop. Once another coroutine pushes data, the popped coroutine is resumed. This enables Go-like CSP concurrency.",
+    "points": 10
+  },
+  {
+    "question_text": "Why is it impossible to serialize an `FFI\\CData` object using PHP's standard `serialize()` function?",
+    "options": [
+      "Because FFI objects are automatically encrypted.",
+      "Because `FFI\\CData` represents raw, unmanaged pointers and memory structures allocated in the C heap. PHP's serializer cannot resolve or serialize arbitrary C memory layouts and raw pointer addresses, throwing an exception on attempt.",
+      "Because `serialize()` only works on classes implementing `Serializable`.",
+      "Because serialization of CData requires GCC compiler execution."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`FFI\\CData` represents C variables in the C heap. They are raw binary data layouts, structs, or pointers. The standard PHP serializer only handles PHP data types (zvals, hashes). It does not know how to marshal or reconstruct arbitrary C memory architectures, so serializing them triggers an Exception.",
+    "points": 10
+  },
+  {
+    "question_text": "Why is using a constant-time comparison (like `hash_equals()`) critical when verifying HMAC signatures or tokens in security endpoints?",
+    "options": [
+      "Because HMAC signatures are always shorter than 10 bytes.",
+      "To prevent timing side-channel attacks. Without it, an attacker can analyze the network latency to determine how many bytes of their forged signature matched, eventually brute-forcing the correct signature byte-by-byte.",
+      "Because it speeds up the signature check by bypassing CPU caches.",
+      "Because standard comparisons throw TypeErrors on binary signatures."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "HMAC signatures prevent tampering. If you compare them using `===`, the comparison is non-constant-time. Attackers can measure the response time to guess the signature byte-by-byte (timing attack). `hash_equals()` compares all characters in constant time, neutralizing this side-channel attack vector.",
+    "points": 10
+  },
+  {
+    "question_text": "In PHPStan or Psalm, what is a custom 'Type Specifier' (or Type Specifying Extension) used for?",
+    "options": [
+      "To define new SQL data types in PDO.",
+      "To tell the static analyzer how a custom method narrows down the types of variables (for instance, asserting that if `isAwesome($x)` returns true, `$x` is of type `AwesomeClass` inside that branch).",
+      "To compile PHP type hints directly into Zend bytecode.",
+      "To register class alias names in the composer autoloader."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Type specifiers tell static analysis tools that a specific method or assertion changes the type context of variables. For example, if a function `isUser($x)` returns true, the analyzer can trust that `$x` is of type `User` inside the subsequent `if` block, preventing false-positive type warnings.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a main difference between the Zend Memory Manager (ZMM) heap allocator and standard OS C heap allocator (`malloc`/`free`) regarding execution speed and fragmentation?",
+    "options": [
+      "The OS allocator is always faster because it uses CPU microcode.",
+      "ZMM acts as a custom user-space heap allocator. By pre-allocating memory pages and maintaining size-indexed slot lists, it bypasses kernel system calls for small variable allocations, reducing fragmentation and execution time in PHP scripts.",
+      "ZMM writes memory directly to the CPU cache and completely bypasses RAM.",
+      "There is no difference; ZMM is a compile macro that translates to `malloc` directly."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Operating system allocation via standard `malloc` involves kernel-level system calls which are slow for frequent, small, short-lived variables. ZMM requests large pages (chunks) from the OS, managing allocation of variables internally. This reduces the number of context switches and RAM fragmentation.",
+    "points": 10
+  },
+  {
+    "question_text": "In OPCache Preloading, what is a common cause for class resolution failures during startup?",
+    "options": [
+      "Classes cannot be preloaded if they contain readonly properties.",
+      "If a preloaded class references parent classes, interfaces, traits, or type-hints that are not preloaded or cannot be resolved, the compiler fails to link the class and throws a fatal preloading error.",
+      "OPCache Preloading is only supported for classes without namespaces.",
+      "Dynamic methods cannot be resolved during preload phase."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "OPCache Preloading resolves and links classes at server startup. If Class A is preloaded but it inherits from Class B (which is not preloaded or not found), the compiler cannot build the class inheritance tree, causing a fatal error and blocking server startup.",
+    "points": 10
+  },
+  {
+    "question_text": "What does the internal Zend Engine bytecode array structure `zend_op_array` contain?",
+    "options": [
+      "An array of string values representing PHP variable names.",
+      "A compiled block of executable instructions containing opcodes, operand definitions (variables, constants, temporary results), class/function compile-time tables, and exception handling blocks.",
+      "A list of database configuration options parsed from `php.ini`.",
+      "An array of C functions pointers mapped to PHP extension classes."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`zend_op_array` represents the compiled state of a script or function. It contains the sequence of bytecode instructions (`zend_op`), arrays of literal values (constants), variables metadata, exception handling tables, and various flags needed by the Zend VM Executor to execute the code.",
+    "points": 10
+  },
+  {
+    "question_text": "In mutation testing, what is the role of arithmetic mutators?",
+    "options": [
+      "They verify SQL query syntax correctness.",
+      "They modify arithmetic operators in the AST of the source code (e.g., changing a addition `+` to subtraction `-`, or multiplication `*` to division `/`) to verify that tests assert the correct mathematical outcomes.",
+      "They check memory limits during variable math operations.",
+      "They compile math functions into C extensions automatically."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Arithmetic mutators are Infection mutator rules. They alter mathematical calculations in the AST of the code (like changing `$x + $y` to `$x - $y`). If the test suite passes despite this change, the test is incomplete because it failed to assert the correct mathematical outcome.",
+    "points": 10
+  },
+  {
+    "question_text": "In a Swoole HTTP server, what is the role of Task Workers compared to standard Worker processes?",
+    "options": [
+      "Task Workers execute CSS and JavaScript compression before responses are sent.",
+      "Task Workers run in separate processes to handle long-running, blocking tasks (like sending emails or processing images) asynchronously, leaving standard Workers free to process incoming HTTP requests without blocking.",
+      "Task Workers handle SSL handshake negotiations only.",
+      "Task Workers are short-lived processes created on-demand for every HTTP request."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Swoole utilizes standard Workers for request-response handling. For blocking operations, standard Workers dispatch the job to Task Workers using the `task()` method. Task Workers run in a separate pool, preventing blocking of the main event loop.",
+    "points": 10
+  },
+  {
+    "question_text": "How is Hot Reloading implemented in Swoole without dropping active TCP connections?",
+    "options": [
+      "By restarting the entire physical server hardware.",
+      "By sending a reload signal (SIGUSR1 or SIGUSR2) to the Manager process, which sequentially terminates and reforks Worker processes, while the Master process keeps the TCP listening sockets open and buffers incoming traffic.",
+      "By recompiling the PHP classes inside OPCache shared memory without modifying processes.",
+      "Swoole cannot perform hot reloading without closing active connections."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Master process holds the TCP listening sockets. When a reload signal is sent, the Manager process shuts down and restarts the Workers one by one. Active connections are managed by the Master, meaning the reload is transparent to clients.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the consequence of incorrect struct alignment or missing packing definitions when mapping C structures to PHP FFI?",
+    "options": [
+      "FFI will compile the C struct to a PHP array automatically.",
+      "It leads to memory corruption, garbage data reading, or segmentation faults because the memory layout of the CData object in PHP does not align with the compiler-defined memory offsets of the compiled C library.",
+      "PHP will throw a syntax error during file parsing.",
+      "It forces the system to run in 32-bit compatibility mode."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "C compilers align struct members based on architecture rules (e.g. 4-byte boundaries). If your FFI header definition lacks matching alignment rules (like `__attribute__((packed))`), PHP will calculate incorrect memory offsets, leading to reading incorrect memory values or crashing with segfaults.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Zend Engine, what is the role of compiler hooks like `zend_compile_string`?",
+    "options": [
+      "They encrypt dynamic string variables.",
+      "They intercept compilation of code executed dynamically via `eval()` or `create_function()`, allowing security tools or profilers to analyze or block dynamic code execution.",
+      "They optimize string concatenation operations.",
+      "They map string keys to Zend hash tables."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`zend_compile_string` is a C function pointer in the Zend Engine called whenever a string of code is compiled (like via `eval()`). Developers of security extensions (like RASP tools) hook this function to inspect or block code compilation at runtime.",
+    "points": 10
+  },
+  {
+    "question_text": "How can database query execution times introduce timing attacks, and how do you mitigate this in high-security authentication systems?",
+    "options": [
+      "Query times are identical, so they cannot introduce attacks.",
+      "If a query checks for the existence of a user, it will return faster if the user does not exist (saving index lookups) than if the user exists and the password hash must be verified. This is mitigated by always running a dummy password hash verification even if the user is not found.",
+      "By disabling database indexing on the user table.",
+      "By using asynchronous database drivers which run in zero time."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "If a system database lookup fails, it might skip password verification, returning early. An attacker can map registered usernames by measuring response times. Mitigation requires executing a dummy hash comparison (e.g. `password_verify('password', $dummyHash)`) to equalize execution paths.",
+    "points": 10
+  },
+  {
+    "question_text": "In mutation testing, what is the role of visibility mutators?",
+    "options": [
+      "They change class methods to make them run in parallel.",
+      "They change visibility modifiers of properties or methods (e.g., from `protected` to `private`, or `public` to `protected`) in the AST to verify if child classes or external tests fail, confirming visibility boundaries are tested.",
+      "They hide code snippets from static analysis tools.",
+      "They compile classes to local namespace libraries."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Visibility mutators alter access modifiers of methods/properties. For example, changing a method from `protected` to `private`. If the test suite does not fail (e.g. no inheritance checks or direct calls break), it flags that the visibility encapsulation was untested or redundant.",
+    "points": 10
+  },
+  {
+    "question_text": "How are system signals (like `SIGTERM` or `SIGINT`) safely handled in asynchronous PHP engines like ReactPHP or Swoole?",
+    "options": [
+      "By calling `die()` inside the signal handler callback.",
+      "By registering signal listeners on the event loop (e.g. `Swoole\\Process::signal` or ReactPHP's Loop signal methods) which trigger user-defined callbacks asynchronously within the event loop flow, allowing graceful shutdown.",
+      "Signals cannot be handled in PHP because it lacks OS-level capabilities.",
+      "By compile-time mapping of signal numbers to PHP function names."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Async engines run an event loop. Using extensions like `pcntl`, the event loop registers signal handlers and maps OS signals to loop events. When a signal (like `SIGTERM`) occurs, the loop executes the registered PHP callback asynchronously, enabling safe cleanup and closure.",
+    "points": 10
+  },
+  {
+    "question_text": "In a PHPUnit test, what is the consequence of mock methods returning mock objects (nested mocks) without matching type constraints?",
+    "options": [
+      "PHP will compile the test file to a static HTML page.",
+      "It increases the coupling of test cases to the class implementation details, causing tests to break easily during refactoring, and violating mock isolation practices.",
+      "It forces the test suite to run in 32-bit execution mode.",
+      "Nested mocks are completely disabled and trigger a Compile Error."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Mocking nested objects (e.g. `$mock->getA()->getB()->doSomething()`) leads to fragile tests because the mock must mimic the internal structural chains of dependencies, increasing coupling. It violates the Law of Demeter in tests.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the primary difference in memory allocation between a Fiber's C-stack and a Generator's frame?",
+    "options": [
+      "Generators allocate memory inside the processor cache, while Fibers use virtual memory.",
+      "Fibers allocate a complete, contiguous call stack in virtual memory (similar to OS threads), while Generators allocate a single heap frame containing only the local variables of the immediate generator function.",
+      "Fibers use less memory than Generators because they do not compile to zvals.",
+      "Generators are managed by the kernel, while Fibers are managed by the Zend Memory Manager."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A Fiber is stackful, allocating a dedicated virtual memory area for its C-stack to support deep nested function suspension. A Generator is stackless, allocating only a small heap frame to store its immediate local variables and execution pointer, which uses significantly less memory per instance.",
+    "points": 10
+  },
+  {
+    "question_text": "Which Infection configuration key is used to define which directories and files should be excluded from mutation testing?",
+    "options": [
+      "`ignore`",
+      "`exclude` under the `source` section",
+      "`blacklist`",
+      "`skip` under the `mutators` section"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In an `infection.json` file, files or folders that should be skipped during mutation analysis are specified under the `source` configuration block, within the `exclude` array.",
+    "points": 10
+  },
+  {
+    "question_text": "What does a memory profile comparison (diff) in Blackfire allow developers to identify?",
+    "options": [
+      "The difference in code line counts.",
+      "The exact functions, database queries, or classes that caused memory allocations or CPU usage to increase between two different versions of the codebase.",
+      "The encryption strength of TLS sockets.",
+      "The number of inactive processes in the PHP-FPM pool."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Blackfire's profile comparison comparison mode compares two profile runs (e.g. before and after a change). It highlights differences in memory allocation, CPU time, and query counts, helping to spot performance regressions.",
+    "points": 10
+  },
+  {
+    "question_text": "In static analysis, what does Psalm's `@psalm-assert` annotation do when applied to a method?",
+    "options": [
+      "It executes a PHPUnit assertion automatically.",
+      "It informs the static analyzer that if the method returns without throwing an exception (or returns true), the variable passed to it is guaranteed to match the asserted type, narrowing down the type context.",
+      "It compiles the class properties into C struct variables.",
+      "It caches variable states inside OPCache."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`@psalm-assert Type $var` is an assertion annotation. It tells Psalm that a successful return from this method guarantees that `$var` is of type `Type`. This allows custom assertion methods to narrow down types in subsequent code.",
+    "points": 10
+  },
+  {
+    "question_text": "What is a main limitation of OPCache preloading regarding classes that extend external libraries?",
+    "options": [
+      "Preloaded classes cannot extend parent classes defined in composer packages.",
+      "All parent classes and interfaces of a preloaded class must also be preloaded or pre-compiled; if the compiler cannot resolve them during preloading, compilation fails with a fatal error.",
+      "Preloading can only process class constants.",
+      "It requires all files to reside in a single flat directory."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Preloading resolves class inheritance and dependencies at startup. If a preloaded class inherits from a class in vendor directories, that parent class must also be loaded during the preloading phase, or compilation will fail.",
+    "points": 10
+  },
+  {
+    "question_text": "In a Swoole application, what is a common cause of database connection exhaustion when using standard PDO under high concurrency?",
+    "options": [
+      "PDO is blocked by system firewalls.",
+      "Standard PDO connections are blocking and bound to a single PHP process. Concurrent coroutines attempting to share a single PDO connection will corrupt memory or block execution. You must use a coroutine-safe connection pool to manage and reuse connections safely.",
+      "PDO automatically creates millions of connections in background threads.",
+      "Swoole forbids the use of database connections inside coroutines."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Standard PDO is synchronous. Multiple coroutines sharing one connection will cause query overlap and errors. Using a connection pool ensures each coroutine gets its own connection for the query's duration, preventing connection issues.",
+    "points": 10
+  },
+  {
+    "question_text": "What type of mutation is performed by return value mutators in Infection PHP?",
+    "options": [
+      "They encrypt the return statement of functions.",
+      "They alter the return statements of methods (e.g. changing `return true;` to `return false;`, or returning `null` instead of an object) to verify if tests catch the altered return behavior.",
+      "They change return type declarations to trigger Compile Errors.",
+      "They remove return statements entirely, forcing a memory leak."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Return value mutators modify return values in methods (e.g. returning `false` instead of `true`, `null` instead of an array). If tests still pass, it means the tests do not validate return values properly, exposing a test coverage issue.",
+    "points": 10
+  },
+  {
+    "question_text": "How can Timing Attacks be mitigated in authentication endpoints when comparing user-provided API tokens with secure tokens stored in database?",
+    "options": [
+      "By using loose comparison (`==`) to speed up comparisons.",
+      "By comparing the hashes of the tokens using a constant-time comparison function like `hash_equals()`, ensuring the response time does not depend on the correctness of the token suffix.",
+      "By converting the tokens to uppercase before comparison.",
+      "By adding a random sleep delay after database queries."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Using `hash_equals()` ensures constant-time comparison, meaning the comparison takes the same amount of time regardless of how many characters match, preventing attackers from guessing tokens by measuring execution times.",
+    "points": 10
+  },
+  {
+    "question_text": "In a long-running PHP CLI daemon, how does the Copy-on-Write (COW) mechanism behavior change for an array when you pass an element of it by reference in a nested helper function?",
+    "options": [
+      "It converts the array elements into static variables.",
+      "Passing an array element by reference immediately splits the array internally, converting the zval type of that element to `IS_REFERENCE` and forcing PHP to duplicate the array structure on any subsequent assignments, disabling future COW optimizations.",
+      "It deletes the array to prevent memory leaks.",
+      "It has no impact on memory allocation."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Passing an array element by reference changes the internal zval to `IS_REFERENCE`. Under COW rules, references must be protected, which forces PHP to split/copy the array on any assignment, defeating COW optimization for that array.",
+    "points": 10
+  },
+  {
+    "question_text": "In static analysis, what does the Psalm annotation `@param-out` represent when documenting a parameter?",
+    "options": [
+      "It defines the parameter return type inside PHPUnit tests.",
+      "It specifies that the parameter passed by reference will be mutated by the method to have a different type upon method completion, allowing Psalm to track the mutated type in the caller scope.",
+      "It deletes the variable parameter upon method exit.",
+      "It caches variable types in OPCache memory."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`@param-out Type $var` is used for reference parameters. It informs the static analysis tool that after the method execution, the variable passed by reference will hold a value of the specified `Type`, allowing accurate type inference in the calling code.",
+    "points": 10
+  },
+  {
+    "question_text": "What does a mutation score of `100%` in Infection PHP indicate?",
+    "options": [
+      "It indicates that all test cases executed successfully.",
+      "It indicates that every single generated code mutant was killed by the test suite, meaning the tests successfully caught all introduced changes in the application logic.",
+      "It indicates that the application memory usage was reduced by 100%.",
+      "It indicates that JIT compilation compiled all code segments."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A mutation score of 100% means that every mutant introduced by Infection into the code was detected by at least one failing test (killed). This indicates maximum test coverage sensitivity to logic changes.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Zend Engine, what is the role of Executor Globals (`EG`) regarding exception tracking?",
+    "options": [
+      "EG compiles exception handling blocks to static machine code.",
+      "EG contains a pointer (`EG(exception)`) to the currently active throw exception object. If this pointer is not null, the engine halts normal opcode execution and transfers control to the nearest exception catching handler block.",
+      "EG deletes throw exceptions to prevent memory leaks.",
+      "EG redirects exception logs to the operating system syslog."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Zend Executor Globals tracks exceptions using `EG(exception)`. When an exception is thrown, this pointer is set. The Zend execution loop checks it on every opcode step, bypassing normal execution to search for catch blocks or trigger the unhandled exception handler.",
+    "points": 10
+  },
+  {
+    "question_text": "What is the purpose of the `opcache.jit_max_side_traces` configuration option in OPCache JIT?",
+    "options": [
+      "It sets the maximum number of network requests JIT can profile.",
+      "It controls the maximum number of side traces (alternative paths) that can be generated for a single trace in Tracing JIT mode before falling back to VM execution.",
+      "It determines the size of the compilation buffer on the CPU.",
+      "It restricts the number of class properties that JIT can compile."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In Tracing JIT, execution starts compiling a 'root trace'. If branches diverge, JIT creates 'side traces'. The `opcache.jit_max_side_traces` limits how many side traces can be attached to a root trace to prevent code bloat and trace explosion.",
+    "points": 10
+  },
+  {
+    "question_text": "What IPC (Inter-Process Communication) mechanisms does Swoole use to transfer data between Workers and Task Workers?",
+    "options": [
+      "It writes JSON files to a shared temporary directory.",
+      "It utilizes Unix Domain Sockets (or system message queues) under the hood to stream serialized tasks from the Worker pool to the Task pool.",
+      "It uses HTTP/2 requests internally over localhost sockets.",
+      "It communicates using CPU register interrupts."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Swoole handles IPC between Workers and Task Workers using Unix Domain Sockets (in-memory sockets) or System V Message Queues. The task payloads are serialized on the sender side and deserialized on the receiver side.",
+    "points": 10
+  },
+  {
+    "question_text": "How does the operating system protect a PHP Fiber's execution stack from crashing the entire process during deep recursion (Stack Overflow)?",
+    "options": [
+      "By dynamically resizing the virtual RAM capacity to infinity.",
+      "By placing a non-readable 'guard page' at the end of the Fiber's allocated stack. When recursion exceeds the stack size and attempts to write to the guard page, the OS triggers a segmentation fault which PHP catches to throw a StackOverflowException or clean up safely.",
+      "By disabling recursive function calls in Fiber contexts.",
+      "By migrating the Fiber execution context to a background database session."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "To prevent stack overflows from corrupting adjacent virtual memory, the Zend Engine / OS sets up a guard page at the boundary of the Fiber's stack. Attempting to write past the stack boundary accesses the guard page, triggering a fault that allows PHP to terminate the Fiber gracefully instead of crashing the web server.",
+    "points": 10
+  },
+  {
+    "question_text": "What type of conditional return type can be defined in static analysis tools (like Psalm) to indicate that a function's return type depends on the input boolean value?",
+    "options": [
+      "`@return T`",
+      "`@return (T is true ? string : int)` using conditional type docblocks where `T` is a template parameter mapped to an input argument.",
+      "`@return string|int`",
+      "Conditional return types are not supported; you must write separate functions."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Psalm supports conditional return types in docblocks using the syntax `@return (T is true ? string : int)`. Combined with `@template T as bool` on the parameter, the analyzer can resolve the exact return type based on whether `true` or `false` was passed.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Zend Engine Executor Globals (`EG`), what are the class table (`class_table`) and function table (`function_table`) structures?",
+    "options": [
+      "They are SQL tables managed by PDO.",
+      "They are hash tables (`HashTable`) storing compiled class definitions and function definitions respectively, allowing the engine to resolve class and function names during runtime.",
+      "They are static C arrays containing CPU registers coordinates.",
+      "They are arrays storing temporary request variable values."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The class table and function table are core Zend HashTables (`HashTable`). When a class or function is compiled, its definition is registered in these tables under its lowercase name. The Zend VM queries these tables during execution to resolve class instantiations or function calls.",
+    "points": 10
+  },
+  {
+    "question_text": "How do you identify a memory leak in a long-running CLI process by analyzing Xdebug trace files?",
+    "options": [
+      "By checking if the trace file size is larger than 10MB.",
+      "By enabling memory tracing (`xdebug.show_mem_delta=1`), and checking if the memory delta column shows continuous positive increments (`+`) after repeating a loop, indicating memory is allocated but never freed.",
+      "By looking for the word `leak` in the trace output.",
+      "Memory leaks cannot be identified using Xdebug traces."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Xdebug's execution traces can display memory consumption changes using the delta parameter. If a loop runs and you see positive deltas (e.g. `+1024`) on every iteration after GC, it means variables are accumulating in memory, confirming a leak.",
+    "points": 10
+  },
+  {
+    "question_text": "How does Blackfire's dynamic instrumentation mechanism capture profiling metrics?",
+    "options": [
+      "By running a parallel debugger thread that intercepts CPU clocks.",
+      "The Blackfire extension intercepts compilation of PHP code, injecting profiling hooks (probes) at the boundaries of functions, statements, and classes during compilation to capture memory/CPU/time metrics upon execution.",
+      "By executing the PHP script inside a browser-based parser.",
+      "By analyzing log outputs from the Linux syslog daemon."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "The Blackfire probe extension hooks into the compilation phase of the Zend Engine. When a request is profiled, it injects hooks at function entry and exit points. When executed, these hooks capture performance metrics with minimal overhead compared to standard step debuggers.",
+    "points": 10
+  },
+  {
+    "question_text": "What type of locking mechanism does `Swoole\\Table` use to manage concurrent write operations on the same row?",
+    "options": [
+      "It locks the entire system RAM.",
+      "It implements fine-grained, row-level locks (spinlocks) to ensure that concurrent updates to the same row are serialized without locking the entire table.",
+      "It uses optimistic concurrency control without locks.",
+      "It delegates locking to the MySQL database engine."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`Swoole\\Table` allocates shared memory structures. To support high concurrency, it implements row-level locking using spinlocks. Multiple workers can modify different rows simultaneously without blocking, while updates to the same row are safely serialized.",
+    "points": 10
+  },
+  {
+    "question_text": "In OPCache compilation, what occurs during constant folding optimization?",
+    "options": [
+      "All variable names are converted to constant names.",
+      "The compiler evaluates constant expressions (like `24 * 60 * 60`) at compile-time and replaces the expression with its calculated value (`86400`) in the bytecode, eliminating runtime evaluation overhead.",
+      "OPCache compresses constant definitions using zlib.",
+      "Constants are deleted if they are not referenced in the code."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Constant folding is a standard compiler optimization. During compilation, the OPCache optimizer evaluates operations where all operands are constants (e.g. `1 + 2` or `STR_CONSTANT . 'suffix'`) and replaces them with the final calculated result in the oparray, saving CPU cycles at runtime.",
+    "points": 10
+  },
+  {
+    "question_text": "In static analysis, what does `@param-out` allow the analyzer to track regarding reference parameters?",
+    "options": [
+      "It tracks the variable memory address dynamically.",
+      "It tracks the mutation of a reference parameter's type after the method returns, ensuring the type is updated in the calling context.",
+      "It checks if the parameter is printed to output streams.",
+      "It prevents modifications to the reference parameter."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`@param-out` defines the type of a reference argument after the function call completes. This allows tools like Psalm or PHPStan to know that the variable passed by reference has changed its type inside the function (e.g. from `null` to `mysqli_result`).",
+    "points": 10
+  },
+  {
+    "question_text": "What is the role of the `Infection` mutation testing framework when analyzing test suite quality?",
+    "options": [
+      "It measures test code execution times.",
+      "It evaluates test suite strength by introducing bugs (mutations) in the application code and verifying if the test suite fails (kills mutants). If tests still pass, it indicates gaps in test coverage (escaped mutants).",
+      "It checks if variables are typed correctly inside PHPUnit tests.",
+      "It automatically writes mock tests for database objects."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Infection is a mutation testing framework. It modifies AST code elements (e.g., swapping logical operators). If the test suite fails, the mutation is caught (mutant killed). If the tests pass, it means the code change went unnoticed, flagging insufficient test assertions.",
+    "points": 10
+  },
+  {
+    "question_text": "In the Zend Engine, what is the structure that holds variables inside functions and handles their memory scopes?",
+    "options": [
+      "`zend_op`",
+      "`zend_execute_data` (execution frame)",
+      "`zend_string`",
+      "`zend_class_entry`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "`zend_execute_data` is the execution frame (stack frame) for a running function or method. It contains local variable zvals (compiled variables), the current execution oparray, call stack pointers, and scope contexts.",
+    "points": 10
+  },
+  {
+    "question_text": "How does OPCache Preloading handle classes with dynamic properties?",
+    "options": [
+      "It blocks preloading of the entire file.",
+      "It preloads them normally, but dynamic properties are not compiled or registered in OPCache memory, behaving normally at runtime (triggering deprecation warnings if not allowed).",
+      "It converts dynamic properties to typed constants.",
+      "Preloaded classes cannot have any properties."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "OPCache preloading compiles class definitions (properties, methods, constants). Since dynamic properties do not exist in the class definition, they cannot be preloaded. At runtime, they behave normally, meaning in PHP 8.2+ they trigger deprecation warnings unless allowed.",
+    "points": 10
+  },
+  {
+    "question_text": "Which memory limit exception is thrown in PHP when a script exceeds the allocated memory limit set in `php.ini`?",
+    "options": [
+      "`OutOfMemoryException`",
+      "No exception is thrown; PHP triggers an uncatchable fatal error (`Allowed memory size of X bytes exhausted`), halting execution instantly.",
+      "`MemoryLimitException`",
+      "`ZendMemoryException`"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PHP memory exhaustion does not throw standard catchable Exceptions or Errors. It triggers an uncatchable Fatal Error, terminating execution immediately to prevent system memory corruption.",
+    "points": 10
+  }
+]

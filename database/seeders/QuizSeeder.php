@@ -12,7 +12,7 @@ class QuizSeeder extends Seeder
     public function run(): void
     {
         // 1. Clean up old quizzes to prevent duplicates
-        Quiz::whereIn('slug', ['php-8-4-hooks', 'laravel-security'])->delete();
+        Quiz::whereIn('slug', ['php-8-4-hooks', 'laravel-security', 'php-advanced-interview', 'php-expert-interview'])->delete();
 
         // 2. Seed Badges
         $badgesData = [
@@ -168,6 +168,86 @@ class QuizSeeder extends Seeder
                     'fr' => ['title' => 'Expert de base PHP', 'description' => 'Obtenu 100% au quiz d\'entretien sur les bases de PHP.'],
                     'es' => ['title' => 'Experto en Fundamentos de PHP', 'description' => 'Obtuvo un 100% en el cuestionario de entrevista sobre fundamentos de PHP.'],
                     'it' => ['title' => 'Esperto in Fondamenti di PHP', 'description' => 'Ottenuto il 100% nel quiz di intervista sui fondamenti di PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-advanced-bronze',
+                'quiz_slug' => 'php-advanced-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/php-advanced-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Advanced Bronze', 'description' => 'Scored 50% or more on the PHP Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: Продвинутый PHP', 'description' => 'Набрано 50% или более правильных ответов в квизе по продвинутому PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-advanced-silver',
+                'quiz_slug' => 'php-advanced-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/php-advanced-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Advanced Silver', 'description' => 'Scored 70% or more on the PHP Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: Продвинутый PHP', 'description' => 'Набрано 70% или более правильных ответов в квизе по продвинутому PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-advanced-gold',
+                'quiz_slug' => 'php-advanced-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/php-advanced-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Advanced Gold', 'description' => 'Scored 85% or more on the PHP Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: Продвинутый PHP', 'description' => 'Набрано 85% или более правильных ответов в квизе по продвинутому PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-advanced-expert',
+                'quiz_slug' => 'php-advanced-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/php-advanced-expert.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Advanced Expert', 'description' => 'Scored 100% on the PHP Advanced Interview Quiz.'],
+                    'ru' => ['title' => 'Эксперт: Продвинутый PHP', 'description' => 'Набрано 100% правильных ответов в квизе по продвинутому PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-expert-bronze',
+                'quiz_slug' => 'php-expert-interview',
+                'min_percentage' => 50,
+                'image_path' => '/images/badges/php-expert-bronze.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Expert Bronze', 'description' => 'Scored 50% or more on the PHP Expert Interview Quiz.'],
+                    'ru' => ['title' => 'Бронза: Эксперт PHP', 'description' => 'Набрано 50% или более правильных ответов в экспертном квизе по PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-expert-silver',
+                'quiz_slug' => 'php-expert-interview',
+                'min_percentage' => 70,
+                'image_path' => '/images/badges/php-expert-silver.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Expert Silver', 'description' => 'Scored 70% or more on the PHP Expert Interview Quiz.'],
+                    'ru' => ['title' => 'Серебро: Эксперт PHP', 'description' => 'Набрано 70% или более правильных ответов в экспертном квизе по PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-expert-gold',
+                'quiz_slug' => 'php-expert-interview',
+                'min_percentage' => 85,
+                'image_path' => '/images/badges/php-expert-gold.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Expert Gold', 'description' => 'Scored 85% or more on the PHP Expert Interview Quiz.'],
+                    'ru' => ['title' => 'Золото: Эксперт PHP', 'description' => 'Набрано 85% или более правильных ответов в экспертном квизе по PHP.'],
+                ]
+            ],
+            [
+                'slug' => 'php-expert-master',
+                'quiz_slug' => 'php-expert-interview',
+                'min_percentage' => 100,
+                'image_path' => '/images/badges/php-expert-master.svg',
+                'translations' => [
+                    'en' => ['title' => 'PHP Expert Master', 'description' => 'Scored 100% on the PHP Expert Interview Quiz.'],
+                    'ru' => ['title' => 'Мастер: Эксперт PHP', 'description' => 'Набрано 100% правильных ответов в экспертном квизе по PHP.'],
                 ]
             ],
             [
@@ -435,6 +515,18 @@ class QuizSeeder extends Seeder
             'it' => ['title' => 'Preparazione al Colloquio su Git', 'description' => 'Un test completo di 40 domande per la preparazione ai colloqui su Git: comandi, branching, merging, rebasing, recupero di commit e monorepo.'],
         ];
         $this->seedQuiz('git-interview', 400, $gitQuizTrans, 'git-interview', 'git');
+
+        $phpAdvancedQuizTrans = [
+            'en' => ['title' => 'PHP Advanced Interview', 'description' => 'A challenging test of 100 questions covering modern PHP 8.x, OOP, SPL, patterns, Composer internals, and security.'],
+            'ru' => ['title' => 'Продвинутое собеседование по PHP', 'description' => 'Сложный тест из 100 вопросов, охватывающий стандарты PHP 8.x, ООП, структуры SPL, паттерны проектирования, Composer и безопасность.'],
+        ];
+        $this->seedQuiz('php-advanced-interview', 1000, $phpAdvancedQuizTrans, 'php-advanced-interview', 'php');
+
+        $phpExpertQuizTrans = [
+            'en' => ['title' => 'PHP Expert Interview', 'description' => 'An extreme test of 100 questions covering Zend Engine internals, memory management, Swoole, JIT, FFI, streams, and exploits.'],
+            'ru' => ['title' => 'Собеседование уровня Эксперт по PHP', 'description' => 'Экстремальный тест из 100 вопросов, охватывающий устройство Zend Engine, управление памятью, асинхронность, FFI, сетевые сокеты и уязвимости.'],
+        ];
+        $this->seedQuiz('php-expert-interview', 1000, $phpExpertQuizTrans, 'php-expert-interview', 'php');
     }
 
     private function seedQuiz(string $slug, int $points, array $translations, string $resourceSubdir, string $categorySlug): void

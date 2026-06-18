@@ -626,6 +626,10 @@
             document.getElementById('result-container').style.display = 'block';
             quizBoxFooter.style.display = 'none';
 
+            if (data.user_answers) {
+                userAnswers = data.user_answers;
+            }
+
             // Set Stats
             const totalQuestions = quizData.questions.length;
             const correctCount = Object.values(data.correct_answers).filter(v => v === true).length;
@@ -647,10 +651,19 @@
             reviewList.innerHTML = '';
 
             quizData.questions.forEach(q => {
-                const isCorrect = data.correct_answers[q.id];
-                const correctIdx = data.correct_indexes[q.id];
-                const userIdx = userAnswers[q.id];
-                const explanation = data.explanations[q.id];
+                const correctIdx = (data && data.correct_indexes && data.correct_indexes[q.id] !== undefined)
+                    ? Number(data.correct_indexes[q.id])
+                    : (q.correctIndex !== undefined ? Number(q.correctIndex) : undefined);
+
+                const userIdx = userAnswers[q.id] !== undefined ? Number(userAnswers[q.id]) : undefined;
+
+                const isCorrect = (data && data.correct_answers && data.correct_answers[q.id] !== undefined)
+                    ? data.correct_answers[q.id]
+                    : (userIdx === correctIdx);
+
+                const explanation = (data && data.explanations && data.explanations[q.id] !== undefined)
+                    ? data.explanations[q.id]
+                    : q.explanation;
 
                 const reviewItem = document.createElement('div');
                 reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
