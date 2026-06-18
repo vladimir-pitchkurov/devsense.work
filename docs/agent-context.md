@@ -258,17 +258,17 @@ class MyService {
    - **Темы**: Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor, Interpreter.
    - **Статус**: Завершено.
 
-4. **Антипаттерны проектирования ПО (Software Design Antipatterns)**
-   - **Категория**: `architecture`
-   - **Slug**: `design-antipatterns`
-   - **Темы**: Spaghetti Code, God Object, Golden Hammer, Premature Optimization, Copy-Paste Programming, Cargo Cult.
-   - **Статус**: Запланировано.
-
-5. **Архитектурные паттерны в микросервисах (Microservice Architectural Patterns)**
+4. **Архитектурные паттерны в микросервисах (Microservice Architectural Patterns)**
    - **Категория**: `microservices`
    - **Slug**: `microservice-patterns`
    - **Темы**: Saga Pattern, CQRS, Event Sourcing, Circuit Breaker, Service Discovery, Database-per-service.
-   - **Статус**: Запланировано.
+   - **Статус**: Завершено.
+
+5. **Антипаттерны проектирования ПО (Software Design Antipatterns)**
+   - **Категория**: `architecture`
+   - **Slug**: `design-antipatterns`
+   - **Темы**: Spaghetti Code, God Object, Golden Hammer, Premature Optimization, Copy-Paste Programming, Cargo Cult.
+   - **Статус**: Завершено.
 
 6. **Антипаттерны микросервисной архитектуры (Microservice Antipatterns)**
    - **Категория**: `microservices`
