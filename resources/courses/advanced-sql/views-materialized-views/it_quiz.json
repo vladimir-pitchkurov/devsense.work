@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Qual è la differenza principale a livello di memorizzazione dei dati e di esecuzione tra una vista standard e una vista materializzata?",
+    "options": [
+      "Una vista standard è una scorciatoia virtuale per una query che non memorizza dati fisici, mentre una vista materializzata salva fisicamente i risultati della query sul disco e deve essere aggiornata.",
+      "Una vista standard memorizza i dati in buffer RAM temporanei, mentre una vista materializzata scrive i dati in un tablespace permanente su disco.",
+      "Una vista materializzata può fare riferimento solo a una singola tabella di base, mentre a una vista standard è consentito unire più tabelle.",
+      "Le viste standard vengono compilate in formato binario al momento della creazione, mentre le viste materializzate vengono interpretate dinamicamente a runtime."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una vista standard è puramente una tabella virtuale che rappresenta una query salvata; ogni volta che si seleziona da essa, il database esegue la query. Una vista materializzata memorizza fisicamente nella cache i risultati della query in una struttura simile a una tabella su disco, offrendo prestazioni di lettura molto più veloci ma richiedendo aggiornamenti manuali o pianificati (refresh) per rimanere aggiornata.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, qual è il prerequisito fondamentale per eseguire correttamente l'istruzione `REFRESH MATERIALIZED VIEW CONCURRENTLY`?",
+    "options": [
+      "La vista materializzata deve avere almeno un indice univoco definito sulle sue colonne.",
+      "La query sottostante non deve contenere alcuna funzione di aggregazione o sottoquery.",
+      "L'utente del database che esegue l'aggiornamento deve disporre dei privilegi amministrativi di superuser.",
+      "La vista materializzata deve essere stata creata utilizzando la clausola `WITH CHECK OPTION`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Per aggiornare una vista materializzata in modo concorrente (senza bloccare le query select concorrenti), PostgreSQL richiede la presenza di un indice univoco sulla vista materializzata stessa. Questo indice univoco viene utilizzato per determinare quali righe sono cambiate, in modo che gli aggiornamenti possano essere applicati sul posto.",
+    "points": 10
+  },
+  {
+    "question_text": "Poiché MySQL non supporta nativamente le viste materializzate, qual è una comune soluzione alternativa a livello di database per specularne una?",
+    "options": [
+      "Creare una tabella di cache fisica e utilizzare l'Event Scheduler di MySQL (`CREATE EVENT`) per svuotarla e ripopolarla periodicamente.",
+      "Definire una vista standard con l'opzione `ALGORITHM = TEMPTABLE` e una clausola `REFRESH INTERVAL`.",
+      "Creare una vista virtuale e collegarla a una tabella del motore MySQL Memory utilizzando un vincolo di chiave esterna.",
+      "MySQL non può simulare viste materializzate a livello di database; la logica di caching deve essere gestita nel codice dell'applicazione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In MySQL, è possibile simulare una vista materializzata creando una tabella fisica per memorizzare l'output della query nella cache, quindi creando un evento pianificato (`CREATE EVENT`) per eseguire periodicamente uno script che svuota (truncate) la tabella di cache e inserisce i nuovi record della query di origine.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è lo scopo di aggiungere la clausola `WITH CHECK OPTION` alla definizione di una vista aggiornabile?",
+    "options": [
+      "Impedisce agli utenti di inserire o aggiornare righe che non soddisfano la condizione di filtraggio (`WHERE`) della vista.",
+      "Costringe il database a eseguire controlli di integrità dello schema sulle tabelle sottostanti prima della scrittura.",
+      "Verifica che l'utente corrente del database disponga dei privilegi di lettura e scrittura su tutte le colonne a cui si fa riferimento.",
+      "Garantisce che le transazioni concorrenti che modificano la vista vengano eseguite utilizzando il livello di isolamento SERIALIZABLE."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La clausola `WITH CHECK OPTION` garantisce che qualsiasi riga aggiunta o modificata tramite la vista sia conforme alla clausola `WHERE` della vista stessa. Senza di essa, un utente potrebbe modificare una riga impostando valori che la farebbero sparire dai risultati della vista, il che può causare problemi di coerenza.",
+    "points": 10
+  }
+]

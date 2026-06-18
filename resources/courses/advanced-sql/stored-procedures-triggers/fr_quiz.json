@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la différence fonctionnelle critique en matière de gestion des transactions entre une procédure stockée et une fonction définie par l'utilisateur (UDF) concernant la gestion des transactions ?",
+    "options": [
+      "Une procédure stockée peut exécuter des commandes `COMMIT` ou `ROLLBACK` pour gérer les transactions, alors qu'une UDF ne peut pas contenir d'instructions de contrôle de transaction.",
+      "Une UDF peut ouvrir une nouvelle transaction mais ne peut pas la valider (commit), tandis qu'une procédure stockée n'a aucun accès aux transactions.",
+      "Une UDF s'exécute automatiquement dans son propre bloc de transaction isolé, tandis qu'une procédure stockée partage le bloc de transaction de la connexion cliente.",
+      "Il n'y a aucune différence dans le contrôle des transactions ; les deux prennent en charge exactement les mêmes instructions de transaction dans leur corps."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une différence d'architecture clé est que les procédures stockées prennent en charge le contrôle des transactions (en utilisant `COMMIT` et `ROLLBACK` à l'intérieur du corps de la procédure). Les fonctions définies par l'utilisateur (UDF) sont conçues pour être appelées au sein de requêtes SQL (comme `SELECT`), et les standards SQL interdisent les modifications d'état de transaction pendant l'exécution d'une requête pour éviter les effets de bord, ce qui signifie que les UDF ne peuvent pas exécuter d'instructions de contrôle de transaction.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi le processus de définition d'un déclencheur diffère-t-il syntaxiquement entre PostgreSQL et MySQL ?",
+    "options": [
+      "PostgreSQL nécessite de définir une fonction de déclenchement distincte qui renvoie le type `TRIGGER`, puis de la lier, tandis que MySQL intègre la logique du déclencheur directement en ligne dans l'instruction `CREATE TRIGGER`.",
+      "MySQL nécessite de créer une fonction de déclenchement distincte avant de la lier à une table, tandis que PostgreSQL permet des corps de déclencheurs en ligne.",
+      "PostgreSQL ne prend pas en charge les déclencheurs au niveau de la ligne (`FOR EACH ROW`) et ne prend en charge que les déclencheurs au niveau de l'instruction, contrairement à MySQL.",
+      "Les déclencheurs MySQL peuvent être écrits dans plusieurs langages de programmation (par exemple Python), tandis que les déclencheurs PostgreSQL sont strictement limités au PL/pgSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans PostgreSQL, un déclencheur nécessite une fonction d'aide définie avec un type de retour `TRIGGER`. Vous créez ensuite le déclencheur et le liez à l'aide de `EXECUTE FUNCTION fonction_declencheur()`. Dans MySQL, la logique du déclencheur est écrite en ligne directement dans l'instruction `CREATE TRIGGER`, et des fonctions distinctes ne sont pas utilisées.",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il dans PostgreSQL 11+ si une procédure stockée contenant une instruction `COMMIT` est appelée depuis l'intérieur d'un bloc de transaction actif (par exemple, à l'intérieur de `BEGIN; CALL ma_procedure();`) ?",
+    "options": [
+      "Le moteur de requête lèvera une erreur d'exécution, empêchant l'instruction de contrôle de transaction de s'exécuter.",
+      "La procédure validera la transaction jusqu'à ce point et démarrera un nouveau bloc de transaction silencieusement.",
+      "L'instruction `COMMIT` à l'intérieur de la procédure sera silencieusement ignorée, laissant le contrôle de la transaction au client.",
+      "PostgreSQL divisera automatiquement la transaction, validant les modifications de la procédure tout en maintenant la transaction externe active."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans PostgreSQL, une procédure stockée ne peut pas valider ou annuler des transactions si elle est appelée au sein d'un bloc de transaction actif (tel qu'un bloc `BEGIN ... COMMIT` démarré par le client). Cela déclenchera une erreur d'exécution (`invalid transaction termination`). Les procédures ne peuvent contrôler les transactions que si elles sont appelées en mode autocommit.",
+    "points": 10
+  },
+  {
+    "question_text": "Pourquoi les déclencheurs au niveau de la ligne (`FOR EACH ROW`) peuvent-ils introduire une grave surcharge de performances lors des mises à jour en masse ?",
+    "options": [
+      "Parce que le moteur de base de données doit basculer à plusieurs reprises les contextes d'exécution entre le moteur SQL et l'interpréteur procédural pour chaque ligne affectée.",
+      "Parce que les déclencheurs au niveau de la ligne obligent la base de données à transformer immédiatement tous les verrous de ligne en verrous de table exclusifs.",
+      "Parce que la base de données est obligée d'écrire une entrée WAL (Write-Ahead Log) distincte et de la vider sur le disque pour chaque appel de ligne.",
+      "Parce que les pseudo-enregistrements `OLD` et `NEW` sont enregistrés sous forme de fichiers temporaires physiques sur le disque au lieu d'être conservés en RAM."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Les déclencheurs au niveau de la ligne s'exécutent une fois par ligne affectée. Lors d'une mise à jour en masse affectant des millions de lignes, la base de données doit basculer de manière répétée entre le contexte d'exécution SQL basé sur les ensembles et le contexte d'exécution du langage procédural. Cette surcharge de changement de contexte transforme une opération en masse rapide en un processus séquentiel ligne par ligne très lent.",
+    "points": 10
+  }
+]

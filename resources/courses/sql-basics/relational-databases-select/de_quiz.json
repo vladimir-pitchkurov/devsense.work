@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was davon gilt beim Schreiben von SQL für Produktionsanwendungen als Datenbankabfrage-Anti-Pattern?",
+    "options": [
+      "Die Verwendung von `SELECT *`, um alle Spalten einer Tabelle abzufragen.",
+      "Die Angabe expliziter Spaltennamen in der `SELECT`-Klausel.",
+      "Das Umbenennen von Spalten in der Ausgabe mithilfe des `AS`-Schlüsselworts.",
+      "Das Filtern von Datensätzen mit einer `WHERE`-Klausel anstatt der Abfrage aller Zeilen."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Verwendung von `SELECT *` in der Produktion ist ein Anti-Pattern. Sie zwingt die Datenbank zu unnötigen Festplatten-I/O-Operationen, erhöht die Netzwerk-Payload-Größe und kann den Anwendungscode beschädigen, wenn Spalten im Schema hinzugefügt oder entfernt werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert in PostgreSQL, wenn Sie doppelte Anführungszeichen (`\"`) anstelle von einfachen Anführungszeichen (`'`) für einen Textwert verwenden, wie beispielsweise: `WHERE username = \"alice\"`?",
+    "options": [
+      "PostgreSQL behandelt `\"alice\"` als Spaltenbezeichner und wirft den Fehler \"column 'alice' does not exist\".",
+      "PostgreSQL parst es problemlos als String-Literal, da doppelte und einfache Anführungszeichen austauschbar sind.",
+      "Die Datenbank konvertiert es automatisch in ein String-Literal, gibt aber eine Warnung aus (Deprecation Warning).",
+      "Die Abfrage wird ausgeführt, liefert jedoch keine Datensätze zurück, da doppelte Anführungszeichen ein Null-Constraint implizieren."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL werden einfache Anführungszeichen (`'`) für String-Literale verwendet, während doppelte Anführungszeichen (`\"`) für Bezeichner (wie Tabellen- oder Spaltennamen) reserviert sind. Der Ausdruck `\"alice\"` weist PostgreSQL an, nach einer Spalte namens `alice` zu suchen.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich PostgreSQL und MySQL bei der Verwendung des `LIKE`-Operators für den Musterabgleich?",
+    "options": [
+      "Das `LIKE` von PostgreSQL unterscheidet zwischen Groß- und Kleinschreibung (erfordert `ILIKE` für Case-Insensitivity), während das `LIKE` von MySQL bei typischen Kollationen standardmäßig case-insensitiv ist.",
+      "Das `LIKE` von MySQL unterscheidet zwischen Groß- und Kleinschreibung, während das `LIKE` von PostgreSQL standardmäßig case-insensitiv ist.",
+      "Beide Datenbanken behandeln `LIKE` als case-sensitiv und bieten keine case-insensitiven Alternativen an.",
+      "PostgreSQL unterstützt `LIKE` und `ILIKE`, während MySQL nur `ILIKE` für case-insensitive Abfragen unterstützt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL implementiert ein case-sensitives `LIKE` und bietet `ILIKE` für case-insensitive Suchen an. Das `LIKE` von MySQL ist unter standardmäßigen case-insensitiven Kollationen (wie `utf8mb4_0900_ai_ci`) standardmäßig unempfindlich gegenüber Groß-/Kleinschreibung.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist standardmäßig die übliche Methode zur Verkettung von Zeichenketten in PostgreSQL im Vergleich zu MySQL?",
+    "options": [
+      "PostgreSQL verwendet den `||`-Operator, während MySQL die Funktion `CONCAT()` verwendet.",
+      "PostgreSQL verwendet die Funktion `CONCAT()`, während MySQL den `||`-Operator verwendet.",
+      "Beide Engines verwenden den `+`-Operator zum Verbinden von Zeichenketten.",
+      "Beide Engines verwenden die Funktion `CONCAT()`, und der `||`-Operator wird in beiden überhaupt nicht unterstützt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL folgt dem ANSI-SQL-Standard und verwendet den `||`-Operator für die String-Verkettung. MySQL behandelt `||` standardmäßig als logischen `OR`-Operator und erfordert die Funktion `CONCAT()`, es sei denn, der SQL-Modus `PIPES_AS_CONCAT` ist aktiv.",
+    "points": 10
+  }
+]

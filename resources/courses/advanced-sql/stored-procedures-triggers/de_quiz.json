@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was ist bezüglich der Transaktionsverwaltung ein kritischer funktionaler Unterschied zwischen einer Stored Procedure und einer User-Defined Function (UDF)?",
+    "options": [
+      "Eine Stored Procedure kann die Befehle `COMMIT` oder `ROLLBACK` ausführen, um Transaktionen zu verwalten, während eine UDF keine Transaktionskontrollanweisungen enthalten darf.",
+      "Eine UDF kann eine neue Transaktion öffnen, diese jedoch nicht committen, während eine Stored Procedure überhaupt keinen Transaktionszugriff hat.",
+      "Eine UDF läuft automatisch in ihrem eigenen isolierten Transaktionsblock, während eine Stored Procedure den Transaktionsblock der Client-Verbindung teilt.",
+      "Es gibt keinen Unterschied in der Transaktionskontrolle; beide unterstützen exakt dieselben Transaktionsanweisungen in ihrem Rumpf."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ein wesentlicher architektonischer Unterschied besteht darin, dass gespeicherte Prozeduren die Transaktionskontrolle (unter Verwendung von `COMMIT` und `ROLLBACK` im Prozedurrumpf) unterstützen. User-Defined Functions (UDFs) sind so konzipiert, dass sie innerhalb von SQL-Abfragen (wie `SELECT`) aufgerufen werden. Die SQL-Standards verbieten Änderungen des Transaktionszustands während der Abfrageausführung, um Nebenwirkungen zu verhindern, weshalb UDFs keine Transaktionskontrollanweisungen ausführen können.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheidet sich der Trigger-Definitionsprozess syntaktisch zwischen PostgreSQL und MySQL?",
+    "options": [
+      "PostgreSQL erfordert die Definition einer separaten Trigger-Funktion, die den Typ `TRIGGER` zurückgibt, und deren anschließende Bindung, während MySQL die Trigger-Logik direkt inline in der `CREATE TRIGGER`-Anweisung einbettet.",
+      "MySQL erfordert das Erstellen einer separaten Trigger-Funktion vor deren Bindung an eine Tabelle, während PostgreSQL Inline-Trigger-Rümpfe erlaubt.",
+      "PostgreSQL unterstützt keine Row-Level-Trigger (`FOR EACH ROW`) und unterstützt im Gegensatz zu MySQL nur Statement-Level-Trigger.",
+      "MySQL-Trigger können in mehreren Programmiersprachen geschrieben werden (z. B. Python), während PostgreSQL-Trigger streng auf PL/pgSQL beschränkt sind."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL benötigt ein Trigger eine Hilfsfunktion, die mit dem Rückgabetyp `TRIGGER` definiert ist. Anschließend erstellen Sie den Trigger und binden ihn mit `EXECUTE FUNCTION trigger_funktion()`. In MySQL wird die Trigger-Logik direkt inline in der `CREATE TRIGGER`-Anweisung geschrieben, und es werden keine separaten Funktionen verwendet.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert in PostgreSQL 11+, wenn eine gespeicherte Prozedur mit einer `COMMIT`-Anweisung aus einem aktiven Transaktionsblock heraus aufgerufen wird (z. B. in `BEGIN; CALL my_procedure();`)?",
+    "options": [
+      "Die Query-Engine wirft einen Laufzeitfehler, wodurch die Ausführung der Transaktionskontrollanweisung verhindert wird.",
+      "Die Prozedur committet die Transaktion bis zu diesem Punkt und startet geräuschlos einen neuen Transaktionsblock.",
+      "Die `COMMIT`-Anweisung innerhalb der Prozedur wird stillschweigend ignoriert, sodass die Transaktionskontrolle beim Client verbleibt.",
+      "PostgreSQL teilt die Transaktion automatisch auf, indem es die Änderungen der Prozedur committet, während die äußere Transaktion aktiv bleibt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL kann eine gespeicherte Prozedur keine Transaktionen committen oder zurückrollen, wenn sie innerhalb eines aktiven Transaktionsblocks aufgerufen wird (wie einem vom Client gestarteten `BEGIN ... COMMIT`-Block). Dies löst einen Laufzeitfehler aus (`invalid transaction termination`). Prozeduren können Transaktionen nur steuern, wenn sie im Autocommit-Modus aufgerufen werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum können Row-Level-Trigger (`FOR EACH ROW`) bei Massen-Aktualisierungen (Bulk Updates) einen schwerwiegenden Performance-Overhead verursachen?",
+    "options": [
+      "Weil die Datenbank-Engine für jede einzelne betroffene Zeile wiederholt den Ausführungskontext zwischen der SQL-Engine und dem prozeduralen Interpreter wechseln muss.",
+      "Weil Row-Level-Trigger die Datenbank zwingen, alle Zeilensperren sofort zu exklusiven Tabellensperren hochzustufen.",
+      "Weil die Datenbank gezwungen ist, für jeden Zeilenaufruf einen separaten WAL-Eintrag (Write-Ahead Log) zu schreiben und auf die Festplatte zu übertragen.",
+      "Weil die Pseudo-Datensätze `OLD` und `NEW` als physische temporäre Dateien auf der Festplatte gespeichert werden, anstatt im RAM gehalten zu werden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Row-Level-Trigger laufen einmal pro betroffener Zeile. Bei einem Bulk Update, das Millionen von Zeilen betrifft, muss die Datenbank wiederholt zwischen dem mengenbasierten SQL-Ausführungskontext und dem Ausführungskontext der prozeduralen Programmiersprache wechseln. Dieser Kontextwechsel-Overhead verwandelt eine schnelle Massenoperation in einen langsamen, sequentiellen Zeile-für-Zeile-Prozess.",
+    "points": 10
+  }
+]

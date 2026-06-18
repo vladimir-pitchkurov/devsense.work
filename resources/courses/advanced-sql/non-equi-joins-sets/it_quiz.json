@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quale dei seguenti esempi di query è classificato come non-equi join?",
+    "options": [
+      "SELECT * FROM products p JOIN shipping_rates s ON p.weight BETWEEN s.min_weight AND s.max_weight",
+      "SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id",
+      "SELECT * FROM customer_orders o JOIN clients c ON o.client_id = c.id AND c.status = 'active'",
+      "SELECT * FROM sales_2025 s UNION ALL SELECT * FROM sales_2026 s2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un non-equi join è definito come un join che utilizza operatori di confronto diversi dal segno di uguale (`=`). Il join che utilizza `BETWEEN` si serve di condizioni di disuguaglianza (`>=` e `<=`), risultando un non-equi join. Gli altri sono equi-join standard o operazioni sugli insiemi.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo le prestazioni di esecuzione di `UNION` si differenziano da quelle di `UNION ALL`?",
+    "options": [
+      "`UNION` è più lento perché il database deve eseguire operazioni di ordinamento o hashing per identificare e rimuovere i record duplicati dal set combinato.",
+      "`UNION ALL` è più lento perché deve convalidare i vincoli di integrità della chiave esterna su entrambi i set di dati.",
+      "Entrambi gli operatori offrono le stesse prestazioni poiché i moderni ottimizzatori di query li integrano inline utilizzando lo stesso piano di esecuzione.",
+      "`UNION` è più veloce perché riduce il volume complessivo di dati che devono essere trasferiti all'applicazione client."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`UNION` è intrinsecamente più lento rispetto a `UNION ALL` perché esegue una fase di rimozione dei duplicati. Per ottenere questo risultato, il motore di query deve ordinare i risultati combinati o creare una tabella hash temporanea. `UNION ALL` si limita a concatenare i set di dati senza verificare la presenza di duplicati, richiedendo un'elaborazione minima.",
+    "points": 10
+  },
+  {
+    "question_text": "Se utilizzi MySQL 5.7 o una versione precedente di MySQL 8.0 che non supporta l'operatore di insieme `EXCEPT`, come puoi simulare `Query_A EXCEPT Query_B`?",
+    "options": [
+      "Utilizzando un `LEFT JOIN` sulla chiave corrispondente e filtrando con una condizione `WHERE b.key IS NULL`.",
+      "Utilizzando un `INNER JOIN` con un operatore di disuguaglianza (`A.key != B.key`).",
+      "Utilizzando un `CROSS JOIN` e filtrando le righe corrispondenti con una clausola `HAVING COUNT(*) = 0`.",
+      "Le versioni precedenti di MySQL non possono eseguire questa logica e richiedono l'esecuzione di più query nel codice dell'applicazione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una query con `EXCEPT` restituisce tutte le righe univoche della prima query che non sono presenti nella seconda query. Questo comportamento può essere simulato in modo efficiente in qualsiasi database SQL (comprese le versioni precedenti di MySQL) utilizzando un `LEFT JOIN` combinato con un filtro `WHERE seconda_tabella.key IS NULL`, che identifica i record della tabella A che non hanno alcun record corrispondente nella tabella B.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL, se la Query 1 restituisce le righe `[A, A, B]` e la Query 2 restituisce `[A, B, B]`, qual è l'esatto output di `Query 1 EXCEPT ALL Query 2`?",
+    "options": [
+      "Una singola riga: `[A]`",
+      "Due righe: `[A, A]`",
+      "Un set di risultati vuoto",
+      "Tre righe: `[A, B, B]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'operatore `EXCEPT ALL` calcola la differenza di cardinalità per ciascun valore di riga. Se il valore X compare N volte nella prima query e M volte nella seconda, il risultato conterrà X esattamente `N - M` volte (solo se `N - M > 0`). In questo caso, il valore 'A' compare `2 - 1 = 1` volta. Il valore 'B' compare `1 - 2 = -1` (0 volte). Di conseguenza, l'output finale conterrà una singola riga: `[A]`.",
+    "points": 10
+  }
+]

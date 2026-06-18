@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la principale différence en matière de stockage de données et d'exécution entre une vue standard et une vue matérialisée ?",
+    "options": [
+      "Une vue standard est un raccourci de requête virtuel qui ne stocke aucune donnée physique, tandis qu'une vue matérialisée enregistre physiquement les résultats de la requête sur le disque et doit être rafraîchie.",
+      "Une vue standard stocke les données dans des tampons de RAM temporaires, tandis qu'une vue matérialisée écrit les données dans un espace de table permanent sur le disque.",
+      "Une vue matérialisée ne peut faire référence qu'à une seule table de base, tandis qu'une vue standard est autorisée à joindre plusieurs tables.",
+      "Les vues standards sont compilées au format binaire lors de leur création, tandis que les vues matérialisées sont interprétées de manière dynamique lors de l'exécution."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Une vue standard est purement une table virtuelle représentant une requête enregistrée ; chaque fois que vous y faites appel, la base de données exécute la requête. Une vue matérialisée met physiquement en cache les résultats de la requête dans une structure similaire à une table sur le disque, offrant des performances de lecture beaucoup plus rapides mais nécessitant des mises à jour (rafraîchissements) manuelles ou planifiées pour rester à jour.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans PostgreSQL, quelle est la condition préalable stricte pour exécuter correctement l'instruction `REFRESH MATERIALIZED VIEW CONCURRENTLY` ?",
+    "options": [
+      "La vue matérialisée doit avoir au moins un index unique défini sur ses colonnes.",
+      "La requête sous-jacente ne doit contenir aucune fonction d'agrégation ou sous-requête.",
+      "L'utilisateur de la base de données exécutant le rafraîchissement doit avoir des privilèges d'administrateur superutilisateur.",
+      "La vue matérialisée doit avoir été créée en utilisant la clause `WITH CHECK OPTION`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Pour rafraîchir une vue matérialisée de manière concurrente (sans bloquer les requêtes de sélection concurrentes), PostgreSQL requiert un index unique sur la vue matérialisée. Cet index unique est utilisé pour déterminer quelles lignes ont changé afin que les mises à jour puissent être appliquées sur place.",
+    "points": 10
+  },
+  {
+    "question_text": "Puisque MySQL ne prend pas en charge nativement les vues matérialisées, quelle est la solution de contournement courante au niveau de la base de données pour en simuler une ?",
+    "options": [
+      "Créer une table de cache physique et utiliser le planificateur d'événements MySQL (`CREATE EVENT`) pour la vider et la repeupler périodiquement.",
+      "Définir une vue standard avec l'option `ALGORITHM = TEMPTABLE` et une clause `REFRESH INTERVAL`.",
+      "Créer une vue virtuelle et la lier à une table du moteur MySQL Memory à l'aide d'une contrainte de clé étrangère.",
+      "MySQL ne peut pas simuler de vues matérialisées au niveau de la base de données ; la logique de mise en cache doit être gérée dans le code de l'application."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans MySQL, vous pouvez simuler une vue matérialisée en créant une table physique pour mettre en cache le résultat de la requête, puis en créant un événement planifié (`CREATE EVENT`) pour exécuter périodiquement un script qui vide la table de cache et insère les nouveaux enregistrements de la requête source.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel est le but d'ajouter la clause `WITH CHECK OPTION` à la définition d'une vue modifiable ?",
+    "options": [
+      "Elle empêche les utilisateurs d'insérer ou de mettre à jour des lignes qui ne satisferaient pas à la condition de filtrage (`WHERE`) de la vue.",
+      "Elle oblige la base de données à effectuer des vérifications d'intégrité de schéma sur les tables sous-jacentes avant l'écriture.",
+      "Elle vérifie que l'utilisateur actuel de la base de données dispose de privilèges de lecture et d'écriture sur toutes les colonnes référencées.",
+      "Elle garantit que les transactions concurrentes modifiant la vue sont exécutées en utilisant le niveau d'isolation SERIALIZABLE."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La clause `WITH CHECK OPTION` garantit que toute ligne ajoutée ou mise à jour via la vue est conforme à la clause `WHERE` de la vue. Sans cela, un utilisateur pourrait mettre à jour une ligne avec des valeurs qui la feraient disparaître des résultats de la vue, ce qui peut entraîner des problèmes de cohérence.",
+    "points": 10
+  }
+]

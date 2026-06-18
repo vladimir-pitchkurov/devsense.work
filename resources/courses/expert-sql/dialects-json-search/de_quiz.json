@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was ist der wesentliche Speicher- und Performance-Unterschied zwischen den PostgreSQL-Datentypen json und jsonb?",
+    "options": [
+      "Der Typ json wird mittels LZ4 komprimiert, während jsonb unkomprimiert ist.",
+      "Der Typ json speichert eine reine Textkopie des JSON und erfordert ein Parsen bei jedem Lesevorgang; jsonb speichert ein geparstes Binärformat, das schnellere Abfragen ermöglicht und Indizierung unterstützt.",
+      "Der Typ jsonb erlaubt nur das Speichern von Arrays, während json beliebige verschachtelte Key-Value-Objekte unterstützt.",
+      "PostgreSQL hat den Typ json in Version 12 abgekündigt, sodass jsonb der einzige funktionsfähige Datentyp ist."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Der Typ `json` speichert Daten im Klartext. Dies bewahrt Leerzeichen und Formatierungen, erfordert jedoch das Parsen des Textes bei jedem Abruf. Der Typ `jsonb` zerlegt das Dokument in eine binäre Darstellung, sortiert Schlüssel und entfernt Leerzeichen, was direkte Abfragen und GIN-Indizierung ermöglicht.",
+    "points": 10
+  },
+  {
+    "question_text": "Welches Paar von Operatoren/Funktionen wird jeweils in PostgreSQL und MySQL verwendet, um Containment-Suchen durchzuführen (Prüfung, ob JSON-Dokument A das JSON-Dokument B enthält)?",
+    "options": [
+      "PostgreSQL: `->` | MySQL: `JSON_EXTRACT()`",
+      "PostgreSQL: `?` | MySQL: `MEMBER OF`",
+      "PostgreSQL: `@>` | MySQL: `JSON_CONTAINS()`",
+      "PostgreSQL: `#>` | MySQL: `JSON_SEARCH()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In PostgreSQL wird der Operator `@>` für Enthaltensein-Prüfungen (Containment) auf `jsonb`-Feldern verwendet. In MySQL prüft die Funktion `JSON_CONTAINS(target, candidate)`, ob das Ziel-JSON-Dokument den Kandidatenwert oder das Kandidatendokument enthält.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist in MySQL die Standardmethode, um einen bestimmten skalaren Schlüssel zu indizieren, der in einer JSON-Spalte verschachtelt ist (z. B. `$.status`), unter Verwendung von B-Tree-Indizes?",
+    "options": [
+      "Erstellen Sie einen funktionalen Index direkt auf der Spalte mit `CREATE INDEX ... ON my_table((data->'$.status'))` oder erstellen Sie eine virtuelle generierte Spalte, die den Schlüssel extrahiert, und indizieren Sie diese.",
+      "MySQL generiert bei der Spaltenerstellung automatisch B-Tree-Indexknoten für alle JSON-Schlüssel.",
+      "Konfigurieren Sie `SET GLOBAL json_index_mode = BTREE`, bevor Sie Abfragen ausführen.",
+      "Es ist unmöglich; MySQL unterstützt die Indizierung von JSON nur über Volltext-Suchen."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL unterstützt das direkte Indizieren von JSON-Spalten mit B-Tree-Indizes nicht. Sie müssen entweder eine virtuelle generierte Spalte erstellen, die den verschachtelten Schlüssel extrahiert (z. B. mittels `data->>'$.status'`), und diese Spalte indizieren, oder einen funktionalen B-Tree-Index erstellen, der direkt auf den Pfadausdruck verweist.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie verhalten sich die beiden GIN-Index-Klassen von PostgreSQL (`jsonb_ops` und `jsonb_path_ops`) beim Indizieren von jsonb-Spalten im Vergleich?",
+    "options": [
+      "Die Klasse `jsonb_ops` ist viel kleiner als `jsonb_path_ops`, da sie nur Schlüssel indiziert.",
+      "Die Klasse `jsonb_path_ops` ist der Standard und unterstützt sowohl Schlüssel-Existenz- als auch Containment-Abfragen.",
+      "Die Klasse `jsonb_path_ops` erstellt kleinere, schnellere Indizes, die speziell für Containment-Abfragen (`@>`) optimiert sind, unterstützt jedoch keine Schlüssel-Existenz-Operatoren wie `?`.",
+      "Die Klasse `jsonb_ops` ist abgekündigt und Benutzer sollten nur noch `jsonb_path_ops` verwenden."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Die Standard-GIN-Operatorklasse `jsonb_ops` indiziert alle Schlüssel, Werte und Pfade. Die alternative Klasse `jsonb_path_ops` indiziert nur Pfad-Wert-Paare, was zu einer geringeren Indexgröße und einer schnelleren Suchleistung für Containment-Abfragen (`@>`) führt, aber sie kann keine Abfragen zur Existenz von Schlüsseln (wie `?`) beantworten.",
+    "points": 10
+  }
+]

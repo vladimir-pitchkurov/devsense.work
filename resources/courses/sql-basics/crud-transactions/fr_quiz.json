@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la conséquence de l'exécution d'une instruction `UPDATE` ou `DELETE` sans clause `WHERE` ?",
+    "options": [
+      "La requête va s'exécuter et appliquer les modifications ou la suppression à toutes les lignes de la table.",
+      "Le moteur de base de données rejettera la requête et lèvera une erreur de syntaxe/sécurité.",
+      "La requête s'exécutera mais affectera zéro ligne pour éviter une perte accidentelle de données.",
+      "La base de données lancera automatiquement une annulation (rollback) et fermera la connexion."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Si aucune clause `WHERE` n'est fournie dans une instruction `UPDATE` ou `DELETE`, le moteur SQL appliquera la modification ou la suppression à absolument tous les enregistrements de la table cible.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans le modèle de transaction ACID, que garantit l'Atomicité ?",
+    "options": [
+      "Soit toutes les opérations du bloc de transaction réussissent, soit la transaction entière est annulée (tout ou rien).",
+      "La base de données transformera automatiquement toutes les colonnes textuelles en valeurs ASCII atomiques.",
+      "Les transactions s'exécutant simultanément s'exécuteront de manière isolée et ne se bloqueront jamais les unes les autres.",
+      "Une fois qu'une transaction est validée, les modifications sont garanties de survivre aux pannes du système."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'atomicité garantit qu'une transaction est traitée comme une seule unité indivisible. Si une partie de la transaction échoue, la transaction entière est annulée, laissant l'état de la base de données inchangé.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi MySQL et PostgreSQL diffèrent-ils lors de l'exécution d'instructions DDL (par exemple `ALTER TABLE`, `DROP TABLE`) à l'intérieur d'un bloc de transaction ?",
+    "options": [
+      "PostgreSQL prend en charge le DDL transactionnel et peut annuler les modifications de structure ; MySQL ne le prend pas en charge et déclenche une validation implicite (implicit commit).",
+      "MySQL prend en charge le DDL transactionnel et peut annuler les modifications de structure ; PostgreSQL ne le prend pas en charge et déclenche une validation implicite.",
+      "Les deux moteurs prennent en charge l'annulation complète de la transaction des modifications de schéma (DDL).",
+      "Aucun des deux moteurs ne permet d'exécuter des instructions DDL à l'intérieur d'un bloc de transaction."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL prend pleinement en charge le DDL transactionnel, permettant d'annuler les modifications de table. MySQL ne le prend pas en charge ; l'exécution de DDL à l'intérieur d'une transaction provoque une validation implicite automatique, ce qui signifie que la transaction ne peut plus être annulée.",
+    "points": 10
+  },
+  {
+    "question_text": "Parmi les paires de syntaxes suivantes, laquelle représente la manière correcte d'effectuer un « upsert » (insertion ou mise à jour) dans MySQL et PostgreSQL ?",
+    "options": [
+      "MySQL utilise `ON DUPLICATE KEY UPDATE` et PostgreSQL utilise `ON CONFLICT (...) DO UPDATE`.",
+      "MySQL utilise `ON CONFLICT (...) DO UPDATE` et PostgreSQL utilise `ON DUPLICATE KEY UPDATE`.",
+      "Les deux moteurs utilisent la syntaxe standard `UPSERT INTO`.",
+      "Les deux moteurs utilisent l'instruction `INSERT OR REPLACE`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL effectue des upserts en utilisant la clause `ON DUPLICATE KEY UPDATE` à la fin d'une instruction `INSERT`. PostgreSQL utilise `ON CONFLICT (conflict_target) DO UPDATE`.",
+    "points": 10
+  }
+]

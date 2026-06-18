@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Dadas tres filas con valores idénticos que empatan en el primer lugar, ¿qué función de ventana asigna la secuencia de rangos 1, 1, 1, 4 a las filas de la partición?",
+    "options": [
+      "RANK()",
+      "DENSE_RANK()",
+      "ROW_NUMBER()",
+      "NTILE(4)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`RANK()` asigna rangos idénticos a los valores duplicados, pero salta los rangos subsiguientes, dando como resultado `1, 1, 1, 4`. En cambio, `DENSE_RANK()` asignaría `1, 1, 1, 2` (sin saltos) y `ROW_NUMBER()` asignaría `1, 2, 3, 4` (secuencia única).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Por qué la expresión `LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary)` devuelve el salario de la fila actual en lugar del salario máximo del departamento?",
+    "options": [
+      "Porque cuando `ORDER BY` está presente, el marco de ventana predeterminado es `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, lo que restringe el marco a las filas hasta la actual.",
+      "Porque `LAST_VALUE()` requiere que se especifique un orden de clasificación `DESC` en la cláusula `ORDER BY`.",
+      "Porque `LAST_VALUE()` solo se evalúa dentro del alcance de las dos primeras filas de una partición.",
+      "Porque el motor de la base de datos desactiva automáticamente la búsqueda hacia adelante para optimizar el uso de memoria a menos que esté habilitado `LOOKAHEAD`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Cuando se utiliza una cláusula `ORDER BY` dentro de `OVER()`, el marco de ventana predeterminado se establece dinámicamente como `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. Por lo tanto, el 'último valor' en el marco actual es siempre el valor de la fila actual (o sus pares duplicados). Para obtener el último valor real de la partición, el marco debe establecerse explícitamente en `RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (o su equivalente en `ROWS`).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál de las siguientes opciones de sintaxis es válida en PostgreSQL para agregar solo filas específicas dentro de una partición de ventana sin recurrir a una expresión condicional `CASE WHEN`?",
+    "options": [
+      "Utilizar la cláusula `FILTER (WHERE condicion_consulta)` añadida directamente a la función de agregación (por ejemplo, `COUNT(id) FILTER (WHERE salary > 5000) OVER(...)`).",
+      "Especificar una condición `WHERE` directamente dentro de la cláusula `PARTITION BY` (por ejemplo, `PARTITION BY department_id WHERE salary > 5000`).",
+      "Utilizar una sentencia `HAVING` anidada dentro del bloque de definición de ventana `OVER(...)`.",
+      "PostgreSQL no admite la agregación de ventana selectiva de forma nativa y requiere `CASE WHEN` al igual que MySQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL admite la cláusula estándar de SQL `FILTER (WHERE condicion)` para funciones de agregación. Esto permite realizar agregaciones selectivas limpias y legibles dentro de funciones de ventana. MySQL 8.0 no admite esto y requiere escribir una expresión `CASE WHEN` dentro de la función de agregación.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál de las siguientes afirmaciones es verdadera con respecto a las capacidades de exclusión de marcos (como excluir la fila o grupo actual del cálculo del marco de ventana)?",
+    "options": [
+      "PostgreSQL 11+ admite cláusulas de exclusión de marcos como `EXCLUDE CURRENT ROW` y `EXCLUDE GROUP`, mientras que MySQL 8.0 no admite exclusiones de marcos.",
+      "Tanto MySQL 8.0 como PostgreSQL admiten las cláusulas `EXCLUDE` estándar de ANSI en el enmarcado de ventanas.",
+      "MySQL 8.0 admite exclusiones de marcos, pero PostgreSQL no las admite y requiere auto-uniones.",
+      "Ni PostgreSQL ni MySQL admiten la exclusión de marcos; solo está disponible en bases de datos comerciales como Oracle y SQL Server."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL 11+ admite las opciones de `EXCLUDE` de ANSI SQL (`EXCLUDE CURRENT ROW`, `EXCLUDE GROUP`, `EXCLUDE TIES` y `EXCLUDE NO OTHERS`) dentro de la cláusula del marco de ventana. MySQL 8.0 no admite ninguna exclusión de marcos, por lo que deben utilizarse soluciones alternativas (como subconsultas o desplazamientos matemáticos).",
+    "points": 10
+  }
+]

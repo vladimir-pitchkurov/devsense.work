@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Pourquoi la pagination standard par OFFSET (par exemple, LIMIT 10 OFFSET 100000) subit-elle une grave dégradation des performances à mesure que l'offset augmente ?",
+    "options": [
+      "La base de données verrouille l'ensemble des 100 000 lignes en mode partagé, empêchant les écritures concurrentes.",
+      "L'optimiseur de requêtes ignore les index B-Tree lorsqu'une clause OFFSET est présente.",
+      "Le moteur de base de données doit lire et rejeter toutes les 100 000 lignes précédentes pour atteindre le point de départ de la page demandée, ce qui entraîne une utilisation élevée du processeur et des E/S disque.",
+      "La base de données génère une table temporaire massive sur le disque pour chaque demande de page."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La pagination par OFFSET standard oblige le moteur de base de données à parcourir l'index et à lire toutes les lignes jusqu'à la valeur de l'offset, en les ignorant avant de renvoyer la page demandée. Cela rend les temps de réponse proportionnels à la profondeur de la page, ce qui provoque de graves goulots d'étranglement sur les grandes tables.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans MySQL comme dans PostgreSQL, quelle est la condition obligatoire pour définir une clé primaire ou une contrainte d'unicité sur une table partitionnée ?",
+    "options": [
+      "La clé primaire doit être un entier auto-incrémenté de type BIGINT.",
+      "La clé primaire ou la contrainte d'unicité doit inclure toutes les colonnes utilisées dans l'expression de la clé de partition.",
+      "Vous ne pouvez pas définir de clés primaires sur les tables partitionnées ; elles doivent s'appuyer sur des index uniques à la place.",
+      "La colonne de clé de partition ne doit pas faire partie de la clé primaire pour empêcher le verrouillage de la partition."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Pour garantir l'unicité sur l'ensemble de la table sans avoir à analyser chaque partition lors de chaque insertion, les bases de données relationnelles exigent que les colonnes de clé de partition soient incluses dans toutes les contraintes d'unicité et clés primaires. Cela garantit que l'unicité peut être validée localement au sein d'une seule partition.",
+    "points": 10
+  },
+  {
+    "question_text": "Comment la pagination par Keyset (basée sur un curseur) parvient-elle à des performances en O(1), quelle que soit la profondeur de la pagination demandée ?",
+    "options": [
+      "En chargeant l'ensemble du keyset de la table dans le pool de tampons de mémoire partagée de la base de données.",
+      "En utilisant des recherches d'index (index seeks) pour sauter directement au point de départ de la page en se basant sur les valeurs de la dernière ligne de la page précédente (par exemple, WHERE created_at < derniere_valeur_vue).",
+      "En désactivant les vérifications d'isolation des transactions pour toutes les opérations de lecture.",
+      "En convertissant dynamiquement l'index B-Tree en index Hash."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "En filtrant les lignes en fonction des valeurs de la dernière ligne récupérée de la page précédente (keyset), la base de données peut utiliser un index B-Tree pour effectuer une recherche directe (index seek) afin de localiser la ligne de départ de la page, évitant ainsi complètement de scanner les pages qui la précèdent.",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle fonctionnalité, prise en charge par PostgreSQL 9.3+ et MySQL 8.0.14+, vous permet de requêter et paginer efficacement une sous-requête pour chaque ligne de la requête externe (par exemple, pour récupérer les 3 meilleurs produits par catégorie) ?",
+    "options": [
+      "Les CTE récursives",
+      "Les jointures LATERAL (en utilisant la syntaxe INNER JOIN LATERAL ou CROSS APPLY)",
+      "Les fonctions de fenêtrage utilisant PARTITION BY",
+      "Les requêtes UNION ALL basées sur la fusion d'index (Index-Merged)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Une jointure `LATERAL` agit comme une boucle `foreach` en SQL. Elle permet à une sous-requête de faire référence à des colonnes de tables précédentes dans la clause `FROM`. C'est très efficace pour récupérer les N premiers éléments par catégorie, car elle peut effectuer une recherche basée sur un index pour chaque ligne de catégorie.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál de las siguientes consultas de ejemplo se clasifica como una unión no equitativa (non-equi join)?",
+    "options": [
+      "SELECT * FROM products p JOIN shipping_rates s ON p.weight BETWEEN s.min_weight AND s.max_weight",
+      "SELECT * FROM employees e JOIN departments d ON e.dept_id = d.id",
+      "SELECT * FROM customer_orders o JOIN clients c ON o.client_id = c.id AND c.status = 'active'",
+      "SELECT * FROM sales_2025 s UNION ALL SELECT * FROM sales_2026 s2"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una unión no equitativa se define como aquella que utiliza operadores de comparación distintos al signo de igualdad (`=`). La unión que utiliza `BETWEEN` utiliza condiciones de desigualdad (`>=` y `<=`), lo que la convierte en una unión no equitativa. Las demás son uniones equitativas estándar o operaciones de conjuntos.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cómo se compara el rendimiento de ejecución de `UNION` con el de `UNION ALL`?",
+    "options": [
+      "`UNION` es más lento porque la base de datos debe realizar una ordenación o hashing para identificar y eliminar los registros duplicados del conjunto combinado.",
+      "`UNION ALL` es más lento porque debe validar las restricciones de integridad de clave foránea en ambos conjuntos de datos.",
+      "Ambos operadores funcionan de manera idéntica porque los optimizadores de consultas de bases de datos modernos los insertan en línea utilizando el mismo plan de ejecución.",
+      "`UNION` es más rápido porque reduce el volumen total de datos que deben transferirse a la aplicación cliente."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`UNION` es intrínsecamente más lento que `UNION ALL` porque realiza un paso de eliminación de duplicados. Para lograr esto, el motor de consultas tiene que ordenar los resultados combinados o construir una tabla hash temporal. `UNION ALL` simplemente concatena los conjuntos de datos sin verificar si hay duplicados, lo que requiere un procesamiento mínimo.",
+    "points": 10
+  },
+  {
+    "question_text": "Si estás trabajando con MySQL 5.7 o una versión de MySQL 8.0 anterior que no admita el operador de conjunto `EXCEPT`, ¿cómo puedes simular `Consulta_A EXCEPT Consulta_B`?",
+    "options": [
+      "Utilizar un `LEFT JOIN` en la clave coincidente y filtrar mediante una condición `WHERE b.key IS NULL`.",
+      "Utilizar un `INNER JOIN` con un operador de desigualdad (`A.key != B.key`).",
+      "Utilizar un `CROSS JOIN` y filtrar las filas coincidentes mediante una cláusula `HAVING COUNT(*) = 0`.",
+      "Las versiones anteriores de MySQL no pueden realizar esta lógica y requieren la ejecución de múltiples consultas en el código de la aplicación."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una consulta `EXCEPT` devuelve todas las filas únicas de la primera consulta que no están presentes en la segunda consulta. Esto se puede simular de manera eficiente en cualquier base de datos SQL (incluidas las versiones anteriores de MySQL) utilizando un `LEFT JOIN` combinado con un filtro `WHERE tabla_derecha.key IS NULL`, que identifica los registros en la tabla A que no tienen un registro coincidente en la tabla B.",
+    "points": 10
+  },
+  {
+    "question_text": "En PostgreSQL, si la Consulta 1 devuelve las filas `[A, A, B]` y la Consulta 2 devuelve `[A, B, B]`, ¿cuál es el resultado exacto de `Consulta 1 EXCEPT ALL Consulta 2`?",
+    "options": [
+      "Una sola fila: `[A]`",
+      "Dos filas: `[A, A]`",
+      "Un conjunto de resultados vacío",
+      "Tres filas: `[A, B, B]`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "El operador `EXCEPT ALL` calcula la diferencia en la cardinalidad para cada valor de fila. Si el valor X aparece N veces en la primera consulta y M veces en la segunda, el resultado contendrá X exactamente `N - M` veces (solo si `N - M > 0`). Aquí, el valor 'A' aparece `2 - 1 = 1` vez. El valor 'B' aparece `1 - 2 = -1` (0 veces). Por lo tanto, el resultado final contiene una sola fila: `[A]`.",
+    "points": 10
+  }
+]

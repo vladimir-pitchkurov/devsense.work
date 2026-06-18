@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Qual è una differenza funzionale critica tra una Stored Procedure e una Funzione definita dall'utente (UDF) per quanto riguarda la gestione delle transazioni?",
+    "options": [
+      "Una Stored Procedure può eseguire i comandi `COMMIT` o `ROLLBACK` per gestire le transazioni, mentre una UDF non può contenere istruzioni di controllo delle transazioni.",
+      "Una UDF può aprire una nuova transazione ma non può confermarla (commit), mentre una Stored Procedure non ha alcun accesso alle transazioni.",
+      "Una UDF viene eseguita automaticamente in un proprio blocco di transazione isolato, mentre una Stored Procedure condivide il blocco di transazione della connessione client.",
+      "Non c'è alcuna differenza nel controllo delle transazioni; entrambe supportano le stesse identiche istruzioni di transazione all'interno del proprio corpo."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Una differenza architetturale chiave è che le stored procedure supportano il controllo delle transazioni (utilizzando `COMMIT` e `ROLLBACK` all'interno del corpo della procedura). Le funzioni definite dall'utente (UDF) sono progettate per essere richiamate all'interno di query SQL (come `SELECT`), e gli standard SQL vietano le modifiche allo stato della transazione durante l'esecuzione di una query per evitare effetti collaterali, il che significa che le UDF non possono eseguire istruzioni di controllo delle transazioni.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo il processo di definizione di un trigger differisce sintatticamente tra PostgreSQL e MySQL?",
+    "options": [
+      "PostgreSQL richiede la definizione di una funzione trigger separata che restituisca il tipo `TRIGGER` e la sua successiva associazione, mentre MySQL incorpora la logica del trigger direttamente inline all'interno dell'istruzione `CREATE TRIGGER`.",
+      "MySQL richiede la creazione di una funzione trigger separata prima di associarla a una tabella, mentre PostgreSQL consente corpi di trigger inline.",
+      "PostgreSQL non supporta i trigger a livello di riga (`FOR EACH ROW`) e supporta solo i trigger a livello di istruzione, a differenza di MySQL.",
+      "I trigger di MySQL possono essere scritti in più linguaggi di programmazione (ad es., Python), mentre i trigger di PostgreSQL sono rigorosamente limitati a PL/pgSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, un trigger richiede una funzione di supporto definita con un tipo di ritorno `TRIGGER`. Si crea quindi il trigger e lo si associa utilizzando `EXECUTE FUNCTION funzione_trigger()`. In MySQL, la logica del trigger viene scritta inline direttamente all'interno dell'istruzione `CREATE TRIGGER` e non si utilizzano funzioni separate.",
+    "points": 10
+  },
+  {
+    "question_text": "In PostgreSQL 11+, cosa succede se una stored procedure contenente un'istruzione `COMMIT` viene richiamata dall'interno di un blocco di transazione attivo (ad es., all'interno di `BEGIN; CALL mia_procedura();`)?",
+    "options": [
+      "Il motore di query restituirà un errore a runtime, impedendo l'esecuzione dell'istruzione di controllo della transazione.",
+      "La procedura confermerà la transazione fino a quel punto e avvierà un nuovo blocco di transazione in modo silenzioso.",
+      "L'istruzione `COMMIT` all'interno della procedura verrà silenziosamente ignorata, lasciando il controllo della transazione al client.",
+      "PostgreSQL suddividerà automaticamente la transazione, confermando le modifiche della procedura e mantenendo attiva la transazione esterna."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In PostgreSQL, una stored procedure non può confermare o annullare le transazioni se viene chiamata all'interno di un blocco di transazione attivo (como un blocco `BEGIN ... COMMIT` avviato dal client). In caso contrario, verrà generato un errore a runtime (`invalid transaction termination`). Le procedure possono controllare le transazioni solo se richiamate in modalità autocommit.",
+    "points": 10
+  },
+  {
+    "question_text": "Perché i trigger a livello di riga (`FOR EACH ROW`) possono introdurre un grave sovraccarico di prestazioni durante gli aggiornamenti di massa?",
+    "options": [
+      "Perché il motore di database deve cambiare ripetutamente i contesti di esecuzione tra il motore SQL e l'interprete procedurale per ogni singola riga interessata.",
+      "Perché i trigger a livello di riga costringono il database a convertire immediatamente tutti i lock di riga in lock di tabella esclusivi.",
+      "Perché il database è costretto a scrivere una voce WAL (Write-Ahead Log) separata e a salvarla sul disco per ogni invocazione di riga.",
+      "Perché gli pseudo-record `OLD` e `NEW` vengono salvati come file temporanei fisici sul disco invece di essere mantenuti in RAM."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "I trigger a livello di riga vengono eseguiti una volta per riga interessata. In un aggiornamento di massa che interessa milioni di righe, il database deve cambiare ripetutamente contesto tra il motore SQL (basato su set) e l'interprete procedurale. Questo switch di contesto trasforma una veloce operazione di massa in un processo sequenziale riga per riga molto lento.",
+    "points": 10
+  }
+]

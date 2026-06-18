@@ -38,6 +38,30 @@ class CourseSeeder extends Seeder
                         'title' => 'Основы SQL',
                         'description' => 'Освойте реляционные базы данных, синтаксис SQL, фильтрацию, сортировку, группировки, JOIN и базовые CRUD операции с транзакциями.'
                     ],
+                    'ua' => [
+                        'title' => 'Основи SQL',
+                        'description' => 'Освойте реляційні бази даних, синтаксис SQL, фільтрацію, сортування, групування, JOIN та базові операції CRUD з транзакціями.'
+                    ],
+                    'bg' => [
+                        'title' => 'Основи на SQL',
+                        'description' => 'Овладейте релационните бази данни, синтаксиса на SQL, филтрирането, сортирането, групирането, JOIN и основните CRUD операции с транзакции.'
+                    ],
+                    'de' => [
+                        'title' => 'SQL-Grundlagen',
+                        'description' => 'Meistern Sie relationale Datenbanken, SQL-Syntax, Filtern, Sortieren, Gruppieren, JOINs und grundlegende CRUD-Operationen mit Transaktionen.'
+                    ],
+                    'fr' => [
+                        'title' => 'Les bases du SQL',
+                        'description' => 'Maîtrisez les bases de données relationnelles, la syntaxe SQL, le filtrage, le tri, les regroupements, les JOIN et les opérations CRUD de base avec les transactions.'
+                    ],
+                    'es' => [
+                        'title' => 'Conceptos básicos de SQL',
+                        'description' => 'Domine las bases de datos relacionales, la sintaxis de SQL, el filtrado, la ordenación, las agrupaciones, los JOIN y las operaciones CRUD básicas con transacciones.'
+                    ],
+                    'it' => [
+                        'title' => 'Fondamenti di SQL',
+                        'description' => 'Padroneggia i database relazionali, la sintassi SQL, il filtraggio, l\'ordinamento, i raggruppamenti, le JOIN e le operazioni CRUD di base con le transazioni.'
+                    ],
                 ],
                 'chapters' => [
                     [
@@ -45,7 +69,13 @@ class CourseSeeder extends Seeder
                         'order' => 1,
                         'translations' => [
                             'en' => ['title' => 'Relational Databases & SELECT'],
-                            'ru' => ['title' => 'Реляционные базы данных и SELECT']
+                            'ru' => ['title' => 'Реляционные базы данных и SELECT'],
+                            'ua' => ['title' => 'Реляційні бази даних та SELECT'],
+                            'bg' => ['title' => 'Релационни бази данни и SELECT'],
+                            'de' => ['title' => 'Relationale Datenbanken & SELECT'],
+                            'fr' => ['title' => 'Bases de données relationnelles & SELECT'],
+                            'es' => ['title' => 'Bases de datos relacionales y SELECT'],
+                            'it' => ['title' => 'Database relazionali e SELECT']
                         ]
                     ],
                     [
@@ -53,7 +83,13 @@ class CourseSeeder extends Seeder
                         'order' => 2,
                         'translations' => [
                             'en' => ['title' => 'Sorting, Limits & NULLs'],
-                            'ru' => ['title' => 'Сортировка, лимиты и NULL']
+                            'ru' => ['title' => 'Сортировка, лимиты и NULL'],
+                            'ua' => ['title' => 'Сортування, ліміти та NULL'],
+                            'bg' => ['title' => 'Сортиране, лимити и NULL'],
+                            'de' => ['title' => 'Sortieren, Limits & NULLs'],
+                            'fr' => ['title' => 'Tri, limites & NULLs'],
+                            'es' => ['title' => 'Ordenación, límites y NULL'],
+                            'it' => ['title' => 'Ordinamento, limiti e NULL']
                         ]
                     ],
                     [
@@ -61,7 +97,13 @@ class CourseSeeder extends Seeder
                         'order' => 3,
                         'translations' => [
                             'en' => ['title' => 'Aggregate Functions & Grouping'],
-                            'ru' => ['title' => 'Агрегатные функции и группировка']
+                            'ru' => ['title' => 'Агрегатные функции и группировка'],
+                            'ua' => ['title' => 'Агрегатні функції та групування'],
+                            'bg' => ['title' => 'Агрегатни функции и групиране'],
+                            'de' => ['title' => 'Aggregatfunktionen & Gruppierung'],
+                            'fr' => ['title' => 'Fonctions d\'agrégation & regroupement'],
+                            'es' => ['title' => 'Funciones de agregación y agrupación'],
+                            'it' => ['title' => 'Funzioni di aggregazione e raggruppamento']
                         ]
                     ],
                     [
@@ -69,7 +111,13 @@ class CourseSeeder extends Seeder
                         'order' => 4,
                         'translations' => [
                             'en' => ['title' => 'The Power of JOINs'],
-                            'ru' => ['title' => 'Сила объединений (JOIN)']
+                            'ru' => ['title' => 'Сила объединений (JOIN)'],
+                            'ua' => ['title' => 'Сила об\'єднань (JOIN)'],
+                            'bg' => ['title' => 'Силата на обединенията (JOIN)'],
+                            'de' => ['title' => 'Die Macht der JOINs'],
+                            'fr' => ['title' => 'La puissance des JOINs'],
+                            'es' => ['title' => 'El poder de los JOIN'],
+                            'it' => ['title' => 'La potenza delle JOIN']
                         ]
                     ],
                     [
@@ -77,7 +125,13 @@ class CourseSeeder extends Seeder
                         'order' => 5,
                         'translations' => [
                             'en' => ['title' => 'CRUD Operations & Transactions'],
-                            'ru' => ['title' => 'CRUD операции и транзакции']
+                            'ru' => ['title' => 'CRUD операции и транзакции'],
+                            'ua' => ['title' => 'Операції CRUD та транзакції'],
+                            'bg' => ['title' => 'CRUD операции и транзакции'],
+                            'de' => ['title' => 'CRUD-Operationen & Transaktionen'],
+                            'fr' => ['title' => 'Opérations CRUD & transactions'],
+                            'es' => ['title' => 'Operaciones CRUD y transacciones'],
+                            'it' => ['title' => 'Operazioni CRUD e transazioni']
                         ]
                     ],
                 ]
@@ -94,6 +148,30 @@ class CourseSeeder extends Seeder
                         'title' => 'Продвинутый SQL',
                         'description' => 'Глубокое погружение в CTE, оконные функции, сложные JOIN, материализованные представления, хранимые процедуры и триггеры.'
                     ],
+                    'ua' => [
+                        'title' => 'Просунутий SQL',
+                        'description' => 'Глибоке занурення в CTE, віконні функції, складні JOIN, матеріалізовані представлення, збережені процедури та тригери.'
+                    ],
+                    'bg' => [
+                        'title' => 'Разширен SQL',
+                        'description' => 'Дълбоко потапяне в CTE, прозоречни функции, сложни JOIN, материализирани изгледи, съхранени процедури и тригери.'
+                    ],
+                    'de' => [
+                        'title' => 'Fortgeschrittenes SQL',
+                        'description' => 'Tiefes Eintauchen in CTEs, Fensterfunktionen, komplexe JOINs, materialisierte Sichten und gespeicherte Prozeduren oder Trigger.'
+                    ],
+                    'fr' => [
+                        'title' => 'SQL Avancé',
+                        'description' => 'Plongez dans les CTE, les fonctions de fenêtre (window functions), les JOIN complexes, les vues matérialisées, les procédures stockées et les déclencheurs (triggers).'
+                    ],
+                    'es' => [
+                        'title' => 'SQL Avanzado',
+                        'description' => 'Inmersión profunda en CTE, funciones de ventana, JOIN complejos, vistas materializadas, procedimientos almacenados y disparadores (triggers).'
+                    ],
+                    'it' => [
+                        'title' => 'SQL Avanzato',
+                        'description' => 'Approfondimento su CTE, funzioni finestra, JOIN complesse, viste materializzate, procedure stoccate e trigger.'
+                    ],
                 ],
                 'chapters' => [
                     [
@@ -101,7 +179,13 @@ class CourseSeeder extends Seeder
                         'order' => 1,
                         'translations' => [
                             'en' => ['title' => 'Subqueries & Common Table Expressions (CTE)'],
-                            'ru' => ['title' => 'Подзапросы и обобщенные табличные выражения (CTE)']
+                            'ru' => ['title' => 'Подзапросы и обобщенные табличные выражения (CTE)'],
+                            'ua' => ['title' => 'Підзапити та узагальнені табличні вирази (CTE)'],
+                            'bg' => ['title' => 'Подзаявки и обобщени таблични изрази (CTE)'],
+                            'de' => ['title' => 'Unterabfragen & Common Table Expressions (CTE)'],
+                            'fr' => ['title' => 'Sous-requêtes & expressions de table communes (CTE)'],
+                            'es' => ['title' => 'Subconsultas y expresiones de tabla comunes (CTE)'],
+                            'it' => ['title' => 'Sottoquery ed espressioni di tabella comuni (CTE)']
                         ]
                     ],
                     [
@@ -109,7 +193,13 @@ class CourseSeeder extends Seeder
                         'order' => 2,
                         'translations' => [
                             'en' => ['title' => 'Window Functions: Analytics on the Fly'],
-                            'ru' => ['title' => 'Оконные функции: аналитика на лету']
+                            'ru' => ['title' => 'Оконные функции: аналитика на лету'],
+                            'ua' => ['title' => 'Віконні функції: аналітика на льоту'],
+                            'bg' => ['title' => 'Прозоречни функции: анализи в движение'],
+                            'de' => ['title' => 'Fensterfunktionen: Analysen im laufenden Betrieb'],
+                            'fr' => ['title' => 'Fonctions de fenêtre : analyses à la volée'],
+                            'es' => ['title' => 'Funciones de ventana: análisis sobre la marcha'],
+                            'it' => ['title' => 'Funzioni finestra: analisi al volo']
                         ]
                     ],
                     [
@@ -117,7 +207,13 @@ class CourseSeeder extends Seeder
                         'order' => 3,
                         'translations' => [
                             'en' => ['title' => 'Non-Equi JOINs & Set Operations'],
-                            'ru' => ['title' => 'Неэквивалентные объединения и операции над множествами']
+                            'ru' => ['title' => 'Неэквивалентные объединения и операции над множествами'],
+                            'ua' => ['title' => 'Нееквівалентні об\'єднання та операції над множинами'],
+                            'bg' => ['title' => 'Нееквивалентни обединения и операции с множества'],
+                            'de' => ['title' => 'Non-Equi JOINs & Mengenoperationen'],
+                            'fr' => ['title' => 'JOINs non équivalents & opérations sur les ensembles'],
+                            'es' => ['title' => 'JOIN no equivalentes y operaciones de conjuntos'],
+                            'it' => ['title' => 'JOIN non equivalenti e operazioni sugli insiemi']
                         ]
                     ],
                     [
@@ -125,7 +221,13 @@ class CourseSeeder extends Seeder
                         'order' => 4,
                         'translations' => [
                             'en' => ['title' => 'Views & Materialized Views'],
-                            'ru' => ['title' => 'Представления и материализованные представления']
+                            'ru' => ['title' => 'Представления и материализованные представления'],
+                            'ua' => ['title' => 'Представлення та матеріалізовані представлення'],
+                            'bg' => ['title' => 'Изгледи и материализирани изгледи'],
+                            'de' => ['title' => 'Sichten & Materialisierte Sichten'],
+                            'fr' => ['title' => 'Vues & vues matérialisées'],
+                            'es' => ['title' => 'Vistas y vistas materializadas'],
+                            'it' => ['title' => 'Viste e viste materializzate']
                         ]
                     ],
                     [
@@ -133,7 +235,13 @@ class CourseSeeder extends Seeder
                         'order' => 5,
                         'translations' => [
                             'en' => ['title' => 'Stored Procedures, Functions & Triggers'],
-                            'ru' => ['title' => 'Хранимые процедуры, функции и триггеры']
+                            'ru' => ['title' => 'Хранимые процедуры, функции и триггеры'],
+                            'ua' => ['title' => 'Збережені процедури, функції та тригери'],
+                            'bg' => ['title' => 'Съхранени процедури, функции и тригери'],
+                            'de' => ['title' => 'Gespeicherte Prozeduren, Funktionen & Trigger'],
+                            'fr' => ['title' => 'Procédures stockées, fonctions & déclencheurs'],
+                            'es' => ['title' => 'Procedimientos almacenados, funciones y disparadores'],
+                            'it' => ['title' => 'Procedure stoccate, funzioni e trigger']
                         ]
                     ],
                 ]
@@ -150,6 +258,30 @@ class CourseSeeder extends Seeder
                         'title' => 'Эксперт SQL и оптимизация',
                         'description' => 'Изучите внутреннее устройство БД: MVCC, блокировки, планы запросов (EXPLAIN), индексы экспертного уровня, секционирование и эффективную пагинацию.'
                     ],
+                    'ua' => [
+                        'title' => 'Експертний SQL та оновлення',
+                        'description' => 'Вивчіть внутрішній устрій БД: MVCC, блокування, плани виконання (EXPLAIN), індекси експертного рівня, секціонування та ефективну пагинацію.'
+                    ],
+                    'bg' => [
+                        'title' => 'Експертен SQL и оптимизация',
+                        'description' => 'Изучете вътрешното устройство на БД: MVCC, блокировки, планове на заявки (EXPLAIN), индекси на експертно ниво, секциониране и ефективно страниране.'
+                    ],
+                    'de' => [
+                        'title' => 'Experten-SQL & Optimierung',
+                        'description' => 'Entsperren Sie Datenbank-Interna: MVCC, Sperren, Ausführungspläne (EXPLAIN), Indexierung auf Expertenebene, Partitionierung und Paginierung großer Datenmengen.'
+                    ],
+                    'fr' => [
+                        'title' => 'SQL Expert & Optimisation',
+                        'description' => 'Découvrez les rouages internes des bases de données : MVCC, verrous (locking), plans d\'exécution (EXPLAIN), indexation de niveau expert, partitionnement et pagination à grand volume.'
+                    ],
+                    'es' => [
+                        'title' => 'SQL Experto y Optimización',
+                        'description' => 'Descubra el funcionamiento interno de las bases de datos: MVCC, bloqueos, planes de ejecución (EXPLAIN), indexación de nivel experto, particionado y paginación de gran volumen.'
+                    ],
+                    'it' => [
+                        'title' => 'SQL Esperto e Ottimizzazione',
+                        'description' => 'Scopri il funzionamento interno del database: MVCC, blocchi, piani di esecuzione (EXPLAIN), indicizzazione a livello esperto, partizionamento e paginazione ad alto volume.'
+                    ],
                 ],
                 'chapters' => [
                     [
@@ -157,7 +289,13 @@ class CourseSeeder extends Seeder
                         'order' => 1,
                         'translations' => [
                             'en' => ['title' => 'Concurrency, MVCC & Bloat'],
-                            'ru' => ['title' => 'Параллелизм, MVCC и раздувание таблиц']
+                            'ru' => ['title' => 'Параллелизм, MVCC и раздувание таблиц'],
+                            'ua' => ['title' => 'Паралелізм, MVCC та роздування таблиць'],
+                            'bg' => ['title' => 'Паралелизъм, MVCC и раздуване на таблици'],
+                            'de' => ['title' => 'Nebenläufigkeit, MVCC & Bloat'],
+                            'fr' => ['title' => 'Concurrence, MVCC & gonflement (bloat)'],
+                            'es' => ['title' => 'Concurrencia, MVCC y fragmentación (bloat)'],
+                            'it' => ['title' => 'Concorrenza, MVCC e bloat']
                         ]
                     ],
                     [
@@ -165,7 +303,13 @@ class CourseSeeder extends Seeder
                         'order' => 2,
                         'translations' => [
                             'en' => ['title' => 'Dialects, Custom Types & JSON Search'],
-                            'ru' => ['title' => 'Диалекты, кастомные типы и поиск по JSON']
+                            'ru' => ['title' => 'Диалекты, кастомные типы и поиск по JSON'],
+                            'ua' => ['title' => 'Діалекти, кастомні типи та пошук по JSON'],
+                            'bg' => ['title' => 'Диалекти, персонализирани типове и търсене в JSON'],
+                            'de' => ['title' => 'Dialekte, benutzerdefinierte Typen & JSON-Suche'],
+                            'fr' => ['title' => 'Dialectes, types personnalisés & recherche JSON'],
+                            'es' => ['title' => 'Dialectos, tipos personalizados y búsqueda JSON'],
+                            'it' => ['title' => 'Dialetti, tipi personalizzati e ricerca JSON']
                         ]
                     ],
                     [
@@ -173,7 +317,13 @@ class CourseSeeder extends Seeder
                         'order' => 3,
                         'translations' => [
                             'en' => ['title' => 'Execution Plans (EXPLAIN ANALYZE) & Scan Types'],
-                            'ru' => ['title' => 'Планы выполнения (EXPLAIN ANALYZE) и типы сканирования']
+                            'ru' => ['title' => 'Планы выполнения (EXPLAIN ANALYZE) и типы сканирования'],
+                            'ua' => ['title' => 'Плани виконання (EXPLAIN ANALYZE) та типи сканування'],
+                            'bg' => ['title' => 'Планове на изпълнение (EXPLAIN ANALYZE) и типове сканиране'],
+                            'de' => ['title' => 'Ausführungspläne (EXPLAIN ANALYZE) & Scan-Typen'],
+                            'fr' => ['title' => 'Plans d\'exécution (EXPLAIN ANALYZE) & types de balayage (scans)'],
+                            'es' => ['title' => 'Planes de ejecución (EXPLAIN ANALYZE) y tipos de escaneo'],
+                            'it' => ['title' => 'Piani di esecuzione (EXPLAIN ANALYZE) e tipi di scansione']
                         ]
                     ],
                     [
@@ -181,7 +331,13 @@ class CourseSeeder extends Seeder
                         'order' => 4,
                         'translations' => [
                             'en' => ['title' => 'Indexes: Master Level'],
-                            'ru' => ['title' => 'Индексы: мастер-класс']
+                            'ru' => ['title' => 'Индексы: мастер-класс'],
+                            'ua' => ['title' => 'Індекси: майстер-клас'],
+                            'bg' => ['title' => 'Индекси: експертно ниво'],
+                            'de' => ['title' => 'Indizes: Expertenebene'],
+                            'fr' => ['title' => 'Index : niveau expert'],
+                            'es' => ['title' => 'Índices: nivel experto'],
+                            'it' => ['title' => 'Indici: livello esperto']
                         ]
                     ],
                     [
@@ -189,7 +345,13 @@ class CourseSeeder extends Seeder
                         'order' => 5,
                         'translations' => [
                             'en' => ['title' => 'Partitioning & High-Volume Pagination'],
-                            'ru' => ['title' => 'Секционирование и эффективная пагинация']
+                            'ru' => ['title' => 'Секционирование и эффективная пагинация'],
+                            'ua' => ['title' => 'Секціонування та ефективна пагінація'],
+                            'bg' => ['title' => 'Секциониране и ефективно страниране'],
+                            'de' => ['title' => 'Partitionierung & Paginierung großer Datenmengen'],
+                            'fr' => ['title' => 'Partitionnement & pagination à grand volume'],
+                            'es' => ['title' => 'Particionado y paginación de gran volumen'],
+                            'it' => ['title' => 'Partizionamento e paginazione ad alto volume']
                         ]
                     ],
                 ]
@@ -253,13 +415,13 @@ class CourseSeeder extends Seeder
                 // Load questions
                 $quizQuestions = [];
                 $enQuizPath = "{$chapterDir}/en_quiz.json";
-                $ruQuizPath = "{$chapterDir}/ru_quiz.json";
 
                 if (file_exists($enQuizPath)) {
                     $quizQuestions['en'] = json_decode(file_get_contents($enQuizPath), true);
                     foreach ($locales as $locale) {
-                        if ($locale === 'ru' && file_exists($ruQuizPath)) {
-                            $quizQuestions['ru'] = json_decode(file_get_contents($ruQuizPath), true);
+                        $localeQuizPath = "{$chapterDir}/{$locale}_quiz.json";
+                        if (file_exists($localeQuizPath)) {
+                            $quizQuestions[$locale] = json_decode(file_get_contents($localeQuizPath), true);
                         } else {
                             // Fallback to English
                             $quizQuestions[$locale] = $quizQuestions['en'];

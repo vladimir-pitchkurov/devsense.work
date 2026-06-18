@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Quelle est la différence fonctionnelle principale entre un `INNER JOIN` et un `LEFT JOIN` ?",
+    "options": [
+      "`INNER JOIN` renvoie uniquement les lignes qui ont des valeurs correspondantes dans les deux tables ; `LEFT JOIN` renvoie toutes les lignes de la table de gauche, qu'il y ait ou non des correspondances dans la table de droite.",
+      "`LEFT JOIN` renvoie uniquement les lignes correspondantes ; `INNER JOIN` renvoie toutes les lignes de la table de gauche et remplit la table de droite avec des NULL.",
+      "Un `INNER JOIN` lève une erreur si aucune clé correspondante n'est trouvée, tandis qu'un `LEFT JOIN` échoue silencieusement en renvoyant un ensemble vide.",
+      "Il n'y a aucune différence dans leur résultat, mais `INNER JOIN` est fortement optimisé pour les clés primaires."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un `INNER JOIN` filtre les lignes qui n'ont pas de valeurs correspondantes dans les deux tables. Un `LEFT JOIN` conserve toutes les lignes de la table de gauche, récupère les lignes correspondantes de la table de droite et remplit avec des valeurs `NULL` si aucune correspondance n'est trouvée.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi MySQL et PostgreSQL diffèrent-ils dans leur prise en charge de l'opération `FULL OUTER JOIN` ?",
+    "options": [
+      "PostgreSQL prend en charge le `FULL OUTER JOIN` nativement, tandis que MySQL ne le prend pas en charge et nécessite de combiner un `LEFT JOIN` et un `RIGHT JOIN` avec `UNION`.",
+      "MySQL prend en charge le `FULL OUTER JOIN` nativement, tandis que PostgreSQL nécessite l'utilisation de `UNION`.",
+      "Les deux moteurs prennent en charge le `FULL OUTER JOIN` natif avec la même syntaxe SQL standard.",
+      "Aucun des deux moteurs ne prend en charge le `FULL OUTER JOIN` car il est exclu des spécifications SQL standard."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL ne prend pas en charge nativement le `FULL OUTER JOIN`. Pour l'émuler, les développeurs MySQL doivent écrire une requête `LEFT JOIN` et une requête `RIGHT JOIN` et fusionner leurs résultats avec `UNION`. PostgreSQL prend en charge `FULL JOIN` nativement.",
+    "points": 10
+  },
+  {
+    "question_text": "Quand est-il approprié d'utiliser la clause `USING` au lieu de `ON` pour les conditions de jointure ?",
+    "options": [
+      "Lorsque les colonnes jointes ont exactement le même nom dans les deux tables.",
+      "Lorsque vous joignez des tables sur des colonnes ayant des noms différents.",
+      "Lors de l'écriture d'un `CROSS JOIN` qui ne nécessite pas de relations de clés.",
+      "Lorsque vous devez spécifier des expressions de correspondance complexes contenant des opérateurs mathématiques."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La clause `USING` est une syntaxe abrégée. Vous pouvez l'utiliser (par exemple `USING (department_id)`) uniquement lorsque les colonnes de jointure partagent exactement le même nom et le même type de données dans les deux tables. Sinon, vous devez utiliser `ON`.",
+    "points": 10
+  },
+  {
+    "question_text": "Que se passe-t-il si vous exécutez un `CROSS JOIN` entre une table de 10 000 lignes et une table de 5 000 lignes ?",
+    "options": [
+      "Il génère un produit cartésien contenant 50 000 000 (50 millions) de lignes, provoquant potentiellement une consommation élevée de mémoire et un ralentissement du serveur.",
+      "Il renvoie 15 000 lignes représentant le total combiné des deux tables.",
+      "Le moteur de base de données lève une erreur de syntaxe car les jointures croisées ne sont pas autorisées sans index.",
+      "Il renvoie un jeu de résultats contenant uniquement les 5 000 lignes correspondantes entre les deux tables."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un `CROSS JOIN` crée un produit cartésien, associant chaque ligne de la première table à chaque ligne de la seconde. La taille du résultat est le produit des tailles des deux tables (10,000 * 5,000 = 50 000 000 lignes). Cela peut facilement faire planter la base de données ou dégrader ses performances.",
+    "points": 10
+  }
+]

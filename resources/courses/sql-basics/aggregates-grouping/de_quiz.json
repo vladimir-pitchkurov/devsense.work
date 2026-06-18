@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Wie behandeln Standard-SQL-Aggregatfunktionen (wie `SUM`, `AVG`, `MIN`, `MAX`) `NULL`-Werte?",
+    "options": [
+      "Sie ignorieren `NULL`-Werte bei ihren Berechnungen vollständig (außer `COUNT(*)`, das alle Zeilen zählt).",
+      "Sie behandeln `NULL`-Werte als `0` für numerische Spalten und als leere Zeichenketten für Textspalten.",
+      "Sie werfen einen Laufzeitfehler bei der Datenbankausführung, wenn ein `NULL`-Wert festgestellt wird.",
+      "Sie propagieren den `NULL`-Wert, wodurch das gesamte Aggregatergebnis zu `NULL` wird."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Standard-Aggregatfunktionen wie `SUM` und `AVG` ignorieren `NULL`-Werte bei der Ausführung von Berechnungen. `COUNT(spalte)` zählt nur Nicht-NULL-Werte, während `COUNT(*)` alle Datensätze unabhängig von NULL-Werten zählt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist der Hauptunterschied zwischen den Klauseln `WHERE` und `HAVING`?",
+    "options": [
+      "`WHERE` filtert einzelne Zeilen, bevor eine Gruppierung stattfindet; `HAVING` filtert aggregierte Gruppen, nachdem die `GROUP BY`-Klausel verarbeitet wurde.",
+      "`HAVING` filtert einzelne Zeilen; `WHERE` filtert aggregierte Gruppen.",
+      "`WHERE` erlaubt die Verwendung von Aggregatfunktionen, während `HAVING` dies nicht tut.",
+      "Sie sind syntaktisch und funktional identisch, aber `HAVING` wird nur in PostgreSQL unterstützt."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WHERE` wird auf Zeilen vor dem `GROUP BY`-Schritt angewendet, kann also keine Aggregatfunktionen enthalten. `HAVING` wird nach der Gruppierung angewendet und ist speziell darauf ausgelegt, Gruppen basierend auf Aggregatbedingungen zu filtern.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn Sie `SELECT category, brand, AVG(price) FROM products GROUP BY category;` in PostgreSQL ausführen?",
+    "options": [
+      "Es schlägt mit einem Syntaxfehler fehl, da sich `brand` in der `SELECT`-Liste befindet, aber nicht in der `GROUP BY`-Klausel.",
+      "Es wird erfolgreich ausgeführt und gibt für jede Kategorie einen zufälligen `brand`-Wert zurück.",
+      "Es gruppiert automatisch sowohl nach `category` als auch nach `brand`, ohne einen Fehler zu werfen.",
+      "Es wird erfolgreich ausgeführt und gibt in allen Zeilen `NULL` für die Spalte `brand` zurück."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL erzwingt die Standard-SQL-Gruppierungsregeln sehr streng. Jede nicht-aggregierte Spalte in der `SELECT`-Liste muss in der `GROUP BY`-Klausel enthalten sein. Da `brand` weder aggregiert ist noch im `GROUP BY` steht, schlägt die Abfrage fehl.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche Funktionen werden verwendet, um String-Werte aus gruppierten Zeilen zu einer einzigen getrennten Liste in MySQL und PostgreSQL zu verketten?",
+    "options": [
+      "MySQL verwendet `GROUP_CONCAT()` und PostgreSQL verwendet `string_agg()`.",
+      "MySQL verwendet `string_agg()` und PostgreSQL verwendet `GROUP_CONCAT()`.",
+      "Beide Datenbanken verwenden `CONCAT()` für diese Operation.",
+      "Beide Datenbanken verwenden `LIST_AGG()` für diese Operation."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL verwendet die eingebaute Funktion `GROUP_CONCAT()`, um Zeichenketten aus gruppierten Zeilen zu verketten. PostgreSQL verwendet die Funktion `string_agg()`, die ein Trennzeichen-Argument und optional eine Sortierspezifikation erfordert.",
+    "points": 10
+  }
+]

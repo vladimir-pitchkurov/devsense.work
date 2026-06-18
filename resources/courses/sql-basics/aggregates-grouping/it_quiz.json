@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "In che modo le funzioni di aggregazione SQL standard (come `SUM`, `AVG`, `MIN`, `MAX`) gestiscono i valori `NULL`?",
+    "options": [
+      "Ignorano completamente i valori `NULL` nei loro calcoli (eccetto `COUNT(*)`, che conta tutte le righe).",
+      "Trattano i valori `NULL` come `0` per le colonne numeriche e come stringhe vuote per le colonne di testo.",
+      "Restituiscono un errore di esecuzione del database a runtime se viene riscontrato un valore `NULL`.",
+      "Propagano il valore `NULL`, facendo sì che l'intero risultato dell'aggregazione diventi `NULL`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Le funzioni di aggregazione standard come `SUM` e `AVG` ignorano i valori `NULL` durante l'esecuzione dei calcoli. `COUNT(colonna)` conta solo i valori diversi da NULL, mentre `COUNT(*)` conta tutti i record indipendentemente dai valori NULL.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è la differenza principale tra le clausole `WHERE` e `HAVING`?",
+    "options": [
+      "`WHERE` filtra le singole righe prima che avvenga il raggruppamento; `HAVING` filtra i gruppi aggregati dopo l'elaborazione della clausola `GROUP BY`.",
+      "`HAVING` filtra le singole righe; `WHERE` filtra i gruppi aggregati.",
+      "`WHERE` consente l'uso di funzioni di aggregazione, mentre `HAVING` non lo consente.",
+      "Sono sintatticamente e funzionalmente identiche, ma `HAVING` è supportata solo in PostgreSQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`WHERE` viene applicata alle righe prima della fase di `GROUP BY`, quindi non può contenere funzioni di aggregazione. `HAVING` viene applicata dopo il raggruppamento ed è specificamente progettata per filtrare i gruppi in base a condizioni aggregate.",
+    "points": 10
+  },
+  {
+    "question_text": "Cosa succede se si esegue `SELECT category, brand, AVG(price) FROM products GROUP BY category;` in PostgreSQL?",
+    "options": [
+      "Fallisce con un errore di sintassi perché `brand` si trova nell'elenco `SELECT` ma non nella clausola `GROUP BY`.",
+      "Viene eseguita correttamente, restituendo un valore `brand` casuale per ciascuna categoria.",
+      "Raggruppa automaticamente sia per `category` che per `brand` senza restituire errori.",
+      "Viene eseguita correttamente, restituendo `NULL` per la colonna `brand` in tutte le righe."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL applica rigorosamente le regole di raggruppamento dello standard SQL. Qualsiasi colonna non aggregata nell'elenco `SELECT` deve essere inclusa nella clausola `GROUP BY`. Poiché `brand` non è aggregata né inserita in `GROUP BY`, la query fallisce.",
+    "points": 10
+  },
+  {
+    "question_text": "Quali funzioni vengono utilizzate per concatenare i valori stringa di righe raggruppate in un singolo elenco separato in MySQL e PostgreSQL?",
+    "options": [
+      "MySQL utilizza `GROUP_CONCAT()` e PostgreSQL utilizza `string_agg()`.",
+      "MySQL utilizza `string_agg()` e PostgreSQL utilizza `GROUP_CONCAT()`.",
+      "Entrambi i database utilizzano `CONCAT()` per questa operazione.",
+      "Entrambi i database utilizzano `LIST_AGG()` per questa operazione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL utilizza la funzione integrata `GROUP_CONCAT()` per concatenare le stringhe da righe raggruppate. PostgreSQL utilizza la funzione `string_agg()`, che richiede un argomento separatore e opzionalmente una specifica per l'ordinamento.",
+    "points": 10
+  }
+]

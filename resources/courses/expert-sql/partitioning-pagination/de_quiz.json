@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Warum erfährt die Standard-OFFSET-Seitennummerierung (z. B. LIMIT 10 OFFSET 100000) mit zunehmendem Offset einen schwerwiegenden Leistungsabfall?",
+    "options": [
+      "Die Datenbank sperrt alle 100.000 Zeilen im Shared-Mode, was gleichzeitige Schreibzugriffe verhindert.",
+      "Der Abfrageoptimierer ignoriert B-Tree-Indizes, wenn eine OFFSET-Klausel vorhanden ist.",
+      "Die Datenbank-Engine muss alle 100.000 vorhergehenden Zeilen lesen und verwerfen, um den Startpunkt der angeforderten Seite zu erreichen, was zu einer hohen CPU- und Festplatten-I/O-Last führt.",
+      "Die Datenbank erzeugt für jede einzelne Seitenanforderung eine riesige temporäre Tabelle auf der Festplatte."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "Die Standard-OFFSET-Seitennummerierung zwingt die Datenbank-Engine, den Index zu durchlaufen und alle Zeilen bis zum Offset-Wert zu lesen und zu verwerfen, bevor sie die angeforderte Seite zurückgibt. Dadurch steigen die Antwortzeiten linear mit der Seitentiefe, was bei großen Tabellen zu schwerwiegenden Engpässen führt.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist sowohl in MySQL als auch in PostgreSQL die zwingende Voraussetzung für die Definition eines Primärschlüssels oder eines Unique-Constraints auf einer partitionierten Tabelle?",
+    "options": [
+      "Der Primärschlüssel muss eine automatisch inkrementierende Ganzzahl vom Typ BIGINT sein.",
+      "Der Primärschlüssel oder das Unique-Constraint muss alle Spalten enthalten, die im Partitionsschlüssel-Ausdruck verwendet werden.",
+      "Auf partitionierten Tabellen können keine Primärschlüssel definiert werden; sie müssen stattdessen auf eindeutige Indizes zurückgreifen.",
+      "Die Partitionsschlüssel-Spalte darf nicht Teil des Primärschlüssels sein, um Partitions-Sperren zu verhindern."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Um die Eindeutigkeit über die gesamte Tabelle hinweg zu erzwingen, ohne bei jedem Insert jede einzelne Partition scannen zu müssen, verlangen relationale Datenbanken, dass die Spalten des Partitionsschlüssels in allen Unique-Constraints und Primärschlüsseln enthalten sind. Dies stellt sicher, dass die Eindeutigkeit lokal innerhalb einer einzelnen Partition validiert werden kann.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie erreicht die Keyset-Seitennummerierung (Cursor-basiert) eine O(1)-Performance, unabhängig davon, wie tief die Seitennummerierungsanfrage geht?",
+    "options": [
+      "Durch Laden des gesamten Tabellenschlüsselsatzes in den Shared-Memory-Pufferpool der Datenbank.",
+      "Durch die Verwendung von Index-Seeks, um direkt zum Startpunkt der Seite zu springen, basierend auf den Werten der letzten Zeile der vorherigen Seite (z. B. WHERE created_at < letzter_wert).",
+      "Durch Deaktivierung von Transaktionsisolationsprüfungen für alle Leseoperationen.",
+      "Durch dynamisches Konvertieren des B-Tree-Index in einen Hash-Index."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Durch Filtern von Zeilen basierend auf den Werten der zuletzt aus der vorherigen Seite abgerufenen Zeile (Keyset) kann die Datenbank einen B-Tree-Index verwenden, um einen direkten Lookup (Index-Seek) durchzuführen und die Startzeile der Seite zu lokalisieren. Dadurch wird das Scannen der vorangegangenen Seiten vollständig vermieden.",
+    "points": 10
+  },
+  {
+    "question_text": "Welches Feature, das in PostgreSQL 9.3+ und MySQL 8.0.14+ unterstützt wird, ermöglicht es Ihnen, eine Unterabfrage für jede Zeile der äußeren Abfrage effizient abzufragen und zu paginieren (z. B. Abrufen der Top 3 Produkte pro Kategorie)?",
+    "options": [
+      "Rekursive CTEs",
+      "LATERAL Joins (unter Verwendung der Syntax INNER JOIN LATERAL oder CROSS APPLY)",
+      "Window-Funktionen unter Verwendung von PARTITION BY",
+      "Index-Merged UNION ALL Abfragen"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Ein `LATERAL` Join verhält sich wie eine SQL-`foreach`-Schleife. Er ermöglicht es einer Unterabfrage, auf Spalten von vorhergehenden Tabellen in der `FROM`-Klausel zu verweisen. Dies ist äußerst effizient für das Abrufen der Top-N-Artikel pro Kategorie, da für jede Kategoriezeile ein indexgestützter Seek durchgeführt werden kann.",
+    "points": 10
+  }
+]

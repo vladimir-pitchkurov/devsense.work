@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Welche Window-Funktion weist drei Zeilen mit identischen Werten, die sich den ersten Platz teilen, die Rangfolge-Sequenz 1, 1, 1, 4 innerhalb der Partition zu?",
+    "options": [
+      "RANK()",
+      "DENSE_RANK()",
+      "ROW_NUMBER()",
+      "NTILE(4)"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "`RANK()` weist doppelten Werten identische Ränge zu, überspringt jedoch nachfolgende Ränge, was zu `1, 1, 1, 4` führt. Im Gegensatz dazu würde `DENSE_RANK()` `1, 1, 1, 2` (ohne Lücken) und `ROW_NUMBER()` `1, 2, 3, 4` (eindeutige Sequenz) zuweisen.",
+    "points": 10
+  },
+  {
+    "question_text": "Warum gibt der Ausdruck `LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary)` das Gehalt der aktuellen Zeile zurück anstatt des maximalen Gehalts in der Abteilung?",
+    "options": [
+      "Weil bei Vorhandensein von `ORDER BY` der Standard-Window-Frame `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` lautet, was den Rahmen auf Zeilen bis zur aktuellen Zeile beschränkt.",
+      "Weil `LAST_VALUE()` eine Sortierung nach `DESC` in der `ORDER BY`-Klausel erfordert.",
+      "Weil `LAST_VALUE()` nur im Bereich der ersten beiden Zeilen einer Partition ausgewertet wird.",
+      "Weil die Datenbank-Engine das Vorausschauen zur Optimierung des Speicherverbrauchs automatisch deaktiviert, es sei denn, `LOOKAHEAD` is aktiviert."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Wenn eine `ORDER BY`-Klausel innerhalb von `OVER()` verwendet wird, wird der Standard-Window-Frame dynamisch auf `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` gesetzt. Daher ist der „letzte Wert“ im aktuellen Rahmen immer der Wert der aktuellen Zeile (oder deren wertgleicher Zeilenpartner). Um den tatsächlich letzten Wert der Partition abzurufen, muss der Rahmen explizit als `RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (oder das entsprechende `ROWS`-Äquivalent) definiert werden.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Syntaxoptionen ist in PostgreSQL gültig, um nur bestimmte Zeilen innerhalb einer Window-Partition zu aggregieren, ohne auf einen bedingten `CASE WHEN`-Ausdruck zurückzugreifen?",
+    "options": [
+      "Die Verwendung der Klausel `FILTER (WHERE bedingung)`, die direkt an die Aggregatfunktion angehängt wird (z. B. `COUNT(id) FILTER (WHERE salary > 5000) OVER(...)`).",
+      "Die Angabe einer `WHERE`-Bedingung direkt in der `PARTITION BY`-Klausel (z. B. `PARTITION BY department_id WHERE salary > 5000`).",
+      "Die Verwendung einer verschachtelten `HAVING`-Anweisung innerhalb des `OVER(...)`-Window-Definitionsblocks.",
+      "PostgreSQL unterstützt keine selektive Window-Aggregation nativ und erfordert genau wie MySQL `CASE WHEN`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL unterstützt die SQL-Standard-Klausel `FILTER (WHERE bedingung)` für Aggregatfunktionen. Dies ermöglicht saubere, lesbare selektive Aggregationen innerhalb von Window-Funktionen. MySQL 8.0 unterstützt dies nicht und erfordert das Schreiben eines `CASE WHEN`-Ausdrucks innerhalb der Aggregatfunktion.",
+    "points": 10
+  },
+  {
+    "question_text": "Welche der folgenden Aussagen ist bezüglich der Frame-Ausschlussfunktionen (z. B. Ausschluss der aktuellen Zeile oder Gruppe aus der Window-Frame-Berechnung) korrekt?",
+    "options": [
+      "PostgreSQL 11+ unterstützt Frame-Ausschlussklauseln wie `EXCLUDE CURRENT ROW` und `EXCLUDE GROUP`, während MySQL 8.0 keine Frame-Ausschlüsse unterstützt.",
+      "Sowohl MySQL 8.0 und PostgreSQL unterstützen die standardmäßigen ANSI-`EXCLUDE`-Klauseln beim Window-Framing.",
+      "MySQL 8.0 unterstützt Frame-Ausschlüsse, aber PostgreSQL unterstützt diese nicht und erfordert Self-Joins.",
+      "Weder PostgreSQL noch MySQL unterstützen Frame-Ausschlüsse; diese sind nur in kommerziellen Datenbanken wie Oracle und SQL Server verfügbar."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL 11+ unterstützt die ANSI-SQL-`EXCLUDE`-Optionen (`EXCLUDE CURRENT ROW`, `EXCLUDE GROUP`, `EXCLUDE TIES` und `EXCLUDE NO OTHERS`) innerhalb der Window-Frame-Klausel. MySQL 8.0 unterstützt keinerlei Frame-Ausschlüsse, weshalb Workarounds (wie Unterabfragen oder mathematische Offsets) verwendet werden müssen.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál es la diferencia funcional clave entre un `INNER JOIN` y un `LEFT JOIN`?",
+    "options": [
+      "`INNER JOIN` devuelve solo las filas que tienen valores coincidentes en ambas tablas; `LEFT JOIN` devuelve todas las filas de la tabla izquierda independientemente de si hay coincidencias en la tabla derecha.",
+      "`LEFT JOIN` devuelve solo las filas coincidentes; `INNER JOIN` devuelve todas las filas de la tabla izquierda y rellena la tabla derecha con valores NULL.",
+      "Un `INNER JOIN` lanzará un error si no se encuentran claves coincidentes, mientras que un `LEFT JOIN` fallará silenciosamente devolviendo un conjunto vacío.",
+      "No hay diferencia en sus resultados, pero `INNER JOIN` está muy optimizado para claves primarias."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un `INNER JOIN` filtra las filas que no tienen valores coincidentes en ambas tablas. Un `LEFT JOIN` conserva todas las filas de la tabla izquierda, incorporando las filas coincidentes de la tabla derecha y rellenando con valores `NULL` si no se encuentra ninguna coincidencia.",
+    "points": 10
+  },
+  {
+    "question_text": "¿En qué se diferencian MySQL y PostgreSQL en su compatibilidad con la operación `FULL OUTER JOIN`?",
+    "options": [
+      "PostgreSQL admite `FULL OUTER JOIN` de forma nativa, mientras que MySQL no lo admite y requiere combinar un `LEFT JOIN` y un `RIGHT JOIN` mediante `UNION`.",
+      "MySQL admite `FULL OUTER JOIN` de forma nativa, mientras que PostgreSQL requiere el uso de `UNION`.",
+      "Ambos motores admiten `FULL OUTER JOIN` nativo con la misma sintaxis estándar de SQL.",
+      "Ninguno de los dos motores admite `FULL OUTER JOIN` porque está excluido de la especificación estándar de SQL."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL carece de soporte nativo para `FULL OUTER JOIN`. Para emularlo, los desarrolladores de MySQL deben escribir una consulta `LEFT JOIN` y una `RIGHT JOIN` y combinar sus resultados usando `UNION`. PostgreSQL admite `FULL JOIN` de forma nativa.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuándo es apropiado utilizar la cláusula `USING` en lugar de `ON` para las condiciones de unión?",
+    "options": [
+      "Cuando las columnas que se están uniendo tienen exactamente el mismo nombre en ambas tablas.",
+      "Cuando se están uniendo tablas sobre columnas con nombres diferentes.",
+      "Al realizar un `CROSS JOIN` que no requiere relaciones de clave.",
+      "Cuando necesitas especificar expresiones de coincidencia complejas que contengan operadores matemáticos."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La cláusula `USING` es una sintaxis abreviada. Puedes utilizarla (por ejemplo, `USING (department_id)`) solo cuando las columnas de unión comparten exactamente el mismo nombre y tipo de datos en ambas tablas. De lo contrario, debes utilizar `ON`.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Qué sucede si ejecutas un `CROSS JOIN` entre una tabla con 10,000 filas y otra con 5,000 filas?",
+    "options": [
+      "Genera un producto cartesiano que contiene 50,000,000 (50 millones) de filas, lo que podría provocar un alto consumo de memoria y retraso en el servidor.",
+      "Devuelve 15,000 filas que representan el total combinado de ambas tablas.",
+      "El motor de la base de datos lanza un error de sintaxis porque no se permiten las uniones cruzadas sin un índice.",
+      "Devuelve un conjunto de resultados que contiene solo las 5,000 filas coincidentes entre las dos tablas."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Un `CROSS JOIN` crea un producto cartesiano, emparejando cada fila de la primera tabla con cada fila de la segunda. El tamaño del resultado es el producto de los tamaños de ambas tablas (10,000 * 5,000 = 50,000,000 de filas). Esto puede colapsar o degradar fácilmente el rendimiento de la base de datos.",
+    "points": 10
+  }
+]

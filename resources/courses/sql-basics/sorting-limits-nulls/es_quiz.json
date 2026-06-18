@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "¿Cuál es la evaluación booleana de la expresión `column_name = NULL` en SQL estándar?",
+    "options": [
+      "Se evalúa como `NULL` (desconocido).",
+      "Se evalúa como `false`.",
+      "Se evalúa como `true`.",
+      "Provoca un error de sintaxis de compilación en la base de datos."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dado que `NULL` representa un valor desconocido, las comparaciones que utilizan operadores estándar como `=` o `!=` con `NULL` se evalúan como `NULL` (desconocido) en lugar de `true` o `false`. Para verificar si hay valores nulos, se debe utilizar el operador `IS NULL`.",
+    "points": 10
+  },
+  {
+    "question_text": "¿En qué se diferencian MySQL y PostgreSQL por defecto al ordenar columnas con valores `NULL` en orden ascendente (`ASC`)?",
+    "options": [
+      "MySQL coloca los valores `NULL` primero, mientras que PostgreSQL los coloca al final.",
+      "PostgreSQL coloca los valores `NULL` primero, mientras que MySQL los coloca al final.",
+      "Ambos motores de bases de datos colocan los valores `NULL` primero.",
+      "Ambos motores de bases de datos colocan los valores `NULL` al final."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL trata a `NULL` como el valor más bajo posible, colocándolos primero en el orden `ASC`. PostgreSQL trata a `NULL` como el valor más alto posible, colocándolos al final en el orden `ASC` por defecto (a menos que se anule con `NULLS FIRST`).",
+    "points": 10
+  },
+  {
+    "question_text": "¿Cuál de las siguientes estructuras de consulta es sintácticamente válida tanto en MySQL como en PostgreSQL para omitir 20 filas y devolver las siguientes 10?",
+    "options": [
+      "`SELECT * FROM products ORDER BY price LIMIT 10 OFFSET 20;`",
+      "`SELECT * FROM products ORDER BY price LIMIT 20, 10;`",
+      "`SELECT * FROM products ORDER BY price OFFSET 20 LIMIT 10;`",
+      "`SELECT * FROM products ORDER BY price SKIP 20 LIMIT 10;`"
+    ],
+    "correct_answer_index": 0,
+    "explanation": "La sintaxis estándar de ANSI SQL para la paginación admitida por ambos motores es `LIMIT cantidad_filas OFFSET valor_desplazamiento`. La abreviatura de MySQL `LIMIT offset, row_count` no es estándar y arroja errores de sintaxis en PostgreSQL.",
+    "points": 10
+  },
+  {
+    "question_text": "¿Por qué la paginación profunda con desplazamientos (offsets) altos (por ejemplo, `LIMIT 10 OFFSET 500000`) es un antipatrón de rendimiento?",
+    "options": [
+      "La base de datos debe escanear y ordenar las 500,000 filas precedentes solo para descartarlas antes de devolver las 10 filas.",
+      "Los valores altos de offset hacen que la base de datos bloquee la tabla e impida las escrituras.",
+      "Los motores de bases de datos siempre materializan las tablas en disco cuando los desplazamientos superan las 10,000.",
+      "Hace que la caché de consultas se invalide por completo, degradando el rendimiento global de las lecturas."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "A pesar de que solo se devuelven 10 filas, el motor debe recorrer y procesar todos los 500,000 registros del offset. Esto consume una cantidad significativa de CPU y E/S de disco. En su lugar, se debe utilizar paginación Keyset (basada en cursores).",
+    "points": 10
+  }
+]

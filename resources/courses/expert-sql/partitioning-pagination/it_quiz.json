@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Perché la paginazione standard basata su OFFSET (ad es., LIMIT 10 OFFSET 100000) risente di un grave degrado delle prestazioni all'aumentare dell'offset?",
+    "options": [
+      "Il database blocca tutte le 100.000 righe in modalità condivisa, impedendo le scritture concorrenti.",
+      "L'ottimizzatore di query ignora gli indici B-Tree quando è presente una clausola OFFSET.",
+      "Il motore del database deve leggere e scartare tutte le 100.000 righe precedenti per raggiungere il punto di partenza della pagina richiesta, con conseguente elevato utilizzo della CPU e dell'I/O del disco.",
+      "Il database genera una massiccia tabella temporanea su disco per ogni singola richiesta di pagina."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La paginazione standard con OFFSET costringe il motore del database ad attraversare l'indice e leggere tutte le righe fino al valore dell'offset, scartandole prima di restituire la pagina richiesta. Ciò fa sì che i tempi di risposta aumentino linearmente con la profondità della pagina, causando gravi colli di bottiglia su tabelle di grandi dimensioni.",
+    "points": 10
+  },
+  {
+    "question_text": "Sia in MySQL e in PostgreSQL, qual è il requisito obbligatorio per definire una chiave primaria o un vincolo di univocità su una tabella partizionata?",
+    "options": [
+      "La chiave primaria deve essere un intero auto-incrementale di tipo BIGINT.",
+      "La chiave primaria o il vincolo di univocità deve includere tutte le colonne utilizzate nell'espressione della chiave di partizionamento.",
+      "Non è possibile definire chiavi primarie su tabelle partizionate; esse devono basarsi invece su indici univoci.",
+      "La colonna della chiave di partizionamento non deve far parte della chiave primaria per evitare il blocco della partizione."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Per imporre l'univocità sull'intera tabella senza dover scansionare ogni singola partizione a ogni inserimento, i database relazionali richiedono che le colonne della chiave di partizionamento siano incluse in tutti i vincoli di univocità e chiavi primarie. Ciò garantisce che l'univocità possa essere convalidata localmente all'interno di una singola partizione.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo la paginazione Keyset (basata su cursore) ottiene prestazioni O(1) indipendentemente dalla profondità della richiesta di paginazione?",
+    "options": [
+      "Caricando l'intero keyset della tabella nel buffer pool della memoria condivisa del database.",
+      "Utilizzando i posizionamenti degli indici (index seek) per saltare direttamente al punto di partenza della pagina in base ai valori dell'ultima riga della pagina precedente (ad es. WHERE created_at < valore_ultimo_visto).",
+      "Disabilitando i controlli di isolamento delle transazioni per tutte le operazioni di lettura.",
+      "Convertendo dinamicamente l'indice B-Tree in un indice Hash."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Filtrando le righe in base ai valori dell'ultima riga recuperata dalla pagina precedente (keyset), il database può utilizzare un indice B-Tree per eseguire una ricerca diretta (index seek) per individuare la riga iniziale della pagina, evitando completamente di scansionare le pagine che la precedono.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale funzionalità, supportata in PostgreSQL 9.3+ e MySQL 8.0.14+, consente di interrogare ed impaginare in modo efficiente una sottoquery per ogni riga della query esterna (ad es., recuperando i primi 3 prodotti per categoria)?",
+    "options": [
+      "CTE ricorsive",
+      "Join LATERAL (utilizzando la sintassi INNER JOIN LATERAL o CROSS APPLY)",
+      "Funzioni finestra utilizzando PARTITION BY",
+      "Query UNION ALL con unione di indici (index-merged)"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un join `LATERAL` si comporta come un ciclo `foreach` SQL. Consente a una sottoquery di fare riferimento alle colonne delle tabelle precedenti nella clausola `FROM`. Questo è estremamente efficiente per recuperare i primi N elementi per categoria, in quanto può eseguire una ricerca guidata dall'indice (seek) per ciascuna riga di categoria.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Nel motore InnoDB di MySQL, cosa memorizza il nodo foglia di un indice secondario e quale fase di esecuzione della query viene attivata da ciò?",
+    "options": [
+      "Memorizza l'indirizzo di memoria fisica della riga, consentendo salti diretti dall'indice all'heap.",
+      "Memorizza il valore della chiave primaria della riga, attivando una ricerca secondaria nell'indice cluster (Bookmark Lookup) per recuperare i dati reali della riga se vengono interrogate colonne non indicizzate.",
+      "Memorizza una copia compressa dell'intera riga, eliminando la necessità di accedere allo spazio delle tabelle della chiave primaria.",
+      "Memorizza l'offset logico della riga dall'inizio della pagina del tablespace."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In InnoDB, le tabelle sono organizzate (clusterizzate) attorno alla loro chiave primaria. Gli indici secondari memorizzano il valore della chiave primaria nei loro nodi foglia anziché i puntatori alle righe. Se la query richiede colonne non coperte dall'indice secondario, MySQL deve eseguire una seconda ricerca nell'indice cluster (bookmark lookup) per recuperare la riga.",
+    "points": 10
+  },
+  {
+    "question_text": "In quali circostanze dovresti scegliere un indice BRIN (Block Range Index) rispetto a un indice B-Tree standard in PostgreSQL?",
+    "options": [
+      "Quando si indicizzano stringhe varia a ed alta cardinalità (come gli UUID) che vengono aggiornate frequentemente.",
+      "Quando si indicizzano tabelle estremamente grandi (centinaia di gigabyte) in cui i dati sono fisicamente ordinati sul disco in base alla colonna indicizzata (come timestamp o chiavi auto-incrementali).",
+      "Quando è necessario imporre un vincolo UNIQUE su una colonna.",
+      "Quando la colonna indicizzata contiene strutture JSON nidificate complesse che richiedono ricerche di contenimento delle chiavi."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un indice BRIN divide una tabella in intervalli di pagine e memorizza solo i valori minimi e massimi per ciascun intervallo. È estremamente compatto (spesso 1000 volte più piccolo di un B-Tree) ma per essere efficace richiede che i dati siano fisicamente ordinati sul disco. Non può imporre l'univocità.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo PostgreSQL e MySQL si differenziano nell'implementazione di un indice di copertura (covering index) contenente colonne di payload che non hanno bisogno di essere ordinate?",
+    "options": [
+      "PostgreSQL consente di aggiungere colonne di payload ai nodi foglia utilizzando la clausola `INCLUDE`; MySQL non dispone della clausola `INCLUDE` e richiede di definirle come parte di una chiave di indice composto.",
+      "MySQL supporta la clausola `INCLUDE` per gli indici B-Tree, mentre PostgreSQL richiede l'uso del tipo di indice GIN.",
+      "Nessuno dei due database supporta gli indici di copertura; tutte le query devono recuperare i dati dalla tabella di base.",
+      "PostgreSQL include automaticamente tutte le colonne della tabella nelle foglie degli indici B-Tree per impostazione predefinita."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL supporta la clausola `INCLUDE` (ad es. `CREATE INDEX ... ON table (key) INCLUDE (payload)`), che memorizza le colonne di payload nei nodi foglia per un recupero rapido senza utilizzarle per ordinare l'indice. MySQL è privo di questa clausola, costringendo a definire una chiave di indice composto multicolonna in cui tutte le colonne fanno parte della struttura di ordinamento dell'indice.",
+    "points": 10
+  },
+  {
+    "question_text": "Qual è il vantaggio principale della creazione di un indice parziale (utilizzando la clausola `WHERE`) in PostgreSQL?",
+    "options": [
+      "Consente all'indice di passare automaticamente tra i layout B-Tree e GIN a seconda del numero di righe.",
+      "Esclude le righe che non soddisfano la condizione del filtro, mantenendo ridotte le dimensioni dell'indice, riducendo l'utilizzo del disco e riducendo al minimo il sovraccarico di aggiornamento dell'indice durante la scrittura.",
+      "Consente alla query di aggirare completamente i controlli di visibilità delle transazioni (MVCC).",
+      "Consente di indicizzare espressioni e funzioni anziché i valori grezzi delle colonne."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "A partial index (e.g., `CREATE INDEX ... WHERE status = 'active'`) only contains entries for rows matching the specified condition. This saves significant disk space and reduces the write overhead because the index does not need to be updated when rows that do not match the condition are inserted or updated.",
+    "points": 10
+  }
+]

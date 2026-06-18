@@ -256,7 +256,7 @@ class MyService {
    - **Категория**: `architecture`
    - **Slug**: `behavioral-design-patterns`
    - **Темы**: Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor, Interpreter.
-   - **Статус**: Запланировано.
+   - **Статус**: Завершено.
 
 4. **Антипаттерны проектирования ПО (Software Design Antipatterns)**
    - **Категория**: `architecture`

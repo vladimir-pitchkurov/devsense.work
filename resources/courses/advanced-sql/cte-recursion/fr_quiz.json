@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Comment le comportement d'optimisation par défaut de PostgreSQL pour les expressions de table communes (CTE) a-t-il changé dans la version 12 ?",
+    "options": [
+      "Avant PostgreSQL 12, toutes les CTE étaient matérialisées (agissant comme des barrières d'optimisation) ; à partir de la version 12, les CTE référencées une seule fois ne sont pas matérialisées (intégrées en ligne) par défaut, sauf si cela est forcé avec AS MATERIALIZED.",
+      "Avant PostgreSQL 12, les CTE étaient toujours intégrées en ligne ; à partir de la version 12, toutes les CTE sont matérialisées par défaut pour accélérer l'accès séquentiel.",
+      "PostgreSQL 12 a introduit la prise en charge des CTE ; les versions antérieures ne prenaient en charge que les sous-requêtes imbriquées.",
+      "PostgreSQL 12 a déprécié la clause AS MATERIALIZED, forçant toutes les CTE à être gérées de manière dynamique."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Avant PostgreSQL 12, les CTE étaient toujours matérialisées (évaluées une seule fois et stockées sous forme de table temporaire), ce qui agissait comme une barrière d'optimisation et empêchait de propager les filtres externes. Depuis la version 12, les CTE qui ne sont référencées qu'une seule fois sont intégrées en ligne par défaut (`NOT MATERIALIZED`) pour permettre l'optimisation.",
+    "points": 10
+  },
+  {
+    "question_text": "Quel moteur de base de données prend en charge les opérations de modification de données (telles que INSERT, UPDATE ou DELETE avec RETURNING) au sein d'une CTE pour enchaîner des écritures dans une seule requête ?",
+    "options": [
+      "MySQL 8.0 uniquement",
+      "PostgreSQL uniquement",
+      "À la fois MySQL 8.0 et PostgreSQL",
+      "Aucun ; les standards SQL interdisent la modification de données au sein des CTE"
+    ],
+    "correct_answer_index": 1,
+    "explanation": "PostgreSQL permet d'utiliser des instructions de modification de données (`INSERT`, `UPDATE`, `DELETE`) dans les CTE, souvent combinées avec `RETURNING` pour enchaîner les opérations. MySQL 8.0 ne prend en charge que les requêtes en lecture seule dans les CTE.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans PostgreSQL, comment pouvez-vous empêcher de manière native les boucles infinies dans une CTE récursive lors de l'interrogation de données contenant des références circulaires ?",
+    "options": [
+      "En ajoutant la clause `CYCLE` à la fin de la définition de la CTE pour suivre les clés visitées.",
+      "En configurant la variable système `SET max_sp_recursion_depth`.",
+      "En ajoutant une sous-requête `WHERE NOT EXISTS` faisant référence à la CTE dans le membre d'ancrage.",
+      "PostgreSQL détecte automatiquement les boucles cycliques lors de la compilation et lève une erreur de syntaxe."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL fournit la clause standard `CYCLE` (par exemple, `CYCLE id SET is_cycle USING path`) qui suit automatiquement les identifiants visités dans un chemin et arrête la récursion si un doublon est trouvé. MySQL ne prend pas en charge la clause `CYCLE` et s'appuie sur des limites comme `cte_max_recursion_depth` ou des limites de temps d'exécution.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans une requête comportant plusieurs CTE séparées par des virgules, quelles sont les règles de référencement concernant l'ordre de définition ?",
+    "options": [
+      "Une CTE peut faire référence à n'importe quelle autre CTE définie avant elle dans la même clause `WITH`, mais ne peut pas faire référence aux CTE définies après elle (le référencement vers l'avant n'est pas autorisé).",
+      "Toute CTE dans une clause `WITH` peut faire référence à n'importe quelle autre CTE dans la même clause, quel que soit leur ordre de déclaration.",
+      "Les CTE ne peuvent pas du tout faire référence les unes aux autres ; elles doivent être complètement indépendantes.",
+      "Une CTE ne peut faire référence à une autre CTE que si le mot-clé `RECURSIVE` est utilisé sur toutes les CTE du bloc."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans le langage SQL standard (à la fois MySQL et PostgreSQL), les CTE séquentielles sont évaluées dans l'ordre. Une CTE définie plus tard peut faire référence à n'importe quelle CTE définie précédemment dans la même clause `WITH`, mais une CTE ne peut pas faire référence à une autre définie après elle dans la requête.",
+    "points": 10
+  }
+]

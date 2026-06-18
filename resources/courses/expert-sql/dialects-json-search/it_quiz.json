@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Qual è la differenza principale in termini di storage e prestazioni tra i tipi di dati json e jsonb di PostgreSQL?",
+    "options": [
+      "Il tipo json viene compresso utilizzando LZ4, mentre jsonb non è compresso.",
+      "Il tipo json memorizza una copia in testo semplice del JSON e richiede l'analisi a ogni lettura; jsonb memorizza un formato binario già analizzato che consente ricerche più rapide e supporta l'indicizzazione.",
+      "Il tipo jsonb consente solo la memorizzazione di array, mentre json supporta oggetti nidificati chiave-valore arbitrari.",
+      "PostgreSQL ha deprecato il tipo json nella versione 12, rendendo jsonb l'unico tipo di dati operativo."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Il tipo `json` memorizza i dati come testo semplice. Ciò preserva gli spazi bianchi e la formattazione, ma richiede l'analisi del testo a ogni recupero. Il tipo `jsonb` decompone il documento in una rappresentazione binaria, ordinando le chiavi e rimuovendo gli spazi bianchi, il che consente ricerche dirette e l'indicizzazione GIN.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale coppia di operatori/funzioni viene utilizzata per eseguire ricerche di contenimento (verificare se il documento JSON A contiene il documento JSON B) rispettivamente in PostgreSQL e MySQL?",
+    "options": [
+      "PostgreSQL: `->` | MySQL: `JSON_EXTRACT()`",
+      "PostgreSQL: `?` | MySQL: `MEMBER OF`",
+      "PostgreSQL: `@>` | MySQL: `JSON_CONTAINS()`",
+      "PostgreSQL: `#>` | MySQL: `JSON_SEARCH()`"
+    ],
+    "correct_answer_index": 2,
+    "explanation": "In PostgreSQL, l'operatore `@>` viene utilizzato per i controlli di contenimento sui campi `jsonb`. In MySQL, la funzione `JSON_CONTAINS(target, candidate)` verifica se il documento JSON di destinazione contiene il valore o il documento candidato.",
+    "points": 10
+  },
+  {
+    "question_text": "In MySQL, qual è il metodo standard per indicizzare una specifica chiave scalare nidificata all'interno di una colonna JSON (ad es. `$.status`) utilizzando gli indici B-Tree standard?",
+    "options": [
+      "Creare un indice funzionale direttamente sulla colonna utilizzando `CREATE INDEX ... ON my_table((data->'$.status'))` o creare una colonna generata virtuale che estrae la chiave e indicizzarla.",
+      "MySQL genera automaticamente nodi di indice B-Tree per tutte le chiavi JSON al momento della creazione della colonna.",
+      "Configurare `SET GLOBAL json_index_mode = BTREE` prima di eseguire le query.",
+      "È impossibile; MySQL supporta l'indicizzazione del JSON solo tramite ricerche full-text."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL non supporta l'indicizzazione diretta delle colonne JSON tramite indici B-Tree. È necessario creare una colonna generata virtuale che estrae la chiave nidificata (ad esempio, utilizzando `data->>'$.status'`) e indicizzare tale colonna, oppure creare un indice B-Tree funzionale che fa riferimento direttamente all'espressione di percorso.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo le due classi di indici GIN di PostgreSQL (`jsonb_ops` e `jsonb_path_ops`) si differenziano quando si indicizzano colonne jsonb?",
+    "options": [
+      "La classe `jsonb_ops` è molto più piccola di `jsonb_path_ops` perché indicizza solo le chiavi.",
+      "La classe `jsonb_path_ops` è quella predefinita e supporta query sia di esistenza delle chiavi che di contenimento.",
+      "La classe `jsonb_path_ops` crea indici più piccoli e veloci, ottimizzati specificamente per query di contenimento (`@>`), ma non supporta gli operatori di esistenza delle chiavi come `?`.",
+      "La classe `jsonb_ops` è deprecata e gli utenti dovrebbero utilizzare solo `jsonb_path_ops`."
+    ],
+    "correct_answer_index": 2,
+    "explanation": "La classe di operatori GIN predefinita `jsonb_ops` indicizza tutte le chiavi, i valori e i percorsi. La classe alternativa `jsonb_path_ops` indicizza solo coppie percorso-valore, il che si traduce in dimensioni dell'indice ridotte e migliori prestazioni di ricerca per query di contenimento (`@>`), ma non può rispondere a query di esistenza delle chiavi (come `?`).",
+    "points": 10
+  }
+]

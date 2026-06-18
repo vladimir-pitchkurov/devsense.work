@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Laquelle des propositions suivantes est considérée comme un anti-pattern de requête de base de données lors de l'écriture de SQL pour des applications de production ?",
+    "options": [
+      "L'utilisation de `SELECT *` pour récupérer toutes les colonnes d'une table.",
+      "La spécification de noms de colonnes explicites dans la clause `SELECT`.",
+      "Le renommage des colonnes dans le résultat à l'aide du mot-clé `AS`.",
+      "Le filtrage des enregistrements avec une clause `WHERE` au lieu de récupérer toutes les lignes."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'utilisation de `SELECT *` en production est un anti-pattern. Elle oblige la base de données à effectuer des E/S disque inutiles, augmente la taille des données transférées sur le réseau et peut corrompre le code de l'application si des colonnes sont ajoutées ou supprimées dans le schéma.",
+    "points": 10
+  },
+  {
+    "question_text": "Dans PostgreSQL, que se passe-t-il si vous utilisez des guillemets doubles (`\"`) au lieu de guillemets simples (`'`) pour une valeur textuelle, telle que : `WHERE username = \"alice\"` ?",
+    "options": [
+      "PostgreSQL traite `\"alice\"` comme un identifiant de colonne et lève une erreur « column 'alice' does not exist ».",
+      "PostgreSQL l'analyse parfaitement comme une chaîne littérale car les guillemets simples et doubles sont interchangeables.",
+      "La base de données la convertit automatiquement en une chaîne littérale mais émet un avertissement de dépréciation.",
+      "La requête s'exécute mais ne renvoie aucun enregistrement car les guillemets doubles impliquent une contrainte de nullité."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Dans PostgreSQL, les guillemets simples (`'`) sont utilisés pour les chaînes littérales, tandis que les guillemets doubles (`\"`) sont réservés pour les identifiants (comme les noms de tables ou de colonnes). Écrire `\"alice\"` indique à PostgreSQL de rechercher une colonne nommée `alice`.",
+    "points": 10
+  },
+  {
+    "question_text": "En quoi PostgreSQL et MySQL diffèrent-ils lors de l'utilisation de l'opérateur `LIKE` pour la recherche de motifs ?",
+    "options": [
+      "L'opérateur `LIKE` de PostgreSQL est sensible à la casse (nécessitant `ILIKE` pour l'insensibilité à la casse), tandis que le `LIKE` de MySQL est insensible à la casse par défaut sous des collations typiques.",
+      "Le `LIKE` de MySQL est sensible à la casse, tandis que le `LIKE` de PostgreSQL est insensible à la casse par défaut.",
+      "Les deux bases de données traitent `LIKE` comme étant sensible à la casse et ne proposent aucune alternative insensible à la casse.",
+      "PostgreSQL prend en charge `LIKE` et `ILIKE`, tandis que MySQL ne prend en charge que `ILIKE` pour les requêtes insensibles à la casse."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL implémente un `LIKE` sensible à la casse et fournit `ILIKE` pour les recherches insensibles à la casse. Le `LIKE` de MySQL est insensible à la casse par défaut sous les collations insensibles à la casse standards (comme `utf8mb4_0900_ai_ci`).",
+    "points": 10
+  },
+  {
+    "question_text": "Quelle est la méthode standard pour concaténer des chaînes dans PostgreSQL par rapport à MySQL par défaut ?",
+    "options": [
+      "PostgreSQL utilise l'opérateur `||`, tandis que MySQL utilise la fonction `CONCAT()`.",
+      "PostgreSQL utilise la fonction `CONCAT()`, tandis que MySQL utilise l'opérateur `||`.",
+      "Les deux moteurs utilisent l'opérateur `+` pour joindre des chaînes de caractères.",
+      "Les deux moteurs utilisent la fonction `CONCAT()`, et l'opérateur `||` n'est pas du tout pris en charge par l'un ou l'autre."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL suit le standard ANSI SQL en utilisant l'opérateur `||` pour la concaténation de chaînes. MySQL traite `||` comme un opérateur logique `OR` par défaut et nécessite la fonction `CONCAT()` à moins que le mode SQL `PIPES_AS_CONCAT` ne soit actif.",
+    "points": 10
+  }
+]

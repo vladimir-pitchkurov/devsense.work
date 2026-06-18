@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was ist der funktionelle Hauptunterschied zwischen einem `INNER JOIN` und einem `LEFT JOIN`?",
+    "options": [
+      "`INNER JOIN` gibt nur Zeilen zurück, die in beiden Tabellen übereinstimmende Werte aufweisen; `LEFT JOIN` gibt alle Zeilen aus der linken Tabelle zurück, unabhängig von Übereinstimmungen in der rechten Tabelle.",
+      "`LEFT JOIN` gibt nur übereinstimmende Zeilen zurück; `INNER JOIN` gibt alle Zeilen aus der linken Tabelle zurück und füllt die rechte Tabelle mit NULL-Werten auf.",
+      "Ein `INNER JOIN` wirft einen Fehler, wenn keine übereinstimmenden Schlüssel gefunden werden, während ein `LEFT JOIN` geräuschlos fehlschlägt und eine leere Menge zurückgibt.",
+      "Es gibt keinen Unterschied in ihrer Ausgabe, aber `INNER JOIN` ist stark für Primärschlüssel optimiert."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ein `INNER JOIN` filtert Zeilen heraus, die keine übereinstimmenden Werte in beiden Tabellen haben. Ein `LEFT JOIN` behält alle Zeilen der linken Tabelle bei, fügt übereinstimmende Zeilen aus der rechten Tabelle hinzu und füllt `NULL`-Werte ein, wenn keine Übereinstimmung gefunden wird.",
+    "points": 10
+  },
+  {
+    "question_text": "Wie unterscheiden sich MySQL und PostgreSQL in ihrer Unterstützung der `FULL OUTER JOIN`-Operation?",
+    "options": [
+      "PostgreSQL unterstützt `FULL OUTER JOIN` nativ, während MySQL dies nicht tut und das Kombinieren von `LEFT JOIN` und `RIGHT JOIN` mittels `UNION` erfordert.",
+      "MySQL unterstützt `FULL OUTER JOIN` nativ, während PostgreSQL die Verwendung von `UNION` erfordert.",
+      "Beide Engines unterstützen nativen `FULL OUTER JOIN` mit derselben Standard-SQL-Syntax.",
+      "Keine der beiden Engines unterstützt `FULL OUTER JOIN`, da dieser aus der Standard-SQL-Spezifikation ausgeschlossen ist."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL verfügt über keine native Unterstützung für `FULL OUTER JOIN`. Um diesen zu emulieren, müssen MySQL-Entwickler eine `LEFT JOIN`- und eine `RIGHT JOIN`-Abfrage schreiben und deren Ergebnisse mittels `UNION` zusammenführen. PostgreSQL unterstützt `FULL JOIN` nativ.",
+    "points": 10
+  },
+  {
+    "question_text": "Wann ist es angemessen, die `USING`-Klausel anstelle von `ON` für Join-Bedingungen zu verwenden?",
+    "options": [
+      "Wenn die verknüpften Spalten in beiden Tabellen exakt denselben Namen haben.",
+      "Wenn Sie Tabellen über Spalten mit unterschiedlichen Namen verknüpfen.",
+      "Wenn Sie einen `CROSS JOIN` ausführen, der keine Schlüsselbeziehungen erfordert.",
+      "Wenn Sie komplexe Vergleichsausdrücke angeben müssen, die mathematische Operatoren enthalten."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die `USING`-Klausel ist eine verkürzte Syntax. Sie können sie (z. B. `USING (department_id)`) nur verwenden, wenn die verknüpften Spalten in beiden Tabellen exakt denselben Namen und Datentyp aufweisen. Andernfalls müssen Sie `ON` verwenden.",
+    "points": 10
+  },
+  {
+    "question_text": "Was passiert, wenn Sie einen `CROSS JOIN` zwischen einer Tabelle mit 10.000 Zeilen und einer Tabelle mit 5.000 Zeilen ausführen?",
+    "options": [
+      "Es erzeugt ein kartesisches Produkt mit 50.000.000 (50 Millionen) Zeilen, was potenziell zu hohem Speicherverbrauch und Serververzögerungen führt.",
+      "Es gibt 15.000 Zeilen zurück, was der kombinierten Summe beider Tabellen entspricht.",
+      "Die Datenbank-Engine wirft einen Syntaxfehler, da Cross Joins ohne Index nicht zulässig sind.",
+      "Es gibt eine Ergebnismenge zurück, die nur die 5.000 übereinstimmenden Zeilen zwischen den beiden Tabellen enthält."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Ein `CROSS JOIN` erzeugt ein kartesisches Produkt, bei dem jede Zeile der ersten Tabelle mit jeder Zeile der zweiten Tabelle gepaart wird. Die Ergebnisgröße ist das Produkt beider Tabellengrößen (10.000 * 5.000 = 50.000.000 Zeilen). Dies kann die Datenbank leicht zum Absturz bringen oder deren Leistung beeinträchtigen.",
+    "points": 10
+  }
+]

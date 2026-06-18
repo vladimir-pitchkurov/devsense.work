@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Qual è la conseguenza dell'esecuzione di un'istruzione `UPDATE` o `DELETE` senza la clausola `WHERE`?",
+    "options": [
+      "La query verrà eseguita e applicherà le modifiche o l'eliminazione a tutte le righe della tabella.",
+      "Il motore di database rifiuterà la query e restituirà un errore di sintassi o di sicurezza.",
+      "La query verrà eseguita ma interesserà zero righe per evitare la perdita accidentale di dati.",
+      "Il database avvierà automaticamente un rollback e chiuderà la connessione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Se non viene fornita la clausola `WHERE` in un'istruzione `UPDATE` o `DELETE`, il motore SQL applicherà la modifica o l'eliminazione a ogni singolo record presente nella tabella di destinazione.",
+    "points": 10
+  },
+  {
+    "question_text": "Nel modello di transazione ACID, cosa garantisce l'Atomicità?",
+    "options": [
+      "Tutte le operazioni nel blocco di transazione vanno a buon fine, oppure l'intera transazione viene annullata (tutto o niente).",
+      "Il database trasforma automaticamente tutte le colonne di testo in valori ASCII atomici.",
+      "Le transazioni eseguite simultaneamente verranno eseguite in isolamento e non si bloccheranno mai a vicenda.",
+      "Una volta confermata la transazione (commit), le modifiche sopravviveranno garantitamente ai crash di sistema."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "L'Atomicità garantisce che una transazione sia trattata come un'unica unità indivisibile. Se una qualsiasi parte della transazione fallisce, l'intera transazione viene annullata (rollback), lasciando invariato lo stato del database.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo MySQL e PostgreSQL si differenziano quando si eseguono istruzioni DDL (ad es. `ALTER TABLE`, `DROP TABLE`) all'interno di un blocco di transazione?",
+    "options": [
+      "PostgreSQL supporta il DDL transazionale e può annullare le modifiche alla struttura; MySQL non lo supporta e attiva un commit implicito.",
+      "MySQL supporta il DDL transazionale e può annullare le modifiche alla struttura; PostgreSQL non lo supporta e attiva un commit implicito.",
+      "Entrambi i motori supportano il rollback completo delle transazioni contenenti modifiche allo schema (DDL).",
+      "Nessuno dei due motori consente di eseguire istruzioni DDL all'interno di un blocco di transazione."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "PostgreSQL supporta pienamente il DDL transazionale, consentendo l'annullamento delle modifiche alle tabelle. MySQL non supporta questa funzionalità; l'esecuzione di comandi DDL all'interno di una transazione provoca un commit implicito automatico, il che significa che la transazione non può essere annullata.",
+    "points": 10
+  },
+  {
+    "question_text": "Quale delle seguenti coppie di sintassi rappresenta il modo corretto di eseguire un \"upsert\" (inserimento o aggiornamento) in MySQL e PostgreSQL?",
+    "options": [
+      "MySQL utilizza `ON DUPLICATE KEY UPDATE` e PostgreSQL utilizza `ON CONFLICT (...) DO UPDATE`.",
+      "MySQL utilizza `ON CONFLICT (...) DO UPDATE` e PostgreSQL utilizza `ON DUPLICATE KEY UPDATE`.",
+      "Entrambi i motori utilizzano la sintassi standard `UPSERT INTO`.",
+      "Entrambi i motori utilizzano l'istruzione `INSERT OR REPLACE`."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "MySQL esegue gli upsert utilizzando la clausola `ON DUPLICATE KEY UPDATE` alla fine di un'istruzione `INSERT`. PostgreSQL utilizza invece `ON CONFLICT (conflict_target) DO UPDATE`.",
+    "points": 10
+  }
+]

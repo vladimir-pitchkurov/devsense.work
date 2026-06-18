@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Was ist der Hauptunterschied bei der Datenspeicherung und Ausführung zwischen einer Standard-View und einer Materialized View?",
+    "options": [
+      "Eine Standard-View ist eine virtuelle Abfrage-Abkürzung, die keine physischen Daten speichert, während eine Materialized View die Abfrageergebnisse physisch auf der Festplatte speichert und aktualisiert werden muss.",
+      "Eine Standard-View speichert Daten in temporären RAM-Puffern, während eine Materialized View Daten in einen permanenten Tabellenbereich auf der Festplatte schreibt.",
+      "Eine Materialized View kann nur auf eine einzige Basistabelle verweisen, während eine Standard-View mehrere Tabellen verknüpfen darf.",
+      "Standard-Views werden bei der Erstellung in ein Binärformat kompiliert, während Materialized Views zur Laufzeit dynamisch interpretiert werden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Eine Standard-View ist eine rein virtuelle Tabelle, die eine gespeicherte Abfrage darstellt; jedes Mal, wenn Sie daraus selektieren, führt die Datenbank die Abfrage aus. Eine Materialized View cacht die Abfrageergebnisse physisch in einer tabellenähnlichen Struktur auf der Festplatte. Sie bietet eine weitaus schnellere Leseleistung, erfordert jedoch manuelle oder geplante Aktualisierungen (Refreshes), um aktuell zu bleiben.",
+    "points": 10
+  },
+  {
+    "question_text": "Was ist in PostgreSQL eine zwingende Voraussetzung, um die Anweisung `REFRESH MATERIALIZED VIEW CONCURRENTLY` erfolgreich auszuführen?",
+    "options": [
+      "Die Materialized View muss mindestens einen eindeutigen Index (Unique Index) auf ihren Spalten definiert haben.",
+      "Die zugrunde liegende Abfrage darf keine Aggregatfunktionen oder Unterabfragen enthalten.",
+      "Der Datenbankbenutzer, der den Refresh ausführt, muss über Superuser-Administrationsrechte verfügen.",
+      "Die Materialized View muss unter Verwendung der `WITH CHECK OPTION`-Klausel erstellt worden sein."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Um eine Materialized View konkurrierend (ohne Blockierung gleichzeitiger SELECT-Abfragen) zu aktualisieren, benötigt PostgreSQL einen eindeutigen Index auf der Materialized View. Dieser eindeutige Index wird verwendet, um festzustellen, welche Zeilen sich geändert haben, sodass Aktualisierungen direkt vorgenommen werden können.",
+    "points": 10
+  },
+  {
+    "question_text": "Da MySQL Materialized Views nicht nativ unterstützt, was ist ein gängiger Workaround auf Datenbankebene, um eine solche zu simulieren?",
+    "options": [
+      "Erstellen Sie eine physische Cache-Tabelle und verwenden Sie den MySQL Event Scheduler (`CREATE EVENT`), um diese regelmäßig zu leeren (truncate) und neu zu befüllen.",
+      "Definieren Sie eine Standard-View mit der Option `ALGORITHM = TEMPTABLE` und einer `REFRESH INTERVAL`-Klausel.",
+      "Erstellen Sie eine virtuelle View und verknüpfen Sie diese über einen Fremdschlüssel mit einer Tabelle der MySQL Memory Engine.",
+      "MySQL kann Materialized Views auf Datenbankebene nicht simulieren; die Caching-Logik muss im Anwendungscode verarbeitet werden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "In MySQL können Sie eine Materialized View simulieren, indem Sie eine physische Tabelle erstellen, um die Abfrageausgabe zu cachen. Anschließend erstellen Sie ein geplantes Event (`CREATE EVENT`), um regelmäßig ein Skript auszuführen, das die Cache-Tabelle leert (TRUNCATE) und frische Datensätze aus der Quellabfrage einfügt.",
+    "points": 10
+  },
+  {
+    "question_text": "Welchen Zweck hat das Anhängen der Klausel `WITH CHECK OPTION` an die Definition einer aktualisierbaren View?",
+    "options": [
+      "Es verhindert, dass Benutzer Zeilen einfügen oder aktualisieren, die die Filterbedingung (`WHERE`) der View nicht erfüllen würden.",
+      "Es zwingt die Datenbank, vor dem Schreiben Schema-Integritätsprüfungen auf den zugrunde liegenden Tabellen durchzuführen.",
+      "Es prüft, ob der aktuelle Datenbankbenutzer Lese- und Schreibrechte für alle referenzierten Spalten besitzt.",
+      "Es stellt sicher, dass gleichzeitige Transaktionen, die die View ändern, unter dem Isolationslevel SERIALIZABLE ausgeführt werden."
+    ],
+    "correct_answer_index": 0,
+    "explanation": "Die Klausel `WITH CHECK OPTION` garantiert, dass jede über die View hinzugefügte oder aktualisierte Zeile der `WHERE`-Klausel der View entspricht. Ohne sie könnte ein Benutzer eine Zeile auf Werte aktualisieren, die dazu führen, dass sie aus den Ergebnissen der View verschwindet, was Konsistenzprobleme verursachen kann.",
+    "points": 10
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "question_text": "Qual è la differenza fondamentale tra l'esecuzione di EXPLAIN e di EXPLAIN ANALYZE su una query?",
+    "options": [
+      "EXPLAIN stampa il percorso di esecuzione in formato JSON, mentre EXPLAIN ANALYZE lo formatta come un albero di testo semplice.",
+      "EXPLAIN mostra solo i costi stimati dell'ottimizzatore e il conteggio delle righe senza eseguire la query; EXPLAIN ANALYZE esegue effettivamente la query e restituisce i tempi di esecuzione e i conteggi reali.",
+      "EXPLAIN acquisisce un lock sulle tabelle di destinazione, mentre EXPLAIN ANALYZE viene eseguito all'interno di una sandbox di transazione isolata in sola lettura.",
+      "EXPLAIN è supportato da MySQL e PostgreSQL, ma EXPLAIN ANALYZE è un'esclusiva di Oracle e SQL Server."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "La clausola `EXPLAIN` standard analizza la query e genera delle stime senza eseguirla, risultando veloce e sicura. L'aggiunta di `ANALYZE` costringe il motore del database a eseguire la query, misurando i tempi effettivi, le letture dei buffer e il conteggio reale delle righe.",
+    "points": 10
+  },
+  {
+    "question_text": "Perché un Index Only Scan di PostgreSQL potrebbe comunque eseguire operazioni di lettura fisica sulle pagine dell'heap della tabella?",
+    "options": [
+      "L'indice ha subito uno split dei nodi interni e richiede un bilanciamento fisico.",
+      "La mappa di visibilità (Visibility Map) indica che le pagine di destinazione contengono tuple non ancora ripulite dal vacuum, costringendo il motore a ispezionare l'heap per verificare la visibilità della transazione.",
+      "Il pianificatore di query utilizza per impostazione predefinita gli Index Scan standard se la query viene eseguita al di fuori di un blocco di transazione.",
+      "PostgreSQL non supporta gli Index Only Scan sugli indici B-Tree."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un `Index Only Scan` recupera tutte le colonne richieste direttamente dall'indice. Tuttavia, per garantire la visibilità MVCC, PostgreSQL consulta la mappa di visibilità. Se una pagina è contrassegnata come contenente tuple modificate e non ancora ripulite (non-vacuumed), il pianificatore deve recuperare la pagina dall'heap della tabella per verificare se tali tuple siano visibili alla transazione corrente.",
+    "points": 10
+  },
+  {
+    "question_text": "Nel piano EXPLAIN di MySQL, qual è il significato del tipo di accesso `index` e come si differenzia dal tipo di accesso `ALL`?",
+    "options": [
+      "Il tipo `index` è una ricerca sull'indice per una singola riga, mentre `ALL` recupera tutte le pagine dalla memoria.",
+      "Il tipo `index` rappresenta una scansione completa dell'albero dell'indice, che evita di leggere l'intero tablespace ma legge comunque tutti i record dell'indice; `ALL` rappresenta una scansione completa dell'heap della tabella.",
+      "Il tipo `index` indica che un indice cluster è stato ignorato, forzando una scansione della tabella.",
+      "MySQL utilizza `index` per indicare gli indici funzionali, mentre `ALL` si riferisce agli indici B-Tree standard."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "In MySQL, il tipo di join `index` rappresenta una scansione completa dell'indice (Full Index Scan, simile all'Index Only Scan in PostgreSQL). Il motore scorre l'intero albero dell'indice. Sebbene sia più veloce rispetto ad `ALL` (Scansione completa della tabella) perché i blocchi dell'indice sono solitamente più piccoli dei blocchi dei dati, scansiona comunque tutte le voci e non si tratta di una ricerca diretta tramite chiave.",
+    "points": 10
+  },
+  {
+    "question_text": "In che modo il Bitmap Index Scan di PostgreSQL ottimizza l'I/O su disco rispetto a un Index Scan standard?",
+    "options": [
+      "Aggira il buffer pool e scrive direttamente sulle pagine del disco.",
+      "Genera una mappa di bit (bitmap) delle pagine dell'heap corrispondenti in memoria e le ordina in base alla posizione fisica del blocco su disco, consentendo al Bitmap Heap Scan di leggere i dati in modo sequenziale ed evitare l'I/O casuale.",
+      "Converte le chiavi dell'indice in hash md5 per eseguire confronti tra interi in un singolo ciclo.",
+      "Disabilita il versionamento delle righe MVCC per la durata della scansione per evitare di leggere le tuple morte."
+    ],
+    "correct_answer_index": 1,
+    "explanation": "Un `Index Scan` standard può causare colli di bottiglia legati all'I/O casuale se visita ripetutamente le stesse pagine dell'heap seguendo l'ordine dell'indice. Un `Bitmap Index Scan` raccoglie tutti i puntatori alle tuple, li raggruppa in una mappa di bit ordinata per indirizzi fisici su disco e li passa a un `Bitmap Heap Scan` che recupera le pagine in modo sequenziale, evitando ricerche casuali sul disco.",
+    "points": 10
+  }
+]
