@@ -274,5 +274,28 @@ class MyService {
    - **Категория**: `microservices`
    - **Slug**: `microservice-antipatterns`
    - **Темы**: Distributed Monolith, Shared Database, Nano-services, Mega-gateways, Chatty Services.
-   - **Статус**: Запланировано.
+   - **Статус**: Завершено.
+
+---
+
+## 10. План-беклог статей по безопасности серверов и веб-приложений
+
+Для расширения базы знаний DevSense добавлена серия из 3 статей по безопасности (категория `security`).
+
+### Список статей по безопасности:
+
+1. **Уязвимости веб-приложений и их предотвращение (Web Application Vulnerabilities & Mitigations)**
+   - **Slug**: `web-app-security`
+   - **Темы**: SQLi, Command Injection, XSS, CSRF, IDOR.
+   - **Статус**: Завершено.
+
+2. **SSRF и безопасная загрузка файлов (SSRF & Secure File Uploads)**
+   - **Slug**: `ssrf-and-file-upload-security`
+   - **Темы**: Предотвращение SSRF, фильтрация IP, защита загрузки (MIME-типы, переименование, изоляция хранилища).
+   - **Статус**: Завершено.
+
+3. **Усиление защиты серверов и инфраструктуры (Server Hardening & Infrastructure Protection)**
+   - **Slug**: `server-and-infrastructure-hardening`
+   - **Темы**: Заголовки безопасности (CSP, HSTS, CORS), TLS, Rate Limiting, защита .env, изоляция базы данных.
+   - **Статус**: Завершено.
 
