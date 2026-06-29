@@ -299,3 +299,14 @@ class MyService {
    - **Темы**: Заголовки безопасности (CSP, HSTS, CORS), TLS, Rate Limiting, защита .env, изоляция базы данных.
    - **Статус**: Завершено.
 
+---
+
+## 11. Статья по глубокому разбору Redis (Redis Deep Dive)
+
+1. **Глубокий разбор Redis: однопоточная архитектура, структуры данных, AOF/RDB и политики вытеснения**
+   - **Категория**: `architecture`
+   - **Slug**: `redis-deep-dive`
+   - **Темы**: Single-Threaded Event Loop, RAM performance, ZipList/ListPack/SkipList, AOF vs RDB, eviction policies (`allkeys-lru`, `allkeys-lfu`), dangerous blocking operations (`KEYS *` vs `SCAN`), безопасные пакетные скрипты на PHP 8.5/Laravel.
+   - **Статус**: Завершено.
+
+
