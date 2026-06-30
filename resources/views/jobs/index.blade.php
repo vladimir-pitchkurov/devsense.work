@@ -1,4 +1,4 @@
-<x-layout :title="__('ui.card_jobs_title') ?? 'Careers'" :description="__('ui.card_jobs_excerpt') ?? 'Browse open roles'">
+<x-layout :title="__('ui.jobs.index_title')" :description="__('ui.jobs.index_desc')">
     <section class="hero">
         <h1 class="hero__title">{{ __('ui.welcome.card_jobs_title') }}</h1>
         <p class="hero__description">{{ __('ui.welcome.card_jobs_excerpt') }}</p>

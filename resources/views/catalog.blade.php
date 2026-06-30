@@ -1,4 +1,4 @@
-<x-layout :title="__('ui.welcome.title') ?: 'Catalog'" :description="__('ui.welcome.description') ?: 'Browse guides and tutorials'">
+<x-layout :title="__('ui.nav.catalog')" :description="__('ui.welcome.ecosystem_lead')">
     <div class="search-layout">
         <!-- Sidebar filters -->
         <aside class="search-sidebar" id="search-sidebar">

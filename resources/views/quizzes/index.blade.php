@@ -1,16 +1,16 @@
 <x-layout 
-    :title="app()->getLocale() === 'ru' ? 'Квизы и Геймификация | DevSense' : 'Interview Quizzes & Gamification | DevSense'" 
-    :description="app()->getLocale() === 'ru' ? 'Проверьте свои технические знания по PHP, Laravel и архитектуре. Набирайте очки и открывайте достижения!' : 'Test your technical knowledge of PHP, Laravel, and software architecture. Score points and unlock badges!'"
+    :title="__('ui.quizzes.index_title')" 
+    :description="__('ui.quizzes.index_desc')"
 >
     <div class="quizzes-container">
         <!-- Hero Header -->
         <section class="quizzes-hero">
             <div class="hero-glow"></div>
             <h1 class="hero-title" style="font-family: 'Outfit', sans-serif;">
-                {{ app()->getLocale() === 'ru' ? 'Квизы и Геймификация' : 'Interview Quizzes & Gamification' }}
+                {{ __('ui.quizzes.hero_title') }}
             </h1>
             <p class="hero-lead">
-                {{ app()->getLocale() === 'ru' ? 'Интерактивные тесты для подготовки к техническим собеседованиям. Прокачайте навыки, зарабатывайте баллы и открывайте бейджи.' : 'Interactive challenges to prepare for technical interviews. Level up your skills, score points, and unlock achievements.' }}
+                {{ __('ui.quizzes.hero_lead') }}
             </p>
         </section>
 
@@ -28,7 +28,7 @@
                         </div>
                         <div class="user-points-badge">
                             <span class="points-val">{{ $user->points }}</span>
-                            <span class="points-lbl">{{ app()->getLocale() === 'ru' ? 'Баллов' : 'Points' }}</span>
+                            <span class="points-lbl">{{ __('ui.quizzes.points') }}</span>
                         </div>
                     </div>
 
@@ -52,11 +52,11 @@
 
                         <div class="progress-bar-container">
                             <div class="progress-bar-labels">
-                                <span>{{ app()->getLocale() === 'ru' ? 'Прогресс достижений' : 'Achievement Progress' }}</span>
+                                <span>{{ __('ui.quizzes.achievement_progress') }}</span>
                                 @if($nextBadge)
-                                    <span>{{ $user->points }} / {{ $targetPoints }} {{ app()->getLocale() === 'ru' ? 'баллов' : 'points' }}</span>
+                                    <span>{{ $user->points }} / {{ $targetPoints }} {{ __('ui.quizzes.points_short') }}</span>
                                 @else
-                                    <span>{{ app()->getLocale() === 'ru' ? 'Максимальный ранг!' : 'Max Rank Unlocked!' }}</span>
+                                    <span>{{ __('ui.quizzes.max_rank') }}</span>
                                 @endif
                             </div>
                             <div class="progress-track">
@@ -64,9 +64,9 @@
                             </div>
                             @if($nextBadge)
                                 <p class="next-badge-info">
-                                    {{ app()->getLocale() === 'ru' ? 'Следующий бейдж:' : 'Next badge:' }} 
+                                    {{ __('ui.quizzes.next_badge') }} 
                                     <strong>{{ $nextBadge->translate()?->title }}</strong> 
-                                    ({{ app()->getLocale() === 'ru' ? 'нужно' : 'requires' }} {{ $nextBadge->points_required }})
+                                    ({{ __('ui.quizzes.requires') }} {{ $nextBadge->points_required }})
                                 </p>
                             @endif
                         </div>
@@ -74,11 +74,11 @@
                         <!-- Unlocked Badges Row -->
                         <div class="badges-row-section">
                             <h3 class="section-subtitle" style="font-family: 'Outfit', sans-serif;">
-                                {{ app()->getLocale() === 'ru' ? 'Ваши бейджи' : 'Your Badges' }}
+                                {{ __('ui.quizzes.your_badges') }}
                             </h3>
                             @if($unlockedBadges->isEmpty())
                                 <p class="empty-badges-msg">
-                                    {{ app()->getLocale() === 'ru' ? 'Пройдите первый квиз, чтобы разблокировать награду!' : 'Complete your first quiz to unlock a badge!' }}
+                                    {{ __('ui.quizzes.first_quiz_hint') }}
                                 </p>
                             @else
                                 <div class="unlocked-badges-grid">
@@ -98,12 +98,10 @@
                     @else
                         <div class="unverified-reminder-box" style="margin-top: 1.5rem; padding: 1rem; background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.2); border-radius: 8px; text-align: center;">
                             <p style="margin: 0; font-size: 0.9rem; color: var(--text-color); line-height: 1.5;">
-                                {{ app()->getLocale() === 'ru' 
-                                    ? 'Пожалуйста, подтвердите ваш имейл, чтобы разблокировать бейджи и прогресс достижений.' 
-                                    : 'Please verify your email address to unlock badges and achievement progress.' }}
+                                {{ __('ui.quizzes.verify_unverified_hint') }}
                             </p>
                             <a href="{{ route('verification.notice') }}" style="display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 600; text-decoration: none;">
-                                {{ app()->getLocale() === 'ru' ? 'Подтвердить имейл' : 'Verify Email' }} &rarr;
+                                {{ __('ui.quizzes.verify_email_btn') }} &rarr;
                             </a>
                         </div>
                     @endif
@@ -113,10 +111,10 @@
                 <div class="guest-cta-card glass-card">
                     <div class="cta-content">
                         <h2 class="cta-title" style="font-family: 'Outfit', sans-serif;">
-                            {{ app()->getLocale() === 'ru' ? 'Хотите отслеживать свои результаты?' : 'Want to track your progress?' }}
+                            {{ __('ui.quizzes.track_progress_title') }}
                         </h2>
                         <p class="cta-lead">
-                            {{ app()->getLocale() === 'ru' ? 'Авторизуйтесь, чтобы копить баллы за верные ответы, разблокировать престижные бейджи и войти в глобальный рейтинг разработчиков!' : 'Sign in to save your quiz answers, accumulate XP points, unlock rare achievement badges, and show off your technical expertise!' }}
+                            {{ __('ui.quizzes.track_progress_lead') }}
                         </p>
                         <div class="cta-actions">
                             <a href="{{ route('login.locale') }}" class="btn-primary glow-button">
@@ -134,7 +132,7 @@
         <!-- Quizzes Grid -->
         <section class="quizzes-grid-section">
             <h2 class="section-title" style="font-family: 'Outfit', sans-serif;">
-                {{ app()->getLocale() === 'ru' ? 'Доступные испытания' : 'Available Challenges' }}
+                {{ __('ui.quizzes.available_challenges') }}
             </h2>
             
             <div class="quizzes-grid">
@@ -151,7 +149,7 @@
                             </div>
                             @if($isCompleted)
                                 <span class="status-indicator completed">
-                                    <span class="check-mark">✓</span> {{ app()->getLocale() === 'ru' ? 'Пройден' : 'Completed' }}
+                                    <span class="check-mark">✓</span> {{ __('ui.quizzes.completed_badge') }}
                                 </span>
                             @endif
                         </div>
@@ -166,14 +164,14 @@
                         <div class="quiz-card-footer">
                             @if($isCompleted)
                                 <div class="score-display">
-                                    {{ app()->getLocale() === 'ru' ? 'Счёт:' : 'Score:' }} <strong>{{ $userScore }}/{{ $quiz->points }}</strong>
+                                    {{ __('ui.quizzes.score') }} <strong>{{ $userScore }}/{{ $quiz->points }}</strong>
                                 </div>
                             @endif
                             <a href="{{ route('quizzes.show', ['slug' => $quiz->slug]) }}" class="quiz-action-btn {{ $isCompleted ? 'btn-outline' : 'btn-glow' }}">
                                 @if($isCompleted)
-                                    {{ app()->getLocale() === 'ru' ? 'Пройти снова' : 'Retake Quiz' }}
+                                    {{ __('ui.quizzes.retake_quiz_btn') }}
                                 @else
-                                    {{ app()->getLocale() === 'ru' ? 'Начать тест' : 'Start Quiz' }}
+                                    {{ __('ui.quizzes.start_quiz') }}
                                 @endif
                             </a>
                         </div>

@@ -1,5 +1,5 @@
 <x-layout 
-    title="{{ app()->getLocale() === 'ru' ? 'Предложения сообщества | DevSense' : 'Community Suggestions | DevSense' }}"
+    title="{{ __('ui.suggestions.title') }}"
     description="Suggest guides and site features for the DevSense platform."
 >
 <div class="admin-container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; font-family: 'Inter', sans-serif;">
@@ -7,10 +7,10 @@
     <!-- Header Section -->
     <div style="text-align: center; margin-bottom: 3rem;">
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 800; background: linear-gradient(135deg, #fff, #93c5fd, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 1rem;">
-            {{ app()->getLocale() === 'ru' ? 'Предложения сообщества' : 'Community Suggestions' }}
+            {{ __('ui.suggestions.hero_title') }}
         </h1>
         <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            {{ app()->getLocale() === 'ru' ? 'Предлагайте новые темы для статей или улучшения функций платформы. Голосуйте за лучшие идеи!' : 'Suggest new tutorial topics or request platform enhancements. Upvote ideas you support!' }}
+            {{ __('ui.suggestions.hero_lead') }}
         </p>
     </div>
 
@@ -23,24 +23,24 @@
     <!-- Submit Suggestion Form Card -->
     <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.75rem; margin-bottom: 3rem; backdrop-filter: blur(10px);">
         <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text-color); margin-top: 0; margin-bottom: 1rem;">
-            {{ app()->getLocale() === 'ru' ? 'Поделитесь своей идеей' : 'Submit a Suggestion' }}
+            {{ __('ui.suggestions.submit_title') }}
         </h2>
         @auth
             <form action="{{ route('suggestions.storeGeneral', ['locale' => app()->getLocale()]) }}" method="POST">
                 @csrf
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <textarea name="content" rows="3" required class="form-input" style="background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.5rem; padding: 0.75rem; font-family: inherit; font-size: 0.95rem; resize: vertical;" placeholder="{{ app()->getLocale() === 'ru' ? 'Опишите ваше предложение подробно (минимум 10 символов)...' : 'Describe your suggestion in detail (min 10 characters)...' }}"></textarea>
+                    <textarea name="content" rows="3" required class="form-input" style="background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.5rem; padding: 0.75rem; font-family: inherit; font-size: 0.95rem; resize: vertical;" placeholder="{{ __('ui.suggestions.placeholder') }}"></textarea>
                 </div>
                 <div style="display: flex; justify-content: flex-end;">
                     <button type="submit" class="admin-btn admin-btn--primary" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); color: white; border: none; font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 0.5rem; cursor: pointer;">
-                        {{ app()->getLocale() === 'ru' ? 'Отправить предложение' : 'Submit Idea' }}
+                        {{ __('ui.suggestions.submit_btn') }}
                     </button>
                 </div>
             </form>
         @else
             <div style="text-align: center; padding: 1rem 0;">
                 <p style="margin: 0 0 1rem 0; color: var(--text-muted); font-size: 0.95rem;">
-                    {{ app()->getLocale() === 'ru' ? 'Войдите на сайт, чтобы отправить предложение или проголосовать.' : 'Sign in to submit a suggestion or cast your votes.' }}
+                    {{ __('ui.suggestions.sign_in_hint') }}
                 </p>
                 <a href="{{ route('login.locale') }}" class="btn-primary glow-button" style="text-decoration: none; padding: 0.5rem 1.5rem; border-radius: 0.5rem; display: inline-block; font-weight: 600;">
                     {{ __('ui.nav.login') }}
@@ -53,7 +53,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
         @if($suggestions->isEmpty())
             <div style="text-align: center; padding: 3rem; border: 1px dashed var(--border-color); border-radius: 16px; color: var(--text-muted);">
-                {{ app()->getLocale() === 'ru' ? 'Предложений пока нет. Будьте первыми!' : 'No suggestions submitted yet. Be the first!' }}
+                {{ __('ui.suggestions.empty') }}
             </div>
         @else
             @foreach($suggestions as $suggestion)
@@ -70,7 +70,7 @@
                                 @if($suggestion->article->id)
                                     <span>•</span>
                                     <span style="background: rgba(99, 102, 241, 0.1); color: var(--primary-color); padding: 0.15rem 0.4rem; border-radius: 0.25rem;">
-                                        {{ app()->getLocale() === 'ru' ? 'Для статьи:' : 'For guide:' }} {{ $suggestion->article->translate()?->title }}
+                                        {{ __('ui.suggestions.for_guide') }} {{ $suggestion->article->translate()?->title }}
                                     </span>
                                 @endif
                             </div>
@@ -98,7 +98,7 @@
                     <!-- Comments / Supplement Section -->
                     <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem;">
                         <button onclick="toggleComments({{ $suggestion->id }})" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 0; display: inline-flex; align-items: center; gap: 0.25rem;">
-                            💬 <span>{{ $suggestion->comments()->count() }} {{ app()->getLocale() === 'ru' ? 'коммент.' : 'comments' }}</span>
+                            💬 <span>{{ $suggestion->comments()->count() }} {{ __('ui.suggestions.comments') }}</span>
                         </button>
 
                         <div id="comments-container-{{ $suggestion->id }}" style="display: none; margin-top: 1rem; flex-direction: column; gap: 0.75rem; padding-left: 1rem; border-left: 2px solid var(--border-color);">
@@ -117,9 +117,9 @@
                             @auth
                                 <form action="{{ route('suggestions.comments.store', ['suggestion' => $suggestion->id, 'locale' => app()->getLocale()]) }}" method="POST" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
                                     @csrf
-                                    <input type="text" name="content" required placeholder="{{ app()->getLocale() === 'ru' ? 'Добавить комментарий...' : 'Add comment...' }}" class="form-input" style="flex-grow: 1; padding: 0.4rem 0.75rem; font-size: 0.85rem; border-radius: 0.375rem; background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color);">
+                                    <input type="text" name="content" required placeholder="{{ __('ui.suggestions.add_comment_placeholder') }}" class="form-input" style="flex-grow: 1; padding: 0.4rem 0.75rem; font-size: 0.85rem; border-radius: 0.375rem; background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color);">
                                     <button type="submit" class="admin-btn admin-btn--primary" style="padding: 0.4rem 1rem; font-size: 0.85rem; border-radius: 0.375rem; cursor: pointer;">
-                                        {{ app()->getLocale() === 'ru' ? 'Отправить' : 'Post' }}
+                                        {{ __('ui.suggestions.post') }}
                                     </button>
                                 </form>
                             @endauth

@@ -6,7 +6,7 @@
         <!-- Back Button -->
         <nav class="quiz-nav-back">
             <a href="{{ route('quizzes.index') }}" class="back-link">
-                ← {{ app()->getLocale() === 'ru' ? 'Назад к квизам' : 'Back to Quizzes' }}
+                ← {{ __('ui.quizzes.back_to_quizzes') }}
             </a>
         </nav>
 
@@ -18,7 +18,7 @@
                     {{ $quiz->translate()?->title }}
                 </h2>
                 <div class="question-progress" id="question-progress">
-                    {{ app()->getLocale() === 'ru' ? 'Загрузка...' : 'Loading...' }}
+                    {{ __('ui.quizzes.loading') }}
                 </div>
             </div>
 
@@ -47,21 +47,21 @@
                     <div class="result-celebration">
                         <span class="celebration-emoji" id="celebration-emoji">🎉</span>
                         <h3 class="result-headline" style="font-family: 'Outfit', sans-serif;" id="result-headline">
-                            {{ app()->getLocale() === 'ru' ? 'Тест завершен!' : 'Quiz Completed!' }}
+                            {{ __('ui.quizzes.completed_title') }}
                         </h3>
                         <p class="result-sub">
-                            {{ app()->getLocale() === 'ru' ? 'Вы отлично справились! Вот ваши результаты:' : 'Great job! Here is a summary of your performance:' }}
+                            {{ __('ui.quizzes.completed_desc') }}
                         </p>
                     </div>
 
                     <!-- Score stats cards -->
                     <div class="result-stats">
                         <div class="stat-card">
-                            <span class="stat-lbl">{{ app()->getLocale() === 'ru' ? 'Правильные ответы' : 'Correct Answers' }}</span>
+                            <span class="stat-lbl">{{ __('ui.quizzes.correct_answers') }}</span>
                             <span class="stat-val" id="stat-correct-count">0/0</span>
                         </div>
                         <div class="stat-card accent">
-                            <span class="stat-lbl">{{ app()->getLocale() === 'ru' ? 'Получено очков' : 'XP Points Earned' }}</span>
+                            <span class="stat-lbl">{{ __('ui.quizzes.xp_earned') }}</span>
                             <span class="stat-val" id="stat-xp-earned">+0 XP</span>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                     <!-- Review Section -->
                     <div class="review-section">
                         <h4 class="review-title" style="font-family: 'Outfit', sans-serif;">
-                            {{ app()->getLocale() === 'ru' ? 'Обзор ответов' : 'Review Questions' }}
+                            {{ __('ui.quizzes.review_questions') }}
                         </h4>
                         <div class="review-list" id="review-list"></div>
                     </div>
@@ -77,13 +77,13 @@
                     <!-- Action buttons at the bottom of the results page -->
                     <div class="result-actions" style="margin-top: 3rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
                         <button type="button" class="btn-primary" id="retake-quiz-btn">
-                            {{ app()->getLocale() === 'ru' ? 'Пройти заново' : 'Retake Quiz' }}
+                            {{ __('ui.quizzes.retake_quiz_btn') }}
                         </button>
                         <a href="{{ route('quizzes.index') }}" class="btn-secondary">
-                            {{ app()->getLocale() === 'ru' ? 'К списку квизов' : 'Quizzes List' }}
+                            {{ __('ui.quizzes.quizzes_list') }}
                         </a>
                         <a href="{{ route('home') }}" class="btn-secondary">
-                            {{ app()->getLocale() === 'ru' ? 'На главную' : 'Home' }}
+                            {{ __('ui.nav.home') }}
                         </a>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
             <div class="quiz-box-footer" id="quiz-box-footer">
                 <div class="feedback-hint" id="feedback-hint"></div>
                 <button type="button" class="btn-primary glow-button" id="footer-action-btn" disabled>
-                    {{ app()->getLocale() === 'ru' ? 'Проверить' : 'Check Answer' }}
+                    {{ __('ui.quizzes.check_answer') }}
                 </button>
             </div>
         </div>
@@ -107,12 +107,12 @@
                 <div class="modal-sparkles"></div>
                 <span class="modal-emoji">🏆</span>
                 <h3 class="modal-title" style="font-family: 'Outfit', sans-serif;">
-                    {{ app()->getLocale() === 'ru' ? 'Новое достижение разблокировано!' : 'New Achievement Unlocked!' }}
+                    {{ __('ui.courses.achievement_unlocked') }}
                 </h3>
                 <h4 class="modal-badge-name" id="modal-badge-name">PHP Novice</h4>
                 <p class="modal-badge-desc" id="modal-badge-desc">Scored 50+ total points in quizzes.</p>
                 <button type="button" class="btn-primary" onclick="document.getElementById('achievement-modal').style.display = 'none';">
-                    {{ app()->getLocale() === 'ru' ? 'Отлично!' : 'Awesome!' }}
+                    {{ __('ui.courses.awesome') }}
                 </button>
             </div>
         </div>
@@ -152,7 +152,7 @@
             if (!retakeBtn) return;
             if (!lastCompletedTimestamp) {
                 retakeBtn.disabled = false;
-                retakeBtn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Пройти заново' : 'Retake Quiz' }}";
+                retakeBtn.innerHTML = "{{ __('ui.quizzes.retake_quiz_btn') }}";
                 return;
             }
 
@@ -164,14 +164,14 @@
             if (remaining > 0) {
                 retakeBtn.disabled = true;
                 const minutes = Math.ceil(remaining / (60 * 1000));
-                retakeBtn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Пройти заново (через ' : 'Retake Quiz (in ' }}" + minutes + " {{ app()->getLocale() === 'ru' ? 'мин)' : 'min)' }}";
+                retakeBtn.innerHTML = "{{ __('ui.quizzes.retake_quiz_btn') }} (" + minutes + " min)";
                 
                 if (!retakeTimer) {
                     retakeTimer = setInterval(updateRetakeButton, 10000);
                 }
             } else {
                 retakeBtn.disabled = false;
-                retakeBtn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Пройти заново' : 'Retake Quiz' }}";
+                retakeBtn.innerHTML = "{{ __('ui.quizzes.retake_quiz_btn') }}";
                 if (retakeTimer) {
                     clearInterval(retakeTimer);
                     retakeTimer = null;
@@ -295,13 +295,13 @@
             feedbackHint.innerHTML = '';
             
             footerActionBtn.disabled = true;
-            footerActionBtn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Проверить' : 'Check Answer' }}";
+            footerActionBtn.innerHTML = "{{ __('ui.quizzes.check_answer') }}";
 
             const question = quizData.questions[currentQuestionIndex];
             
             // Set Progress
             const total = quizData.questions.length;
-            questionProgress.innerHTML = `{{ app()->getLocale() === 'ru' ? 'Вопрос' : 'Question' }} ${currentQuestionIndex + 1} {{ app()->getLocale() === 'ru' ? 'из' : 'of' }} ${total}`;
+            questionProgress.innerHTML = `{{ __('ui.quizzes.question') }} ${currentQuestionIndex + 1} {{ __('ui.quizzes.of') }} ${total}`;
             
             const progressPct = ((currentQuestionIndex) / total) * 100;
             quizStepFill.style.width = `${progressPct}%`;
@@ -463,23 +463,22 @@
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn-reveal-answer';
-            btn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Показать правильный ответ' : 'Show Correct Answer' }}";
+            btn.innerHTML = "{{ __('ui.quizzes.show_correct_answer') }}";
             btn.addEventListener('click', showLoginCTA);
             feedbackHint.appendChild(btn);
             feedbackHint.style.display = 'block';
         }
 
         function showLoginCTA() {
-            const isRu = "{{ app()->getLocale() === 'ru' }}";
             feedbackHint.innerHTML = `
                 <div class="quiz-login-cta">
-                    <p>🔒 ${isRu ? 'Войдите, чтобы видеть правильные ответы и подробные объяснения' : 'Sign in to see correct answers and detailed explanations'}</p>
+                    <p>🔒 {{ __('ui.quizzes.sign_in_to_vote') ?? 'Sign in to see correct answers and detailed explanations' }}</p>
                     <div class="quiz-cta-actions">
                         <a href="${loginUrl}" class="admin-btn admin-btn--primary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; border-radius: 6px; font-family: 'Outfit', sans-serif;">
-                            ${isRu ? 'Войти' : 'Sign in'}
+                            {{ __('ui.nav.login') }}
                         </a>
                         <a href="${registerUrl}" class="admin-btn admin-btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; border-radius: 6px; font-family: 'Outfit', sans-serif;">
-                            ${isRu ? 'Регистрация' : 'Register'}
+                            {{ __('ui.nav.register') }}
                         </a>
                     </div>
                 </div>
@@ -488,10 +487,9 @@
         }
 
         function showExplanation(text) {
-            const isRu = "{{ app()->getLocale() === 'ru' }}";
             feedbackHint.innerHTML = `
                 <div class="quiz-explanation">
-                    <strong>${isRu ? 'Объяснение:' : 'Explanation:'}</strong> ${formatText(text)}
+                    <strong>{{ __('ui.courses.explanation') }}</strong> ${formatText(text)}
                 </div>
             `;
             feedbackHint.style.display = 'block';
@@ -506,8 +504,8 @@
 
                 const isLast = (currentQuestionIndex === quizData.questions.length - 1);
                 footerActionBtn.innerHTML = isLast 
-                    ? "{{ app()->getLocale() === 'ru' ? 'Показать результаты' : 'Finish Quiz' }}"
-                    : "{{ app()->getLocale() === 'ru' ? 'Дальше' : 'Next Question' }}";
+                    ? "{{ __('ui.quizzes.finish_quiz') }}"
+                    : "{{ __('ui.quizzes.next_question') }}";
 
                 const nextIndex = currentQuestionIndex + 1;
                 if (isLoggedIn) {
@@ -537,10 +535,10 @@
 
         function submitQuiz() {
             // Loader State
-            questionProgress.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Подсчет результатов...' : 'Submitting...' }}";
+            questionProgress.innerHTML = "{{ __('ui.quizzes.submitting') }}";
             quizStepFill.style.width = "100%";
             choicesGrid.innerHTML = '';
-            questionText.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Пожалуйста, подождите...' : 'Processing answers...' }}";
+            questionText.innerHTML = "{{ __('ui.quizzes.processing') }}";
             footerActionBtn.style.display = 'none';
 
             clearProgress();
@@ -576,12 +574,12 @@
                 if (err.message === "unauthenticated") {
                     questionText.innerHTML = `
                         <div class="auth-error-state">
-                            <p>{{ app()->getLocale() === 'ru' ? 'Пожалуйста, войдите в систему, чтобы сохранить свои результаты.' : 'Please sign in to submit your quiz and save points.' }}</p>
+                            <p>{{ __('ui.quizzes.login_to_save_hint') }}</p>
                             <a href="{{ route('login.locale') }}" class="btn-primary">{{ __('ui.nav.login') }}</a>
                         </div>
                     `;
                 } else {
-                    questionText.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Произошла ошибка при отправке теста. Попробуйте еще раз.' : 'An error occurred. Please try again.' }}";
+                    questionText.innerHTML = "An error occurred. Please try again.";
                 }
             });
         }
@@ -707,7 +705,7 @@
                     <div class="review-opts-container">${answersHTML}</div>
                     ${explanation ? `
                         <div class="review-explanation">
-                            <strong>{{ app()->getLocale() === 'ru' ? 'Объяснение:' : 'Explanation:' }}</strong> ${formatText(explanation)}
+                            <strong>{{ __('ui.courses.explanation') }}</strong> ${formatText(explanation)}
                         </div>
                     ` : ''}
                 `;

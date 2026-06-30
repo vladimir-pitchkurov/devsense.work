@@ -7,7 +7,7 @@
         <!-- Navigation Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <a href="{{ route('courses.show', ['locale' => app()->getLocale(), 'course_slug' => $course->slug]) }}" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
-                &larr; {{ app()->getLocale() === 'ru' ? 'К силлабусу курса' : 'Back to Syllabus' }}
+                &larr; {{ __('ui.courses.back_to_syllabus') }}
             </a>
             <div style="font-size: 0.85rem; color: var(--text-muted);">
                 {{ $course->translate()?->title }}
@@ -15,20 +15,11 @@
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start;">
-            @if(app()->getLocale() === 'ru')
-                <!-- Title & Header -->
-                <div style="margin-bottom: 1rem;">
-                    <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; margin: 0 0 0.5rem 0; color: var(--text-color);">
-                        {{ $chapter->translate()?->title }}
-                    </h1>
-                </div>
-            @else
-                <div style="margin-bottom: 1rem;">
-                    <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; margin: 0 0 0.5rem 0; color: var(--text-color);">
-                        {{ $chapter->translate()?->title }}
-                    </h1>
-                </div>
-            @endif
+            <div style="margin-bottom: 1rem;">
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; margin: 0 0 0.5rem 0; color: var(--text-color);">
+                    {{ $chapter->translate()?->title }}
+                </h1>
+            </div>
 
             <!-- Left/Main Column: Theory -->
             <div class="glass-card" style="padding: 2rem; overflow-x: auto; line-height: 1.7; color: var(--text-color); font-size: 1.05rem;">
@@ -42,7 +33,7 @@
                 <div class="quiz-box glass-card" id="quiz-panel" style="padding: 2rem; border-top: 4px solid var(--primary-color);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
                         <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin: 0; color: var(--text-color);">
-                            {{ app()->getLocale() === 'ru' ? 'Проверка знаний' : 'Knowledge Check' }}
+                            {{ __('ui.courses.knowledge_check') }}
                         </h2>
                         <div style="font-size: 0.85rem; background: rgba(139, 92, 246, 0.1); color: #a78bfa; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: bold;">
                             +{{ $chapter->quiz->points }} XP
@@ -91,7 +82,7 @@
 
                                     <!-- Explanation Block (hidden by default) -->
                                     <div class="explanation-box" id="explanation-{{ $question->id }}" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--page-bg); border-left: 3px solid var(--primary-color); border-radius: 4px; font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
-                                        <strong style="display: block; margin-bottom: 0.25rem;">{{ app()->getLocale() === 'ru' ? 'Объяснение:' : 'Explanation:' }}</strong>
+                                        <strong style="display: block; margin-bottom: 0.25rem;">{{ __('ui.courses.explanation') }}</strong>
                                         <span class="explanation-text"></span>
                                     </div>
                                 </div>
@@ -106,24 +97,24 @@
                                 <form action="{{ route('courses.chapter.reset', ['locale' => app()->getLocale(), 'course_slug' => $course->slug, 'chapter_slug' => $chapter->slug]) }}" method="POST" id="reset-form" style="display: {{ $progress ? 'inline' : 'none' }}; margin: 0;">
                                     @csrf
                                     <button type="submit" class="btn-secondary" id="retake-btn" style="padding: 0.75rem 2rem; display: none;">
-                                        {{ app()->getLocale() === 'ru' ? 'Перепройти главу' : 'Retake Chapter' }}
+                                        {{ __('ui.courses.retake_chapter') }}
                                     </button>
                                 </form>
                                 <div id="cooldown-text" style="font-size: 0.9rem; color: var(--text-muted); display: none; align-self: center;"></div>
 
                                 @if(!$progress)
                                     <button type="submit" class="btn-primary glow-button" id="submit-btn" style="padding: 0.75rem 2rem;">
-                                        {{ app()->getLocale() === 'ru' ? 'Проверить ответы' : 'Submit Answers' }}
+                                        {{ __('ui.courses.submit_answers') }}
                                     </button>
                                 @endif
                                 
                                 @if($nextChapter)
                                     <a href="{{ route('courses.chapter', ['locale' => app()->getLocale(), 'course_slug' => $course->slug, 'chapter_slug' => $nextChapter->slug]) }}" class="btn-primary" id="next-btn" style="text-decoration: none; padding: 0.75rem 2rem; {{ $progress ? '' : 'display: none;' }}">
-                                        {{ app()->getLocale() === 'ru' ? 'Следующая глава' : 'Next Chapter' }} &rarr;
+                                        {{ __('ui.courses.next_chapter') }} &rarr;
                                     </a>
                                 @else
                                     <a href="{{ route('courses.show', ['locale' => app()->getLocale(), 'course_slug' => $course->slug]) }}" class="btn-primary" id="next-btn" style="text-decoration: none; padding: 0.75rem 2rem; {{ $progress ? '' : 'display: none;' }}">
-                                        {{ app()->getLocale() === 'ru' ? 'Вернуться к силлабусу' : 'Back to Syllabus' }} &rarr;
+                                        {{ __('ui.courses.back_to_syllabus') }} &rarr;
                                     </a>
                                 @endif
                             </div>
@@ -142,12 +133,12 @@
                 <div class="modal-sparkles"></div>
                 <span class="modal-emoji" style="font-size: 3.5rem; display: block; margin-bottom: 1rem;">🏆</span>
                 <h3 class="modal-title" style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin: 0 0 0.5rem 0; color: var(--text-color);">
-                    {{ app()->getLocale() === 'ru' ? 'Новое достижение разблокировано!' : 'New Achievement Unlocked!' }}
+                    {{ __('ui.courses.achievement_unlocked') }}
                 </h3>
                 <h4 class="modal-badge-name" id="modal-badge-name" style="font-size: 1.25rem; color: var(--primary-color); margin: 0 0 0.5rem 0;">PHP Novice</h4>
                 <p class="modal-badge-desc" id="modal-badge-desc" style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin: 0 0 1.5rem 0;">Scored 50+ total points in quizzes.</p>
                 <button type="button" class="btn-primary" style="width: 100%;" onclick="document.getElementById('achievement-modal').style.display = 'none';">
-                    {{ app()->getLocale() === 'ru' ? 'Отлично!' : 'Awesome!' }}
+                    {{ __('ui.courses.awesome') }}
                 </button>
             </div>
         </div>
@@ -266,7 +257,7 @@
                         const minutes = Math.ceil((remaining % (60 * 60 * 1000)) / (60 * 1000));
                         const textRu = `Перепройти главу можно будет через ${hours} ч. ${minutes} мин.`;
                         const textEn = `You can retake this chapter in ${hours}h ${minutes}m.`;
-                        cooldownText.innerText = "{{ app()->getLocale() === 'ru' }}" === "1" ? textRu : textEn;
+                        const template = "{{ __('ui.courses.cooldown_msg') }}"; cooldownText.innerText = template.replace('{hours}', hours).replace('{minutes}', minutes);
                         cooldownText.style.display = 'block';
                     }
                     if (!retakeTimer) {
@@ -404,7 +395,7 @@
 
                 // Set status text
                 const status = document.getElementById('status-message');
-                status.innerText = "{{ app()->getLocale() === 'ru' ? 'Результат сохранен в вашем профиле.' : 'Results stored in your profile.' }}";
+                status.innerText = "{{ __('ui.courses.result_stored') }}";
                 status.style.color = '#10B981';
             }
 
@@ -415,7 +406,7 @@
                 const form = document.getElementById('chapter-quiz-form');
                 const submitBtn = document.getElementById('submit-btn');
                 submitBtn.disabled = true;
-                submitBtn.innerText = "{{ app()->getLocale() === 'ru' ? 'Проверка...' : 'Checking...' }}";
+                submitBtn.innerText = "{{ __('ui.courses.checking') }}";
 
                 const formData = new FormData(form);
                 const answers = {};
@@ -485,7 +476,7 @@
 
                         // Set status message
                         const status = document.getElementById('status-message');
-                        status.innerText = `{{ app()->getLocale() === 'ru' ? 'Результат:' : 'Result:' }} ${data.points_scored} / {{ $chapter->quiz->points }} XP`;
+                        status.innerText = `{{ __('ui.courses.result_score') }} ${data.points_scored} / {{ $chapter->quiz->points }} XP`;
                         status.style.color = data.points_scored > 0 ? '#10B981' : '#EF4444';
 
                         // Show next button and hide submit button
@@ -507,14 +498,14 @@
                     } else {
                         alert('Something went wrong. Please try again.');
                         submitBtn.disabled = false;
-                        submitBtn.innerText = "{{ app()->getLocale() === 'ru' ? 'Проверить ответы' : 'Submit Answers' }}";
+                        submitBtn.innerText = "{{ __('ui.courses.submit_answers') }}";
                     }
                 })
                 .catch(err => {
                     console.error(err);
                     alert('Request failed. Please check your network connection.');
                     submitBtn.disabled = false;
-                    submitBtn.innerText = "{{ app()->getLocale() === 'ru' ? 'Проверить ответы' : 'Submit Answers' }}";
+                    submitBtn.innerText = "{{ __('ui.courses.submit_answers') }}";
                 });
             }
         </script>

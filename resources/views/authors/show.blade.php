@@ -3,7 +3,7 @@
     $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
     $showRealDetails = !$author->is_anonymous || $isOwnerOrAdmin;
 
-    $displayName = $showRealDetails ? $author->name : (app()->getLocale() === 'ru' ? 'Анонимный соискатель' : 'Anonymous Candidate');
+    $displayName = $showRealDetails ? $author->name : __('ui.authors_show.anonymous_candidate');
     $displayAvatar = $showRealDetails ? $author->avatarUrl() : 'https://ui-avatars.com/api/?name=A+C&size=256&background=64748b&color=ffffff&bold=true&format=png';
 @endphp
 
@@ -25,9 +25,9 @@
         {{-- Anonymous Alert Tag --}}
         @if ($author->is_anonymous)
             <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--text-color);">
-                🔒 <strong>{{ app()->getLocale() === 'ru' ? 'Анонимный профиль' : 'Anonymous Profile' }}</strong>
+                🔒 <strong>{{ __('ui.authors_show.anonymous_profile') }}</strong>
                 @if ($isOwnerOrAdmin)
-                    <span style="color: var(--primary-color);">({{ app()->getLocale() === 'ru' ? 'Вы видите полные данные, так как являетесь владельцем или администратором' : 'You see full details because you are the owner or admin' }})</span>
+                    <span style="color: var(--primary-color);">({{ __('ui.authors_show.full_details_owner') }})</span>
                 @endif
             </div>
         @endif
@@ -55,17 +55,17 @@
                         @switch($author->job_status)
                             @case('seeking')
                                 <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">
-                                    💼 {{ app()->getLocale() === 'ru' ? 'Активно ищу работу' : 'Seeking Work' }}
+                                    💼 {{ __('ui.authors_show.seeking_work') }}
                                 </span>
                                 @break
                             @case('passively_seeking')
                                 <span style="background: rgba(245, 158, 11L, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11L, 0.2); padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">
-                                    🔍 {{ app()->getLocale() === 'ru' ? 'Рассматриваю предложения' : 'Passively Seeking' }}
+                                    🔍 {{ __('ui.authors_show.passively_seeking') }}
                                 </span>
                                 @break
                             @case('not_looking')
                                 <span style="background: rgba(100, 116, 139, 0.15); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">
-                                    ☕ {{ app()->getLocale() === 'ru' ? 'Не ищу работу' : 'Not Looking' }}
+                                    ☕ {{ __('ui.authors_show.not_looking') }}
                                 </span>
                                 @break
                         @endswitch
@@ -131,7 +131,7 @@
                     @endif
                 @else
                     <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); background: rgba(0,0,0,0.1); border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; border-radius: 0.5rem;">
-                        🔒 {{ app()->getLocale() === 'ru' ? 'Контактные данные скрыты соискателем. Связаться можно через личные сообщения.' : 'Contact links are hidden by the candidate. You can contact them via personal messages.' }}
+                        🔒 {{ __('ui.authors_show.contacts_hidden_hint') }}
                     </div>
                 @endif
             </div>
@@ -159,7 +159,7 @@
         {{-- Experience Section --}}
         @if ($author->experience)
             <section class="author-profile__experience" style="margin-top: 3rem;">
-                <h2 class="author-profile__section-title">{{ app()->getLocale() === 'ru' ? 'Опыт работы' : 'Work Experience' }}</h2>
+                <h2 class="author-profile__section-title">{{ __('ui.authors_show.work_experience') }}</h2>
                 <div style="font-size: 0.95rem; color: var(--text-color); line-height: 1.6; white-space: pre-line; background: rgba(0,0,0,0.08); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 1rem; margin-top: 1rem;">
                     {{ $author->experience }}
                 </div>
@@ -169,7 +169,7 @@
         {{-- Portfolio Section --}}
         @if (!empty($author->portfolio))
             <section class="author-profile__portfolio" style="margin-top: 3rem;">
-                <h2 class="author-profile__section-title">{{ app()->getLocale() === 'ru' ? 'Портфолио проектов' : 'Portfolio Projects' }}</h2>
+                <h2 class="author-profile__section-title">{{ __('ui.authors_show.portfolio_projects') }}</h2>
                 <div style="display: flex; flex-direction: column; gap: 2rem; margin-top: 1.5rem;">
                     @foreach($author->portfolio as $project)
                         <div style="border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 1rem; background: var(--card-bg);">

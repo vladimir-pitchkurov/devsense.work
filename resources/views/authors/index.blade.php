@@ -22,7 +22,7 @@
                         $isOwnerOrAdmin = $currentUser && ($currentUser->isAdmin() || $currentUser->id === $author->id);
                         $showRealDetails = !$author->is_anonymous || $isOwnerOrAdmin;
 
-                        $displayName = $showRealDetails ? $author->name : (app()->getLocale() === 'ru' ? 'Анонимный соискатель' : 'Anonymous Candidate');
+                        $displayName = $showRealDetails ? $author->name : __('ui.authors_show.anonymous_candidate');
                         $displayAvatar = $showRealDetails ? $author->avatarUrl() : 'https://ui-avatars.com/api/?name=A+C&size=256&background=64748b&color=ffffff&bold=true&format=png';
                     @endphp
                     <li class="authors-grid__item">
@@ -69,7 +69,7 @@
                                         @endif
                                     @else
                                         <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; font-style: italic;">
-                                            🔒 {{ app()->getLocale() === 'ru' ? 'Контакты скрыты' : 'Contacts hidden' }}
+                                            🔒 {{ __('ui.authors_show.contacts_hidden') }}
                                         </div>
                                     @endif
                                 </div>
