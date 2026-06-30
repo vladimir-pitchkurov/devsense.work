@@ -75,8 +75,8 @@ return [
         'card_architecture_title' => 'Arquitectura — carga, flujos de eventos y analítica',
         'card_architecture_excerpt' => 'Mantenga las bases de datos transaccionales saludables bajo millones de eventos: almacenamiento en búfer, intermediarios y división de OLTP de los informes.',
         'card_architecture_cta' => 'Explorar arquitectura',
-        'card_jobs_title' => 'Carrera & Empleos',
-        'card_jobs_excerpt' => 'Únase a nuestra red de desarrolladores profesionales: explore puestos abiertos en PHP, Laravel, DevOps y arquitectura moderna.',
+        'card_jobs_title' => 'Carrera y Empleos',
+        'card_jobs_excerpt' => 'Encuentra tu próximo puesto como desarrollador PHP, Laravel o Backend.',
         'card_jobs_cta' => 'Explorar vacantes',
     ],
     'php_show' => [
@@ -269,7 +269,10 @@ return [
         'breadcrumb_jobs' => 'Empleos',
         'breadcrumb_authors' => 'Autores',
         'breadcrumb_tags' => 'Etiquetas',
-    ],
+    
+        'page_not_found' => 'Página no encontrada',
+        'back_to_home' => 'Volver al inicio',
+        'breadcrumb_features' => 'Mapa de ruta',],
     'authors_index' => [
         'title'       => 'Conozca a los Autores | DevSense',
         'description' => 'Los expertos detrás de DevSense — ingenieros de PHP seniors y arquitectos compartiendo guías profundas.',
@@ -326,7 +329,9 @@ return [
         'on_this_page' => 'En esta página',
         'print_pdf' => 'PDF / Imprimir',
         'label' => 'Buscar',
-    ],
+    
+        'read_more' => 'Leer',
+        'faq' => 'Preguntas frecuentes',],
     'auth' => [
         'or'             => 'o',
         'google_btn'     => 'Continuar con Google',
@@ -529,7 +534,8 @@ return [
         'all_quizzes_completed' => '¡Has completado todos los cuestionarios disponibles!',
         'award' => 'Recompensa:',
         'start_quiz' => 'Iniciar cuestionario',
-    ],
+    
+        'xp_info_tooltip' => 'Gane XP completando cuestionarios y cursos. Cada 100 XP aumenta el peso de su voto en la hoja de ruta en +1.',],
     'quizzes' => [
         'completed_badge' => 'Completado',
         'verify_unverified_hint' => 'Por favor verifica tu correo electrónico para desbloquear insignias.',
@@ -578,8 +584,8 @@ return [
         'retake_cooldown' => 'Puedes repetir este cuestionario en {hours}h {minutes}m.',
     ],
     'jobs' => [
-        'index_title' => 'Empleos Tech | DevSense',
-        'index_desc' => 'Explora ofertas de empleo para desarrolladores PHP y Backend.',
+        'index_title' => 'Carreras y Vacantes | DevSense',
+        'index_desc' => 'Explore ofertas de empleo para desarrolladores PHP, Laravel y Backend.',
         'hero_title' => 'Empleos y Carrera Tech',
         'hero_lead' => 'Únete a los mejores equipos de ingeniería.',
         'apply_btn' => 'Postularse',

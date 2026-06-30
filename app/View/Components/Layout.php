@@ -308,6 +308,24 @@ class Layout extends Component
                 ['label' => request()->route('course_slug') ? ucwords(str_replace('-', ' ', request()->route('course_slug'))) : __('ui.seo.breadcrumb_syllabus'), 'url' => request()->route('course_slug') ? SiteUrl::route('courses.show', ['locale' => $locale, 'course_slug' => request()->route('course_slug')]) : null],
                 ['label' => $this->breadcrumbCurrent, 'url' => null],
             ] : [],
+            'suggestions.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.search.all_categories'), 'url' => SiteUrl::route('search', ['locale' => $locale])],
+                ['label' => __('ui.nav.suggestions'), 'url' => null],
+            ],
+            'quizzes.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.nav.quizzes'), 'url' => null],
+            ],
+            'quizzes.show' => $this->breadcrumbCurrent !== null ? [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.nav.quizzes'), 'url' => SiteUrl::route('quizzes.index', ['locale' => $locale])],
+                ['label' => $this->breadcrumbCurrent, 'url' => null],
+            ] : [],
+            'features.index' => [
+                ['label' => __('ui.seo.breadcrumb_home'), 'url' => SiteUrl::route('home', ['locale' => $locale])],
+                ['label' => __('ui.seo.breadcrumb_features'), 'url' => null],
+            ],
             default => [],
         };
     }

@@ -17,7 +17,8 @@ class GoogleAuthController extends Controller
     public function redirectToGoogle(Request $request)
     {
         // Store current locale in session to redirect back to it after auth
-        session(['auth_locale' => app()->getLocale()]);
+        $locale = $request->query('locale', app()->getLocale());
+        session(['auth_locale' => $locale]);
 
         return Socialite::driver('google')->redirect();
     }

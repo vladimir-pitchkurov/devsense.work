@@ -59,7 +59,10 @@
                 </svg>
             </div>
             <div>
-                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ __('ui.dashboard.stat_xp') }}</div>
+                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.25rem;">
+                    {{ __('ui.dashboard.stat_xp') }}
+                    <span class="xp-tooltip" style="cursor: help; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1px solid var(--primary-color); border-radius: 50%; font-size: 0.65rem;" title="{{ __('ui.dashboard.xp_info_tooltip') }}">?</span>
+                </div>
                 <div class="stat-card__value" style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-top: 0.25rem;">{{ number_format($user->points) }}</div>
             </div>
         </div>

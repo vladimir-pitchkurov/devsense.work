@@ -1,6 +1,7 @@
 <x-layout 
     :title="($quiz->translate()?->title ?? 'Technical Quiz') . ' | DevSense'"
     :description="$quiz->translate()?->description ?? ''"
+    :breadcrumb-current="$quiz->translate()?->title ?? 'Quiz'"
 >
     <div class="quiz-show-container">
         <!-- Back Button -->
@@ -496,6 +497,9 @@
         }
 
         footerActionBtn.addEventListener('click', function () {
+            if (selectedOptionIndex === null && !isChecked) {
+                return;
+            }
             if (!isChecked) {
                 isChecked = true;
                 userAnswers[quizData.questions[currentQuestionIndex].id] = selectedOptionIndex;

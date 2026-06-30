@@ -324,6 +324,13 @@
         opacity: 0.95;
         color: #ffffff;
     }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
 }
 
 .btn-secondary {

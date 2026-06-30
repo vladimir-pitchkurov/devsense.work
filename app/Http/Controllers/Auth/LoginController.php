@@ -102,11 +102,21 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        $locale = app()->getLocale();
+        $referer = $request->header('referer');
+        if ($referer) {
+            $path = parse_url($referer, PHP_URL_PATH);
+            $segments = explode('/', trim($path, '/'));
+            if (!empty($segments[0]) && in_array($segments[0], \App\Http\Middleware\SetLocale::SUPPORTED_LOCALES, true)) {
+                $locale = $segments[0];
+            }
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/' . app()->getLocale());
+        return redirect('/' . $locale);
     }
 }

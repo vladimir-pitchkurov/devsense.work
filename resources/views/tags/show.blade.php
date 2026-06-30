@@ -5,64 +5,66 @@
     :structured-data="$structuredData"
     breadcrumb-current="#{{ $tag->translate()?->name ?? $tag->slug }}"
 >
-    <nav class="article__back" aria-label="{{ __('ui.tags_show.back') }}">
-        <a href="{{ route('tags.index') }}" class="article__back-link">
-            ← {{ __('ui.tags_show.back') }}
-        </a>
-    </nav>
+    <div class="tag-show-container" style="max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem;">
+        <nav class="article__back" aria-label="{{ __('ui.tags_show.back') }}" style="margin-bottom: 2rem;">
+            <a href="{{ route('tags.index') }}" class="article__back-link">
+                ← {{ __('ui.tags_show.back') }}
+            </a>
+        </nav>
 
-    <section class="hero">
-        <h1 class="hero__title">
-            <span style="opacity: 0.5;">#</span>{{ $tag->translate()?->name ?? $tag->slug }}
-        </h1>
-        <p class="hero__description">{{ __('ui.tags_show.hero_title') }} <strong>#{{ $tag->translate()?->name ?? $tag->slug }}</strong></p>
-    </section>
+        <section class="hero" style="margin-bottom: 3rem;">
+            <h1 class="hero__title">
+                <span style="opacity: 0.5;">#</span>{{ $tag->translate()?->name ?? $tag->slug }}
+            </h1>
+            <p class="hero__description">{{ __('ui.tags_show.hero_title') }} <strong>#{{ $tag->translate()?->name ?? $tag->slug }}</strong></p>
+        </section>
 
-    <section class="guides" aria-label="{{ __('ui.tags_show.hero_title') }}">
-        @if ($articles->isEmpty())
-            <div class="empty-state">
-                <p>{{ __('ui.tags_show.empty') }}</p>
-            </div>
-        @else
-            <ul class="guides__list">
-                @foreach ($articles as $article)
-                    @php
-                        $translation = $article->translate();
-                    @endphp
-                    <li class="guides__item">
-                        <article class="card">
-                            <header class="card__header">
-                                <h2 class="card__title" style="font-family: 'Outfit', sans-serif;">
-                                    <a href="{{ $article->url() }}" style="color: inherit; text-decoration: none;">
-                                        {{ $translation?->title ?? 'Untitled' }}
+        <section class="guides" aria-label="{{ __('ui.tags_show.hero_title') }}">
+            @if ($articles->isEmpty())
+                <div class="empty-state">
+                    <p>{{ __('ui.tags_show.empty') }}</p>
+                </div>
+            @else
+                <ul class="guides__list">
+                    @foreach ($articles as $article)
+                        @php
+                            $translation = $article->translate();
+                        @endphp
+                        <li class="guides__item">
+                            <article class="card">
+                                <header class="card__header">
+                                    <h2 class="card__title" style="font-family: 'Outfit', sans-serif;">
+                                        <a href="{{ $article->url() }}" style="color: inherit; text-decoration: none;">
+                                            {{ $translation?->title ?? 'Untitled' }}
+                                        </a>
+                                    </h2>
+                                    @if ($article->category)
+                                        <span class="admin-badge admin-badge--category" style="margin-top: 0.5rem; display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                                            {{ $article->category->slug }}
+                                        </span>
+                                    @endif
+                                </header>
+                                <div class="card__body" style="padding: 1rem 0;">
+                                    <p class="card__excerpt" style="font-size: 0.95rem; line-height: 1.5; margin: 0;">
+                                        {{ $translation?->description ?? '' }}
+                                    </p>
+                                </div>
+                                <footer class="card__footer" style="padding: 0;">
+                                    <a href="{{ $article->url() }}" class="card__link" style="font-weight: 600; font-size: 0.9rem;">
+                                        {{ __('ui.search.read_more') }}
                                     </a>
-                                </h2>
-                                @if ($article->category)
-                                    <span class="admin-badge admin-badge--category" style="margin-top: 0.5rem; display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                                        {{ $article->category->slug }}
-                                    </span>
-                                @endif
-                            </header>
-                            <div class="card__body" style="padding: 1rem 0;">
-                                <p class="card__excerpt" style="font-size: 0.95rem; line-height: 1.5; margin: 0;">
-                                    {{ $translation?->description ?? '' }}
-                                </p>
-                            </div>
-                            <footer class="card__footer" style="padding: 0;">
-                                <a href="{{ $article->url() }}" class="card__link" style="font-weight: 600; font-size: 0.9rem;">
-                                    Read Guide →
-                                </a>
-                            </footer>
-                        </article>
-                    </li>
-                @endforeach
-            </ul>
+                                </footer>
+                            </article>
+                        </li>
+                    @endforeach
+                </ul>
 
-            <div class="search-pagination">
-                {{ $articles->links('partials.pagination') }}
-            </div>
-        @endif
-    </section>
+                <div class="search-pagination">
+                    {{ $articles->links('partials.pagination') }}
+                </div>
+            @endif
+        </section>
+    </div>
 
     <style>
     .empty-state {

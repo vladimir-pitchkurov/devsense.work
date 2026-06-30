@@ -226,7 +226,7 @@
                                 </div>
                                 <footer class="card__footer" style="padding: 0;">
                                     <a href="{{ $article->url() }}" class="card__link" style="font-weight: 600; font-size: 0.9rem;">
-                                        Read Guide →
+                                        {{ __('ui.search.read_more') }}
                                     </a>
                                 </footer>
                             </article>

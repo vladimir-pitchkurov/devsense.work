@@ -103,7 +103,7 @@ Route::prefix('{locale}')
         Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login.locale');
         Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
         Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register.locale');
-        Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+        Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.post.locale');
 
         // Password Reset routes
         Route::get('/password/reset', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request.locale')->middleware('guest');
@@ -234,10 +234,10 @@ Route::prefix('{locale}')
 
         Route::prefix('courses')->group(function () {
             Route::get('/', [\App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
-            Route::get('/{course_slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('courses.show')->middleware('auth');
-            Route::get('/{course_slug}/{chapter_slug}', [\App\Http\Controllers\CourseController::class, 'showChapter'])->name('courses.chapter')->middleware('auth');
-            Route::post('/{course_slug}/{chapter_slug}/complete', [\App\Http\Controllers\CourseController::class, 'completeChapter'])->name('courses.chapter.complete')->middleware('auth');
-            Route::post('/{course_slug}/{chapter_slug}/reset', [\App\Http\Controllers\CourseController::class, 'resetChapter'])->name('courses.chapter.reset')->middleware('auth');
+            Route::get('/{course_slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('courses.show')->middleware(['auth', 'verified']);
+            Route::get('/{course_slug}/{chapter_slug}', [\App\Http\Controllers\CourseController::class, 'showChapter'])->name('courses.chapter')->middleware(['auth', 'verified']);
+            Route::post('/{course_slug}/{chapter_slug}/complete', [\App\Http\Controllers\CourseController::class, 'completeChapter'])->name('courses.chapter.complete')->middleware(['auth', 'verified']);
+            Route::post('/{course_slug}/{chapter_slug}/reset', [\App\Http\Controllers\CourseController::class, 'resetChapter'])->name('courses.chapter.reset')->middleware(['auth', 'verified']);
         });
 
         Route::get('/features', [\App\Http\Controllers\FeatureController::class, 'index'])->name('features.index');

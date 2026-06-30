@@ -76,7 +76,7 @@ return [
         'card_architecture_excerpt' => 'Halten Sie transaktionale Datenbanken unter Millionen von Ereignissen gesund: Pufferung, Broker und Trennung von OLTP und Berichterstellung.',
         'card_architecture_cta' => 'Architektur durchsuchen',
         'card_jobs_title' => 'Karriere & Jobs',
-        'card_jobs_excerpt' => 'Treten Sie unserem Netzwerk professioneller Entwickler bei – entdecken Sie offene Stellen in PHP, Laravel, DevOps und moderner Architektur.',
+        'card_jobs_excerpt' => 'Finden Sie Ihre nächste Stelle als PHP-, Laravel- oder Backend-Entwickler.',
         'card_jobs_cta' => 'Offene Stellen durchsuchen',
     ],
     'php_show' => [
@@ -269,7 +269,10 @@ return [
         'breadcrumb_jobs' => 'Jobs',
         'breadcrumb_authors' => 'Autoren',
         'breadcrumb_tags' => 'Tags',
-    ],
+    
+        'page_not_found' => 'Seite nicht gefunden',
+        'back_to_home' => 'Zur Startseite',
+        'breadcrumb_features' => 'Roadmap',],
     'authors_index' => [
         'title'       => 'Treffen Sie die Autoren | DevSense',
         'description' => 'Die Experten hinter DevSense — Senior-PHP-Entwickler und Architekten, die fundierte Anleitungen teilen.',
@@ -326,7 +329,9 @@ return [
         'on_this_page' => 'Auf dieser Seite',
         'print_pdf' => 'PDF / Drucken',
         'label' => 'Suche',
-    ],
+    
+        'read_more' => 'Lesen',
+        'faq' => 'Häufig gestellte Fragen',],
     'auth' => [
         'or'             => 'oder',
         'google_btn'     => 'Weiter mit Google',
@@ -529,7 +534,8 @@ return [
         'all_quizzes_completed' => 'Sie haben alle verfügbaren Quizzes absolviert!',
         'award' => 'Belohnung:',
         'start_quiz' => 'Quiz starten',
-    ],
+    
+        'xp_info_tooltip' => 'Sammeln Sie XP, indem Sie Quizzes und Kurse absolvieren. Alle 100 XP erhöhen das Gewicht Ihrer Stimme in der Roadmap um +1.',],
     'quizzes' => [
         'completed_badge' => 'Abgeschlossen',
         'verify_unverified_hint' => 'Bitte bestätigen Sie Ihre E-Mail-Adresse, um Abzeichen freizuschalten.',
@@ -578,8 +584,8 @@ return [
         'retake_cooldown' => 'Sie können dieses Quiz in {hours} Std. {minutes} Min. wiederholen.',
     ],
     'jobs' => [
-        'index_title' => 'Tech-Jobs & Karrierechancen | DevSense',
-        'index_desc' => 'Durchsuchen Sie offene Stellen für PHP- und Backend-Entwickler.',
+        'index_title' => 'Karriere & Stellenangebote | DevSense',
+        'index_desc' => 'Entdecken Sie Stellenangebote für PHP-, Laravel- und Backend-Entwickler.',
         'hero_title' => 'Tech-Jobs & Karriere',
         'hero_lead' => 'Schließen Sie sich Top-Entwicklerteams an.',
         'apply_btn' => 'Jetzt bewerben',

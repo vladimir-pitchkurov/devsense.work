@@ -9,6 +9,11 @@ salary_currency: "GBP"
 salary_value: 7000
 employment_type: "FULL_TIME"
 published: "2026-05-30"
+faq:
+  - question: "Возможна ли работа в гибридном формате?"
+    answer: "Нет, данная позиция предполагает полностью удаленный формат работы."
+  - question: "Каков стек технологий?"
+    answer: "Наш стек включает PHP 8.4/8.5, Laravel 13, PostgreSQL, Redis, Docker/Sail и TailwindCSS."
 ---
 
 # Senior PHP Разработчик (Laravel)
@@ -54,9 +59,3 @@ class User extends Authenticatable
 - Конкурентная заработная плата в GBP.
 - 28 дней оплачиваемого ежегодного отпуска.
 - Бюджет на обучение и профессиональный рост.
----
-faq:
-  - question: "Возможна ли работа в гибридном формате?"
-    answer: "Нет, данная позиция предполагает полностью удаленный формат работы."
-  - question: "Каков стек технологий?"
-    answer: "Наш стек включает PHP 8.4/8.5, Laravel 13, PostgreSQL, Redis, Docker/Sail и TailwindCSS."

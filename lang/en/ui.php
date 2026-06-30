@@ -77,7 +77,7 @@ return [
         'card_architecture_excerpt' => 'Keep transactional databases healthy under millions of events: buffering, brokers, and splitting OLTP from reporting.',
         'card_architecture_cta' => 'Browse architecture',
         'card_jobs_title' => 'Careers & Jobs',
-        'card_jobs_excerpt' => 'Join our network of professional developers—explore open roles in PHP, Laravel, DevOps, and modern architecture.',
+        'card_jobs_excerpt' => 'Find your next role as a PHP, Laravel, or Backend developer. Localized opportunities with clean coding standards.',
         'card_jobs_cta' => 'Browse open positions',
     ],
     'php_show' => [
@@ -270,7 +270,10 @@ return [
         'breadcrumb_tools' => 'Tools',
         'breadcrumb_microservices' => 'Microservices',
         'breadcrumb_architecture' => 'Architecture',
-    ],
+    
+        'page_not_found' => 'Page Not Found',
+        'back_to_home' => 'Back to Home',
+        'breadcrumb_features' => 'Roadmap',],
     'courses' => [
         'cooldown_msg' => 'You can retake this chapter in {hours}h {minutes}m.',
         'start_lesson' => 'Start Lesson',
@@ -369,7 +372,9 @@ return [
         'on_this_page' => 'On this page',
         'print_pdf' => 'PDF / Print',
         'label' => 'Search',
-    ],
+    
+        'read_more' => 'Read',
+        'faq' => 'Frequently Asked Questions',],
 
     'auth' => [
         'or'             => 'or',
@@ -544,7 +549,8 @@ return [
         'all_quizzes_completed' => 'You have completed all available quizzes!',
         'award' => 'Award:',
         'start_quiz' => 'Start Quiz',
-    ],
+    
+        'xp_info_tooltip' => 'Earn XP by completing quizzes and courses. Every 100 XP increases your roadmap vote weight by +1.',],
     'quizzes' => [
         'completed_badge' => 'Completed',
         'verify_unverified_hint' => 'Please verify your email address to unlock badges and achievement progress.',
@@ -593,8 +599,8 @@ return [
         'retake_cooldown' => 'You can retake this quiz in {hours}h {minutes}m.',
     ],
     'jobs' => [
-        'index_title' => 'Tech Jobs & Career Opportunities | DevSense',
-        'index_desc' => 'Browse open positions for PHP, Laravel, DevOps and Backend Engineers.',
+        'index_title' => 'Careers & Open Openings | DevSense',
+        'index_desc' => 'Explore localized PHP, Laravel, and Backend developer jobs. Apply to verified high-quality openings.',
         'hero_title' => 'Community Suggestions',
         'hero_lead' => 'Suggest new tutorial topics or request platform enhancements. Upvote ideas you support!',
         'apply_btn' => 'Apply Now',

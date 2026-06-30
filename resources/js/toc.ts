@@ -92,9 +92,14 @@ export function initTableOfContents(): void {
     });
 
     if (tocContainer) {
+        const existingList = tocContainer.querySelector('.sticky-toc__list');
+        if (existingList) {
+            existingList.remove();
+        }
         tocContainer.appendChild(tocListDesktop);
     }
     if (tocMobileContainer) {
+        tocMobileContainer.innerHTML = '';
         tocMobileContainer.appendChild(tocListMobile);
     }
 
