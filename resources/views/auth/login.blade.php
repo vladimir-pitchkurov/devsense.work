@@ -59,7 +59,7 @@
                 <span>{{ __('ui.auth.or') }}</span>
             </div>
 
-            <a href="{{ route('auth.google') }}" class="auth-google-btn">
+            <a href="{{ route('auth.google', ['locale' => app()->getLocale()]) }}" class="auth-google-btn">
                 <svg viewBox="0 0 24 24" width="20" height="20" class="google-icon" aria-hidden="true">
                     <path fill="#EA4335" d="M12 5.04c1.78 0 3.37.61 4.63 1.81l3.46-3.46C17.99 1.19 15.22.4 12 .4 7.37.4 3.4 3.06 1.45 6.94l4.08 3.16c.96-2.87 3.66-5.06 6.47-5.06z"/>
                     <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.44c-.28 1.48-1.11 2.73-2.37 3.58l3.68 2.85c2.15-1.98 3.74-4.89 3.74-8.67z"/>

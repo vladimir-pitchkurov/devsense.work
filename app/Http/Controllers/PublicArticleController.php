@@ -40,7 +40,7 @@ class PublicArticleController extends Controller
             ->orderBy('published_at', 'desc')
             ->paginate(12);
 
-        $categories = Category::with(['translations'])->get();
+        $categories = Category::where('slug', '!=', 'jobs')->with(['translations'])->get();
         
         $tags = Tag::whereHas('articles', function($q) use ($category) {
             $q->where('is_published', true)

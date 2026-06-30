@@ -1,4 +1,4 @@
-<x-layout :title="__('ui.welcome.title') ?: 'Catalog'" :description="__('ui.welcome.description') ?: 'Browse guides and tutorials'">
+<x-layout :title="__('ui.nav.catalog')" :description="__('ui.welcome.ecosystem_lead')">
     <div class="search-layout">
         <!-- Sidebar filters -->
         <aside class="search-sidebar" id="search-sidebar">
@@ -7,6 +7,15 @@
                     &times;
                 </button>
                 <form action="{{ route(request()->route()->getName()) }}" method="GET" class="search-form" id="search-form">
+                    @if(request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
+                    @if(request('tag'))
+                        <input type="hidden" name="tag" value="{{ request('tag') }}">
+                    @endif
+                    @if(request('author'))
+                        <input type="hidden" name="author" value="{{ request('author') }}">
+                    @endif
                     <!-- Search input -->
                     <div class="search-group">
                         <label for="search-input" class="search-label">{{ __('ui.search.placeholder') }}</label>
@@ -131,7 +140,7 @@
                                                 {{ $categoryName }}
                                             </span>
                                             <span class="card__date">
-                                                {{ $article->published_at ? $article->published_at->format('M d, Y') : '' }}
+                                                {{ $article->published_at ? $article->published_at->translatedFormat('j M Y') : '' }}
                                             </span>
                                         </div>
                                         <h2 class="card__title">
@@ -154,7 +163,7 @@
                                             </div>
                                         @endif
                                         <a href="{{ $article->url() }}" class="card__link" aria-label="{{ $translation?->title }}">
-                                            Read
+                                            {{ __('ui.search.read_more') }}
                                         </a>
                                     </footer>
                                 </article>

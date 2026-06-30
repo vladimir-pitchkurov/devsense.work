@@ -146,7 +146,7 @@ class HomeController extends Controller
         $articles = $query->paginate(12)->withQueryString();
 
         // Get categories, tags, authors for filter panels
-        $categories = Category::with(['translations'])->get();
+        $categories = Category::where('slug', '!=', 'jobs')->with(['translations'])->get();
         
         // Only show tags that have at least one published and approved article from an approved, non-blocked author
         $tags = Tag::whereHas('articles', function($q) {

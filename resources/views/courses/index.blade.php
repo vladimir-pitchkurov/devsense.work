@@ -1,16 +1,16 @@
 <x-layout 
-    :title="app()->getLocale() === 'ru' ? 'Интерактивные курсы по SQL | DevSense' : 'Interactive SQL Courses | DevSense'" 
-    :description="app()->getLocale() === 'ru' ? 'Интерактивные курсы по SQL: от простых SELECT до глубокой оптимизации индексов и архитектурного сравнения MySQL vs PostgreSQL.' : 'Interactive SQL courses: from basic SELECT statements to deep index optimization and architectural comparison of MySQL vs PostgreSQL.'"
+    :title="__('ui.courses.title')" 
+    :description="__('ui.courses.description')"
 >
     <div class="quizzes-container">
         <!-- Hero Header -->
         <section class="quizzes-hero" style="margin-bottom: 2rem;">
             <div class="hero-glow"></div>
             <h1 class="hero-title" style="font-family: 'Outfit', sans-serif;">
-                {{ app()->getLocale() === 'ru' ? 'Интерактивные курсы' : 'Interactive Courses' }}
+                {{ __('ui.courses.hero_title') }}
             </h1>
             <p class="hero-lead">
-                {{ app()->getLocale() === 'ru' ? 'Практическое обучение базам данных без воды. Короткая теория и интерактивные тесты для проверки знаний.' : 'Practical database training with zero fluff. Short theory lessons followed by interactive quiz challenges.' }}
+                {{ __('ui.courses.hero_lead') }}
             </p>
         </section>
 
@@ -25,16 +25,16 @@
                         // Set specific styling/icons for each course
                         $badgeEmoji = '🎓';
                         $difficultyColor = '#10B981'; // Green
-                        $difficultyName = app()->getLocale() === 'ru' ? 'Начинающий' : 'Beginner';
+                        $difficultyName = __('ui.courses.level_beginner');
                         
                         if ($course->slug === 'sql-advanced') {
                             $badgeEmoji = '🚀';
                             $difficultyColor = '#F59E0B'; // Amber
-                            $difficultyName = app()->getLocale() === 'ru' ? 'Продвинутый' : 'Intermediate';
+                            $difficultyName = __('ui.courses.level_advanced');
                         } elseif ($course->slug === 'sql-expert') {
                             $badgeEmoji = '⚡';
                             $difficultyColor = '#EF4444'; // Red
-                            $difficultyName = app()->getLocale() === 'ru' ? 'Эксперт' : 'Expert';
+                            $difficultyName = __('ui.courses.level_expert');
                         }
                     @endphp
 
@@ -70,8 +70,8 @@
                                     <!-- Progress Tracker -->
                                     <div style="margin-bottom: 1.25rem;">
                                         <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;">
-                                            <span>{{ app()->getLocale() === 'ru' ? 'Прогресс прохождения' : 'Course Progress' }}</span>
-                                            <span>{{ $courseProgress['completed'] }} / {{ $courseProgress['total'] }} {{ app()->getLocale() === 'ru' ? 'глав' : 'chapters' }}</span>
+                                            <span>{{ __('ui.courses.course_progress') }}</span>
+                                            <span>{{ $courseProgress['completed'] }} / {{ $courseProgress['total'] }} {{ __('ui.courses.chapters') }}</span>
                                         </div>
                                         <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
                                             <div style="height: 100%; background: var(--primary-color); width: {{ $courseProgress['percentage'] }}%; border-radius: 9999px; transition: width 0.3s ease;"></div>
@@ -79,16 +79,16 @@
                                     </div>
                                 @endif
                                 <a href="{{ route('courses.show', ['locale' => app()->getLocale(), 'course_slug' => $course->slug]) }}" class="btn-primary" style="display: block; text-align: center; text-decoration: none;">
-                                    {{ app()->getLocale() === 'ru' ? 'Открыть силлабус' : 'Open Syllabus' }} &rarr;
+                                    {{ __('ui.courses.open_syllabus') }} &rarr;
                                 </a>
                             @else
                                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem; text-align: center; margin-bottom: 1rem;">
                                     <p style="margin: 0; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                                        {{ app()->getLocale() === 'ru' ? 'Для доступа необходимо авторизоваться' : 'Login required to unlock this course' }}
+                                        {{ __('ui.courses.login_required') }}
                                     </p>
                                 </div>
                                 <a href="{{ route('login.locale', ['locale' => app()->getLocale()]) }}" class="btn-secondary" style="display: block; text-align: center; text-decoration: none;">
-                                    {{ app()->getLocale() === 'ru' ? 'Войти и начать' : 'Login & Start' }}
+                                    {{ __('ui.courses.login_and_start') }}
                                 </a>
                             @endif
                         </div>

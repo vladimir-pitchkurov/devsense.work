@@ -1,5 +1,5 @@
 <x-layout 
-    title="{{ app()->getLocale() === 'ru' ? 'Голосование за фичи | DevSense' : 'Roadmap Feature Voting | DevSense' }}"
+    :title="__('ui.features.title')"
     description="Vote for the features you want to see implemented next on DevSense."
 >
 <div class="admin-container" style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; font-family: 'Inter', sans-serif;">
@@ -7,10 +7,10 @@
     <!-- Header Section -->
     <div style="text-align: center; margin-bottom: 3.5rem;">
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 800; background: linear-gradient(135deg, #fff, #93c5fd, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 1rem;">
-            {{ app()->getLocale() === 'ru' ? 'Дорожная карта развития проекта' : 'Project Development Roadmap' }}
+            {{ __('ui.features.hero_title') }}
         </h1>
         <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            {{ app()->getLocale() === 'ru' ? 'Голосуйте за функции, которые вы хотите увидеть на платформе в первую очередь. Мы развиваемся вместе с сообществом!' : 'Vote for the features you want to see implemented next. We build and prioritize based on community feedback!' }}
+            {{ __('ui.features.hero_lead') }}
         </p>
     </div>
 
@@ -22,10 +22,10 @@
             </div>
             <div>
                 <h4 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: var(--text-color);">
-                    {{ app()->getLocale() === 'ru' ? 'Сила вашего голоса' : 'Your Voting Power' }}
+                    {{ __('ui.features.voting_power') }}
                 </h4>
                 <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-muted);">
-                    {{ app()->getLocale() === 'ru' ? 'Каждые 100 XP увеличивают силу вашего голоса на +1 пункт.' : 'Every 100 XP points increase your vote weight by +1.' }}
+                    {{ __('ui.features.voting_power_lead') }}
                 </p>
             </div>
         </div>
@@ -35,15 +35,15 @@
                     +{{ $userWeight }} {{ trans_choice('vote|votes', $userWeight) }}
                 </div>
                 <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">
-                    {{ app()->getLocale() === 'ru' ? 'Накоплено XP: ' : 'Your current XP: ' }}{{ number_format($user->points) }}
+                    {{ __('ui.features.current_xp') . ' ' }}{{ number_format($user->points) }}
                 </div>
             @else
                 <div style="font-size: 1rem; font-weight: 600; color: var(--text-muted);">
-                    {{ app()->getLocale() === 'ru' ? 'Вы не авторизованы' : 'You are not signed in' }}
+                    {{ __('ui.features.not_signed_in') }}
                 </div>
                 <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
                     <a href="{{ route('login.locale') }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
-                        {{ app()->getLocale() === 'ru' ? 'Войдите, чтобы проголосовать' : 'Sign in to cast your votes' }}
+                        {{ __('ui.features.sign_in_to_vote') }}
                     </a>
                 </div>
             @endauth
@@ -77,12 +77,12 @@
                     <!-- Vote Stats -->
                     <div style="display: flex; flex-direction: column; gap: 0.2rem;">
                         <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                            {{ app()->getLocale() === 'ru' ? 'Популярность' : 'Popularity' }}
+                            {{ __('ui.features.popularity') }}
                         </span>
                         <span style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); font-family: 'Outfit', sans-serif;">
                             <span class="weight-count" style="color: #6366f1;">{{ number_format($feature->totalVotesWeight()) }}</span> 
                             <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">
-                                ({{ $feature->totalVotesCount() }} {{ app()->getLocale() === 'ru' ? 'чел.' : 'voters' }})
+                                ({{ $feature->totalVotesCount() }} {{ __('ui.features.voters') }})
                             </span>
                         </span>
                     </div>
@@ -91,12 +91,12 @@
                     @auth
                         <button type="button" class="vote-btn {{ $voted ? 'voted' : '' }}" onclick="toggleVote({{ $feature->id }})" 
                                 style="border: none; border-radius: 8px; padding: 0.6rem 1.25rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease; font-family: 'Outfit', sans-serif;">
-                            {{ $voted ? (app()->getLocale() === 'ru' ? 'Убрать голос' : 'Retract Vote') : (app()->getLocale() === 'ru' ? 'Голосовать' : 'Vote') }}
+                            {{ $voted ? (__('ui.features.retract_vote')) : (__('ui.features.vote')) }}
                         </button>
                     @else
                         <a href="{{ route('login.locale') }}" class="vote-btn-guest" 
                            style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 0.6rem 1.25rem; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-block; font-family: 'Outfit', sans-serif;">
-                            {{ app()->getLocale() === 'ru' ? 'Голосовать' : 'Vote' }}
+                            {{ __('ui.features.vote') }}
                         </a>
                     @endauth
                 </div>
@@ -159,15 +159,15 @@ function toggleVote(featureId) {
             // Toggle active state classes
             if (data.voted) {
                 btn.classList.add('voted');
-                btn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Убрать голос' : 'Retract Vote' }}";
+                btn.innerHTML = "{{ __('ui.features.retract_vote') }}";
             } else {
                 btn.classList.remove('voted');
-                btn.innerHTML = "{{ app()->getLocale() === 'ru' ? 'Голосовать' : 'Vote' }}";
+                btn.innerHTML = "{{ __('ui.features.vote') }}";
             }
             
             // Re-render counters
             weightLabel.innerText = data.total_weight.toLocaleString();
-            votersLabel.innerText = `(${data.total_count} ${"{{ app()->getLocale() === 'ru' ? 'чел.' : 'voters' }}"})`;
+            votersLabel.innerText = `(${data.total_count} ${"{{ __('ui.features.voters') }}"})`;
         }
     })
     .catch(err => {

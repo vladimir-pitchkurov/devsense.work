@@ -9,7 +9,7 @@
             <div>
                 <h1 class="admin-title" style="margin: 0; font-size: 1.75rem; font-family: 'Outfit', sans-serif;">{{ $user->name }}</h1>
                 <p style="margin: 0.25rem 0 0; color: var(--text-muted); font-size: 0.95rem;">
-                    {{ $user->job_title ?? (app()->getLocale() === 'ru' ? 'Разработчик' : 'Developer') }}
+                    {{ $user->job_title ?? __('ui.dashboard.developer') }}
                     &bull; <span class="admin-badge admin-badge--category">{{ strtoupper($user->role) }}</span>
                 </p>
                 @if($user->bio)
@@ -23,7 +23,7 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                {{ app()->getLocale() === 'ru' ? 'Редактировать профиль' : 'Edit Profile' }}
+                {{ __('ui.dashboard.edit_profile') }}
             </a>
             <a href="{{ route('admin.articles.index', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -33,7 +33,7 @@
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                {{ app()->getLocale() === 'ru' ? 'Мои статьи' : 'My Articles' }}
+                {{ __('ui.dashboard.my_articles') }}
             </a>
             <form action="{{ route('logout') }}" method="POST" style="display: inline-block; margin: 0;">
                 @csrf
@@ -43,7 +43,7 @@
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
-                    {{ app()->getLocale() === 'ru' ? 'Выйти' : 'Logout' }}
+                    {{ __('ui.dashboard.logout') }}
                 </button>
             </form>
         </div>
@@ -59,7 +59,10 @@
                 </svg>
             </div>
             <div>
-                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ app()->getLocale() === 'ru' ? 'Очки Опыта (XP)' : 'Experience Points (XP)' }}</div>
+                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.25rem;">
+                    {{ __('ui.dashboard.stat_xp') }}
+                    <span class="xp-tooltip" style="cursor: help; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1px solid var(--primary-color); border-radius: 50%; font-size: 0.65rem;" title="{{ __('ui.dashboard.xp_info_tooltip') }}">?</span>
+                </div>
                 <div class="stat-card__value" style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-top: 0.25rem;">{{ number_format($user->points) }}</div>
             </div>
         </div>
@@ -73,7 +76,7 @@
                 </svg>
             </div>
             <div>
-                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ app()->getLocale() === 'ru' ? 'Публикации' : 'Articles Published' }}</div>
+                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ __('ui.dashboard.stat_articles') }}</div>
                 <div class="stat-card__value" style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-top: 0.25rem;">{{ $publishedArticlesCount }}</div>
             </div>
         </div>
@@ -87,7 +90,7 @@
                 </svg>
             </div>
             <div>
-                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ app()->getLocale() === 'ru' ? 'Бейджи и Звания' : 'Badges Unlocked' }}</div>
+                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ __('ui.dashboard.stat_badges') }}</div>
                 <div class="stat-card__value" style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-top: 0.25rem;">{{ $user->badges->count() }}</div>
             </div>
         </div>
@@ -101,7 +104,7 @@
                 </svg>
             </div>
             <div>
-                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes Taken' }}</div>
+                <div class="stat-card__label" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">{{ __('ui.dashboard.stat_quizzes') }}</div>
                 <div class="stat-card__value" style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-top: 0.25rem;">{{ $user->quizzes->count() }}</div>
             </div>
         </div>
@@ -113,15 +116,15 @@
         <div class="admin-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; min-height: 350px;">
             <h2 class="card-title" style="margin-top: 0; font-family: 'Outfit', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
                 <span style="font-size: 1.4rem;">🏆</span>
-                {{ app()->getLocale() === 'ru' ? 'Мои достижения' : 'My Achievements' }}
+                {{ __('ui.dashboard.my_achievements') }}
             </h2>
             @if($user->badges->isEmpty())
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
                     <p style="margin: 0; font-size: 0.95rem;">
-                        {{ app()->getLocale() === 'ru' ? 'Вы еще не разблокировали ни одного бейджа.' : 'You have not unlocked any badges yet.' }}
+                        {{ __('ui.dashboard.no_badges_yet') }}
                     </p>
                     <p style="margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
-                        {{ app()->getLocale() === 'ru' ? 'Проходите квизы или публикуйте статьи, чтобы заработать бейджи!' : 'Complete quizzes or publish articles to earn your badges!' }}
+                        {{ __('ui.dashboard.earn_badges_hint') }}
                     </p>
                 </div>
             @else
@@ -148,7 +151,7 @@
         <div class="admin-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; min-height: 350px;">
             <h2 class="card-title" style="margin-top: 0; font-family: 'Outfit', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
                 <span style="font-size: 1.4rem;">⚡</span>
-                {{ app()->getLocale() === 'ru' ? 'Незавершенные задания' : 'Active Challenges' }}
+                {{ __('ui.dashboard.active_challenges') }}
             </h2>
 
             <!-- Challenge: Write First Article (Reader only) -->
@@ -157,13 +160,13 @@
                     <div style="font-size: 1.75rem; line-height: 1; flex-shrink: 0; filter: grayscale(0.2);">📝</div>
                     <div>
                         <h3 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-color);">
-                            {{ app()->getLocale() === 'ru' ? 'Станьте Автором!' : 'Become an Author!' }}
+                            {{ __('ui.dashboard.become_author') }}
                         </h3>
                         <p style="margin: 0.35rem 0 0.75rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
-                            {{ app()->getLocale() === 'ru' ? 'Напишите свою первую статью и отправьте на модерацию. После утверждения вы получите роль Автора, 100 XP и бейдж!' : 'Write and submit your first article. Once approved and published, you will unlock the Author role, get +100 XP, and earn a badge!' }}
+                            {{ __('ui.dashboard.become_author_lead') }}
                         </p>
                         <a href="{{ route('admin.articles.create', ['locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--primary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;">
-                            {{ app()->getLocale() === 'ru' ? 'Написать статью' : 'Write Article' }}
+                            {{ __('ui.dashboard.write_article') }}
                         </a>
                     </div>
                 </div>
@@ -172,11 +175,11 @@
             <!-- Incomplete Quizzes List -->
             <div style="margin-top: 1.25rem; flex-grow: 1;">
                 <h3 style="margin: 0 0 0.75rem; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                    {{ app()->getLocale() === 'ru' ? 'Доступные квизы' : 'Available Quizzes' }}
+                    {{ __('ui.dashboard.available_quizzes') }}
                 </h3>
                 @if($incompleteQuizzes->isEmpty())
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); padding: 2rem 0;">
-                        <p style="margin: 0; font-size: 0.85rem;">🎉 {{ app()->getLocale() === 'ru' ? 'Вы прошли все доступные квизы!' : 'You have completed all available quizzes!' }}</p>
+                        <p style="margin: 0; font-size: 0.85rem;">🎉 {{ __('ui.dashboard.all_quizzes_completed') }}</p>
                     </div>
                 @else
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -187,10 +190,10 @@
                             <div style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
                                 <div>
                                     <h4 style="margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--text-color);">{{ $trans?->title ?? $quiz->slug }}</h4>
-                                    <p style="margin: 0.2rem 0 0; font-size: 0.75rem; color: var(--text-muted);">{{ app()->getLocale() === 'ru' ? 'Награда:' : 'Award:' }} {{ $quiz->points }} XP</p>
+                                    <p style="margin: 0.2rem 0 0; font-size: 0.75rem; color: var(--text-muted);">{{ __('ui.dashboard.award') }} {{ $quiz->points }} XP</p>
                                 </div>
                                 <a href="{{ route('quizzes.show', ['slug' => $quiz->slug, 'locale' => app()->getLocale()]) }}" class="admin-btn admin-btn--secondary" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight: 600;">
-                                    {{ app()->getLocale() === 'ru' ? 'Пройти квиз' : 'Start Quiz' }}
+                                    {{ __('ui.dashboard.start_quiz') }}
                                 </a>
                             </div>
                         @endforeach

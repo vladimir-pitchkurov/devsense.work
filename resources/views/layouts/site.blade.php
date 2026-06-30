@@ -161,17 +161,17 @@
             @endauth
 
             <nav class="header__nav">
-                <a href="{{ route('search') }}" class="nav__link {{ Route::is('search') ? 'active' : '' }}">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</a>
-                <a href="{{ route('courses.index') }}" class="nav__link {{ Route::is('courses.*') ? 'active' : '' }}">{{ app()->getLocale() === 'ru' ? 'Курсы' : 'Courses' }}</a>
-                <a href="{{ route('quizzes.index') }}" class="nav__link {{ Route::is('quizzes.*') ? 'active' : '' }}">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
-                <a href="{{ route('jobs.index') }}" class="nav__link {{ Route::is('jobs.*') ? 'active' : '' }}">{{ app()->getLocale() === 'ru' ? 'Вакансии' : 'Jobs' }}</a>
-                <a href="{{ route('suggestions.index') }}" class="nav__link {{ Route::is('suggestions.index') ? 'active' : '' }}">{{ app()->getLocale() === 'ru' ? 'Предложения' : 'Suggestions' }}</a>
+                <a href="{{ route('search') }}" class="nav__link {{ Route::is('search') ? 'active' : '' }}">{{ __('ui.nav.catalog') }}</a>
+                <a href="{{ route('courses.index') }}" class="nav__link {{ Route::is('courses.*') ? 'active' : '' }}">{{ __('ui.nav.courses') }}</a>
+                <a href="{{ route('quizzes.index') }}" class="nav__link {{ Route::is('quizzes.*') ? 'active' : '' }}">{{ __('ui.nav.quizzes') }}</a>
+                <a href="{{ route('jobs.index') }}" class="nav__link {{ Route::is('jobs.*') ? 'active' : '' }}">{{ __('ui.nav.jobs') }}</a>
+                <a href="{{ route('suggestions.index') }}" class="nav__link {{ Route::is('suggestions.index') ? 'active' : '' }}">{{ __('ui.nav.suggestions') }}</a>
             </nav>
         </div>
     </div>
 </header>
 
-<nav class="mobile-nav" aria-label="{{ __('ui.nav.mobile_aria', [], app()->getLocale()) ?? 'Navigation' }}">
+<nav class="mobile-nav" aria-label="{{ __('ui.nav.mobile_aria') }}">
     {{-- Home --}}
     <a href="{{ route('home') }}" class="mobile-nav__item {{ Route::is('home') ? 'active' : '' }}" aria-label="{{ __('ui.nav.home') }}">
         <span class="mobile-nav__icon">
@@ -185,7 +185,7 @@
     </a>
 
     {{-- Catalog --}}
-    <a href="{{ route('search') }}" class="mobile-nav__item {{ Route::is('search') ? 'active' : '' }}" aria-label="Catalog">
+    <a href="{{ route('search') }}" class="mobile-nav__item {{ Route::is('search') ? 'active' : '' }}" aria-label="{{ __('ui.nav.catalog') }}">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -194,22 +194,22 @@
                 <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</span>
+        <span class="mobile-nav__label">{{ __('ui.nav.catalog') }}</span>
     </a>
 
     {{-- Courses --}}
-    <a href="{{ route('courses.index') }}" class="mobile-nav__item {{ Route::is('courses.*') ? 'active' : '' }}" aria-label="Courses">
+    <a href="{{ route('courses.index') }}" class="mobile-nav__item {{ Route::is('courses.*') ? 'active' : '' }}" aria-label="{{ __('ui.nav.courses') }}">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Курсы' : 'Courses' }}</span>
+        <span class="mobile-nav__label">{{ __('ui.nav.courses') }}</span>
     </a>
 
     {{-- Quizzes --}}
-    <a href="{{ route('quizzes.index') }}" class="mobile-nav__item {{ Route::is('quizzes.*') ? 'active' : '' }}" aria-label="Quizzes">
+    <a href="{{ route('quizzes.index') }}" class="mobile-nav__item {{ Route::is('quizzes.*') ? 'active' : '' }}" aria-label="{{ __('ui.nav.quizzes') }}">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
@@ -217,18 +217,18 @@
                 <circle cx="12" cy="12" r="10"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</span>
+        <span class="mobile-nav__label">{{ __('ui.nav.quizzes') }}</span>
     </a>
 
     {{-- Jobs --}}
-    <a href="{{ route('jobs.index') }}" class="mobile-nav__item {{ Route::is('jobs.*') ? 'active' : '' }}" aria-label="Jobs">
+    <a href="{{ route('jobs.index') }}" class="mobile-nav__item {{ Route::is('jobs.*') ? 'active' : '' }}" aria-label="{{ __('ui.nav.jobs') }}">
         <span class="mobile-nav__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
             </svg>
         </span>
-        <span class="mobile-nav__label">{{ app()->getLocale() === 'ru' ? 'Вакансии' : 'Jobs' }}</span>
+        <span class="mobile-nav__label">{{ __('ui.nav.jobs') }}</span>
     </a>
 
     {{-- Cabinet / Admin --}}
@@ -278,19 +278,19 @@
                     <a href="{{ route('home') }}" class="footer__nav-link">{{ __('ui.nav.home') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('search') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Каталог' : 'Catalog' }}</a>
+                    <a href="{{ route('search') }}" class="footer__nav-link">{{ __('ui.nav.catalog') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('courses.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Курсы' : 'Courses' }}</a>
+                    <a href="{{ route('courses.index') }}" class="footer__nav-link">{{ __('ui.nav.courses') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('quizzes.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Квизы' : 'Quizzes' }}</a>
+                    <a href="{{ route('quizzes.index') }}" class="footer__nav-link">{{ __('ui.nav.quizzes') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('jobs.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Вакансии' : 'Jobs' }}</a>
+                    <a href="{{ route('jobs.index') }}" class="footer__nav-link">{{ __('ui.nav.jobs') }}</a>
                 </li>
                 <li class="footer__nav-item">
-                    <a href="{{ route('suggestions.index') }}" class="footer__nav-link">{{ app()->getLocale() === 'ru' ? 'Предложения' : 'Suggestions' }}</a>
+                    <a href="{{ route('suggestions.index') }}" class="footer__nav-link">{{ __('ui.nav.suggestions') }}</a>
                 </li>
                 <li class="footer__nav-item">
                     <a href="{{ route('terms') }}" class="footer__nav-link">{{ __('ui.footer.terms') }}</a>

@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('register.post') }}" method="POST" class="auth-form" id="registerForm">
+            <form action="{{ route('register.post.locale', ['locale' => app()->getLocale()]) }}" method="POST" class="auth-form" id="registerForm">
                 @csrf
 
                 <div class="auth-field">
@@ -49,6 +49,7 @@
                             type="password" name="password" id="password"
                             required autocomplete="new-password"
                             placeholder="Min 8 characters"
+                            value="{{ old('password') }}"
                             class="auth-input{{ $errors->has('password') ? ' auth-input--error' : '' }}"
                         >
                         <button type="button" class="auth-toggle" id="togglePassword" aria-label="Toggle password visibility">
@@ -76,7 +77,8 @@
                         <input
                             type="password" name="password_confirmation" id="password_confirmation"
                             required autocomplete="new-password"
-                            placeholder="••••••••"
+                            placeholder="{{ __('ui.auth.confirm_password_placeholder') }}"
+                            value="{{ old('password_confirmation') }}"
                             class="auth-input"
                         >
                         <button type="button" class="auth-toggle" id="toggleConfirm" aria-label="Toggle confirm password visibility">

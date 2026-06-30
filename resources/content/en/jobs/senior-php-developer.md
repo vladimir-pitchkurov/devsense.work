@@ -9,6 +9,11 @@ salary_currency: "GBP"
 salary_value: 7000
 employment_type: "FULL_TIME"
 published: "2026-05-30"
+faq:
+  - question: "Is remote work possible?"
+    answer: "Yes, this position is 100% remote."
+  - question: "What is the tech stack?"
+    answer: "Our stack includes PHP 8.4/8.5, Laravel 13, PostgreSQL, Redis, Docker/Sail, and TailwindCSS."
 ---
 
 # Senior PHP Developer (Laravel)

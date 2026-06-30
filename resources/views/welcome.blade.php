@@ -1,4 +1,4 @@
-<x-layout :title="app()->getLocale() === 'ru' ? 'Главная' : 'Home'" :description="app()->getLocale() === 'ru' ? 'Полезные гайды по PHP и веб-разработке' : 'Useful guides for PHP and web development'">
+<x-layout :title="__('ui.nav.home')" :description="__('ui.welcome.hero_lead')">
     <div class="space-y-16 py-8" style="display: flex; flex-direction: column; gap: 4rem;">
         <!-- Hero section -->
         <section class="relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-20 text-center shadow-2xl dark:bg-black/40 border border-slate-800" style="position: relative; border-radius: 1.5rem; background: var(--card-bg); padding: 5rem 1.5rem; text-align: center; border: 1px solid var(--border-color); overflow: hidden;">
@@ -6,23 +6,21 @@
             <div class="relative max-w-3xl mx-auto space-y-6" style="position: relative; z-index: 2; max-width: 48rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
                 <div>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background: rgba(99, 102, 241, 0.1); color: var(--primary-color); border: 1px solid rgba(99, 102, 241, 0.2);">
-                        🚀 {{ app()->getLocale() === 'ru' ? 'Новое поколение DevSense' : 'Next-gen DevSense Platform' }}
+                        🚀 {{ __('ui.welcome.next_gen') }}
                     </span>
                 </div>
                 <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white font-outfit" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; color: var(--text-color); margin: 0; line-height: 1.1;">
                     DevSense<span style="color: var(--primary-color);">.</span>
                 </h1>
                 <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed" style="font-size: 1.125rem; color: var(--text-muted); line-height: 1.6; max-width: 42rem; margin: 0 auto;">
-                    {{ app()->getLocale() === 'ru' 
-                        ? 'Единая экосистема для PHP и Backend разработчиков. Читайте технические руководства, проверяйте знания на квизах и предлагайте улучшения.' 
-                        : 'A complete ecosystem for PHP and Backend developers. Read deep-dive guides, test your knowledge in quizzes, and suggest site improvements.' }}
+                    {{ __('ui.welcome.ecosystem_lead') }}
                 </p>
                 <div class="flex flex-wrap justify-center gap-4 pt-4" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding-top: 1rem;">
                     <a href="{{ route('search') }}" class="btn-primary glow-button" style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
-                        {{ app()->getLocale() === 'ru' ? 'Перейти в каталог' : 'Browse Catalog' }}
+                        {{ __('ui.welcome.browse_catalog') }}
                     </a>
                     <a href="{{ route('quizzes.index') }}" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
-                        {{ app()->getLocale() === 'ru' ? 'Пройти квиз' : 'Try Quizzes' }}
+                        {{ __('ui.welcome.try_quizzes') }}
                     </a>
                 </div>
             </div>
@@ -38,14 +36,14 @@
                             📚
                         </div>
                         <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                            {{ app()->getLocale() === 'ru' ? 'Гайды' : 'Guides' }}
+                            {{ __('ui.welcome.guides') }}
                         </span>
                     </div>
                     <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Технические статьи' : 'Technical Articles' }}
+                        {{ __('ui.welcome.technical_articles') }}
                     </h2>
                     <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Актуальные статьи и руководства по PHP, базам данных и архитектуре высоконагруженных систем.' : 'Fresh guides on PHP runtime, databases, microservices, and high-load architecture.' }}
+                        {{ __('ui.welcome.fresh_guides') }}
                     </p>
 
                     <!-- Latest Articles List -->
@@ -68,7 +66,7 @@
                 </div>
 
                 <a href="{{ route('search') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
-                    {{ app()->getLocale() === 'ru' ? 'Все статьи' : 'All Articles' }} &rarr;
+                    {{ __('ui.welcome.all_articles') }} &rarr;
                 </a>
             </section>
 
@@ -80,14 +78,14 @@
                             🎮
                         </div>
                         <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                            {{ app()->getLocale() === 'ru' ? 'Тесты' : 'Quizzes' }}
+                            {{ __('ui.welcome.try_quizzes') }}
                         </span>
                     </div>
                     <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Интервью Квизы' : 'Interview Quizzes' }}
+                        {{ __('ui.welcome.interview_quizzes') }}
                     </h2>
                     <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Проверьте себя, зарабатывайте очки опыта (XP) и соревнуйтесь в таблице лидеров.' : 'Check your readiness for interview questions, gain XP, and unlock rare badges.' }}
+                        {{ __('ui.welcome.quizzes_lead') }}
                     </p>
 
                     <!-- Latest Quizzes List -->
@@ -112,7 +110,7 @@
                 </div>
 
                 <a href="{{ route('quizzes.index') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
-                    {{ app()->getLocale() === 'ru' ? 'Все квизы' : 'All Quizzes' }} &rarr;
+                    {{ __('ui.welcome.all_quizzes') }} &rarr;
                 </a>
             </section>
 
@@ -124,14 +122,14 @@
                             💡
                         </div>
                         <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                            {{ app()->getLocale() === 'ru' ? 'Идеи' : 'Suggestions' }}
+                            {{ __('ui.welcome.ideas') }}
                         </span>
                     </div>
                     <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Предложения' : 'Community Board' }}
+                        {{ __('ui.welcome.community_board') }}
                     </h2>
                     <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 1.5rem 0;">
-                        {{ app()->getLocale() === 'ru' ? 'Предлагайте темы статей и функции платформы. Поддерживайте чужие идеи голосами.' : 'Suggest topics and vote on feature ideas submitted by other developers.' }}
+                        {{ __('ui.welcome.suggestions_lead') }}
                     </p>
 
                     <!-- Latest Suggestions List -->
@@ -141,7 +139,7 @@
                                 <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem;">
                                     <span style="font-weight: 600; color: var(--text-color);">{{ $suggestion->user?->name ?? 'Guest' }}</span>
                                     <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.15rem 0.5rem; border-radius: 9999px; font-weight: 700; font-size: 0.65rem;">
-                                        {{ $suggestion->votes()->count() }} {{ app()->getLocale() === 'ru' ? 'голосов' : 'votes' }}
+                                        {{ $suggestion->votes()->count() }} {{ __('ui.welcome.votes') }}
                                     </span>
                                 </div>
                                 <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
@@ -153,7 +151,7 @@
                 </div>
 
                 <a href="{{ route('suggestions.index') }}" class="btn-secondary" style="display: block; text-align: center; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
-                    {{ app()->getLocale() === 'ru' ? 'Все предложения' : 'View Suggestions' }} &rarr;
+                    {{ __('ui.welcome.view_suggestions') }} &rarr;
                 </a>
             </section>
         </div>
