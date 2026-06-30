@@ -171,7 +171,7 @@
                                 @if($isCompleted)
                                     {{ __('ui.quizzes.retake_quiz_btn') }}
                                 @else
-                                    {{ __('ui.quizzes.start_quiz') }}
+                                    {{ __('ui.quizzes.start_quiz_btn') }}
                                 @endif
                             </a>
                         </div>
