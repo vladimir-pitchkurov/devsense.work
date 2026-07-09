@@ -617,4 +617,12 @@ return [
         'vote' => 'Abstimmen',
         'retract_vote' => 'Stimme zurückziehen',
     ],
+    'vip' => [
+        'restricted_title' => '🔒 Eingeschränkter Artikel',
+        'restricted_desc' => 'Dieser Leitfaden zur Cybersicherheit enthält sensible technische Informationen und ist auf VIP-Benutzer beschränkt. Wenn Sie ein Konto haben, wenden Sie sich bitte an den Administrator, um VIP-Zugriff zu beantragen.',
+        'login_btn' => 'Anmelden für Zugriff',
+        'pending_badge' => 'Zugriff ausstehend',
+            'request_btn' => 'VIP-Zugriff beantragen',
+        'request_success' => 'Ihre Anfrage für VIP-Zugriff wurde erfolgreich übermittelt.',
+],
 ];

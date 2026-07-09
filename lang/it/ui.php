@@ -617,4 +617,12 @@ return [
         'vote' => 'Vota',
         'retract_vote' => 'Ritira voto',
     ],
+    'vip' => [
+        'restricted_title' => '🔒 Articolo riservato',
+        'restricted_desc' => 'Questa guida alla sicurezza informatica contiene informazioni tecniche sensibili ed è riservata agli utenti VIP. Se disponi di un account, contatta l\'amministratore per richiedere l\'accesso VIP.',
+        'login_btn' => 'Accedi per accedere',
+        'pending_badge' => 'Accesso in attesa di approvazione',
+            'request_btn' => 'Richiedi accesso VIP',
+        'request_success' => 'La tua richiesta di accesso VIP è stata inviata con successo.',
+],
 ];

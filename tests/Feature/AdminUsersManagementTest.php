@@ -47,13 +47,14 @@ class AdminUsersManagementTest extends TestCase
         $editResponse->assertStatus(200);
     }
 
-    public function test_super_admins_can_update_user_role_and_block_status(): void
+    public function test_super_admins_can_update_user_role_and_block_and_vip_status(): void
     {
         $admin = User::factory()->admin()->create();
         $user = User::factory()->create([
             'role' => User::ROLE_READER,
             'is_blocked' => false,
             'is_approved' => false,
+            'is_vip' => false,
         ]);
 
         $this->actingAs($admin);
@@ -62,6 +63,7 @@ class AdminUsersManagementTest extends TestCase
             'role' => User::ROLE_AUTHOR,
             'is_blocked' => '1',
             'is_approved' => '1',
+            'is_vip' => '1',
         ]);
 
         $response->assertRedirect(route('admin.users.index', ['locale' => 'en']));
@@ -71,6 +73,7 @@ class AdminUsersManagementTest extends TestCase
         $this->assertEquals(User::ROLE_AUTHOR, $user->role);
         $this->assertTrue($user->is_blocked);
         $this->assertTrue($user->is_approved);
+        $this->assertTrue($user->is_vip);
     }
 
     public function test_super_admins_cannot_modify_themselves(): void

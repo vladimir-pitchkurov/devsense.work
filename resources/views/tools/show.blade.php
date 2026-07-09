@@ -55,6 +55,38 @@
 
             <div class="article__content markdown-body">
                 {!! $content !!}
+
+                @if(isset($isRestricted) && $isRestricted)
+                    @if(session('success'))
+                        <div class="vip-alert vip-alert--success" style="margin-top: 2rem; padding: 1rem; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.05); color: #10b981; border-radius: 0.375rem; font-weight: 500; text-align: center;">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <div class="vip-notice-box" style="margin-top: 2rem; padding: 2rem; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.03); border-radius: 0.5rem; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                        <div class="vip-icon" style="font-size: 2.5rem; margin-bottom: 1rem; color: #fbbf24;">🔒</div>
+                        <h3 style="margin-top: 0; color: var(--text-color);">{{ __('ui.vip.restricted_title') }}</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">{{ __('ui.vip.restricted_desc') }}</p>
+                        @guest
+                            <a href="{{ route('login', ['locale' => app()->getLocale()]) }}" class="btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.375rem; text-decoration: none; font-weight: bold; background: var(--primary-color); color: #fff;">
+                                {{ __('ui.vip.login_btn') }}
+                            </a>
+                        @else
+                            @if(auth()->user()->vip_requested_at)
+                                <div class="vip-badge-pending" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(251, 191, 36, 0.1); border: 1px solid #fbbf24; color: #fbbf24; border-radius: 0.375rem; font-weight: 500;">
+                                    {{ __('ui.vip.pending_badge') }}
+                                </div>
+                            @else
+                                <form action="{{ route('vip.request', ['locale' => app()->getLocale()]) }}" method="POST" style="margin: 0; display: inline-block;">
+                                    @csrf
+                                    <button type="submit" class="btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.375rem; border: none; font-weight: bold; background: var(--primary-color); color: #fff; cursor: pointer; font-family: inherit;">
+                                        {{ __('ui.vip.request_btn') }}
+                                    </button>
+                                </form>
+                            @endif
+                        @endguest
+                    </div>
+                @endif
             </div>
 
             <!-- Like & Dislike Section -->

@@ -44,6 +44,14 @@
                         <p class="form-help">Only approved authors can publish articles and have public profile pages.</p>
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" name="is_vip" value="1" {{ old('is_vip', $user->is_vip) ? 'checked' : '' }}>
+                            VIP User Status
+                        </label>
+                        <p class="form-help">VIP users can access restricted cybersecurity articles and premium guides.</p>
+                    </div>
+
                     <button type="submit" class="admin-btn admin-btn--primary admin-btn--full">
                         Update User Settings
                     </button>
