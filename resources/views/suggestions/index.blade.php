@@ -1,5 +1,5 @@
 <x-layout 
-    title="{{ __('ui.suggestions.title') }}"
+    title="{{ __('ui.suggestions.global_title') }}"
     description="Suggest guides and site features for the DevSense platform."
 >
 <div class="admin-container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; font-family: 'Inter', sans-serif;">
@@ -29,7 +29,7 @@
             <form action="{{ route('suggestions.storeGeneral', ['locale' => app()->getLocale()]) }}" method="POST">
                 @csrf
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <textarea name="content" rows="3" required class="form-input" style="background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.5rem; padding: 0.75rem; font-family: inherit; font-size: 0.95rem; resize: vertical;" placeholder="{{ __('ui.suggestions.placeholder') }}"></textarea>
+                    <textarea name="content" rows="3" required class="form-input" style="background: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 100%; border-radius: 0.5rem; padding: 0.75rem; font-family: inherit; font-size: 0.95rem; resize: vertical;" placeholder="{{ __('ui.suggestions.global_placeholder') }}"></textarea>
                 </div>
                 <div style="display: flex; justify-content: flex-end;">
                     <button type="submit" class="admin-btn admin-btn--primary" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); color: white; border: none; font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 0.5rem; cursor: pointer;">
