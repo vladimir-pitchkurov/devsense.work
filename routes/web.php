@@ -253,6 +253,7 @@ Route::prefix('{locale}')
 
         Route::post('/reports', [\App\Http\Controllers\ReportController::class, 'store'])->name('reports.store');
         Route::post('/likes', [\App\Http\Controllers\LikeController::class, 'toggle'])->name('likes.toggle')->middleware('auth');
+        Route::post('/vip/request', [\App\Http\Controllers\PublicArticleController::class, 'requestVip'])->name('vip.request')->middleware('auth');
 
         // Suggestions / Propositions Routes
         Route::post('/articles/{article}/suggestions', [\App\Http\Controllers\ArticleSuggestionController::class, 'store'])->name('suggestions.store')->middleware('auth');

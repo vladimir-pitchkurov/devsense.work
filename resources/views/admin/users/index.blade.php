@@ -58,6 +58,14 @@
                     </select>
                 </div>
                 <div style="flex: 1 1 150px;">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">VIP Status</label>
+                    <select name="vip" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                        <option value="">All Users</option>
+                        <option value="vip" {{ request('vip') === 'vip' ? 'selected' : '' }}>VIP Users</option>
+                        <option value="requested" {{ request('vip') === 'requested' ? 'selected' : '' }}>Requested VIP</option>
+                    </select>
+                </div>
+                <div style="flex: 1 1 150px;">
                     <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem;">Sort By</label>
                     <select name="sort_by" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
                         <option value="name_asc" {{ request('sort_by') === 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
@@ -92,10 +100,16 @@
                     @forelse ($users as $user)
                         <tr>
                             <td>
-                                <strong>{{ $user->name }}</strong>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                    <strong>{{ $user->name }}</strong>
+                                    @if(!$user->is_vip && $user->vip_requested_at)
+                                        <span class="admin-badge" style="background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fbbf24; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 0.25rem;">
+                                            VIP Request
+                                        </span>
+                                    @endif
+                                </div>
                                 @if($user->isAuthor() && $user->is_approved && !$user->is_blocked)
-                                    <br>
-                                    <small>
+                                    <small style="display: block; margin-top: 0.25rem;">
                                         <a href="{{ route('authors.show', ['locale' => app()->getLocale(), 'slug' => $user->slug]) }}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">
                                             View Profile
                                         </a>

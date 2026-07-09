@@ -623,4 +623,12 @@ return [
         'vote' => 'Vote',
         'retract_vote' => 'Retract Vote',
     ],
+    'vip' => [
+        'restricted_title' => '🔒 Restricted Article',
+        'restricted_desc' => 'This cybersecurity guide contains sensitive technical information and is restricted to VIP users. If you have an active account, please contact the administrator to request VIP access.',
+        'login_btn' => 'Sign In to Access',
+        'pending_badge' => 'Access Pending Approval',
+            'request_btn' => 'Request VIP Access',
+        'request_success' => 'Your request for VIP access has been submitted successfully.',
+],
 ];

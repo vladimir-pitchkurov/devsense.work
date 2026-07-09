@@ -34,6 +34,16 @@ class UserController extends Controller
             $query->where('is_blocked', $request->input('status') === 'suspended');
         }
 
+        // Filter by VIP Status
+        if ($request->filled('vip')) {
+            $vipFilter = $request->input('vip');
+            if ($vipFilter === 'vip') {
+                $query->where('is_vip', true);
+            } elseif ($vipFilter === 'requested') {
+                $query->where('is_vip', false)->whereNotNull('vip_requested_at');
+            }
+        }
+
         // Search by Name or Email
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -94,15 +104,19 @@ class UserController extends Controller
             'role' => ['required', 'string', Rule::in([User::ROLE_SUPER_ADMIN, User::ROLE_AUTHOR, User::ROLE_READER])],
             'is_blocked' => ['nullable', 'boolean'],
             'is_approved' => ['nullable', 'boolean'],
+            'is_vip' => ['nullable', 'boolean'],
         ]);
 
         $isBlocked = $request->has('is_blocked') ? (bool) $request->input('is_blocked') : false;
         $isApproved = $request->has('is_approved') ? (bool) $request->input('is_approved') : false;
+        $isVip = $request->has('is_vip') ? (bool) $request->input('is_vip') : false;
 
         $user->update([
             'role' => $validated['role'],
             'is_blocked' => $isBlocked,
             'is_approved' => $isApproved,
+            'is_vip' => $isVip,
+            'vip_requested_at' => $isVip ? null : $user->vip_requested_at,
         ]);
 
         return redirect()

@@ -111,13 +111,15 @@ class PublicArticleController extends Controller
                 ->with(['tags.translations', 'author'])
                 ->first();
         }
-
         // Fetch parsed markdown/DB content
         $data = $markdownService->getParsedContent($locale, $category_slug, $article_slug);
 
         if (!$data) {
             abort(404);
         }
+
+        $isRestricted = false;
+        $content = $data['html'];
 
         if ($articleObj) {
             $currentUser = auth()->user();
@@ -133,6 +135,26 @@ class PublicArticleController extends Controller
             if (!$articleObj->is_approved || !$articleObj->is_published) {
                 if (!$isOwnerOrAdmin) {
                     abort(404);
+                }
+            }
+        }
+
+        if ($category_slug === 'security') {
+            $currentUser = auth()->user();
+            $hasAccess = $currentUser && (
+                $currentUser->isAdmin() ||
+                $currentUser->is_vip ||
+                ($articleObj && $currentUser->id === $articleObj->author_id)
+            );
+
+            if (!$hasAccess) {
+                $isRestricted = true;
+                $paragraphs = [];
+                preg_match_all('/<p>.*?<\/p>/is', $content, $paragraphs);
+                if (!empty($paragraphs[0])) {
+                    $content = implode("\n", array_slice($paragraphs[0], 0, 2)) . ' <span class="text-muted">...</span>';
+                } else {
+                    $content = Str::limit(strip_tags($content), 300) . ' <span class="text-muted">...</span>';
                 }
             }
         }
@@ -166,7 +188,8 @@ class PublicArticleController extends Controller
 
         return view($viewName, [
             'article'         => $articleObj,
-            'content'         => $data['html'],
+            'content'         => $content,
+            'isRestricted'    => $isRestricted,
             'meta'            => $meta,
             'tags'            => $tags,
             'pageTitle'       => $pageTitle,
@@ -233,6 +256,29 @@ class PublicArticleController extends Controller
             abort(404);
         }
 
+        $isRestricted = false;
+        $content = $data['html'];
+
+        if ($category_slug === 'security') {
+            $currentUser = auth()->user();
+            $hasAccess = $currentUser && (
+                $currentUser->isAdmin() ||
+                $currentUser->is_vip ||
+                $currentUser->id === $articleObj->author_id
+            );
+
+            if (!$hasAccess) {
+                $isRestricted = true;
+                $paragraphs = [];
+                preg_match_all('/<p>.*?<\/p>/is', $content, $paragraphs);
+                if (!empty($paragraphs[0])) {
+                    $content = implode("\n", array_slice($paragraphs[0], 0, 2)) . ' <span class="text-muted">...</span>';
+                } else {
+                    $content = Str::limit(strip_tags($content), 300) . ' <span class="text-muted">...</span>';
+                }
+            }
+        }
+
         $meta = $data['meta'];
         $pageTitle = $this->scalarMetaString($meta, 'title') 
             ?? $articleObj->translate($locale)?->title 
@@ -258,7 +304,8 @@ class PublicArticleController extends Controller
 
         return view($viewName, [
             'article'         => $articleObj,
-            'content'         => $data['html'],
+            'content'         => $content,
+            'isRestricted'    => $isRestricted,
             'meta'            => $meta,
             'tags'            => $tags,
             'pageTitle'       => $pageTitle,
@@ -280,5 +327,18 @@ class PublicArticleController extends Controller
                 'faq' => $meta['faq'] ?? null,
             ],
         ]);
+    }
+
+    /**
+     * Handle the user request for VIP access.
+     */
+    public function requestVip(): \Illuminate\Http\RedirectResponse
+    {
+        $user = auth()->user();
+        if ($user) {
+            $user->update(['vip_requested_at' => now()]);
+            return back()->with('success', __('ui.vip.request_success'));
+        }
+        return back();
     }
 }
