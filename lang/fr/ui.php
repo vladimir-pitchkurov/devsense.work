@@ -366,7 +366,9 @@ return [
             'resent' => 'Un nouveau lien de vérification a été envoyé à votre adresse e-mail.',
             'resend_btn' => 'Renvoyer l\'e-mail de vérification',
             'logout_btn' => 'Se déconnecter',
-        ],
+                'math_captcha_label' => 'Pour vérifier que vous êtes un humain, veuillez résoudre: :num1 + :num2 = ?',
+        'math_captcha_error' => 'La réponse à la vérification mathématique est incorrecte.',
+],
         'password_reset' => [
             'subject' => 'Notification de réinitialisation du mot de passe',
             'greeting' => 'Bonjour !',

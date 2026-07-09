@@ -410,7 +410,9 @@ return [
             'resent' => 'A fresh verification link has been sent to your email address.',
             'resend_btn' => 'Resend Verification Email',
             'logout_btn' => 'Log Out',
-        ],
+                'math_captcha_label' => 'To verify you are human, please solve: :num1 + :num2 = ?',
+        'math_captcha_error' => 'The math verification answer is incorrect.',
+],
         'password_reset' => [
             'subject' => 'Reset Password Notification',
             'greeting' => 'Hello!',

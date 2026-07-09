@@ -18,7 +18,16 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        session(['register_form_loaded_at' => microtime(true)]);
+
+        $num1 = rand(1, 9);
+        $num2 = rand(1, 9);
+        session(['register_captcha_answer' => $num1 + $num2]);
+
+        return view('auth.register', [
+            'num1' => $num1,
+            'num2' => $num2,
+        ]);
     }
 
     /**
@@ -26,6 +35,22 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
+        $checkBot = !app()->runningUnitTests() || $request->has('test_bot_protection');
+
+        // 1. Honeypot check
+        if ($checkBot && $request->filled('middle_name')) {
+            abort(422, 'Bot detected.');
+        }
+
+        // 2. Time-lock check
+        if ($checkBot) {
+            $loadedAt = session('register_form_loaded_at');
+            if (!$loadedAt || (microtime(true) - $loadedAt < 3.0)) {
+                abort(422, 'Form submitted too quickly.');
+            }
+        }
+
+        // 3. Validation (including Math CAPTCHA)
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => [
@@ -39,6 +64,17 @@ class RegisterController extends Controller
             ],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'terms'    => ['required', 'accepted'],
+            'captcha'  => [
+                $checkBot ? 'required' : 'nullable',
+                $checkBot ? 'integer' : 'nullable',
+                function ($attribute, $value, $fail) use ($checkBot) {
+                    if ($checkBot) {
+                        if ((int)$value !== (int)session('register_captcha_answer')) {
+                            $fail(__('ui.auth.math_captcha_error'));
+                        }
+                    }
+                }
+            ],
         ]);
 
         $user = User::create([

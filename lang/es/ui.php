@@ -366,7 +366,9 @@ return [
             'resent' => 'Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.',
             'resend_btn' => 'Reenviar correo de verificación',
             'logout_btn' => 'Cerrar sesión',
-        ],
+                'math_captcha_label' => 'Para verificar que es un humano, resuelva: :num1 + :num2 = ?',
+        'math_captcha_error' => 'La respuesta a la verificación matemática es incorrecta.',
+],
         'password_reset' => [
             'subject' => 'Notificación de restablecimiento de contraseña',
             'greeting' => '¡Hola!',
