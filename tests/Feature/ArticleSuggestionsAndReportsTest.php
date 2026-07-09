@@ -184,7 +184,13 @@ class ArticleSuggestionsAndReportsTest extends TestCase
         $this->assertNotNull($report->screenshot_path);
 
         // Check if screenshot file was stored
-        Storage::disk('public')->assertExists($report->screenshot_path);
+        $filePath = public_path($report->screenshot_path);
+        $this->assertFileExists($filePath);
+
+        // Clean up the file
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
     }
 
     public function test_user_can_report_suggestion_comment(): void

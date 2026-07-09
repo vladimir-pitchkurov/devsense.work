@@ -632,5 +632,10 @@ return [
         'pending_badge' => 'Access Pending Approval',
             'request_btn' => 'Request VIP Access',
         'request_success' => 'Your request for VIP access has been submitted successfully.',
-],
+    ],
+    'article' => [
+        'anonymous_author' => 'Anonymous Author',
+        'author_label' => 'Author',
+        'published_label' => 'Published',
+    ],
 ];

@@ -12,6 +12,8 @@
         </a>
     </nav>
     <article class="article">
+        @include('partials.article_author_meta')
+
         <div class="article__content markdown-body">
             {!! $content !!}
         </div>

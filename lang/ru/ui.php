@@ -636,5 +636,10 @@ return [
         'pending_badge' => 'Ожидает одобрения доступа',
             'request_btn' => 'Подать заявку на VIP-доступ',
         'request_success' => 'Ваша заявка на получение VIP-доступа была успешно отправлена.',
-],
+    ],
+    'article' => [
+        'anonymous_author' => 'Анонимный автор',
+        'author_label' => 'Автор',
+        'published_label' => 'Опубликовано',
+    ],
 ];

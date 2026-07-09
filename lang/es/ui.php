@@ -626,5 +626,10 @@ return [
         'pending_badge' => 'Acceso pendiente de aprobación',
             'request_btn' => 'Solicitar acceso VIP',
         'request_success' => 'Su solicitud de acceso VIP ha sido enviada con éxito.',
-],
+    ],
+    'article' => [
+        'anonymous_author' => 'Autor Anónimo',
+        'author_label' => 'Autor',
+        'published_label' => 'Publicado',
+    ],
 ];

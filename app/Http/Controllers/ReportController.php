@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, \App\Services\MediaUploadService $uploadService)
     {
         $validated = $request->validate([
             'reason' => ['required', 'string', 'min:5', 'max:1000'],
@@ -42,31 +42,14 @@ class ReportController extends Controller
 
         $screenshotPath = null;
         if ($request->hasFile('screenshot')) {
-            $file = $request->file('screenshot');
-            $originalName = $file->getClientOriginalName();
-            if (substr_count($originalName, '.') > 1) {
+            try {
+                [$screenshotUrl, $storedPath] = $uploadService->uploadAndStrip($request->file('screenshot'));
+                $screenshotPath = $storedPath;
+            } catch (\Exception $e) {
                 if ($request->wantsJson()) {
-                    return response()->json(['error' => 'Double extensions or multiple dots are not allowed in filenames.'], 422);
+                    return response()->json(['error' => $e->getMessage()], 422);
                 }
-                return back()->withErrors(['screenshot' => 'Double extensions or multiple dots are not allowed in filenames.']);
-            }
-
-            $extension = strtolower($file->getClientOriginalExtension());
-            $filename = Str::uuid() . '.' . $extension;
-            
-            $environment = app()->environment();
-            $envPrefix = in_array($environment, ['local', 'testing', 'dev', 'development'], true) ? 'dev' : 'prod';
-            $path = "reports_screenshots/{$envPrefix}/{$filename}";
-
-            if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
-                \Illuminate\Support\Facades\Storage::disk('s3')->put(
-                    $path,
-                    file_get_contents($file->getRealPath()),
-                    'public'
-                );
-                $screenshotPath = $path;
-            } else {
-                $screenshotPath = $file->storeAs("reports_screenshots/{$envPrefix}", $filename, 'public');
+                return back()->withInput()->withErrors(['screenshot' => $e->getMessage()]);
             }
         }
 

@@ -53,6 +53,10 @@ class Report extends Model
             return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
         }
 
+        if (str_starts_with($path, 'uploads/')) {
+            return asset($path);
+        }
+
         return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
     }
 }

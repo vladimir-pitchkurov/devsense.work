@@ -53,6 +53,8 @@
                 <div class="mobile-toc__content" id="article-toc-mobile"></div>
             </details>
 
+            @include('partials.article_author_meta')
+
             <div class="article__content markdown-body">
                 {!! $content !!}
             </div>
