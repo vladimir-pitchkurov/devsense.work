@@ -29,28 +29,42 @@
                     @foreach ($articles as $article)
                         @php
                             $translation = $article->translate();
+                            $categoryName = $article->category?->translate()?->name ?? $article->category?->slug;
                         @endphp
                         <li class="guides__item">
                             <article class="card">
                                 <header class="card__header">
-                                    <h2 class="card__title" style="font-family: 'Outfit', sans-serif;">
-                                        <a href="{{ $article->url() }}" style="color: inherit; text-decoration: none;">
-                                            {{ $translation?->title ?? 'Untitled' }}
+                                    <div class="card__meta-top">
+                                        @if ($article->category)
+                                            <span class="card__category card__category--{{ $article->category->slug }}">
+                                                {{ $categoryName }}
+                                            </span>
+                                        @endif
+                                        <span class="card__date">
+                                            {{ $article->published_at ? $article->published_at->translatedFormat('j M Y') : '' }}
+                                        </span>
+                                    </div>
+                                    <h2 class="card__title">
+                                        <a href="{{ $article->url() }}" class="card__title-link">
+                                            {{ $translation?->title ?? $article->slug }}
                                         </a>
                                     </h2>
-                                    @if ($article->category)
-                                        <span class="admin-badge admin-badge--category" style="margin-top: 0.5rem; display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                                            {{ $article->category->slug }}
-                                        </span>
-                                    @endif
                                 </header>
-                                <div class="card__body" style="padding: 1rem 0;">
-                                    <p class="card__excerpt" style="font-size: 0.95rem; line-height: 1.5; margin: 0;">
+                                <div class="card__body">
+                                    <p class="card__excerpt">
                                         {{ $translation?->description ?? '' }}
                                     </p>
                                 </div>
-                                <footer class="card__footer" style="padding: 0;">
-                                    <a href="{{ $article->url() }}" class="card__link" style="font-weight: 600; font-size: 0.9rem;">
+                                <footer class="card__footer">
+                                    @if($article->author)
+                                        <div class="card__author">
+                                            <div class="card__author-avatar" title="{{ $article->author->name }}">
+                                                {{ substr($article->author->name, 0, 1) }}
+                                            </div>
+                                            <span class="card__author-name">{{ $article->author->name }}</span>
+                                        </div>
+                                    @endif
+                                    <a href="{{ $article->url() }}" class="card__link" aria-label="{{ $translation?->title }}">
                                         {{ __('ui.search.read_more') }}
                                     </a>
                                 </footer>
@@ -74,14 +88,6 @@
         border: 1px solid var(--border-color);
         border-radius: 1rem;
         color: var(--text-muted);
-    }
-    
-    .admin-badge--category {
-        background-color: rgba(var(--primary-color-rgb), 0.1);
-        color: var(--primary-color);
-        border: 1px solid rgba(var(--primary-color-rgb), 0.2);
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
     }
     </style>
 </x-layout>
