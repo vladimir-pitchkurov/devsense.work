@@ -40,3 +40,7 @@ use Illuminate\Support\Facades\Schedule;
 // Schedule database backup and cleanup tasks to run only in production
 Schedule::command('backup:clean')->daily()->at('01:00')->environments('production');
 Schedule::command('backup:run --only-db')->daily()->at('02:00')->environments('production');
+
+// Clean unverified registrations daily
+Schedule::command('app:clean-unverified-users')->daily()->at('03:00');
+

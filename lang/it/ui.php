@@ -366,7 +366,9 @@ return [
             'resent' => 'Un nuovo link di verifica è stato inviato al tuo indirizzo e-mail.',
             'resend_btn' => 'Invia di nuovo l\'e-mail di verifica',
             'logout_btn' => 'Disconnetti',
-        ],
+                'math_captcha_label' => 'Per verificare che sei un essere umano, risolvi: :num1 + :num2 = ?',
+        'math_captcha_error' => 'La risposta alla verifica matematica non è corretta.',
+],
         'password_reset' => [
             'subject' => 'Notifica di reimpostazione della password',
             'greeting' => 'Ciao!',

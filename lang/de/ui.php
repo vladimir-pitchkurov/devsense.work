@@ -366,7 +366,9 @@ return [
             'resent' => 'Ein neuer Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet.',
             'resend_btn' => 'Bestätigungs-E-Mail erneut senden',
             'logout_btn' => 'Abmelden',
-        ],
+                'math_captcha_label' => 'Um zu bestätigen, dass Sie ein Mensch sind, lösen Sie bitte: :num1 + :num2 = ?',
+        'math_captcha_error' => 'Die Antwort auf die mathematische Prüfung ist falsch.',
+],
         'password_reset' => [
             'subject' => 'Benachrichtigung zum Zurücksetzen des Passworts',
             'greeting' => 'Hallo!',
