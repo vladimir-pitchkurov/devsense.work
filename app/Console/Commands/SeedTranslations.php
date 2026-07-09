@@ -81,6 +81,10 @@ class SeedTranslations extends Command
             'jobs' => [
                 'en' => 'Careers & Jobs', 'ru' => 'Вакансии', 'ua' => 'Вакансії', 'bg' => 'Работни места',
                 'de' => 'Karriere & Jobs', 'fr' => 'Carrières et Emplois', 'es' => 'Empleos', 'it' => 'Lavoro e Carriera'
+            ],
+            'security' => [
+                'en' => 'Security', 'ru' => 'Безопасность', 'ua' => 'Безпека', 'bg' => 'Сигурност',
+                'de' => 'Sicherheit', 'fr' => 'Sécurité', 'es' => 'Seguridad', 'it' => 'Sicurezza'
             ]
         ];
 

@@ -65,22 +65,45 @@ class MigrateArticlesToDatabase extends Command
 
                     // Find or create Category
                     $category = Category::firstOrCreate(['slug' => $categorySlug]);
-                    
-                    // Create Category Translation if missing
-                    CategoryTranslation::firstOrCreate([
+
+                    $translationsDict = [
+                        'php' => [
+                            'en' => 'PHP', 'ru' => 'PHP', 'ua' => 'PHP', 'bg' => 'PHP',
+                        ],
+                        'tools' => [
+                            'en' => 'Tools', 'ru' => 'Инструменты', 'ua' => 'Інструменти', 'bg' => 'Инструменти',
+                        ],
+                        'microservices' => [
+                            'en' => 'Microservices', 'ru' => 'Микросервисы', 'ua' => 'Мікросервіси', 'bg' => 'Микроуслуги',
+                        ],
+                        'architecture' => [
+                            'en' => 'Architecture', 'ru' => 'Архитектура', 'ua' => 'Архітектура', 'bg' => 'Архитектура',
+                        ],
+                        'jobs' => [
+                            'en' => 'Careers & Jobs', 'ru' => 'Вакансии', 'ua' => 'Вакансії', 'bg' => 'Работни места',
+                        ],
+                        'security' => [
+                            'en' => 'Security', 'ru' => 'Безопасность', 'ua' => 'Безпека', 'bg' => 'Сигурност',
+                        ],
+                    ];
+
+                    $categoryName = $translationsDict[$categorySlug][$locale] ?? Str::title(str_replace('-', ' ', $categorySlug));
+
+                    // Create or update Category Translation
+                    CategoryTranslation::updateOrCreate([
                         'category_id' => $category->id,
                         'locale' => $locale,
                     ], [
-                        'name' => Str::title(str_replace('-', ' ', $categorySlug)),
+                        'name' => $categoryName,
                     ]);
 
                     // Generate a default Tag for this category
                     $tag = Tag::firstOrCreate(['slug' => $categorySlug]);
-                    TagTranslation::firstOrCreate([
+                    TagTranslation::updateOrCreate([
                         'tag_id' => $tag->id,
                         'locale' => $locale,
                     ], [
-                        'name' => Str::title(str_replace('-', ' ', $categorySlug)),
+                        'name' => $categoryName,
                     ]);
 
                     $files = File::files($categoryPath);
