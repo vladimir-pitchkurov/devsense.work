@@ -102,12 +102,11 @@
 </head>
 <body
     class="page"
-    id="app"
     data-a11y-theme-switcher="{{ __('ui.a11y.theme_switcher') }}"
     data-a11y-language-select="{{ __('ui.a11y.language_select') }}"
 >
     {{-- GTM noscript handled by Cloudflare Tag Gateway --}}
-<header class="header sticky">
+<header class="header sticky" id="app">
     <div class="header__container">
         <a href="{{ route('home') }}" class="header__logo">
             <svg class="header__logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
